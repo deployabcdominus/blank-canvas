@@ -64,6 +64,7 @@ export type Database = {
           created_at: string
           enable_network_index: boolean | null
           id: string
+          is_active: boolean | null
           logo_url: string | null
           name: string
           network_base_path: string | null
@@ -77,6 +78,7 @@ export type Database = {
           created_at?: string
           enable_network_index?: boolean | null
           id?: string
+          is_active?: boolean | null
           logo_url?: string | null
           name: string
           network_base_path?: string | null
@@ -90,6 +92,7 @@ export type Database = {
           created_at?: string
           enable_network_index?: boolean | null
           id?: string
+          is_active?: boolean | null
           logo_url?: string | null
           name?: string
           network_base_path?: string | null
@@ -206,6 +209,7 @@ export type Database = {
       }
       invitations: {
         Row: {
+          accepted_at: string | null
           company_id: string
           created_at: string
           created_by_user_id: string | null
@@ -217,6 +221,7 @@ export type Database = {
           used: boolean | null
         }
         Insert: {
+          accepted_at?: string | null
           company_id: string
           created_at?: string
           created_by_user_id?: string | null
@@ -228,6 +233,7 @@ export type Database = {
           used?: boolean | null
         }
         Update: {
+          accepted_at?: string | null
           company_id?: string
           created_at?: string
           created_by_user_id?: string | null
@@ -389,6 +395,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          features: Json | null
+          id: string
+          name: string
+          price: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          name: string
+          price?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          name?: string
+          price?: number | null
+        }
+        Relationships: []
       }
       production_orders: {
         Row: {
