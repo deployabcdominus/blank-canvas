@@ -1,0 +1,336 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* SignFlow Design System - Apple-inspired with glassmorphism */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Core Colors — Zinc Pro Dark */
+    --background: 240 6% 10%;       /* Zinc-950 */
+    --foreground: 0 0% 100%;        /* White — titles */
+    
+    /* Glass Effects */
+    --glass-bg: 240 4% 16% / 0.6;
+    --glass-border: 240 4% 20% / 0.5;
+    
+    /* Accent Palette (slightly muted for dark bg) */
+    --mint: 160 50% 45%;
+    --soft-blue: 225 80% 56%;
+    --lavender: 260 60% 58%;
+    --pale-pink: 340 55% 60%;
+    
+    /* Mint variations */
+    --mint-foreground: 160 50% 90%;
+    --mint-hover: 160 50% 50%;
+    
+    /* Soft Blue variations */
+    --soft-blue-foreground: 225 80% 92%;
+    --soft-blue-hover: 225 80% 62%;
+    
+    /* Lavender variations */
+    --lavender-foreground: 260 60% 92%;
+    --lavender-hover: 260 60% 64%;
+    
+    /* Pink variations */
+    --pale-pink-foreground: 340 55% 92%;
+    --pale-pink-hover: 340 55% 66%;
+
+    /* Shadcn overrides — Zinc Pro Dark */
+    --card: 240 4% 16%;             /* Zinc-900 */
+    --card-foreground: 0 0% 100%;
+
+    --popover: 240 4% 16%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 225 80% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 4% 20%;        /* Zinc-800 */
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%; /* Zinc-400 — WCAG AA */
+
+    --accent: 240 4% 20%;
+    --accent-foreground: 0 0% 96%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 4% 20%;           /* Zinc-800 */
+    --input: 240 4% 16%;
+    --ring: 225 80% 56%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 240 6% 8%;
+    --sidebar-foreground: 240 5% 65%;
+    --sidebar-primary: 225 80% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4% 14%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 240 4% 18%;
+    --sidebar-ring: 225 80% 56%;
+  }
+
+  /* Dark class inherits root (already dark) — kept for compatibility */
+  .dark {
+    --background: 240 6% 10%;
+    --foreground: 0 0% 100%;
+    --card: 240 4% 16%;
+    --card-foreground: 0 0% 100%;
+    --popover: 240 4% 16%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 225 80% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 20%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 20%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 20%;
+    --input: 240 4% 16%;
+    --ring: 225 80% 56%;
+    --sidebar-background: 240 6% 8%;
+    --sidebar-foreground: 240 5% 65%;
+    --sidebar-primary: 225 80% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4% 14%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 240 4% 18%;
+    --sidebar-ring: 225 80% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Glass effect overrides for when disabled */
+  .no-glass .glass {
+    background: hsl(var(--card));
+    backdrop-filter: none;
+    border: 1px solid hsl(var(--border));
+  }
+
+  .no-glass .glass-card {
+    @apply rounded-2xl shadow-lg;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    backdrop-filter: none;
+  }
+
+  .no-glass .btn-glass {
+    background: hsl(var(--card));
+    backdrop-filter: none;
+    border: 1px solid hsl(var(--border));
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .glass {
+    background: hsl(240 4% 16% / 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(240 4% 20% / 0.5);
+  }
+  
+  .glass-card {
+    @apply glass rounded-2xl shadow-lg;
+    border: 1px solid hsl(240 4% 20% / 0.5);
+  }
+
+  /* Card hover micro-interaction — apply to interactive cards */
+  .card-interactive {
+    @apply transition-all duration-300;
+  }
+  .card-interactive:hover {
+    transform: scale(1.02);
+    border-color: hsl(225 80% 56% / 0.3);
+    box-shadow: 0 0 24px -6px hsl(225 80% 56% / 0.15), 0 8px 32px -8px hsl(0 0% 0% / 0.3);
+  }
+  
+  .glow-mint {
+    box-shadow: 0 0 20px hsl(var(--mint) / 0.3);
+  }
+  
+  .glow-blue {
+    box-shadow: 0 0 20px hsl(var(--soft-blue) / 0.3);
+  }
+  
+  .glow-lavender {
+    box-shadow: 0 0 20px hsl(var(--lavender) / 0.3);
+  }
+  
+  .glow-pink {
+    box-shadow: 0 0 20px hsl(var(--pale-pink) / 0.3);
+  }
+  
+  .btn-glass {
+    @apply glass-card px-6 py-3 font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg;
+  }
+
+  /* Landing premium tokens */
+  .landing-dark {
+    --ld-bg: 228 20% 8%;
+    --ld-surface: 228 18% 12%;
+    --ld-surface-elevated: 228 16% 16%;
+    --ld-border: 228 14% 22%;
+    --ld-text: 0 0% 96%;
+    --ld-text-muted: 228 10% 60%;
+    --ld-accent: 225 80% 56%;
+    --ld-accent-violet: 260 70% 58%;
+    --ld-glow: 225 90% 60%;
+  }
+
+  .landing-dark-section {
+    background: hsl(var(--ld-bg));
+    color: hsl(var(--ld-text));
+  }
+
+  .landing-gradient-radial {
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, hsl(225 80% 56% / 0.15), transparent);
+  }
+
+  .landing-card-dark {
+    background: hsl(228 18% 12% / 0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid hsl(228 14% 22% / 0.5);
+  }
+
+  .landing-glow-accent {
+    box-shadow: 0 0 60px -12px hsl(225 90% 60% / 0.25);
+  }
+
+  .landing-glow-violet {
+    box-shadow: 0 0 60px -12px hsl(260 70% 58% / 0.25);
+  }
+
+  .blueprint-pattern {
+    background-image: 
+      linear-gradient(hsl(225 80% 56% / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(225 80% 56% / 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* ── Premium Sidebar Tokens ── */
+  .sidebar-premium {
+    background: linear-gradient(
+      180deg,
+      hsl(240 8% 7%) 0%,
+      hsl(240 6% 10%) 40%,
+      hsl(240 8% 8%) 100%
+    );
+    border-right: 1px solid hsl(240 4% 18% / 0.6);
+    box-shadow:
+      inset -1px 0 0 hsl(225 80% 56% / 0.04),
+      4px 0 24px -4px hsl(0 0% 0% / 0.5);
+  }
+
+  .sidebar-nav-item {
+    @apply relative flex items-center rounded-xl transition-all duration-200;
+    color: hsl(240 5% 58%);
+  }
+
+  .sidebar-nav-item:hover {
+    color: hsl(0 0% 90%);
+    background: hsl(225 20% 16% / 0.5);
+    transform: translateX(2px);
+    box-shadow: 0 0 0 1px hsl(225 80% 56% / 0.06);
+  }
+
+  .sidebar-nav-active {
+    color: hsl(0 0% 100%) !important;
+    background: linear-gradient(135deg, hsl(225 60% 18% / 0.7), hsl(240 30% 14% / 0.6)) !important;
+    border: 1px solid hsl(225 80% 56% / 0.2);
+    box-shadow:
+      0 0 16px -4px hsl(225 80% 56% / 0.25),
+      inset 0 1px 0 hsl(225 80% 70% / 0.08);
+  }
+
+  .sidebar-nav-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, hsl(225 80% 56%), hsl(260 60% 58%));
+    box-shadow: 0 0 8px hsl(225 80% 56% / 0.5);
+  }
+
+  .sidebar-section-label {
+    @apply text-xs font-semibold uppercase tracking-widest;
+    color: hsl(240 5% 38%);
+    letter-spacing: 0.12em;
+  }
+
+  .sidebar-divider {
+    border-color: hsl(240 4% 16% / 0.8);
+    box-shadow: 0 1px 0 hsl(225 80% 56% / 0.03);
+  }
+
+  .sidebar-footer-block {
+    background: hsl(240 6% 9% / 0.8);
+    border-top: 1px solid hsl(240 4% 16% / 0.6);
+    box-shadow: inset 0 1px 0 hsl(225 80% 56% / 0.03);
+  }
+
+  .sidebar-avatar-ring {
+    box-shadow: 0 0 0 2px hsl(225 80% 56% / 0.25), 0 0 12px -2px hsl(225 80% 56% / 0.15);
+  }
+
+  .sidebar-notification-dot {
+    background: linear-gradient(135deg, hsl(160 50% 45%), hsl(160 60% 55%));
+    box-shadow: 0 0 6px hsl(160 50% 45% / 0.6);
+  }
+
+  /* HUD scan line animation */
+  @keyframes hud-scan {
+    0% { top: -2px; opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  .hud-scan-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.4), transparent);
+    animation: hud-scan 4s ease-in-out infinite;
+    animation-delay: var(--scan-delay, 0s);
+  }
+
+  /* HUD dashboard background */
+  .hud-bg {
+    background: linear-gradient(180deg, hsl(228 30% 6%) 0%, hsl(228 25% 10%) 100%);
+    min-height: 100vh;
+  }
+}
+
+/* Print styles for production orders */
+@media print {
+  body { background: white !important; color: black !important; }
+  .print-order { color: black !important; }
+  .print-order * { color: black !important; border-color: #ddd !important; }
+  .print-order h2, .print-order h3 { color: #111 !important; }
+  .print-order .text-muted-foreground { color: #666 !important; }
+  nav, aside, header, footer, button, [role="dialog"] > div:first-child,
+  [role="dialog"] > div:last-child { display: none !important; }
+  [role="dialog"] { position: static !important; max-width: 100% !important; max-height: none !important; border: none !important; background: white !important; box-shadow: none !important; backdrop-filter: none !important; }
+}
