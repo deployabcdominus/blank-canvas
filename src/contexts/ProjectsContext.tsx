@@ -75,7 +75,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     if (!user) { setProjects([]); setLoading(false); return; }
     const { data, error } = await (supabase as any)
       .from('projects')
-      .select('*, clients(client_name)')
+      .select('*, clients!projects_client_id_fkey(client_name)')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading projects:', error);
     else setProjects((data || []).map(mapRow));
@@ -100,7 +100,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
         folder_relative_path: project.folderRelativePath,
         folder_full_path: project.folderFullPath,
       })
-      .select('*, clients(client_name)')
+      .select('*, clients!projects_client_id_fkey(client_name)')
       .single();
     if (error) throw error;
     const newProject = mapRow(data);
