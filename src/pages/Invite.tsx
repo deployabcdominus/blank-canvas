@@ -170,7 +170,19 @@ const Invite = () => {
       return;
     }
 
-    // The auth state change will trigger acceptInvitation via the useEffect
+    // After successful signup, immediately sign in to activate session
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: invitation.email,
+      password: formData.password,
+    });
+
+    if (signInError) {
+      toast({ title: "Error al iniciar sesión", description: signInError.message, variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Session is now active, acceptInvitation will be triggered by the useEffect
     setIsSubmitting(false);
   };
 
