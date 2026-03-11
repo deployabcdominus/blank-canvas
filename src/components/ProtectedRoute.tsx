@@ -1,6 +1,7 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -28,6 +29,22 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading: authLoading } = useAuth();
   const { role, isSuperadmin, loading: roleLoading, companyId } = useUserRole();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Imperative redirect when route changes and role is already loaded
+  useEffect(() => {
+    if (roleLoading || !role || isSuperadmin) return;
+
+    console.log('[ProtectedRoute] useEffect guard — role:', role, 'path:', location.pathname);
+
+    for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
+      if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
+        console.log('[ProtectedRoute] BLOCKED — redirecting to /dashboard');
+        navigate('/dashboard', { replace: true });
+        return;
+      }
+    }
+  }, [location.pathname, role, roleLoading, isSuperadmin, navigate]);
 
   // 1. Wait for auth
   if (authLoading) {
@@ -39,7 +56,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/login" replace />;
   }
 
-  // 3. Wait for role to load — never render children or evaluate guards
+  // 3. Wait for role to load
   if (roleLoading) {
     return <Spinner />;
   }
@@ -54,8 +71,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // 6. Role-based route blocking
-  console.log('[ProtectedRoute] evaluating guard — role:', role, 'loading:', roleLoading, 'path:', location.pathname, 'isSuperadmin:', isSuperadmin);
+  // 6. Role-based route blocking (render-time fallback)
+  console.log('[ProtectedRoute] render guard — role:', role, 'loading:', roleLoading, 'path:', location.pathname, 'isSuperadmin:', isSuperadmin);
   if (role && !isSuperadmin) {
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
