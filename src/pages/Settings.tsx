@@ -405,11 +405,12 @@ export default function Settings() {
           </TabsContent>
         )}
 
-        <TabsContent value="configuracion">
-          <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Apariencia</CardTitle>
+        {isAdmin && (
+          <TabsContent value="configuracion">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Apariencia</CardTitle>
                 <CardDescription>
                   Configure el tema y efectos visuales
                 </CardDescription>
