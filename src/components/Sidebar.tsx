@@ -75,32 +75,42 @@ export const Sidebar = () => {
     </nav>
   );
 
-  const renderTenantNav = () => (
-    <nav className="flex-1 overflow-y-auto space-y-1 min-h-0 px-1">
-      {mainItems.map(item => renderNavItem(item))}
-      <div className="my-3 mx-2 border-t sidebar-divider" />
-      {isTablet ? (
-        operationGroup.items.map(item => renderNavItem(item))
-      ) : (
-        <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
-          <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-2.5 min-h-[44px] w-full">
-            <operationGroup.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-            <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
-            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pl-4 space-y-0.5 mt-0.5">
-            {operationGroup.items.map(item => renderNavItem(item))}
-          </CollapsibleContent>
-        </Collapsible>
-      )}
-      {adminItems.filter(canSee).length > 0 && (
-        <>
-          <div className="my-3 mx-2 border-t sidebar-divider" />
-          {adminItems.filter(canSee).map(item => renderNavItem(item))}
-        </>
-      )}
-    </nav>
-  );
+  const renderTenantNav = () => {
+    const visibleMainItems = mainItems.filter(canSee);
+    const visibleOperationItems = operationGroup.items.filter(canSee);
+    const visibleAdminItems = adminItems.filter(canSee);
+
+    return (
+      <nav className="flex-1 overflow-y-auto space-y-1 min-h-0 px-1">
+        {visibleMainItems.map(item => renderNavItem(item))}
+        {visibleOperationItems.length > 0 && (
+          <>
+            <div className="my-3 mx-2 border-t sidebar-divider" />
+            {isTablet ? (
+              visibleOperationItems.map(item => renderNavItem(item))
+            ) : (
+              <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
+                <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-2.5 min-h-[44px] w-full">
+                  <operationGroup.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+                  <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pl-4 space-y-0.5 mt-0.5">
+                  {visibleOperationItems.map(item => renderNavItem(item))}
+                </CollapsibleContent>
+              </Collapsible>
+            )}
+          </>
+        )}
+        {visibleAdminItems.length > 0 && (
+          <>
+            <div className="my-3 mx-2 border-t sidebar-divider" />
+            {visibleAdminItems.map(item => renderNavItem(item))}
+          </>
+        )}
+      </nav>
+    );
+  };
 
   return (
     <motion.aside

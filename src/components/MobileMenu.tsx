@@ -95,18 +95,22 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 </>
               ) : (
                 <>
-                  {mainItems.map((item, i) => renderNavItem(item, i))}
-                  <div className="my-3 mx-2 border-t sidebar-divider" />
-                  <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
-                    <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-4 min-h-[44px] w-full">
-                      <operationGroup.icon className="w-5 h-5" aria-hidden="true" />
-                      <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="pl-4 space-y-1 mt-0.5">
-                      {operationGroup.items.map((item, i) => renderNavItem(item, i))}
-                    </CollapsibleContent>
-                  </Collapsible>
+                  {mainItems.filter(canSee).map((item, i) => renderNavItem(item, i))}
+                  {operationGroup.items.filter(canSee).length > 0 && (
+                    <>
+                      <div className="my-3 mx-2 border-t sidebar-divider" />
+                      <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
+                        <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-4 min-h-[44px] w-full">
+                          <operationGroup.icon className="w-5 h-5" aria-hidden="true" />
+                          <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
+                          <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="pl-4 space-y-1 mt-0.5">
+                          {operationGroup.items.filter(canSee).map((item, i) => renderNavItem(item, i))}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </>
+                  )}
                   {adminItems.filter(canSee).length > 0 && (
                     <>
                       <div className="my-3 mx-2 border-t sidebar-divider" />
