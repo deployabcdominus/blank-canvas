@@ -203,12 +203,14 @@ const Leads = () => {
                   <Trash2 className="w-4 h-4 mr-2" /> Limpiar
                 </Button>
               )}
-              <Button
-                onClick={() => setIsAddLeadModalOpen(true)}
-                className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
-              >
-                <Plus className="w-4 h-4 mr-2" /> Agregar Lead
-              </Button>
+              {canEdit && (
+                <Button
+                  onClick={() => setIsAddLeadModalOpen(true)}
+                  className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
+                >
+                  <Plus className="w-4 h-4 mr-2" /> Agregar Lead
+                </Button>
+              )}
             </div>
           </div>
 
