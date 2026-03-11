@@ -56,8 +56,14 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/login" replace />;
   }
 
-  // 3. Wait for role to load
+  // 3. Wait for role — MUST be before any role-based guard
   if (roleLoading) {
+    return <Spinner />;
+  }
+
+  // Defensive guard: if role is not resolved yet, keep waiting to avoid
+  // transient redirects (e.g. superadmin briefly evaluated as non-superadmin)
+  if (!isSuperadmin && role === null) {
     return <Spinner />;
   }
 
