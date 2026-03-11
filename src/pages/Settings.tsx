@@ -491,7 +491,8 @@ export default function Settings() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+          </TabsContent>
+        )}
       </Tabs>
     </ResponsiveLayout>
   );
