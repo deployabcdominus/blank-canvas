@@ -12,6 +12,7 @@ import { InstallationPhotos } from "@/components/InstallationPhotos";
 import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useInstallations } from "@/contexts/InstallationsContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import {
   AlertDialog,
   AlertDialogAction,
