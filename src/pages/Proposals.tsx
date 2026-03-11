@@ -21,6 +21,7 @@ const Proposals = () => {
   const { proposals, loading, addProposal, updateProposal, deleteProposal } = useProposals();
   const { addOrder } = useWorkOrders();
   const { company } = useCompany();
+  const { canEdit, canDelete } = useUserRole();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
