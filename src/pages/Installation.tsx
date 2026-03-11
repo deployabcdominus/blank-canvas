@@ -30,6 +30,7 @@ const Installation = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const { installations, addInstallation, updateInstallation, clearInstallations } = useInstallations();
+  const { canEdit, canDelete } = useUserRole();
 
   const filteredInstallations = useMemo(() => {
     if (!searchTerm.trim()) return installations;
