@@ -21,7 +21,7 @@ import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
-  const { canViewFinancials, loading: roleLoading } = useUserRole();
+  const { canViewFinancials, canViewOperations, loading: roleLoading } = useUserRole();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
@@ -75,7 +75,7 @@ const Dashboard = () => {
 
         <div className={`grid gap-4 mb-8 ${isMobile ? "grid-cols-1" : showFinancials ? "grid-cols-3" : "grid-cols-2"}`}>
           {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
-          <WorkOrdersRadial orders={orders} />
+          {canViewOperations && <WorkOrdersRadial orders={orders} />}
           <GeoHeatmap installations={installations} />
         </div>
 
