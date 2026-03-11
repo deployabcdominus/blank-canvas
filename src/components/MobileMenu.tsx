@@ -26,7 +26,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
-  const { role, isSuperadmin } = useUserRole();
+  const { role, isSuperadmin, isAdmin } = useUserRole();
   const { avatarUrl } = useAvatarUrl();
   const { fullName, email, initials } = useUserProfile();
 
@@ -149,9 +149,11 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   <DropdownMenuItem onClick={() => { navigate('/settings?tab=perfil'); onClose(); }} className="hover:bg-white/10 min-h-[44px]">
                     <User className="w-4 h-4 mr-2" /> Perfil
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { navigate('/settings'); onClose(); }} className="hover:bg-white/10 min-h-[44px]">
-                    <Settings className="w-4 h-4 mr-2" /> Configuración
-                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => { navigate('/settings'); onClose(); }} className="hover:bg-white/10 min-h-[44px]">
+                      <Settings className="w-4 h-4 mr-2" /> Configuración
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator className="bg-white/20" />
                   <DropdownMenuItem onClick={handleLogout} className="hover:bg-white/10 text-destructive min-h-[44px]">
                     <LogOut className="w-4 h-4 mr-2" /> Salir
