@@ -99,10 +99,11 @@ const Invite = () => {
 
     try {
       // Update profile with company_id
-      await supabase
+      const { error: profileError } = await supabase
         .from("profiles")
         .update({ company_id: invitation.company_id } as any)
         .eq("id", user.id);
+      if (profileError) throw new Error("Error actualizando perfil: " + profileError.message);
 
       // Assign role via edge function (uses service_role for proper enum handling)
       const { data: existingRole } = await supabase
@@ -112,21 +113,26 @@ const Invite = () => {
         .maybeSingle();
 
       if (!existingRole) {
-        await supabase.functions.invoke("manage-user", {
+        const { data: roleData, error: roleError } = await supabase.functions.invoke("manage-user", {
           body: { action: "update-role", userId: user.id, role: invitation.role },
         });
+        if (roleError) throw new Error("Error asignando rol: " + roleError.message);
+        if (roleData?.error) throw new Error("Error asignando rol: " + roleData.error);
       }
 
       // Mark invitation as accepted
-      await supabase
+      const { error: inviteError } = await supabase
         .from("invitations")
-        .update({ accepted_at: new Date().toISOString() })
+        .update({ accepted_at: new Date().toISOString(), used: true })
         .eq("id", invitation.id);
+      if (inviteError) throw new Error("Error actualizando invitación: " + inviteError.message);
 
       toast({ title: "¡Bienvenido!", description: "Te has unido al equipo exitosamente." });
       navigate("/dashboard");
     } catch (err: any) {
-      setError("Error al aceptar la invitación: " + (err.message || "Error desconocido"));
+      const msg = err.message || "Error desconocido";
+      setError("Error al aceptar la invitación: " + msg);
+      toast({ title: "Error", description: msg, variant: "destructive" });
     }
   };
 
