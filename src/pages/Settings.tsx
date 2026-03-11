@@ -52,7 +52,7 @@ export default function Settings() {
   const [savingName, setSavingName] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   
-  const activeTab = searchParams.get('tab') || 'configuracion';
+  const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
 
   useEffect(() => {
     if (company?.name) setOrgName(company.name);
