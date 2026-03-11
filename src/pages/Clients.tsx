@@ -27,7 +27,7 @@ const PAGE_SIZE = 12;
 export default function Clients() {
   const { clients, loading, addClient, updateClient, deleteClient } = useClients();
   const { projects } = useProjects();
-  const { isAdmin } = useUserRole();
+  const { canDelete, canEdit } = useUserRole();
   const { toast } = useToast();
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
