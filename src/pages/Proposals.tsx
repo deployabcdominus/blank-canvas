@@ -147,7 +147,7 @@ const Proposals = () => {
             ))}
           </div>
         ) : (
-          <ProposalsTableView proposals={paginated} onEdit={openEdit} onDelete={handleDelete} onCreateOrder={handleCreateOrder} onRegisterPayment={openPayment} />
+          <ProposalsTableView proposals={paginated} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} />
         )}
 
         <WorkOrdersPagination
