@@ -31,7 +31,7 @@ const Leads = () => {
   const breakpoint = useBreakpoint();
   const { leads, addLead, clearLeads } = useLeads();
   const { proposals, addProposal } = useProposals();
-  const { isAdmin, isComercial } = useUserRole();
+  const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
