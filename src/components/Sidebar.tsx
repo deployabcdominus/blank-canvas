@@ -23,7 +23,7 @@ export const Sidebar = () => {
   const navigate = useNavigate();
   const breakpoint = useBreakpoint();
   const { signOut } = useAuth();
-  const { role, isSuperadmin, loading: roleLoading } = useUserRole();
+  const { role, isSuperadmin, isAdmin, loading: roleLoading } = useUserRole();
   const { avatarUrl } = useAvatarUrl();
   const { fullName, email, initials } = useUserProfile();
 
