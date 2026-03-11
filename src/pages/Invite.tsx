@@ -94,28 +94,33 @@ const Invite = () => {
   }, [user, invitation]);
 
   const acceptInvitation = async () => {
-    if (!user || !invitation) return;
+    if (!invitation) return;
     setMode("accepting");
 
     try {
+      // Get current session to ensure we have the right auth context
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("No hay sesión activa");
+      const userId = session.user.id;
+
       // Update profile with company_id
       const { error: profileError } = await supabase
         .from("profiles")
         .update({ company_id: invitation.company_id } as any)
-        .eq("id", user.id);
+        .eq("id", userId);
       if (profileError) throw new Error("Error actualizando perfil: " + profileError.message);
 
       // Assign role directly (new user has no role yet, Edge Function would reject)
       const { data: existingRole } = await supabase
         .from("user_roles")
         .select("id")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .maybeSingle();
 
       if (!existingRole) {
         const { error: roleError } = await supabase
           .from("user_roles")
-          .insert({ user_id: user.id, role: invitation.role as any });
+          .insert({ user_id: userId, role: invitation.role as any });
         if (roleError) throw new Error("Error asignando rol: " + roleError.message);
       }
 
