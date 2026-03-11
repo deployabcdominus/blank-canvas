@@ -51,5 +51,5 @@ export const operationGroup: NavGroup = {
 export const adminItems: NavItem[] = [
   { icon: Building, label: "Empresas Instaladoras", path: "/installer-companies", roles: ['admin', 'operations'] },
   { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
-  { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin', 'sales', 'operations', 'member', 'viewer'] },
+  { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin'] },
 ];

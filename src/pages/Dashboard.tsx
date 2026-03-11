@@ -75,7 +75,7 @@ const Dashboard = () => {
 
         <div className={`grid gap-4 mb-8 ${isMobile ? "grid-cols-1" : showFinancials ? "grid-cols-3" : "grid-cols-2"}`}>
           {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
-          <WorkOrdersRadial orders={orders} />
+          {canViewOperations && <WorkOrdersRadial orders={orders} />}
           <GeoHeatmap installations={installations} />
         </div>
 
