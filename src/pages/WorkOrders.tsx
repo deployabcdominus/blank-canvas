@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { WorkOrdersControlBar, type SortKey, type ViewMode } from "@/components/work-orders/WorkOrdersControlBar";
+import { useUserRole } from "@/hooks/useUserRole";
 import { WorkOrderCompactCard } from "@/components/work-orders/WorkOrderCompactCard";
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
