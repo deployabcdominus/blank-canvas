@@ -85,14 +85,16 @@ const WorkOrders = () => {
             <p className="text-muted-foreground text-sm">Gestión y seguimiento de órdenes</p>
           </div>
           <div className="flex gap-2">
-            {orders.length > 0 && (
+            {orders.length > 0 && canDelete && (
               <Button onClick={() => setIsClearDialogOpen(true)} variant="outline" className="btn-glass">
                 <Trash2 className="w-4 h-4 mr-2" /> Limpiar
               </Button>
             )}
-            <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
-              <ClipboardList className="w-4 h-4 mr-2" /> Nueva Orden
-            </Button>
+            {canEdit && (
+              <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
+                <ClipboardList className="w-4 h-4 mr-2" /> Nueva Orden
+              </Button>
+            )}
           </div>
         </div>
 
