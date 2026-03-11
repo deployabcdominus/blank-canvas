@@ -71,13 +71,15 @@ const InstallerCompanies = () => {
             <h1 className="text-3xl font-bold">Empresas Instaladoras</h1>
             <p className="text-muted-foreground">Gestione sus empresas asociadas de instalación</p>
           </div>
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Registrar Empresa
-          </Button>
+          {canEdit && (
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Registrar Empresa
+            </Button>
+          )}
         </div>
 
         <div className="glass-card p-6">
