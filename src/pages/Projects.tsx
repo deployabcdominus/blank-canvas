@@ -39,7 +39,7 @@ export default function Projects() {
   const { projects, loading, addProject, updateProject, deleteProject } = useProjects();
   const { clients } = useClients();
   const { company } = useCompany();
-  const { isAdmin } = useUserRole();
+  const { canDelete, canEdit } = useUserRole();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'list';
