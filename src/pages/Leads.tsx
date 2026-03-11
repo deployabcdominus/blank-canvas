@@ -244,7 +244,7 @@ const Leads = () => {
                   index={index}
                   isMobile={isMobile}
                   onAdvance={handleAdvanceToProposal}
-                  onAssign={isAdmin ? handleAssignLead : undefined}
+                  onAssign={canManageLeads ? handleAssignLead : undefined}
                   onConvert={(leadId) => setConvertLeadId(leadId)}
                 />
               ))}
