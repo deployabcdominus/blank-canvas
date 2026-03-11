@@ -897,6 +897,7 @@ export type Database = {
     }
     Functions: {
       get_my_company_id: { Args: never; Returns: string }
+      get_my_company_id_safe: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
