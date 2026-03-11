@@ -38,6 +38,7 @@ export function useUserRole(): UserRoleData {
     }
 
     if (resolvedUserIdRef.current === user.id) {
+      setLoading(false);
       return;
     }
 
