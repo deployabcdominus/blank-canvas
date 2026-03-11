@@ -102,9 +102,11 @@ const Proposals = () => {
             <h1 className="text-2xl font-bold mb-1">Propuestas</h1>
             <p className="text-muted-foreground text-sm">Registro de propuestas enviadas externamente</p>
           </div>
-          <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-            <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
-          </Button>
+          {canEdit && (
+            <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
+              <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
+            </Button>
+          )}
         </div>
 
         {/* KPIs */}
