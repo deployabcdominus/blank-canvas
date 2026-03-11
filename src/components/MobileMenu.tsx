@@ -26,7 +26,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
-  const { role, isSuperadmin } = useUserRole();
+  const { role, isSuperadmin, isAdmin } = useUserRole();
   const { avatarUrl } = useAvatarUrl();
   const { fullName, email, initials } = useUserProfile();
 
