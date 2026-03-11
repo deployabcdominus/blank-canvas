@@ -62,7 +62,9 @@ export function useUserRole(): UserRoleData {
         ]);
 
         resolvedUserIdRef.current = user.id;
-        setRole((roleResult.data?.role as AppRole) || null);
+        const resolvedRole = (roleResult.data?.role as AppRole) || null;
+        console.log('[useUserRole] role loaded:', roleResult.data?.role, 'userId:', user.id, 'companyId:', profileResult.data?.company_id);
+        setRole(resolvedRole);
         setCompanyId(profileResult.data?.company_id || null);
       } catch (e) {
         console.error('Error loading user role:', e);
