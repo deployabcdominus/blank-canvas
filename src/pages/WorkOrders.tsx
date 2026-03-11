@@ -20,6 +20,7 @@ const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { orders, clearOrders } = useWorkOrders();
+  const { canEdit, canDelete } = useUserRole();
   const { toast } = useToast();
 
   const [search, setSearch] = useState("");
