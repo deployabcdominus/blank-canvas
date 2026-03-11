@@ -228,9 +228,9 @@ export default function Clients() {
               key="table"
               clients={paginatedClients}
               clientStats={clientStats}
-              isAdmin={isAdmin}
-              onEdit={openEdit}
-              onDelete={setDeleteId}
+              isAdmin={canDelete}
+              onEdit={canEdit ? openEdit : undefined}
+              onDelete={canDelete ? setDeleteId : undefined}
             />
           )}
         </AnimatePresence>
