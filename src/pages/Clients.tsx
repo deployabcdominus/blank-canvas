@@ -217,9 +217,9 @@ export default function Clients() {
                   client={c}
                   stats={clientStats[c.id]}
                   index={i}
-                  isAdmin={isAdmin}
-                  onEdit={openEdit}
-                  onDelete={setDeleteId}
+                  isAdmin={canDelete}
+                  onEdit={canEdit ? openEdit : undefined}
+                  onDelete={canDelete ? setDeleteId : undefined}
                 />
               ))}
             </motion.div>
