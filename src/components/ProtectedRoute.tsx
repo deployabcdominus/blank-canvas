@@ -38,22 +38,26 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  // Synchronously compute redirect when cache is available to avoid
-  // a single frame where children render before the effect fires.
-  const hasCacheForUser = !loading && user && cachedUserId === user.id;
+  // Invalidate cache when user changes
+  if (user && cachedUserId && cachedUserId !== user.id) {
+    cachedUserId = null;
+    cachedRole = null;
+    cachedHasCompany = null;
+  }
+
+  // Only use sync redirect when cache has a valid role (not null)
+  const hasCacheForUser = !loading && user && cachedUserId === user.id && cachedRole !== null;
   const syncRedirect = hasCacheForUser
     ? getRedirectForRole(cachedRole, cachedHasCompany!, location.pathname)
     : null;
 
   const [isChecking, setIsChecking] = useState(() => {
     if (!user) return true;
-    // If we already have a cached result, no async work needed
-    return cachedUserId !== user.id;
+    return !hasCacheForUser;
   });
   const [redirectTo, setRedirectTo] = useState<string | null>(syncRedirect);
 
   useEffect(() => {
-    // When cache exists, compute synchronously — no async needed
     if (hasCacheForUser) {
       setRedirectTo(syncRedirect);
       setIsChecking(false);
@@ -74,7 +78,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
       setIsChecking(true);
 
-      // First-time resolution for this user
       const { data: roleData } = await supabase
         .from('user_roles')
         .select('role')
@@ -90,10 +93,12 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         userHasCompany = await hasCompany(user.id);
       }
 
-      // Cache results
-      cachedUserId = user.id;
-      cachedRole = role;
-      cachedHasCompany = userHasCompany;
+      // Only cache when we got a valid role
+      if (role) {
+        cachedUserId = user.id;
+        cachedRole = role;
+        cachedHasCompany = userHasCompany;
+      }
 
       const redirect = getRedirectForRole(role, userHasCompany, location.pathname);
       setRedirectTo(redirect);
@@ -103,7 +108,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     checkAccess();
   }, [user, loading, location.pathname, hasCacheForUser, syncRedirect]);
 
-  // Always show spinner while auth or role is loading
   if (loading || isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -112,7 +116,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  // Use synchronous redirect if available (covers route changes with cached role)
   const finalRedirect = hasCacheForUser ? syncRedirect : redirectTo;
 
   if (finalRedirect) {
