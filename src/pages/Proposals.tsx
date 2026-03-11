@@ -13,6 +13,7 @@ import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPaginat
 import { useProposals, type Proposal } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
 import { useCompany } from "@/hooks/useCompany";
+import { useUserRole } from "@/hooks/useUserRole";
 import { FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
 
