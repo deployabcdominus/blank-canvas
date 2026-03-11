@@ -55,7 +55,7 @@ const Dashboard = () => {
     setActiveFilter(prev => (prev === key ? null : key));
   };
 
-  const showFinancials = isAdmin || role === null;
+  const showFinancials = canViewFinancials;
 
   return (
     <PageTransition>

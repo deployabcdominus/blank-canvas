@@ -235,10 +235,12 @@ export default function Projects() {
                 )}
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => { setDetailProject(null); openEdit(detailProject); }}>
-                  <Pencil className="w-4 h-4 mr-2" /> Editar
-                </Button>
-                {isAdmin && (
+                {canEdit && (
+                  <Button variant="outline" onClick={() => { setDetailProject(null); openEdit(detailProject); }}>
+                    <Pencil className="w-4 h-4 mr-2" /> Editar
+                  </Button>
+                )}
+                {canDelete && (
                   <Button variant="destructive" onClick={() => { setDetailProject(null); setDeleteId(detailProject.id); }}>
                     <Trash2 className="w-4 h-4 mr-2" /> Eliminar
                   </Button>

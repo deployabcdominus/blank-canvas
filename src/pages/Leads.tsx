@@ -226,9 +226,11 @@ const Leads = () => {
               {searchTerm && (
                 <Button onClick={() => setSearchTerm("")} variant="outline" className="mr-2">Limpiar búsqueda</Button>
               )}
-              <Button onClick={() => setIsAddLeadModalOpen(true)} className="btn-glass bg-mint text-mint-foreground hover:bg-mint-hover">
-                <Plus className="w-4 h-4 mr-2" /> Agregar Lead
-              </Button>
+              {canEdit && (
+                <Button onClick={() => setIsAddLeadModalOpen(true)} className="btn-glass bg-mint text-mint-foreground hover:bg-mint-hover">
+                  <Plus className="w-4 h-4 mr-2" /> Agregar Lead
+                </Button>
+              )}
             </div>
           ) : (
             <div className={`grid gap-5 ${
