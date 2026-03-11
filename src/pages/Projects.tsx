@@ -39,7 +39,7 @@ export default function Projects() {
   const { projects, loading, addProject, updateProject, deleteProject } = useProjects();
   const { clients } = useClients();
   const { company } = useCompany();
-  const { isAdmin } = useUserRole();
+  const { canDelete, canEdit } = useUserRole();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'list';
@@ -150,9 +150,11 @@ export default function Projects() {
                   {STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                 </SelectContent>
               </Select>
-              <Button onClick={openNew} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue/90">
-                <Plus className="w-4 h-4 mr-2" /> Nuevo Proyecto
-              </Button>
+              {canEdit && (
+                <Button onClick={openNew} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue/90">
+                  <Plus className="w-4 h-4 mr-2" /> Nuevo Proyecto
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -233,10 +235,12 @@ export default function Projects() {
                 )}
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => { setDetailProject(null); openEdit(detailProject); }}>
-                  <Pencil className="w-4 h-4 mr-2" /> Editar
-                </Button>
-                {isAdmin && (
+                {canEdit && (
+                  <Button variant="outline" onClick={() => { setDetailProject(null); openEdit(detailProject); }}>
+                    <Pencil className="w-4 h-4 mr-2" /> Editar
+                  </Button>
+                )}
+                {canDelete && (
                   <Button variant="destructive" onClick={() => { setDetailProject(null); setDeleteId(detailProject.id); }}>
                     <Trash2 className="w-4 h-4 mr-2" /> Eliminar
                   </Button>

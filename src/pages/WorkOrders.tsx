@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { WorkOrdersControlBar, type SortKey, type ViewMode } from "@/components/work-orders/WorkOrdersControlBar";
+import { useUserRole } from "@/hooks/useUserRole";
 import { WorkOrderCompactCard } from "@/components/work-orders/WorkOrderCompactCard";
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
@@ -19,6 +20,7 @@ const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { orders, clearOrders } = useWorkOrders();
+  const { canEdit, canDelete } = useUserRole();
   const { toast } = useToast();
 
   const [search, setSearch] = useState("");
@@ -83,14 +85,16 @@ const WorkOrders = () => {
             <p className="text-muted-foreground text-sm">Gestión y seguimiento de órdenes</p>
           </div>
           <div className="flex gap-2">
-            {orders.length > 0 && (
+            {orders.length > 0 && canDelete && (
               <Button onClick={() => setIsClearDialogOpen(true)} variant="outline" className="btn-glass">
                 <Trash2 className="w-4 h-4 mr-2" /> Limpiar
               </Button>
             )}
-            <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
-              <ClipboardList className="w-4 h-4 mr-2" /> Nueva Orden
-            </Button>
+            {canEdit && (
+              <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
+                <ClipboardList className="w-4 h-4 mr-2" /> Nueva Orden
+              </Button>
+            )}
           </div>
         </div>
 
@@ -99,9 +103,11 @@ const WorkOrders = () => {
             <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-lg font-semibold mb-2">Sin órdenes de trabajo</h3>
             <p className="text-muted-foreground mb-4">Comience creando su primera orden</p>
-            <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
-              <Plus className="w-4 h-4 mr-2" /> Nueva Orden
-            </Button>
+            {canEdit && (
+              <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
+                <Plus className="w-4 h-4 mr-2" /> Nueva Orden
+              </Button>
+            )}
           </div>
         ) : (
           <>

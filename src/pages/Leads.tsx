@@ -31,7 +31,7 @@ const Leads = () => {
   const breakpoint = useBreakpoint();
   const { leads, addLead, clearLeads } = useLeads();
   const { proposals, addProposal } = useProposals();
-  const { isAdmin, isComercial } = useUserRole();
+  const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
@@ -203,12 +203,14 @@ const Leads = () => {
                   <Trash2 className="w-4 h-4 mr-2" /> Limpiar
                 </Button>
               )}
-              <Button
-                onClick={() => setIsAddLeadModalOpen(true)}
-                className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
-              >
-                <Plus className="w-4 h-4 mr-2" /> Agregar Lead
-              </Button>
+              {canEdit && (
+                <Button
+                  onClick={() => setIsAddLeadModalOpen(true)}
+                  className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
+                >
+                  <Plus className="w-4 h-4 mr-2" /> Agregar Lead
+                </Button>
+              )}
             </div>
           </div>
 
@@ -224,9 +226,11 @@ const Leads = () => {
               {searchTerm && (
                 <Button onClick={() => setSearchTerm("")} variant="outline" className="mr-2">Limpiar búsqueda</Button>
               )}
-              <Button onClick={() => setIsAddLeadModalOpen(true)} className="btn-glass bg-mint text-mint-foreground hover:bg-mint-hover">
-                <Plus className="w-4 h-4 mr-2" /> Agregar Lead
-              </Button>
+              {canEdit && (
+                <Button onClick={() => setIsAddLeadModalOpen(true)} className="btn-glass bg-mint text-mint-foreground hover:bg-mint-hover">
+                  <Plus className="w-4 h-4 mr-2" /> Agregar Lead
+                </Button>
+              )}
             </div>
           ) : (
             <div className={`grid gap-5 ${
@@ -242,7 +246,7 @@ const Leads = () => {
                   index={index}
                   isMobile={isMobile}
                   onAdvance={handleAdvanceToProposal}
-                  onAssign={isAdmin ? handleAssignLead : undefined}
+                  onAssign={canManageLeads ? handleAssignLead : undefined}
                   onConvert={(leadId) => setConvertLeadId(leadId)}
                 />
               ))}

@@ -11,6 +11,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { InstallerCompanyModal } from "@/components/InstallerCompanyModal";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -18,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 
 const InstallerCompanies = () => {
   const { companies, deleteCompany } = useInstallerCompanies();
+  const { canEdit, canDelete } = useUserRole();
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
@@ -69,13 +71,15 @@ const InstallerCompanies = () => {
             <h1 className="text-3xl font-bold">Empresas Instaladoras</h1>
             <p className="text-muted-foreground">Gestione sus empresas asociadas de instalación</p>
           </div>
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Registrar Empresa
-          </Button>
+          {canEdit && (
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Registrar Empresa
+            </Button>
+          )}
         </div>
 
         <div className="glass-card p-6">
@@ -125,12 +129,16 @@ const InstallerCompanies = () => {
                     <TableCell>{company.phone || "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(company)} className="h-8 w-8 p-0">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => setCompanyToDelete(company.id)} className="h-8 w-8 p-0 text-destructive hover:text-destructive">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {canEdit && (
+                          <Button variant="ghost" size="sm" onClick={() => handleEdit(company)} className="h-8 w-8 p-0">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        )}
+                        {canDelete && (
+                          <Button variant="ghost" size="sm" onClick={() => setCompanyToDelete(company.id)} className="h-8 w-8 p-0 text-destructive hover:text-destructive">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

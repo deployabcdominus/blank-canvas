@@ -21,7 +21,7 @@ import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
-  const { isAdmin, role, loading: roleLoading } = useUserRole();
+  const { canViewFinancials, loading: roleLoading } = useUserRole();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
@@ -55,7 +55,7 @@ const Dashboard = () => {
     setActiveFilter(prev => (prev === key ? null : key));
   };
 
-  const showFinancials = isAdmin || role === null;
+  const showFinancials = canViewFinancials;
 
   return (
     <PageTransition>

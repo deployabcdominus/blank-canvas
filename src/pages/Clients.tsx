@@ -27,7 +27,7 @@ const PAGE_SIZE = 12;
 export default function Clients() {
   const { clients, loading, addClient, updateClient, deleteClient } = useClients();
   const { projects } = useProjects();
-  const { isAdmin } = useUserRole();
+  const { canDelete, canEdit } = useUserRole();
   const { toast } = useToast();
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -186,9 +186,11 @@ export default function Clients() {
           </Button>
         </div>
 
-        <Button onClick={openNew} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue/90">
-          <Plus className="w-4 h-4 mr-2" /> Nuevo Cliente
-        </Button>
+        {canEdit && (
+          <Button onClick={openNew} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue/90">
+            <Plus className="w-4 h-4 mr-2" /> Nuevo Cliente
+          </Button>
+        )}
       </div>
 
       {/* Content */}
@@ -217,9 +219,9 @@ export default function Clients() {
                   client={c}
                   stats={clientStats[c.id]}
                   index={i}
-                  isAdmin={isAdmin}
-                  onEdit={openEdit}
-                  onDelete={setDeleteId}
+                  isAdmin={canDelete}
+                  onEdit={canEdit ? openEdit : undefined}
+                  onDelete={canDelete ? setDeleteId : undefined}
                 />
               ))}
             </motion.div>
@@ -228,9 +230,9 @@ export default function Clients() {
               key="table"
               clients={paginatedClients}
               clientStats={clientStats}
-              isAdmin={isAdmin}
-              onEdit={openEdit}
-              onDelete={setDeleteId}
+              isAdmin={canDelete}
+              onEdit={canEdit ? openEdit : undefined}
+              onDelete={canDelete ? setDeleteId : undefined}
             />
           )}
         </AnimatePresence>

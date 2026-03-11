@@ -12,6 +12,7 @@ import { InstallationPhotos } from "@/components/InstallationPhotos";
 import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useInstallations } from "@/contexts/InstallationsContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +30,7 @@ const Installation = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const { installations, addInstallation, updateInstallation, clearInstallations } = useInstallations();
+  const { canEdit, canDelete } = useUserRole();
 
   const filteredInstallations = useMemo(() => {
     if (!searchTerm.trim()) return installations;
@@ -120,7 +122,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
       <ResponsiveLayout title="Instalación" subtitle="Agende y haga seguimiento de instalaciones">
           <div className="flex items-center justify-end mb-6">
             <div className="flex gap-2">
-              {installations.length > 0 && (
+              {installations.length > 0 && canDelete && (
                 <Button 
                   onClick={() => setIsClearDialogOpen(true)}
                   variant="destructive"
@@ -130,13 +132,15 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   Limpiar Instalaciones
                 </Button>
               )}
-              <Button 
-                onClick={() => setIsScheduleModalOpen(true)}
-                className="btn-glass bg-pale-pink text-pale-pink-foreground hover:bg-pale-pink-hover"
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Agendar Instalación
-              </Button>
+              {canEdit && (
+                <Button 
+                  onClick={() => setIsScheduleModalOpen(true)}
+                  className="btn-glass bg-pale-pink text-pale-pink-foreground hover:bg-pale-pink-hover"
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Agendar Instalación
+                </Button>
+              )}
             </div>
           </div>
 

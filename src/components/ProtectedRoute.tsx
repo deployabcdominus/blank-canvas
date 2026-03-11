@@ -15,8 +15,21 @@ const TENANT_ONLY_ROUTES = [
   "/map-hub", "/installer-companies", "/team-management",
 ];
 
+// Role-based route restrictions (roles that CAN access each route)
+const ROUTE_ROLE_MAP: Record<string, string[]> = {
+  '/settings': ['admin', 'superadmin'],
+  '/team-management': ['admin', 'superadmin'],
+  '/payments': ['admin', 'sales', 'superadmin'],
+  '/leads': ['admin', 'sales', 'member', 'superadmin'],
+  '/proposals': ['admin', 'sales', 'member', 'superadmin'],
+  '/clients': ['admin', 'sales', 'operations', 'member', 'superadmin'],
+  '/projects': ['admin', 'sales', 'operations', 'member', 'superadmin'],
+  '/work-orders': ['admin', 'operations', 'viewer', 'superadmin'],
+  '/installation': ['admin', 'operations', 'viewer', 'superadmin'],
+  '/installer-companies': ['admin', 'operations', 'superadmin'],
+};
+
 // Module-level cache shared across all ProtectedRoute instances
-// Prevents re-querying role on every route change
 let cachedUserId: string | null = null;
 let cachedRole: string | null = null;
 let cachedHasCompany: boolean | null = null;
@@ -24,7 +37,6 @@ let cachedHasCompany: boolean | null = null;
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const location = useLocation();
-  // Start as false if we already have cached data for this user
   const [isChecking, setIsChecking] = useState(() => {
     if (!user) return true;
     return cachedUserId !== user.id;
@@ -46,14 +58,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
       // If already resolved for this user, skip DB calls — just re-check route
       if (cachedUserId === user.id) {
-        const isSuperadmin = cachedRole === 'superadmin';
-        if (isSuperadmin && TENANT_ONLY_ROUTES.some(r => location.pathname.startsWith(r))) {
-          setRedirectTo('/superadmin');
-        } else if (!isSuperadmin && cachedHasCompany === false) {
-          setRedirectTo('/onboarding');
-        } else {
-          setRedirectTo(null);
-        }
+        const redirect = getRedirectForRole(cachedRole, cachedHasCompany!, location.pathname);
+        setRedirectTo(redirect);
         setIsChecking(false);
         return;
       }
@@ -79,19 +85,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       cachedRole = role;
       cachedHasCompany = userHasCompany;
 
-      if (isSuperadmin && TENANT_ONLY_ROUTES.some(r => location.pathname.startsWith(r))) {
-        setRedirectTo('/superadmin');
-        setIsChecking(false);
-        return;
-      }
-
-      if (!isSuperadmin && !userHasCompany) {
-        setRedirectTo('/onboarding');
-        setIsChecking(false);
-        return;
-      }
-
-      setRedirectTo(null);
+      const redirect = getRedirectForRole(role, userHasCompany, location.pathname);
+      setRedirectTo(redirect);
       setIsChecking(false);
     };
 
@@ -112,3 +107,28 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   return <>{children}</>;
 };
+
+function getRedirectForRole(role: string | null, userHasCompany: boolean, pathname: string): string | null {
+  const isSuperadmin = role === 'superadmin';
+
+  // Superadmin cannot access tenant routes
+  if (isSuperadmin && TENANT_ONLY_ROUTES.some(r => pathname.startsWith(r))) {
+    return '/superadmin';
+  }
+
+  // Non-superadmin without company → onboarding
+  if (!isSuperadmin && !userHasCompany) {
+    return '/onboarding';
+  }
+
+  // Role-based route blocking
+  if (role && !isSuperadmin) {
+    for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
+      if (pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
+        return '/dashboard';
+      }
+    }
+  }
+
+  return null;
+}

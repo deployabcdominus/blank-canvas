@@ -32,24 +32,24 @@ export const platformItems: NavItem[] = [
 // ── Tenant items ──
 export const mainItems: NavItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: Contact, label: "Clientes", path: "/clients" },
-  { icon: FolderKanban, label: "Proyectos", path: "/projects" },
-  { icon: Users, label: "Leads", path: "/leads" },
-  { icon: FileText, label: "Propuestas", path: "/proposals" },
-  { icon: DollarSign, label: "Pagos", path: "/payments" },
+  { icon: Contact, label: "Clientes", path: "/clients", roles: ['admin', 'sales', 'operations', 'member'] },
+  { icon: FolderKanban, label: "Proyectos", path: "/projects", roles: ['admin', 'sales', 'operations', 'member'] },
+  { icon: Users, label: "Leads", path: "/leads", roles: ['admin', 'sales', 'member'] },
+  { icon: FileText, label: "Propuestas", path: "/proposals", roles: ['admin', 'sales', 'member'] },
+  { icon: DollarSign, label: "Pagos", path: "/payments", roles: ['admin', 'sales'] },
 ];
 
 export const operationGroup: NavGroup = {
   groupLabel: "Operación",
   icon: ClipboardList,
   items: [
-    { icon: ClipboardList, label: "Órdenes de Trabajo", path: "/work-orders" },
-    { icon: MapPin, label: "Instalación", path: "/installation" },
+    { icon: ClipboardList, label: "Órdenes de Trabajo", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
+    { icon: MapPin, label: "Instalación", path: "/installation", roles: ['admin', 'operations', 'viewer'] },
   ],
 };
 
 export const adminItems: NavItem[] = [
-  { icon: Building, label: "Empresas Instaladoras", path: "/installer-companies", roles: ['admin'] },
+  { icon: Building, label: "Empresas Instaladoras", path: "/installer-companies", roles: ['admin', 'operations'] },
   { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
   { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin'] },
 ];

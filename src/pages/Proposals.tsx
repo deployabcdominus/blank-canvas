@@ -13,6 +13,7 @@ import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPaginat
 import { useProposals, type Proposal } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
 import { useCompany } from "@/hooks/useCompany";
+import { useUserRole } from "@/hooks/useUserRole";
 import { FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -20,6 +21,7 @@ const Proposals = () => {
   const { proposals, loading, addProposal, updateProposal, deleteProposal } = useProposals();
   const { addOrder } = useWorkOrders();
   const { company } = useCompany();
+  const { canEdit, canDelete } = useUserRole();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -100,9 +102,11 @@ const Proposals = () => {
             <h1 className="text-2xl font-bold mb-1">Propuestas</h1>
             <p className="text-muted-foreground text-sm">Registro de propuestas enviadas externamente</p>
           </div>
-          <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-            <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
-          </Button>
+          {canEdit && (
+            <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
+              <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
+            </Button>
+          )}
         </div>
 
         {/* KPIs */}
@@ -130,18 +134,20 @@ const Proposals = () => {
             <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-lg font-semibold mb-2">Sin propuestas</h3>
             <p className="text-muted-foreground mb-4">Registre una propuesta enviada externamente</p>
-            <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-              <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
-            </Button>
+            {canEdit && (
+              <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
+                <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
+              </Button>
+            )}
           </div>
         ) : view === "cards" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {paginated.map((p, i) => (
-              <ProposalCard key={p.id} proposal={p} index={i} onEdit={openEdit} onDelete={handleDelete} onCreateOrder={handleCreateOrder} onRegisterPayment={openPayment} />
+              <ProposalCard key={p.id} proposal={p} index={i} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} />
             ))}
           </div>
         ) : (
-          <ProposalsTableView proposals={paginated} onEdit={openEdit} onDelete={handleDelete} onCreateOrder={handleCreateOrder} onRegisterPayment={openPayment} />
+          <ProposalsTableView proposals={paginated} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} />
         )}
 
         <WorkOrdersPagination
