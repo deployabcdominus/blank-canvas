@@ -37,13 +37,29 @@ let cachedHasCompany: boolean | null = null;
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const location = useLocation();
+
+  // Synchronously compute redirect when cache is available to avoid
+  // a single frame where children render before the effect fires.
+  const hasCacheForUser = !loading && user && cachedUserId === user.id;
+  const syncRedirect = hasCacheForUser
+    ? getRedirectForRole(cachedRole, cachedHasCompany!, location.pathname)
+    : null;
+
   const [isChecking, setIsChecking] = useState(() => {
     if (!user) return true;
+    // If we already have a cached result, no async work needed
     return cachedUserId !== user.id;
   });
-  const [redirectTo, setRedirectTo] = useState<string | null>(null);
+  const [redirectTo, setRedirectTo] = useState<string | null>(syncRedirect);
 
   useEffect(() => {
+    // When cache exists, compute synchronously — no async needed
+    if (hasCacheForUser) {
+      setRedirectTo(syncRedirect);
+      setIsChecking(false);
+      return;
+    }
+
     const checkAccess = async () => {
       if (loading) return;
 
@@ -56,13 +72,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         return;
       }
 
-      // If already resolved for this user, skip DB calls — just re-check route
-      if (cachedUserId === user.id) {
-        const redirect = getRedirectForRole(cachedRole, cachedHasCompany!, location.pathname);
-        setRedirectTo(redirect);
-        setIsChecking(false);
-        return;
-      }
+      setIsChecking(true);
 
       // First-time resolution for this user
       const { data: roleData } = await supabase
@@ -91,8 +101,9 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     };
 
     checkAccess();
-  }, [user, loading, location.pathname]);
+  }, [user, loading, location.pathname, hasCacheForUser, syncRedirect]);
 
+  // Always show spinner while auth or role is loading
   if (loading || isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -101,8 +112,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  if (redirectTo) {
-    return <Navigate to={redirectTo} replace />;
+  // Use synchronous redirect if available (covers route changes with cached role)
+  const finalRedirect = hasCacheForUser ? syncRedirect : redirectTo;
+
+  if (finalRedirect) {
+    return <Navigate to={finalRedirect} replace />;
   }
 
   return <>{children}</>;
