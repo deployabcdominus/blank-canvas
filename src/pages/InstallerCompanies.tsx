@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 
 const InstallerCompanies = () => {
   const { companies, deleteCompany } = useInstallerCompanies();
+  const { canEdit, canDelete } = useUserRole();
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
