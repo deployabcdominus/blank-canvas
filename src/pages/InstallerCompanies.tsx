@@ -11,6 +11,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { InstallerCompanyModal } from "@/components/InstallerCompanyModal";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
