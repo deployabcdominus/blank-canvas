@@ -105,7 +105,7 @@ const Invite = () => {
         .eq("id", user.id);
       if (profileError) throw new Error("Error actualizando perfil: " + profileError.message);
 
-      // Assign role via edge function (uses service_role for proper enum handling)
+      // Assign role directly (new user has no role yet, Edge Function would reject)
       const { data: existingRole } = await supabase
         .from("user_roles")
         .select("id")
@@ -113,11 +113,10 @@ const Invite = () => {
         .maybeSingle();
 
       if (!existingRole) {
-        const { data: roleData, error: roleError } = await supabase.functions.invoke("manage-user", {
-          body: { action: "update-role", userId: user.id, role: invitation.role },
-        });
+        const { error: roleError } = await supabase
+          .from("user_roles")
+          .insert({ user_id: user.id, role: invitation.role as any });
         if (roleError) throw new Error("Error asignando rol: " + roleError.message);
-        if (roleData?.error) throw new Error("Error asignando rol: " + roleData.error);
       }
 
       // Mark invitation as accepted
