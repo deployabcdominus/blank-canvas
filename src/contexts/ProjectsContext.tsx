@@ -100,7 +100,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
         folder_relative_path: project.folderRelativePath,
         folder_full_path: project.folderFullPath,
       })
-      .select('*, clients(client_name)')
+      .select('*, clients!projects_client_id_fkey(client_name)')
       .single();
     if (error) throw error;
     const newProject = mapRow(data);
