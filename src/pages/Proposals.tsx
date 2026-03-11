@@ -134,9 +134,11 @@ const Proposals = () => {
             <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-lg font-semibold mb-2">Sin propuestas</h3>
             <p className="text-muted-foreground mb-4">Registre una propuesta enviada externamente</p>
-            <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-              <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
-            </Button>
+            {canEdit && (
+              <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
+                <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
+              </Button>
+            )}
           </div>
         ) : view === "cards" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
