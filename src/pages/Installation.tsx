@@ -122,7 +122,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
       <ResponsiveLayout title="Instalación" subtitle="Agende y haga seguimiento de instalaciones">
           <div className="flex items-center justify-end mb-6">
             <div className="flex gap-2">
-              {installations.length > 0 && (
+              {installations.length > 0 && canDelete && (
                 <Button 
                   onClick={() => setIsClearDialogOpen(true)}
                   variant="destructive"
@@ -132,13 +132,15 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   Limpiar Instalaciones
                 </Button>
               )}
-              <Button 
-                onClick={() => setIsScheduleModalOpen(true)}
-                className="btn-glass bg-pale-pink text-pale-pink-foreground hover:bg-pale-pink-hover"
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Agendar Instalación
-              </Button>
+              {canEdit && (
+                <Button 
+                  onClick={() => setIsScheduleModalOpen(true)}
+                  className="btn-glass bg-pale-pink text-pale-pink-foreground hover:bg-pale-pink-hover"
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Agendar Instalación
+                </Button>
+              )}
             </div>
           </div>
 

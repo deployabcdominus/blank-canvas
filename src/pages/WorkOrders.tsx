@@ -103,9 +103,11 @@ const WorkOrders = () => {
             <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-lg font-semibold mb-2">Sin órdenes de trabajo</h3>
             <p className="text-muted-foreground mb-4">Comience creando su primera orden</p>
-            <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
-              <Plus className="w-4 h-4 mr-2" /> Nueva Orden
-            </Button>
+            {canEdit && (
+              <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
+                <Plus className="w-4 h-4 mr-2" /> Nueva Orden
+              </Button>
+            )}
           </div>
         ) : (
           <>
