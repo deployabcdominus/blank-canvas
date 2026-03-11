@@ -52,7 +52,7 @@ export default function Settings() {
   const [savingName, setSavingName] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   
-  const activeTab = searchParams.get('tab') || 'configuracion';
+  const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
 
   useEffect(() => {
     if (company?.name) setOrgName(company.name);
@@ -137,10 +137,12 @@ export default function Settings() {
               Storage
             </TabsTrigger>
           )}
-          <TabsTrigger value="configuracion">
-            <SettingsIcon className="w-4 h-4 mr-2" />
-            Configuración
-          </TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value="configuracion">
+              <SettingsIcon className="w-4 h-4 mr-2" />
+              Configuración
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="perfil">
@@ -403,11 +405,12 @@ export default function Settings() {
           </TabsContent>
         )}
 
-        <TabsContent value="configuracion">
-          <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Apariencia</CardTitle>
+        {isAdmin && (
+          <TabsContent value="configuracion">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Apariencia</CardTitle>
                 <CardDescription>
                   Configure el tema y efectos visuales
                 </CardDescription>
@@ -488,7 +491,8 @@ export default function Settings() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+          </TabsContent>
+        )}
       </Tabs>
     </ResponsiveLayout>
   );

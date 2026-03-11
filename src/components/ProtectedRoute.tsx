@@ -17,7 +17,7 @@ const TENANT_ONLY_ROUTES = [
 
 // Role-based route restrictions (roles that CAN access each route)
 const ROUTE_ROLE_MAP: Record<string, string[]> = {
-  '/settings': ['admin', 'superadmin'],
+  '/settings': ['admin', 'superadmin', 'sales', 'operations', 'member', 'viewer'],
   '/team-management': ['admin', 'superadmin'],
   '/payments': ['admin', 'sales', 'superadmin'],
   '/leads': ['admin', 'sales', 'member', 'superadmin'],
