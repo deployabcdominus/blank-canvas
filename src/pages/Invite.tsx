@@ -98,29 +98,34 @@ const Invite = () => {
     setMode("accepting");
 
     try {
-      // Get current session to ensure we have the right auth context
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('[acceptInvitation] session:', session?.user?.id, session?.user?.email);
+      console.log('[acceptInvitation] invitation:', invitation.id, 'role:', invitation.role, 'company_id:', invitation.company_id);
+
       if (!session) throw new Error("No hay sesión activa");
       const userId = session.user.id;
 
-      // Update profile with company_id
+      // Profile update
       const { error: profileError } = await supabase
         .from("profiles")
         .update({ company_id: invitation.company_id } as any)
         .eq("id", userId);
+      console.log('[acceptInvitation] profile update error:', profileError);
       if (profileError) throw new Error("Error actualizando perfil: " + profileError.message);
 
-      // Assign role directly (new user has no role yet, Edge Function would reject)
+      // Role check & insert
       const { data: existingRole } = await supabase
         .from("user_roles")
         .select("id")
         .eq("user_id", userId)
         .maybeSingle();
+      console.log('[acceptInvitation] existingRole:', existingRole);
 
       if (!existingRole) {
         const { error: roleError } = await supabase
           .from("user_roles")
           .insert({ user_id: userId, role: invitation.role as any });
+        console.log('[acceptInvitation] role insert error:', roleError);
         if (roleError) throw new Error("Error asignando rol: " + roleError.message);
       }
 
@@ -129,12 +134,14 @@ const Invite = () => {
         .from("invitations")
         .update({ accepted_at: new Date().toISOString(), used: true })
         .eq("id", invitation.id);
+      console.log('[acceptInvitation] invitation update error:', inviteError);
       if (inviteError) throw new Error("Error actualizando invitación: " + inviteError.message);
 
       toast({ title: "¡Bienvenido!", description: "Te has unido al equipo exitosamente." });
       navigate("/dashboard");
     } catch (err: any) {
       const msg = err.message || "Error desconocido";
+      console.error('[acceptInvitation] CAUGHT ERROR:', msg);
       setError("Error al aceptar la invitación: " + msg);
       toast({ title: "Error", description: msg, variant: "destructive" });
     }
