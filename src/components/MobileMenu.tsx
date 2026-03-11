@@ -41,7 +41,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 
   const canSee = (item: NavItem) => {
     if (!item.roles) return true;
-    if (!role) return true;
+    if (!role) return false; // role not loaded yet → hide restricted items
     return item.roles.includes(role);
   };
 
