@@ -107,7 +107,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-[800px] max-h-[90vh] p-0 bg-background/90 backdrop-blur-2xl border border-border/30 flex flex-col">
         <div className="px-6 py-4 border-b border-border/20 flex items-center justify-between">
-          <DialogTitle className="text-lg font-semibold">Orden de Trabajo</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Orden de Servicio</DialogTitle>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={handleCopyText} className="gap-1.5 text-xs">
               <Copy className="w-3.5 h-3.5" /> WhatsApp
