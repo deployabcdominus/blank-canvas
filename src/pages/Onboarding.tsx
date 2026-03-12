@@ -206,7 +206,7 @@ const Onboarding = () => {
 
       await supabase
         .from("user_settings")
-        .update({ brand_logo: formData.logo, brand_color: formData.brandColor })
+        .update({ brand_logo: logoUrl, brand_color: formData.brandColor })
         .eq("user_id", user.id);
 
       toast({ title: "¡Éxito!", description: "Configuración completada correctamente" });
