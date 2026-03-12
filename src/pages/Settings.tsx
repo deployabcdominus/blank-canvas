@@ -21,11 +21,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, Eye, EyeOff, FolderOpen, Shield, KeyRound, Plug, RefreshCw, Unplug, CheckCircle2, XCircle, Bell } from "lucide-react";
+import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
 import { supabase } from "@/integrations/supabase/client";
-import { useQBOIntegration } from "@/hooks/useQBOIntegration";
+
 
 export default function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,7 +39,7 @@ export default function Settings() {
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();
   const { toast } = useToast();
-  const { integration, isConnected, isLoading: qboLoading, isSyncing, connectQBO, syncNow, disconnect } = useQBOIntegration();
+  
   
   const [formData, setFormData] = useState(settings);
   const [showPassword, setShowPassword] = useState(false);
@@ -56,19 +56,6 @@ export default function Settings() {
   
   const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
 
-  // Handle QBO OAuth callback
-  useEffect(() => {
-    if (searchParams.get('qbo') === 'connected') {
-      toast({
-        title: 'QuickBooks conectado exitosamente',
-        description: 'La integración con QuickBooks Online está activa.',
-      });
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('qbo');
-      newParams.set('tab', 'integraciones');
-      setSearchParams(newParams, { replace: true });
-    }
-  }, []);
 
   useEffect(() => {
     if (company?.name) setOrgName(company.name);
