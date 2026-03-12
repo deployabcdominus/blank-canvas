@@ -153,10 +153,16 @@ export default function Settings() {
               Storage
             </TabsTrigger>
           )}
-          {isAdmin && (
+           {isAdmin && (
             <TabsTrigger value="configuracion">
               <SettingsIcon className="w-4 h-4 mr-2" />
               Configuración
+            </TabsTrigger>
+          )}
+          {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="integraciones">
+              <Plug className="w-4 h-4 mr-2" />
+              Integraciones
             </TabsTrigger>
           )}
         </TabsList>
