@@ -159,7 +159,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
 
           <div className="space-y-2">
             <Label htmlFor="address" className="text-sm font-medium text-foreground">Dirección *</Label>
-            <Input id="address" placeholder="Dirección completa de la instalación" className="bg-white border-input" {...register("address")} />
+            <Input id="address" placeholder="Dirección completa de la ejecución" className="bg-white border-input" {...register("address")} />
             {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
           </div>
 
