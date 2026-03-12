@@ -68,7 +68,7 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
   const handleShare = () => {
     if (!selectedService || !selectedCompany || !watchedDate) return;
     const summary = `
-AGENDAMIENTO DE INSTALACIÓN
+AGENDAMIENTO DE EJECUCIÓN
 
 Cliente: ${selectedService.client}
 Proyecto: ${selectedService.project}
