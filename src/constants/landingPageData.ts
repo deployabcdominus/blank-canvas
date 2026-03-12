@@ -91,8 +91,8 @@ export const benefitsData = [
   },
   {
     icon: HardHat,
-    title: "Control de entregas",
-    description: "Agenda, asigna equipos y da seguimiento a cada entrega en campo.",
+    title: "Control de ejecuciones",
+    description: "Agenda, asigna equipos y da seguimiento a cada ejecución en campo.",
   },
 ];
 
