@@ -117,7 +117,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium text-foreground">Nombre de la Empresa *</Label>
-              <Input id="name" placeholder="Nombre de la empresa instaladora" className="bg-white border-input" {...register("name")} />
+              <Input id="name" placeholder="Nombre del subcontratista" className="bg-white border-input" {...register("name")} />
               {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
             </div>
             <div className="space-y-2">

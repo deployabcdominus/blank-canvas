@@ -36,7 +36,7 @@ export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
       }}
     >
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold text-white/80">Órdenes de Trabajo</h3>
+        <h3 className="text-sm font-semibold text-white/80">Órdenes de Servicio</h3>
         <div className="p-2 rounded-xl" style={{ background: "rgba(162,89,255,0.1)", border: "1px solid rgba(162,89,255,0.2)" }}>
           <Target className="w-4 h-4" style={{ color: "#A259FF" }} />
         </div>

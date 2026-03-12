@@ -114,7 +114,7 @@ export const InstallationPhotos: React.FC<InstallationPhotosProps> = ({ installa
         <div className={`mt-3 border-2 border-dashed rounded-xl p-6 text-center transition-colors ${isDragging ? 'border-primary bg-primary/5' : 'border-white/20 hover:border-white/30'}`}
           onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave}>
           {photos.length === 0 ? <Camera className="w-6 h-6 mx-auto mb-2 text-muted-foreground" /> : <ImageIcon className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />}
-          <p className="text-sm text-muted-foreground mb-3">{photos.length === 0 ? "Agregue fotos de la instalación" : "Agregar más fotos"}</p>
+          <p className="text-sm text-muted-foreground mb-3">{photos.length === 0 ? "Agregue fotos de la ejecución" : "Agregar más fotos"}</p>
           <p className="text-xs text-muted-foreground mb-4">Arrastre y suelte, pegue (Ctrl+V) o haga clic en los botones de abajo</p>
           <div className="flex gap-2 justify-center">
             <Button variant="outline" size="sm" className="btn-glass" onClick={() => cameraInputRef.current?.click()}>

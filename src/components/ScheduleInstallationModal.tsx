@@ -191,7 +191,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
             <Button type="button" variant="outline" onClick={handleShare} className="bg-white border-input hover:bg-gray-50" disabled={!selectedService || !selectedCompany || !watchedDate}>
               <Copy className="w-4 h-4 mr-2" />Compartir
             </Button>
-            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Agendar Instalación</Button>
+            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Agendar Ejecución</Button>
           </DialogFooter>
         </form>
       </DialogContent>

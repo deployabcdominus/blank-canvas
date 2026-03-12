@@ -162,7 +162,7 @@ const InstallerCompanies = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Eliminar Empresa</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Está seguro de que desea eliminar esta empresa instaladora? Esta acción no se puede deshacer.
+              ¿Está seguro de que desea eliminar este subcontratista? Esta acción no se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
