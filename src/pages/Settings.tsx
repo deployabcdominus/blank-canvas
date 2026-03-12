@@ -39,7 +39,7 @@ export default function Settings() {
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();
   const { toast } = useToast();
-  const { integration, isConnected, isLoading: qboLoading, isSyncing, connectQBO, syncNow, disconnect } = useQBOIntegration();
+  
   
   const [formData, setFormData] = useState(settings);
   const [showPassword, setShowPassword] = useState(false);
