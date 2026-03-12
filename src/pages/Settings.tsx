@@ -25,7 +25,7 @@ import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calen
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
 import { supabase } from "@/integrations/supabase/client";
-import { useQBOIntegration } from "@/hooks/useQBOIntegration";
+
 
 export default function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
