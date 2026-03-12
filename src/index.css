@@ -334,3 +334,8 @@
   [role="dialog"] > div:last-child { display: none !important; }
   [role="dialog"] { position: static !important; max-width: 100% !important; max-height: none !important; border: none !important; background: white !important; box-shadow: none !important; backdrop-filter: none !important; }
 }
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
