@@ -129,7 +129,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   className="btn-glass"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Limpiar Instalaciones
+                  Limpiar Ejecuciones
                 </Button>
               )}
               {canEdit && (
