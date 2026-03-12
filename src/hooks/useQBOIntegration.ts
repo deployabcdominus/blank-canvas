@@ -85,30 +85,46 @@ export function useQBOIntegration() {
     window.location.href = edgeFunctionUrl;
   };
 
-  const syncNow = useCallback(async () => {
+  const syncNow = async () => {
     if (!companyId) return;
-    setIsSyncing(true);
     try {
-      const { data, error } = await supabase.functions.invoke('qbo-sync', {
-        body: { action: 'sync_all', company_id: companyId },
-      });
+      setIsSyncing(true);
 
-      if (error) throw error;
+      const { data: clients } = await supabase
+        .from('clients')
+        .select('id, client_name, primary_email, primary_phone')
+        .eq('company_id', companyId);
+
+      if (clients && clients.length > 0) {
+        for (const client of clients) {
+          await supabase.functions.invoke('qbo-sync', {
+            body: {
+              action: 'sync_customer',
+              company_id: companyId,
+              data: {
+                name: client.client_name,
+                email: client.primary_email || '',
+                phone: client.primary_phone || '',
+              },
+            },
+          });
+        }
+      }
 
       toast({
         title: 'Sincronización completada',
-        description: 'Los datos de QuickBooks se sincronizaron correctamente.',
+        description: `${clients?.length || 0} clientes sincronizados con QuickBooks`,
       });
-    } catch (e: any) {
+    } catch (error: any) {
       toast({
         title: 'Error de sincronización',
-        description: e.message || 'No se pudo sincronizar con QuickBooks.',
+        description: error.message || 'No se pudo sincronizar con QuickBooks.',
         variant: 'destructive',
       });
     } finally {
       setIsSyncing(false);
     }
-  }, [companyId, toast]);
+  };
 
   const disconnect = useCallback(async () => {
     if (!companyId || !integration) return;
