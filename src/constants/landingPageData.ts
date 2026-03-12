@@ -152,8 +152,8 @@ export const systemModulesConfig = [
   },
   { 
     icon: ClipboardList, 
-    title: "Empresas", 
-    description: "Registre empresas colaboradoras", 
+    title: "Subcontratistas", 
+    description: "Registre subcontratistas", 
     path: "/installer-companies", 
     color: "pink"
   }
