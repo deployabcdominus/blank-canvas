@@ -96,7 +96,7 @@ export const InstallationPhotos: React.FC<InstallationPhotosProps> = ({ installa
         <div className="mt-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {photos.map((photo) => (
             <div key={photo.id} className="relative group">
-              <img src={photo.url} alt="Foto de instalación" className="w-full h-24 object-cover rounded-lg border border-white/20" />
+              <img src={photo.url} alt="Foto de ejecución" className="w-full h-24 object-cover rounded-lg border border-white/20" />
               {!isReadOnly && (
                 <button onClick={() => removePhoto(photo.id)} className="absolute -top-2 -right-2 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <X className="w-3 h-3" />
