@@ -119,7 +119,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
 
   return (
     <PageTransition>
-      <ResponsiveLayout title="Instalación" subtitle="Agende y haga seguimiento de instalaciones">
+      <ResponsiveLayout title="Ejecuciones" subtitle="Agende y haga seguimiento de ejecuciones">
           <div className="flex items-center justify-end mb-6">
             <div className="flex gap-2">
               {installations.length > 0 && canDelete && (
