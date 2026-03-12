@@ -84,7 +84,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 
   const handleCopyText = () => {
     const lines = [
-      `📋 ORDEN DE TRABAJO`,
+      `📋 ORDEN DE SERVICIO`,
       `Cliente: ${order.client}`,
       `Proyecto: ${order.project}`,
       `Fecha: ${new Date().toLocaleDateString('es-ES')}`,
