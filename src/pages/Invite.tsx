@@ -45,9 +45,7 @@ const Invite = () => {
       }
 
       const { data, error: fetchError } = await supabase
-        .from("invitations")
-        .select("id, company_id, email, role, token, expires_at, accepted_at")
-        .eq("token", token)
+        .rpc("get_invitation_by_token", { p_token: token })
         .maybeSingle();
 
       if (fetchError || !data) {

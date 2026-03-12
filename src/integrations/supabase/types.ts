@@ -962,6 +962,18 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_invitation_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          accepted_at: string
+          company_id: string
+          email: string
+          expires_at: string
+          id: string
+          role: string
+          token: string
+        }[]
+      }
       get_my_company_id: { Args: never; Returns: string }
       get_my_company_id_safe: { Args: never; Returns: string }
       has_role: {
