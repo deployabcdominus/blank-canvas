@@ -183,7 +183,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
 
           <div className="space-y-2">
             <Label htmlFor="notes" className="text-sm font-medium text-foreground">Observaciones</Label>
-            <Textarea id="notes" placeholder="Información adicional sobre la instalación..." className="bg-white border-input min-h-[80px]" {...register("notes")} />
+            <Textarea id="notes" placeholder="Información adicional sobre la ejecución..." className="bg-white border-input min-h-[80px]" {...register("notes")} />
           </div>
 
           <DialogFooter className="flex gap-2">
