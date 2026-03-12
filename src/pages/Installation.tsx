@@ -274,7 +274,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                         className="btn-glass bg-mint text-mint-foreground hover:bg-mint-hover"
                       >
                         <CheckCircle className="w-4 h-4 mr-2" />
-                        Marcar como Instalado
+                        Marcar como Completado
                       </Button>
                     )}
                   </div>
