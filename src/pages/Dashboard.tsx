@@ -22,7 +22,7 @@ import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
-  const { canViewFinancials, canViewOperations, loading: roleLoading } = useUserRole();
+  const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
