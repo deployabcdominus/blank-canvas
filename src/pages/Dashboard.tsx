@@ -8,6 +8,7 @@ import { HudPipeline } from "@/components/dashboard/HudPipeline";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { WorkOrdersRadial } from "@/components/dashboard/WorkOrdersRadial";
 import { GeoHeatmap } from "@/components/dashboard/GeoHeatmap";
+import { AiBriefing } from "@/components/dashboard/AiBriefing";
 import { KanbanColumn } from "@/components/PipelineKanban";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
@@ -21,7 +22,7 @@ import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
-  const { canViewFinancials, canViewOperations, loading: roleLoading } = useUserRole();
+  const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
@@ -66,6 +67,8 @@ const Dashboard = () => {
             {showFinancials ? "Vista ejecutiva · Datos en tiempo real" : "Vista operativa · Tus tareas de hoy"}
           </p>
         </motion.div>
+
+        {isAdmin && <AiBriefing />}
 
         <div className={`grid gap-4 mb-8 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
           {stats.map((stat, index) => (
