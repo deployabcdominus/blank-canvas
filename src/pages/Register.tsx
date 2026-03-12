@@ -118,7 +118,7 @@ const Register = () => {
     if (!error) {
       toast({
         title: "¡Cuenta creada con éxito!",
-        description: "Bienvenido a Sign Flow.",
+        description: "Bienvenido a SignFlow.",
       });
 
       // Clean up stored tokens
