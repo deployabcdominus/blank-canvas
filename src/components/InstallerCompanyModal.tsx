@@ -91,7 +91,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
       <DialogContent className="bg-white border shadow-lg max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-foreground">
-            {company ? "Editar Empresa" : "Registrar Empresa"} Instaladora
+            {company ? "Editar" : "Registrar"} Subcontratista
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
