@@ -67,8 +67,8 @@ const Installation = () => {
   const handleMarkAsInstalled = async (installationId: string) => {
     await updateInstallation(installationId, { status: "Completed" });
     toast({
-      title: "Instalación completada",
-      description: "La instalación fue marcada como completada con éxito.",
+      title: "Ejecución completada",
+      description: "La ejecución fue marcada como completada con éxito.",
     });
   };
 
