@@ -79,9 +79,11 @@ export function useQBOIntegration() {
     };
   }, [companyId, fetchIntegration]);
 
-  const connectQBO = useCallback(() => {
+  const connectQBO = async () => {
     if (!companyId) return;
-    window.location.href = `https://qsedjxegavrwomflakjq.supabase.co/functions/v1/qbo-auth/connect?company_id=${companyId}`;
+    const edgeFunctionUrl = `https://qsedjxegavrwomflakjq.supabase.co/functions/v1/qbo-auth/connect?company_id=${companyId}`;
+    window.location.href = edgeFunctionUrl;
+  };
   }, [companyId]);
 
   const syncNow = useCallback(async () => {
