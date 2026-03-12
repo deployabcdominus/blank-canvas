@@ -210,6 +210,59 @@ export type Database = {
           },
         ]
       }
+      integrations: {
+        Row: {
+          access_token: string | null
+          company_id: string
+          connected_at: string | null
+          created_at: string | null
+          id: string
+          last_sync_at: string | null
+          provider: string
+          realm_id: string | null
+          refresh_token: string | null
+          sync_log: Json | null
+          token_expires_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          company_id: string
+          connected_at?: string | null
+          created_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          provider?: string
+          realm_id?: string | null
+          refresh_token?: string | null
+          sync_log?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          company_id?: string
+          connected_at?: string | null
+          created_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          provider?: string
+          realm_id?: string | null
+          refresh_token?: string | null
+          sync_log?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integrations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           accepted_at: string | null
