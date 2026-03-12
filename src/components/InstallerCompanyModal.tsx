@@ -79,7 +79,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
       toast({ title: "Empresa actualizada", description: "¡Subcontratista actualizado con éxito!" });
     } else {
       addCompany(companyData);
-      toast({ title: "Empresa registrada", description: "¡Empresa instaladora registrada con éxito!" });
+      toast({ title: "Empresa registrada", description: "¡Subcontratista registrado con éxito!" });
     }
     reset(); setSelectedServices([]); setLogoFile(null); setLogoPreview(null); onClose();
   };
