@@ -145,7 +145,35 @@ export default function TenantTeamManagement() {
         .delete()
         .eq("id", invitationId);
       if (error) throw error;
-      toast({ title: "Invitación revocada" });
+      toast({ title: "Invitación eliminada" });
+      fetchInvitations();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
+
+  const handleClearHistory = async () => {
+    if (!companyId) return;
+    try {
+      // Delete accepted invitations
+      const { error: err1 } = await supabase
+        .from("invitations")
+        .delete()
+        .eq("company_id", companyId)
+        .not("accepted_at", "is", null);
+
+      // Delete expired invitations (accepted_at is null but expired)
+      const { error: err2 } = await supabase
+        .from("invitations")
+        .delete()
+        .eq("company_id", companyId)
+        .is("accepted_at", null)
+        .lt("expires_at", new Date().toISOString());
+
+      if (err1) throw err1;
+      if (err2) throw err2;
+
+      toast({ title: "Historial limpiado", description: "Se eliminaron las invitaciones aceptadas y expiradas." });
       fetchInvitations();
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
