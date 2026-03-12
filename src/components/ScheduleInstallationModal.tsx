@@ -126,7 +126,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
                       <div><div className="font-medium">{service.client}</div><div className="text-sm text-muted-foreground">{service.serviceType} - {service.project}</div></div>
                     </SelectItem>
                   )) : (
-                    <div className="p-2 text-sm text-muted-foreground">Ningún servicio disponible para esta empresa</div>
+                    <div className="p-2 text-sm text-muted-foreground">Ningún servicio disponible para este subcontratista</div>
                   )}
                 </SelectContent>
               </Select>
