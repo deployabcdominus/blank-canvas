@@ -56,19 +56,6 @@ export default function Settings() {
   
   const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
 
-  // Handle QBO OAuth callback
-  useEffect(() => {
-    if (searchParams.get('qbo') === 'connected') {
-      toast({
-        title: 'QuickBooks conectado exitosamente',
-        description: 'La integración con QuickBooks Online está activa.',
-      });
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('qbo');
-      newParams.set('tab', 'integraciones');
-      setSearchParams(newParams, { replace: true });
-    }
-  }, []);
 
   useEffect(() => {
     if (company?.name) setOrgName(company.name);
