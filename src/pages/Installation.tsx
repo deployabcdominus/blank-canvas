@@ -76,8 +76,8 @@ const Installation = () => {
     await clearInstallations();
     setIsClearDialogOpen(false);
     toast({
-      title: "Instalaciones eliminadas",
-      description: "Todas las instalaciones fueron eliminadas con éxito.",
+      title: "Ejecuciones eliminadas",
+      description: "Todas las ejecuciones fueron eliminadas con éxito.",
     });
   };
 
