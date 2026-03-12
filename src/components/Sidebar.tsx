@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAvatarUrl } from "@/hooks/useAvatarUrl";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useIndustryLabels } from "@/hooks/useIndustryLabels";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,6 +27,7 @@ export const Sidebar = () => {
   const { role, isSuperadmin, isAdmin, loading: roleLoading } = useUserRole();
   const { avatarUrl } = useAvatarUrl();
   const { fullName, email, initials } = useUserProfile();
+  const industryLabels = useIndustryLabels();
 
   const isOperationActive = operationGroup.items.some(i => location.pathname === i.path);
   const [operationOpen, setOperationOpen] = useState(isOperationActive);
@@ -42,12 +44,20 @@ export const Sidebar = () => {
 
   const canSee = (item: NavItem) => {
     if (!item.roles) return true;
-    if (!role) return false; // role not loaded yet → hide restricted items
+    if (!role) return false;
     return item.roles.includes(role);
+  };
+
+  const getLabel = (item: NavItem) => {
+    if (item.labelKey && industryLabels[item.labelKey]) {
+      return industryLabels[item.labelKey];
+    }
+    return item.label;
   };
 
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname + location.search === item.path || location.pathname === item.path;
+    const label = getLabel(item);
     return (
       <NavLink
         key={item.path}
@@ -55,11 +65,11 @@ export const Sidebar = () => {
         className={`sidebar-nav-item min-h-[44px] ${
           isTablet ? 'justify-center p-3' : 'gap-3 px-4 py-2.5'
         } ${isActive ? 'sidebar-nav-active' : ''}`}
-        title={isTablet ? item.label : undefined}
+        title={isTablet ? label : undefined}
         aria-current={isActive ? "page" : undefined}
       >
         <item.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-        {!isTablet && <span className="font-medium text-sm">{item.label}</span>}
+        {!isTablet && <span className="font-medium text-sm">{label}</span>}
       </NavLink>
     );
   };
