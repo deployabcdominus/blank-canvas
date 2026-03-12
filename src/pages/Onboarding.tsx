@@ -147,28 +147,15 @@ const Onboarding = () => {
           }
         }
 
-        const insertData: any = {
-          user_id: user.id,
-          name: formData.companyName,
-          logo_url: logoUrl,
-          brand_color: formData.brandColor,
-          industry: formData.industry,
-        };
-        if (planId) insertData.plan_id = planId;
-
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-        console.log('[Onboarding] session user:', currentSession?.user?.id);
-        console.log('[Onboarding] user from context:', user?.id);
-        console.log('[Onboarding] insertData:', insertData);
-
         const { data: newCompany, error: insertError } = await supabase
-          .from("companies")
-          .insert(insertData)
-          .select()
-          .single();
-
-        console.log('[Onboarding] insertError:', insertError);
-        console.log('[Onboarding] newCompany:', newCompany);
+          .rpc('create_company', {
+            p_user_id: user.id,
+            p_name: formData.companyName,
+            p_logo_url: logoUrl || '',
+            p_brand_color: formData.brandColor,
+            p_industry: formData.industry || '',
+            p_plan_id: planId || undefined
+          });
 
         if (insertError) {
           if (insertError.message?.includes("foreign key") || insertError.code === "23503") {
@@ -179,7 +166,7 @@ const Onboarding = () => {
           }
           throw insertError;
         }
-        companyId = newCompany.id;
+        companyId = newCompany!.id;
 
         if (purchaseToken) {
           await supabase

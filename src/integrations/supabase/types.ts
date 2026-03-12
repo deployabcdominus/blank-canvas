@@ -878,6 +878,37 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_company: {
+        Args: {
+          p_brand_color: string
+          p_industry: string
+          p_logo_url: string
+          p_name: string
+          p_plan_id?: string
+          p_user_id: string
+        }
+        Returns: {
+          brand_color: string | null
+          created_at: string
+          enable_network_index: boolean | null
+          id: string
+          industry: string | null
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          network_base_path: string | null
+          plan_id: string | null
+          service_types: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "companies"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_my_company_id: { Args: never; Returns: string }
       get_my_company_id_safe: { Args: never; Returns: string }
       has_role: {
