@@ -87,6 +87,35 @@ const Onboarding = () => {
         return;
       }
 
+      // Upload logo to Storage if it's base64
+      let logoUrl: string | null = null;
+      if (formData.logo && formData.logo.startsWith("data:image")) {
+        try {
+          const base64Data = formData.logo.split(",")[1];
+          const mimeMatch = formData.logo.match(/data:(image\/\w+);/);
+          const ext = mimeMatch ? mimeMatch[1].split("/")[1] : "png";
+          const byteArray = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+          const filePath = `${user.id}/logo.${ext}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from("company-logos")
+            .upload(filePath, byteArray, { contentType: mimeMatch?.[1] || "image/png", upsert: true });
+
+          if (uploadError) {
+            console.error("[Onboarding] Logo upload error:", uploadError);
+          } else {
+            const { data: publicUrlData } = supabase.storage
+              .from("company-logos")
+              .getPublicUrl(filePath);
+            logoUrl = publicUrlData.publicUrl;
+          }
+        } catch (err) {
+          console.error("[Onboarding] Logo processing error:", err);
+        }
+      } else if (formData.logo) {
+        logoUrl = formData.logo; // already a URL
+      }
+
       const { data: existingCompany } = await supabase
         .from("companies")
         .select("id")
@@ -99,7 +128,7 @@ const Onboarding = () => {
       if (existingCompany) {
         await (supabase as any)
           .from("companies")
-          .update({ name: formData.companyName, logo_url: formData.logo, brand_color: formData.brandColor, industry: formData.industry })
+          .update({ name: formData.companyName, logo_url: logoUrl, brand_color: formData.brandColor, industry: formData.industry })
           .eq("id", existingCompany.id);
         companyId = existingCompany.id;
       } else {
@@ -121,7 +150,7 @@ const Onboarding = () => {
         const insertData: any = {
           user_id: user.id,
           name: formData.companyName,
-          logo_url: formData.logo,
+          logo_url: logoUrl,
           brand_color: formData.brandColor,
           industry: formData.industry,
         };
