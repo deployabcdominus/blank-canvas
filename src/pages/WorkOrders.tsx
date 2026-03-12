@@ -39,7 +39,7 @@ const WorkOrders = () => {
   const handleClearOrders = () => {
     clearOrders();
     setIsClearDialogOpen(false);
-    toast({ title: "Órdenes eliminadas", description: "Todas las órdenes fueron eliminadas con éxito." });
+    toast({ title: "Órdenes eliminadas", description: "Todas las órdenes de servicio fueron eliminadas con éxito." });
   };
 
   const processed = useMemo(() => {

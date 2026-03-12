@@ -301,7 +301,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction onClick={handleClearInstallations}>
-                Sí, limpiar instalaciones
+                Sí, limpiar ejecuciones
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
