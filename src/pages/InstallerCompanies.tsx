@@ -42,7 +42,7 @@ const InstallerCompanies = () => {
       setCompanyToDelete(null);
       toast({
         title: "Empresa eliminada",
-        description: "Empresa instaladora eliminada con éxito.",
+        description: "Subcontratista eliminado con éxito.",
       });
     } catch (error) {
       setCompanyToDelete(null);
