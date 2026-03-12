@@ -216,7 +216,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
 
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-sm font-medium">Notas de Instalación</Label>
+                    <Label className="text-sm font-medium">Notas de Ejecución</Label>
                     <Textarea
                       className="glass mt-2 min-h-[80px]"
                       defaultValue={installation.notes}
