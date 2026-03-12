@@ -138,7 +138,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   className="btn-glass bg-pale-pink text-pale-pink-foreground hover:bg-pale-pink-hover"
                 >
                   <Calendar className="w-4 h-4 mr-2" />
-                  Agendar Instalación
+                  Agendar Ejecución
                 </Button>
               )}
             </div>
