@@ -110,7 +110,7 @@ const Onboarding = () => {
             logoUrl = publicUrlData.publicUrl;
           }
         } catch (err) {
-          console.error("[Onboarding] Logo processing error:", err);
+          if (import.meta.env.DEV) console.error("Logo processing error:", err);
         }
       } else if (formData.logo) {
         logoUrl = formData.logo; // already a URL
