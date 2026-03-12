@@ -76,7 +76,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
     const companyData = { name: data.name, email: data.email, phone: data.phone, contact: data.contact || "", logoUrl: logoFile || undefined, services: selectedServices };
     if (company) {
       updateCompany(company.id, companyData);
-      toast({ title: "Empresa actualizada", description: "¡Empresa instaladora actualizada con éxito!" });
+      toast({ title: "Empresa actualizada", description: "¡Subcontratista actualizado con éxito!" });
     } else {
       addCompany(companyData);
       toast({ title: "Empresa registrada", description: "¡Empresa instaladora registrada con éxito!" });
