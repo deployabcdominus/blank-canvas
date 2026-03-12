@@ -121,7 +121,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
           <div ref={printRef} className="px-8 py-6 space-y-6 print-order">
             <div className="flex justify-between items-start border-b border-border/20 pb-4">
               <div>
-                <h2 className="text-xl font-bold">Orden de Trabajo</h2>
+                <h2 className="text-xl font-bold">Orden de Servicio</h2>
                 <p className="text-sm text-muted-foreground">Fecha: {new Date().toLocaleDateString('es-ES')}</p>
               </div>
               <Badge className={order.priority === 'Urgente' ? 'bg-destructive/20 text-destructive' : 'bg-muted'}>
