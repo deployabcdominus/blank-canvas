@@ -93,7 +93,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-white border shadow-lg max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-foreground">Agendar Instalación</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-foreground">Agendar Ejecución</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
