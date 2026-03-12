@@ -134,7 +134,6 @@ const Invite = () => {
       navigate("/dashboard");
     } catch (err: any) {
       const msg = err.message || "Error desconocido";
-      console.error('[acceptInvitation] CAUGHT ERROR:', msg);
       setError("Error al aceptar la invitación: " + msg);
       toast({ title: "Error", description: msg, variant: "destructive" });
     }
