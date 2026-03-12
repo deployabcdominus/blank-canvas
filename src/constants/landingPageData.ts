@@ -76,7 +76,7 @@ export const benefitsData = [
   },
   {
     icon: Ruler,
-    title: "Órdenes de trabajo",
+    title: "Órdenes de servicio",
     description: "Genera órdenes con recursos, medidas y fechas para tu equipo.",
   },
   {
