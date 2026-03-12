@@ -101,7 +101,7 @@ const WorkOrders = () => {
         {orders.length === 0 ? (
           <div className="text-center py-12 glass-card">
             <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">Sin órdenes de trabajo</h3>
+            <h3 className="text-lg font-semibold mb-2">Sin órdenes de servicio</h3>
             <p className="text-muted-foreground mb-4">Comience creando su primera orden</p>
             {canEdit && (
               <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
