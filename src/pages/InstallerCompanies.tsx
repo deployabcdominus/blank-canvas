@@ -68,8 +68,8 @@ const InstallerCompanies = () => {
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Empresas Instaladoras</h1>
-            <p className="text-muted-foreground">Gestione sus empresas asociadas de instalación</p>
+            <h1 className="text-3xl font-bold">Subcontratistas</h1>
+            <p className="text-muted-foreground">Gestione sus empresas subcontratistas</p>
           </div>
           {canEdit && (
             <Button
