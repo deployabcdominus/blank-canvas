@@ -350,6 +350,32 @@ export default function TenantTeamManagement() {
             </TabsContent>
 
             <TabsContent value="invitations">
+              {/* Clear history button */}
+              {invitations.some(i => i.accepted_at || new Date(i.expires_at) < new Date()) && (
+                <div className="flex justify-end mb-3">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                        <Trash2 className="w-4 h-4 mr-2" /> Limpiar historial
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>¿Limpiar historial de invitaciones?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Se eliminarán todas las invitaciones aceptadas y expiradas. Las invitaciones pendientes no se verán afectadas.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleClearHistory} className="bg-destructive text-destructive-foreground">
+                          Limpiar
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              )}
               <div className="rounded-lg border overflow-hidden">
                 <Table>
                   <TableHeader>
@@ -390,7 +416,30 @@ export default function TenantTeamManagement() {
                                   <RefreshCw className="w-4 h-4" />
                                 </Button>
                               )}
-                              {!inv.accepted_at && (
+                              {!isPending && (
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" title="Eliminar">
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>¿Eliminar invitación?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        La invitación para {inv.email} será eliminada del historial.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleRevokeInvitation(inv.id)} className="bg-destructive text-destructive-foreground">
+                                        Eliminar
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              )}
+                              {isPending && (
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
                                     <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" title="Revocar">
