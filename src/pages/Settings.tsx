@@ -518,97 +518,67 @@ export default function Settings() {
         {isAdmin && !isSuperadmin && (
           <TabsContent value="integraciones">
             <div className="grid gap-6">
-              <Card>
+              <Card className="relative overflow-hidden border-0 bg-card/80 backdrop-blur-sm">
+                {/* Animated gradient border */}
+                <div className="absolute inset-0 rounded-lg p-[1px] bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 bg-[length:200%_100%] animate-[shimmer_3s_linear_infinite] -z-10" />
+                <div className="absolute inset-[1px] rounded-[7px] bg-card -z-[5]" />
+
+                {/* Q2 2026 badge */}
+                <div className="absolute top-4 right-4 z-10">
+                  <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-xs font-semibold">
+                    Q2 2026
+                  </Badge>
+                </div>
+
                 <CardHeader>
-                  <CardTitle>Integraciones</CardTitle>
-                  <CardDescription>
-                    Conecta servicios externos para sincronizar datos automáticamente.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-start gap-4 p-4 rounded-lg border bg-card">
+                  <div className="flex items-center gap-4">
                     {/* QB Logo */}
-                    <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold"
+                    <div className="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold opacity-60"
                       style={{ backgroundColor: '#2CA01C', color: 'white' }}>
                       QB
                     </div>
-
-                    <div className="flex-1 min-w-0 space-y-2">
+                    <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-base">QuickBooks Online</h3>
-                        {isConnected ? (
-                          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400">
-                            <CheckCircle2 className="w-3 h-3 mr-1" />
-                            Conectado
-                          </Badge>
-                        ) : (
-                          <Badge variant="secondary">
-                            <XCircle className="w-3 h-3 mr-1" />
-                            Desconectado
-                          </Badge>
-                        )}
+                        <CardTitle className="text-lg">QuickBooks Online</CardTitle>
+                        <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 text-xs">
+                          Próximamente
+                        </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Sincroniza clientes, propuestas e invoices automáticamente
-                      </p>
-
-                      {isConnected && integration?.last_sync_at && (
-                        <p className="text-xs text-muted-foreground">
-                          Última sincronización: {new Date(integration.last_sync_at).toLocaleDateString('es-ES', {
-                            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                          })}
-                        </p>
-                      )}
-
-                      <div className="flex items-center gap-2 pt-1">
-                        {isConnected ? (
-                          <>
-                            <Button
-                              size="sm"
-                              onClick={syncNow}
-                              disabled={isSyncing}
-                              className="flex items-center gap-2"
-                            >
-                              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-                              {isSyncing ? 'Sincronizando...' : 'Sincronizar ahora'}
-                            </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button size="sm" variant="outline" className="flex items-center gap-2 text-destructive hover:text-destructive">
-                                  <Unplug className="w-3.5 h-3.5" />
-                                  Desconectar
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>¿Desconectar QuickBooks?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Se eliminará la conexión con QuickBooks Online. Los datos ya sincronizados no se borrarán.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                  <AlertDialogAction onClick={disconnect}>
-                                    Desconectar
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </>
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={connectQBO}
-                            disabled={qboLoading}
-                            className="flex items-center gap-2"
-                          >
-                            <Plug className="w-3.5 h-3.5" />
-                            Conectar QuickBooks
-                          </Button>
-                        )}
-                      </div>
+                      <CardDescription>
+                        Sincronización bidireccional automática de clientes, propuestas e invoices
+                      </CardDescription>
                     </div>
                   </div>
+                </CardHeader>
+
+                <CardContent className="space-y-5">
+                  <ul className="space-y-2.5">
+                    <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                      <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 flex-shrink-0" />
+                      Clientes sincronizados en tiempo real
+                    </li>
+                    <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                      <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 flex-shrink-0" />
+                      Propuestas convertidas a Estimates en QBO
+                    </li>
+                    <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                      <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 flex-shrink-0" />
+                      Pagos registrados como Invoices automáticamente
+                    </li>
+                  </ul>
+
+                  <Button
+                    className="flex items-center gap-2"
+                    onClick={() => {
+                      toast({
+                        title: '¡Te avisaremos cuando esté listo!',
+                        description: 'Recibirás una notificación cuando la integración con QuickBooks esté disponible.',
+                      });
+                    }}
+                  >
+                    <Bell className="w-4 h-4" />
+                    Notificarme cuando esté disponible
+                  </Button>
                 </CardContent>
               </Card>
             </div>
