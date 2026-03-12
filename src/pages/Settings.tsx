@@ -21,10 +21,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, Eye, EyeOff, FolderOpen, Shield, KeyRound } from "lucide-react";
+import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, Eye, EyeOff, FolderOpen, Shield, KeyRound, Plug, RefreshCw, Unplug, CheckCircle2, XCircle } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
 import { supabase } from "@/integrations/supabase/client";
+import { useQBOIntegration } from "@/hooks/useQBOIntegration";
 
 export default function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,6 +39,7 @@ export default function Settings() {
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();
   const { toast } = useToast();
+  const { integration, isConnected, isLoading: qboLoading, isSyncing, connectQBO, syncNow, disconnect } = useQBOIntegration();
   
   const [formData, setFormData] = useState(settings);
   const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +55,20 @@ export default function Settings() {
   const [resetSent, setResetSent] = useState(false);
   
   const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
+
+  // Handle QBO OAuth callback
+  useEffect(() => {
+    if (searchParams.get('qbo') === 'connected') {
+      toast({
+        title: 'QuickBooks conectado exitosamente',
+        description: 'La integración con QuickBooks Online está activa.',
+      });
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('qbo');
+      newParams.set('tab', 'integraciones');
+      setSearchParams(newParams, { replace: true });
+    }
+  }, []);
 
   useEffect(() => {
     if (company?.name) setOrgName(company.name);
@@ -137,10 +153,16 @@ export default function Settings() {
               Storage
             </TabsTrigger>
           )}
-          {isAdmin && (
+           {isAdmin && (
             <TabsTrigger value="configuracion">
               <SettingsIcon className="w-4 h-4 mr-2" />
               Configuración
+            </TabsTrigger>
+          )}
+          {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="integraciones">
+              <Plug className="w-4 h-4 mr-2" />
+              Integraciones
             </TabsTrigger>
           )}
         </TabsList>
@@ -491,6 +513,105 @@ export default function Settings() {
               </CardContent>
             </Card>
           </div>
+          </TabsContent>
+        )}
+        {isAdmin && !isSuperadmin && (
+          <TabsContent value="integraciones">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Integraciones</CardTitle>
+                  <CardDescription>
+                    Conecta servicios externos para sincronizar datos automáticamente.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-start gap-4 p-4 rounded-lg border bg-card">
+                    {/* QB Logo */}
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold"
+                      style={{ backgroundColor: '#2CA01C', color: 'white' }}>
+                      QB
+                    </div>
+
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-base">QuickBooks Online</h3>
+                        {isConnected ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400">
+                            <CheckCircle2 className="w-3 h-3 mr-1" />
+                            Conectado
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary">
+                            <XCircle className="w-3 h-3 mr-1" />
+                            Desconectado
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Sincroniza clientes, propuestas e invoices automáticamente
+                      </p>
+
+                      {isConnected && integration?.last_sync_at && (
+                        <p className="text-xs text-muted-foreground">
+                          Última sincronización: {new Date(integration.last_sync_at).toLocaleDateString('es-ES', {
+                            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                          })}
+                        </p>
+                      )}
+
+                      <div className="flex items-center gap-2 pt-1">
+                        {isConnected ? (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={syncNow}
+                              disabled={isSyncing}
+                              className="flex items-center gap-2"
+                            >
+                              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                              {isSyncing ? 'Sincronizando...' : 'Sincronizar ahora'}
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button size="sm" variant="outline" className="flex items-center gap-2 text-destructive hover:text-destructive">
+                                  <Unplug className="w-3.5 h-3.5" />
+                                  Desconectar
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>¿Desconectar QuickBooks?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Se eliminará la conexión con QuickBooks Online. Los datos ya sincronizados no se borrarán.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction onClick={disconnect}>
+                                    Desconectar
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={connectQBO}
+                            disabled={qboLoading}
+                            className="flex items-center gap-2"
+                          >
+                            <Plug className="w-3.5 h-3.5" />
+                            Conectar QuickBooks
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         )}
       </Tabs>
