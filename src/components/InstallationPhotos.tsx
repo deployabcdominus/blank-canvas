@@ -90,7 +90,7 @@ export const InstallationPhotos: React.FC<InstallationPhotosProps> = ({ installa
 
   return (
     <div>
-      <Label className="text-sm font-medium">Fotos de Instalación</Label>
+      <Label className="text-sm font-medium">Fotos de Ejecución</Label>
       
       {photos.length > 0 && (
         <div className="mt-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
