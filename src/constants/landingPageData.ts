@@ -131,8 +131,8 @@ export const systemModulesConfig = [
   },
   { 
     icon: Wrench, 
-    title: "Órdenes de Trabajo", 
-    description: "Controle órdenes de trabajo", 
+    title: "Órdenes de Servicio", 
+    description: "Controle órdenes de servicio", 
     path: "/work-orders", 
     color: "orange"
   },
