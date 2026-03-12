@@ -102,7 +102,7 @@ const Onboarding = () => {
             .upload(filePath, byteArray, { contentType: mimeMatch?.[1] || "image/png", upsert: true });
 
           if (uploadError) {
-            console.error("[Onboarding] Logo upload error:", uploadError);
+            if (import.meta.env.DEV) console.error("Logo upload error:", uploadError);
           } else {
             const { data: publicUrlData } = supabase.storage
               .from("company-logos")
