@@ -99,7 +99,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="installer" className="text-sm font-medium text-foreground">Empresa Instaladora *</Label>
+                <Label htmlFor="installer" className="text-sm font-medium text-foreground">Subcontratista *</Label>
                 <Button type="button" variant="ghost" size="sm" className="h-auto p-1 text-muted-foreground hover:text-foreground" onClick={() => navigate("/installer-companies")}>
                   <Settings className="w-4 h-4" />
                 </Button>
