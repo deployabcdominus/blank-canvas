@@ -164,7 +164,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                 <p className="text-muted-foreground">
                   {searchTerm.trim() 
                     ? "Intente ajustar los términos de búsqueda"
-                    : "Ninguna instalación ha sido agendada aún"
+                    : "Ninguna ejecución ha sido agendada aún"
                   }
                 </p>
               </div>
