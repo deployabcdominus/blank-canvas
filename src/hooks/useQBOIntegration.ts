@@ -80,9 +80,8 @@ export function useQBOIntegration() {
   }, [companyId, fetchIntegration]);
 
   const connectQBO = async () => {
-    if (!companyId) return;
-    const edgeFunctionUrl = `https://qsedjxegavrwomflakjq.supabase.co/functions/v1/qbo-auth/connect?company_id=${companyId}`;
-    window.location.href = edgeFunctionUrl;
+    // Disabled – coming soon
+    return;
   };
 
   const syncNow = async () => {
