@@ -295,7 +295,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             <AlertDialogHeader>
               <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
               <AlertDialogDescription>
-                Esto eliminará todas las instalaciones. Esta acción no se puede deshacer.
+                Esto eliminará todas las ejecuciones. Esta acción no se puede deshacer.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
