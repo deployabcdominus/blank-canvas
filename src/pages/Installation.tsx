@@ -160,7 +160,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             {filteredInstallations.length === 0 ? (
               <div className="glass-card p-8 text-center">
                 <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Ninguna instalación encontrada</h3>
+                <h3 className="text-lg font-medium mb-2">Ninguna ejecución encontrada</h3>
                 <p className="text-muted-foreground">
                   {searchTerm.trim() 
                     ? "Intente ajustar los términos de búsqueda"
