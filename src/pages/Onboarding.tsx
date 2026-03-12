@@ -102,7 +102,7 @@ const Onboarding = () => {
             .upload(filePath, byteArray, { contentType: mimeMatch?.[1] || "image/png", upsert: true });
 
           if (uploadError) {
-            console.error("[Onboarding] Logo upload error:", uploadError);
+            if (import.meta.env.DEV) console.error("Logo upload error:", uploadError);
           } else {
             const { data: publicUrlData } = supabase.storage
               .from("company-logos")
@@ -110,7 +110,7 @@ const Onboarding = () => {
             logoUrl = publicUrlData.publicUrl;
           }
         } catch (err) {
-          console.error("[Onboarding] Logo processing error:", err);
+          if (import.meta.env.DEV) console.error("Logo processing error:", err);
         }
       } else if (formData.logo) {
         logoUrl = formData.logo; // already a URL
