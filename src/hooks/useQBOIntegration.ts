@@ -85,69 +85,14 @@ export function useQBOIntegration() {
   };
 
   const syncNow = async () => {
-    if (!companyId) return;
-    try {
-      setIsSyncing(true);
-
-      const { data: clients } = await supabase
-        .from('clients')
-        .select('id, client_name, primary_email, primary_phone')
-        .eq('company_id', companyId);
-
-      if (clients && clients.length > 0) {
-        for (const client of clients) {
-          await supabase.functions.invoke('qbo-sync', {
-            body: {
-              action: 'sync_customer',
-              company_id: companyId,
-              data: {
-                name: client.client_name,
-                email: client.primary_email || '',
-                phone: client.primary_phone || '',
-              },
-            },
-          });
-        }
-      }
-
-      toast({
-        title: 'Sincronización completada',
-        description: `${clients?.length || 0} clientes sincronizados con QuickBooks`,
-      });
-    } catch (error: any) {
-      toast({
-        title: 'Error de sincronización',
-        description: error.message || 'No se pudo sincronizar con QuickBooks.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSyncing(false);
-    }
+    // Disabled – coming soon
+    return;
   };
 
-  const disconnect = useCallback(async () => {
-    if (!companyId || !integration) return;
-    try {
-      const { error } = await supabase
-        .from('integrations')
-        .delete()
-        .eq('id', integration.id);
-
-      if (error) throw error;
-
-      setIntegration(null);
-      toast({
-        title: 'QuickBooks desconectado',
-        description: 'La integración fue eliminada correctamente.',
-      });
-    } catch (e: any) {
-      toast({
-        title: 'Error',
-        description: e.message || 'No se pudo desconectar QuickBooks.',
-        variant: 'destructive',
-      });
-    }
-  }, [companyId, integration, toast]);
+  const disconnect = async () => {
+    // Disabled – coming soon
+    return;
+  };
 
   return {
     integration,
