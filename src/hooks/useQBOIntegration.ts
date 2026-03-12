@@ -81,8 +81,7 @@ export function useQBOIntegration() {
 
   const connectQBO = useCallback(() => {
     if (!companyId) return;
-    const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/qbo-auth/connect?company_id=${companyId}`;
-    window.location.href = url;
+    window.location.href = `https://qsedjxegavrwomflakjq.supabase.co/functions/v1/qbo-auth/connect?company_id=${companyId}`;
   }, [companyId]);
 
   const syncNow = useCallback(async () => {
