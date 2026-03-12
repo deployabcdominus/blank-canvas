@@ -112,7 +112,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
     navigator.clipboard.writeText(summary).then(() => {
       toast({
         title: "¡Información copiada!",
-        description: "Los detalles de la instalación fueron copiados al portapapeles.",
+        description: "Los detalles de la ejecución fueron copiados al portapapeles.",
       });
     });
   };
