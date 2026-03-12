@@ -62,7 +62,7 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
   const onSubmit = (data: FormData) => {
     onSchedule({ ...data, service: selectedService, installerCompany: selectedCompany });
     reset(); onClose();
-    toast({ title: "Instalación agendada", description: "¡Instalación agendada con éxito!" });
+    toast({ title: "Ejecución agendada", description: "¡Ejecución agendada con éxito!" });
   };
 
   const handleShare = () => {
