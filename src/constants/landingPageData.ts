@@ -163,7 +163,7 @@ export const statsConfig = [
   { icon: Target, label: "Leads", color: "text-blue-400" },
   { icon: FileText, label: "Propuestas", color: "text-green-400" },
   { icon: Wrench, label: "Órdenes", color: "text-orange-400" },
-  { icon: Building, label: "Entregas", color: "text-purple-400" },
+  { icon: Building, label: "Ejecuciones", color: "text-purple-400" },
   { icon: Users, label: "Equipo", color: "text-indigo-400" },
-  { icon: ClipboardList, label: "Empresas", color: "text-pink-400" }
+  { icon: ClipboardList, label: "Subcontratistas", color: "text-pink-400" }
 ];

@@ -346,7 +346,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
               <Package className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-base font-semibold">Nueva Orden de Trabajo</DialogTitle>
+              <DialogTitle className="text-base font-semibold">Nueva Orden de Servicio</DialogTitle>
               <p className="text-xs text-muted-foreground">Modo rápido</p>
             </div>
           </div>
