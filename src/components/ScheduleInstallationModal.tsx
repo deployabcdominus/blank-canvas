@@ -72,7 +72,7 @@ AGENDAMIENTO DE EJECUCIÓN
 
 Cliente: ${selectedService.client}
 Proyecto: ${selectedService.project}
-Empresa Instaladora: ${selectedCompany.name}
+Empresa Subcontratista: ${selectedCompany.name}
 Contacto: ${selectedCompany.contact} - ${selectedCompany.phone}
 Fecha: ${format(watchedDate, "dd/MM/yyyy", { locale: es })}
 Horario: ${watch("time") || "No informado"}
