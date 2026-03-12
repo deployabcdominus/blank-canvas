@@ -97,7 +97,7 @@ const Installation = () => {
 
   const handleShareInstallation = (installation: any) => {
     const summary = `
-INSTALACIÓN - ${installation.status.toUpperCase()}
+EJECUCIÓN - ${installation.status.toUpperCase()}
 
 Cliente: ${installation.client}
 Proyecto: ${installation.project}
