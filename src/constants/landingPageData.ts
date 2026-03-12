@@ -138,8 +138,8 @@ export const systemModulesConfig = [
   },
   { 
     icon: Building, 
-    title: "Entregas", 
-    description: "Agende y gestione entregas", 
+    title: "Ejecuciones", 
+    description: "Agende y gestione ejecuciones", 
     path: "/installation", 
     color: "purple"
   },
