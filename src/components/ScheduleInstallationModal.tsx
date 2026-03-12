@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 
 const formSchema = z.object({
   serviceId: z.string().min(1, "Seleccione un servicio"),
-  installerCompanyId: z.string().min(1, "Seleccione una empresa instaladora"),
+  installerCompanyId: z.string().min(1, "Seleccione un subcontratista"),
   date: z.date({ required_error: "Seleccione una fecha" }),
   time: z.string().min(1, "Informe el horario"),
   address: z.string().min(1, "La dirección es obligatoria"),
