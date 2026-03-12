@@ -515,6 +515,105 @@ export default function Settings() {
           </div>
           </TabsContent>
         )}
+        {isAdmin && !isSuperadmin && (
+          <TabsContent value="integraciones">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Integraciones</CardTitle>
+                  <CardDescription>
+                    Conecta servicios externos para sincronizar datos automáticamente.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-start gap-4 p-4 rounded-lg border bg-card">
+                    {/* QB Logo */}
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold"
+                      style={{ backgroundColor: '#2CA01C', color: 'white' }}>
+                      QB
+                    </div>
+
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-base">QuickBooks Online</h3>
+                        {isConnected ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400">
+                            <CheckCircle2 className="w-3 h-3 mr-1" />
+                            Conectado
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary">
+                            <XCircle className="w-3 h-3 mr-1" />
+                            Desconectado
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Sincroniza clientes, propuestas e invoices automáticamente
+                      </p>
+
+                      {isConnected && integration?.last_sync_at && (
+                        <p className="text-xs text-muted-foreground">
+                          Última sincronización: {new Date(integration.last_sync_at).toLocaleDateString('es-ES', {
+                            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                          })}
+                        </p>
+                      )}
+
+                      <div className="flex items-center gap-2 pt-1">
+                        {isConnected ? (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={syncNow}
+                              disabled={isSyncing}
+                              className="flex items-center gap-2"
+                            >
+                              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                              {isSyncing ? 'Sincronizando...' : 'Sincronizar ahora'}
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button size="sm" variant="outline" className="flex items-center gap-2 text-destructive hover:text-destructive">
+                                  <Unplug className="w-3.5 h-3.5" />
+                                  Desconectar
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>¿Desconectar QuickBooks?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Se eliminará la conexión con QuickBooks Online. Los datos ya sincronizados no se borrarán.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction onClick={disconnect}>
+                                    Desconectar
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={connectQBO}
+                            disabled={qboLoading}
+                            className="flex items-center gap-2"
+                          >
+                            <Plug className="w-3.5 h-3.5" />
+                            Conectar QuickBooks
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        )}
       </Tabs>
     </ResponsiveLayout>
   );
