@@ -81,7 +81,7 @@ const WorkOrders = () => {
       <ResponsiveLayout>
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Órdenes de Trabajo</h1>
+            <h1 className="text-2xl font-bold mb-1">Órdenes de Servicio</h1>
             <p className="text-muted-foreground text-sm">Gestión y seguimiento de órdenes</p>
           </div>
           <div className="flex gap-2">
