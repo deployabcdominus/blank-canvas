@@ -68,6 +68,8 @@ const Dashboard = () => {
           </p>
         </motion.div>
 
+        {isAdmin && <AiBriefing />}
+
         <div className={`grid gap-4 mb-8 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
           {stats.map((stat, index) => (
             <HudCard key={stat.key} label={stat.label} desc={stat.desc} value={stat.value} icon={stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} />
