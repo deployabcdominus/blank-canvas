@@ -237,7 +237,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                         <Label htmlFor="location" className="text-sm font-medium">Ubicación Final</Label>
                         <Input
                           id="location"
-                          placeholder="Detalles exactos de la ubicación de instalación"
+                          placeholder="Detalles exactos de la ubicación"
                           className="glass mt-2"
                         />
                       </div>
