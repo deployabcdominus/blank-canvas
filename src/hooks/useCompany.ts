@@ -10,6 +10,7 @@ interface CompanyData {
   enable_network_index: boolean;
   network_base_path: string | null;
   service_types: string[] | null;
+  industry: string | null;
 }
 
 export function useCompany() {
@@ -25,7 +26,6 @@ export function useCompany() {
     }
 
     try {
-      // Get company_id from profile, then fetch company
       const { data: profile } = await supabase
         .from('profiles')
         .select('company_id')
@@ -35,7 +35,7 @@ export function useCompany() {
       if (profile?.company_id) {
         const { data: companyData } = await (supabase as any)
           .from('companies')
-          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types')
+          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types, industry')
           .eq('id', profile.company_id)
           .maybeSingle();
 

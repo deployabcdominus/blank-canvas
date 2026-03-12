@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAvatarUrl } from "@/hooks/useAvatarUrl";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useIndustryLabels } from "@/hooks/useIndustryLabels";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const { role, isSuperadmin, isAdmin } = useUserRole();
   const { avatarUrl } = useAvatarUrl();
   const { fullName, email, initials } = useUserProfile();
+  const industryLabels = useIndustryLabels();
 
   const isOperationActive = operationGroup.items.some(i => location.pathname === i.path);
   const [operationOpen, setOperationOpen] = useState(isOperationActive);
@@ -41,12 +43,20 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
 
   const canSee = (item: NavItem) => {
     if (!item.roles) return true;
-    if (!role) return false; // role not loaded yet → hide restricted items
+    if (!role) return false;
     return item.roles.includes(role);
+  };
+
+  const getLabel = (item: NavItem) => {
+    if (item.labelKey && industryLabels[item.labelKey]) {
+      return industryLabels[item.labelKey];
+    }
+    return item.label;
   };
 
   const renderNavItem = (item: NavItem, index: number) => {
     const isActive = location.pathname + location.search === item.path || location.pathname === item.path;
+    const label = getLabel(item);
     return (
       <motion.div
         key={item.path}
@@ -61,7 +71,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           aria-current={isActive ? "page" : undefined}
         >
           <item.icon className="w-5 h-5" aria-hidden="true" />
-          <span className="font-medium text-sm">{item.label}</span>
+          <span className="font-medium text-sm">{label}</span>
         </NavLink>
       </motion.div>
     );

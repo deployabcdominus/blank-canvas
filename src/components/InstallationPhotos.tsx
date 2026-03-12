@@ -90,13 +90,13 @@ export const InstallationPhotos: React.FC<InstallationPhotosProps> = ({ installa
 
   return (
     <div>
-      <Label className="text-sm font-medium">Fotos de Instalación</Label>
+      <Label className="text-sm font-medium">Fotos de Ejecución</Label>
       
       {photos.length > 0 && (
         <div className="mt-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {photos.map((photo) => (
             <div key={photo.id} className="relative group">
-              <img src={photo.url} alt="Foto de instalación" className="w-full h-24 object-cover rounded-lg border border-white/20" />
+              <img src={photo.url} alt="Foto de ejecución" className="w-full h-24 object-cover rounded-lg border border-white/20" />
               {!isReadOnly && (
                 <button onClick={() => removePhoto(photo.id)} className="absolute -top-2 -right-2 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <X className="w-3 h-3" />
@@ -114,7 +114,7 @@ export const InstallationPhotos: React.FC<InstallationPhotosProps> = ({ installa
         <div className={`mt-3 border-2 border-dashed rounded-xl p-6 text-center transition-colors ${isDragging ? 'border-primary bg-primary/5' : 'border-white/20 hover:border-white/30'}`}
           onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave}>
           {photos.length === 0 ? <Camera className="w-6 h-6 mx-auto mb-2 text-muted-foreground" /> : <ImageIcon className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />}
-          <p className="text-sm text-muted-foreground mb-3">{photos.length === 0 ? "Agregue fotos de la instalación" : "Agregar más fotos"}</p>
+          <p className="text-sm text-muted-foreground mb-3">{photos.length === 0 ? "Agregue fotos de la ejecución" : "Agregar más fotos"}</p>
           <p className="text-xs text-muted-foreground mb-4">Arrastre y suelte, pegue (Ctrl+V) o haga clic en los botones de abajo</p>
           <div className="flex gap-2 justify-center">
             <Button variant="outline" size="sm" className="btn-glass" onClick={() => cameraInputRef.current?.click()}>

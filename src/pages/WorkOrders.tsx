@@ -39,7 +39,7 @@ const WorkOrders = () => {
   const handleClearOrders = () => {
     clearOrders();
     setIsClearDialogOpen(false);
-    toast({ title: "Órdenes eliminadas", description: "Todas las órdenes fueron eliminadas con éxito." });
+    toast({ title: "Órdenes eliminadas", description: "Todas las órdenes de servicio fueron eliminadas con éxito." });
   };
 
   const processed = useMemo(() => {
@@ -81,7 +81,7 @@ const WorkOrders = () => {
       <ResponsiveLayout>
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Órdenes de Trabajo</h1>
+            <h1 className="text-2xl font-bold mb-1">Órdenes de Servicio</h1>
             <p className="text-muted-foreground text-sm">Gestión y seguimiento de órdenes</p>
           </div>
           <div className="flex gap-2">
@@ -101,7 +101,7 @@ const WorkOrders = () => {
         {orders.length === 0 ? (
           <div className="text-center py-12 glass-card">
             <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">Sin órdenes de trabajo</h3>
+            <h3 className="text-lg font-semibold mb-2">Sin órdenes de servicio</h3>
             <p className="text-muted-foreground mb-4">Comience creando su primera orden</p>
             {canEdit && (
               <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">

@@ -118,7 +118,7 @@ const Register = () => {
     if (!error) {
       toast({
         title: "¡Cuenta creada con éxito!",
-        description: "Bienvenido a Sign Flow.",
+        description: "Bienvenido a SignFlow.",
       });
 
       // Clean up stored tokens
@@ -165,7 +165,7 @@ const Register = () => {
 
             <h1 className="text-3xl font-bold mb-2">Crear cuenta</h1>
             <p className="text-muted-foreground">
-              Regístrate para comenzar en Sign Flow
+              Regístrate para comenzar en SignFlow
             </p>
           </motion.div>
 

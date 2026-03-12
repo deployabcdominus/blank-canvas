@@ -76,10 +76,10 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
     const companyData = { name: data.name, email: data.email, phone: data.phone, contact: data.contact || "", logoUrl: logoFile || undefined, services: selectedServices };
     if (company) {
       updateCompany(company.id, companyData);
-      toast({ title: "Empresa actualizada", description: "¡Empresa instaladora actualizada con éxito!" });
+      toast({ title: "Empresa actualizada", description: "¡Subcontratista actualizado con éxito!" });
     } else {
       addCompany(companyData);
-      toast({ title: "Empresa registrada", description: "¡Empresa instaladora registrada con éxito!" });
+      toast({ title: "Empresa registrada", description: "¡Subcontratista registrado con éxito!" });
     }
     reset(); setSelectedServices([]); setLogoFile(null); setLogoPreview(null); onClose();
   };
@@ -91,7 +91,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
       <DialogContent className="bg-white border shadow-lg max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-foreground">
-            {company ? "Editar Empresa" : "Registrar Empresa"} Instaladora
+            {company ? "Editar" : "Registrar"} Subcontratista
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -117,7 +117,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium text-foreground">Nombre de la Empresa *</Label>
-              <Input id="name" placeholder="Nombre de la empresa instaladora" className="bg-white border-input" {...register("name")} />
+              <Input id="name" placeholder="Nombre del subcontratista" className="bg-white border-input" {...register("name")} />
               {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
             </div>
             <div className="space-y-2">

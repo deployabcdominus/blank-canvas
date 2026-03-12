@@ -64,6 +64,7 @@ export type Database = {
           created_at: string
           enable_network_index: boolean | null
           id: string
+          industry: string | null
           is_active: boolean | null
           logo_url: string | null
           name: string
@@ -78,6 +79,7 @@ export type Database = {
           created_at?: string
           enable_network_index?: boolean | null
           id?: string
+          industry?: string | null
           is_active?: boolean | null
           logo_url?: string | null
           name: string
@@ -92,6 +94,7 @@ export type Database = {
           created_at?: string
           enable_network_index?: boolean | null
           id?: string
+          industry?: string | null
           is_active?: boolean | null
           logo_url?: string | null
           name?: string

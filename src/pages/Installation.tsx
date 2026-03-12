@@ -67,8 +67,8 @@ const Installation = () => {
   const handleMarkAsInstalled = async (installationId: string) => {
     await updateInstallation(installationId, { status: "Completed" });
     toast({
-      title: "Instalación completada",
-      description: "La instalación fue marcada como completada con éxito.",
+      title: "Ejecución completada",
+      description: "La ejecución fue marcada como completada con éxito.",
     });
   };
 
@@ -76,8 +76,8 @@ const Installation = () => {
     await clearInstallations();
     setIsClearDialogOpen(false);
     toast({
-      title: "Instalaciones eliminadas",
-      description: "Todas las instalaciones fueron eliminadas con éxito.",
+      title: "Ejecuciones eliminadas",
+      description: "Todas las ejecuciones fueron eliminadas con éxito.",
     });
   };
 
@@ -97,7 +97,7 @@ const Installation = () => {
 
   const handleShareInstallation = (installation: any) => {
     const summary = `
-INSTALACIÓN - ${installation.status.toUpperCase()}
+EJECUCIÓN - ${installation.status.toUpperCase()}
 
 Cliente: ${installation.client}
 Proyecto: ${installation.project}
@@ -112,14 +112,14 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
     navigator.clipboard.writeText(summary).then(() => {
       toast({
         title: "¡Información copiada!",
-        description: "Los detalles de la instalación fueron copiados al portapapeles.",
+        description: "Los detalles de la ejecución fueron copiados al portapapeles.",
       });
     });
   };
 
   return (
     <PageTransition>
-      <ResponsiveLayout title="Instalación" subtitle="Agende y haga seguimiento de instalaciones">
+      <ResponsiveLayout title="Ejecuciones" subtitle="Agende y haga seguimiento de ejecuciones">
           <div className="flex items-center justify-end mb-6">
             <div className="flex gap-2">
               {installations.length > 0 && canDelete && (
@@ -129,7 +129,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   className="btn-glass"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Limpiar Instalaciones
+                  Limpiar Ejecuciones
                 </Button>
               )}
               {canEdit && (
@@ -138,7 +138,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   className="btn-glass bg-pale-pink text-pale-pink-foreground hover:bg-pale-pink-hover"
                 >
                   <Calendar className="w-4 h-4 mr-2" />
-                  Agendar Instalación
+                  Agendar Ejecución
                 </Button>
               )}
             </div>
@@ -148,7 +148,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar instalaciones por cliente, proyecto, dirección, técnico o estado..."
+                placeholder="Buscar ejecuciones por cliente, proyecto, dirección, técnico o estado..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="glass pl-10"
@@ -160,11 +160,11 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             {filteredInstallations.length === 0 ? (
               <div className="glass-card p-8 text-center">
                 <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Ninguna instalación encontrada</h3>
+                <h3 className="text-lg font-medium mb-2">Ninguna ejecución encontrada</h3>
                 <p className="text-muted-foreground">
                   {searchTerm.trim() 
                     ? "Intente ajustar los términos de búsqueda"
-                    : "Ninguna instalación ha sido agendada aún"
+                    : "Ninguna ejecución ha sido agendada aún"
                   }
                 </p>
               </div>
@@ -216,7 +216,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
 
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-sm font-medium">Notas de Instalación</Label>
+                    <Label className="text-sm font-medium">Notas de Ejecución</Label>
                     <Textarea
                       className="glass mt-2 min-h-[80px]"
                       defaultValue={installation.notes}
@@ -237,7 +237,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                         <Label htmlFor="location" className="text-sm font-medium">Ubicación Final</Label>
                         <Input
                           id="location"
-                          placeholder="Detalles exactos de la ubicación de instalación"
+                          placeholder="Detalles exactos de la ubicación"
                           className="glass mt-2"
                         />
                       </div>
@@ -274,7 +274,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                         className="btn-glass bg-mint text-mint-foreground hover:bg-mint-hover"
                       >
                         <CheckCircle className="w-4 h-4 mr-2" />
-                        Marcar como Instalado
+                        Marcar como Completado
                       </Button>
                     )}
                   </div>
@@ -295,13 +295,13 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             <AlertDialogHeader>
               <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
               <AlertDialogDescription>
-                Esto eliminará todas las instalaciones. Esta acción no se puede deshacer.
+                Esto eliminará todas las ejecuciones. Esta acción no se puede deshacer.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction onClick={handleClearInstallations}>
-                Sí, limpiar instalaciones
+                Sí, limpiar ejecuciones
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

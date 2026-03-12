@@ -270,7 +270,7 @@ export default function Projects() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Dirección de instalación *</Label>
+              <Label>Dirección de ejecución *</Label>
               <Input value={form.installAddress} onChange={e => setForm(f => ({ ...f, installAddress: e.target.value }))} />
             </div>
             <div className="space-y-2">

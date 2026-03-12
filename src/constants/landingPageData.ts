@@ -76,7 +76,7 @@ export const benefitsData = [
   },
   {
     icon: Ruler,
-    title: "Órdenes de trabajo",
+    title: "Órdenes de servicio",
     description: "Genera órdenes con recursos, medidas y fechas para tu equipo.",
   },
   {
@@ -91,8 +91,8 @@ export const benefitsData = [
   },
   {
     icon: HardHat,
-    title: "Control de entregas",
-    description: "Agenda, asigna equipos y da seguimiento a cada entrega en campo.",
+    title: "Control de ejecuciones",
+    description: "Agenda, asigna equipos y da seguimiento a cada ejecución en campo.",
   },
 ];
 
@@ -131,15 +131,15 @@ export const systemModulesConfig = [
   },
   { 
     icon: Wrench, 
-    title: "Órdenes de Trabajo", 
-    description: "Controle órdenes de trabajo", 
+    title: "Órdenes de Servicio", 
+    description: "Controle órdenes de servicio", 
     path: "/work-orders", 
     color: "orange"
   },
   { 
     icon: Building, 
-    title: "Entregas", 
-    description: "Agende y gestione entregas", 
+    title: "Ejecuciones", 
+    description: "Agende y gestione ejecuciones", 
     path: "/installation", 
     color: "purple"
   },
@@ -152,8 +152,8 @@ export const systemModulesConfig = [
   },
   { 
     icon: ClipboardList, 
-    title: "Empresas", 
-    description: "Registre empresas colaboradoras", 
+    title: "Subcontratistas", 
+    description: "Registre subcontratistas", 
     path: "/installer-companies", 
     color: "pink"
   }
@@ -163,7 +163,7 @@ export const statsConfig = [
   { icon: Target, label: "Leads", color: "text-blue-400" },
   { icon: FileText, label: "Propuestas", color: "text-green-400" },
   { icon: Wrench, label: "Órdenes", color: "text-orange-400" },
-  { icon: Building, label: "Entregas", color: "text-purple-400" },
+  { icon: Building, label: "Ejecuciones", color: "text-purple-400" },
   { icon: Users, label: "Equipo", color: "text-indigo-400" },
-  { icon: ClipboardList, label: "Empresas", color: "text-pink-400" }
+  { icon: ClipboardList, label: "Subcontratistas", color: "text-pink-400" }
 ];

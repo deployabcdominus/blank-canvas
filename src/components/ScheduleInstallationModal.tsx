@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 
 const formSchema = z.object({
   serviceId: z.string().min(1, "Seleccione un servicio"),
-  installerCompanyId: z.string().min(1, "Seleccione una empresa instaladora"),
+  installerCompanyId: z.string().min(1, "Seleccione un subcontratista"),
   date: z.date({ required_error: "Seleccione una fecha" }),
   time: z.string().min(1, "Informe el horario"),
   address: z.string().min(1, "La dirección es obligatoria"),
@@ -62,17 +62,17 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
   const onSubmit = (data: FormData) => {
     onSchedule({ ...data, service: selectedService, installerCompany: selectedCompany });
     reset(); onClose();
-    toast({ title: "Instalación agendada", description: "¡Instalación agendada con éxito!" });
+    toast({ title: "Ejecución agendada", description: "¡Ejecución agendada con éxito!" });
   };
 
   const handleShare = () => {
     if (!selectedService || !selectedCompany || !watchedDate) return;
     const summary = `
-AGENDAMIENTO DE INSTALACIÓN
+AGENDAMIENTO DE EJECUCIÓN
 
 Cliente: ${selectedService.client}
 Proyecto: ${selectedService.project}
-Empresa Instaladora: ${selectedCompany.name}
+Empresa Subcontratista: ${selectedCompany.name}
 Contacto: ${selectedCompany.contact} - ${selectedCompany.phone}
 Fecha: ${format(watchedDate, "dd/MM/yyyy", { locale: es })}
 Horario: ${watch("time") || "No informado"}
@@ -93,13 +93,13 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-white border shadow-lg max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-foreground">Agendar Instalación</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-foreground">Agendar Ejecución</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="installer" className="text-sm font-medium text-foreground">Empresa Instaladora *</Label>
+                <Label htmlFor="installer" className="text-sm font-medium text-foreground">Subcontratista *</Label>
                 <Button type="button" variant="ghost" size="sm" className="h-auto p-1 text-muted-foreground hover:text-foreground" onClick={() => navigate("/installer-companies")}>
                   <Settings className="w-4 h-4" />
                 </Button>
@@ -126,7 +126,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
                       <div><div className="font-medium">{service.client}</div><div className="text-sm text-muted-foreground">{service.serviceType} - {service.project}</div></div>
                     </SelectItem>
                   )) : (
-                    <div className="p-2 text-sm text-muted-foreground">Ningún servicio disponible para esta empresa</div>
+                    <div className="p-2 text-sm text-muted-foreground">Ningún servicio disponible para este subcontratista</div>
                   )}
                 </SelectContent>
               </Select>
@@ -159,7 +159,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
 
           <div className="space-y-2">
             <Label htmlFor="address" className="text-sm font-medium text-foreground">Dirección *</Label>
-            <Input id="address" placeholder="Dirección completa de la instalación" className="bg-white border-input" {...register("address")} />
+            <Input id="address" placeholder="Dirección completa de la ejecución" className="bg-white border-input" {...register("address")} />
             {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
           </div>
 
@@ -183,7 +183,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
 
           <div className="space-y-2">
             <Label htmlFor="notes" className="text-sm font-medium text-foreground">Observaciones</Label>
-            <Textarea id="notes" placeholder="Información adicional sobre la instalación..." className="bg-white border-input min-h-[80px]" {...register("notes")} />
+            <Textarea id="notes" placeholder="Información adicional sobre la ejecución..." className="bg-white border-input min-h-[80px]" {...register("notes")} />
           </div>
 
           <DialogFooter className="flex gap-2">
@@ -191,7 +191,7 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
             <Button type="button" variant="outline" onClick={handleShare} className="bg-white border-input hover:bg-gray-50" disabled={!selectedService || !selectedCompany || !watchedDate}>
               <Copy className="w-4 h-4 mr-2" />Compartir
             </Button>
-            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Agendar Instalación</Button>
+            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Agendar Ejecución</Button>
           </DialogFooter>
         </form>
       </DialogContent>

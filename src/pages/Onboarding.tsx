@@ -5,11 +5,21 @@ import { PageTransition } from "@/components/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronRight, Upload, Palette, Building } from "lucide-react";
+import { ChevronRight, ChevronLeft, Upload, Palette, Building, Wrench, Printer, PaintBucket, HardHat, PartyPopper, ShoppingBag, Package } from "lucide-react";
 import { compressImage } from "@/lib/image";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+
+const INDUSTRIES = [
+  { id: "Field Service / Instalaciones", icon: Wrench, label: "Field Service / Instalaciones", description: "Servicios en campo, instalación y mantenimiento" },
+  { id: "Impresión / Producción", icon: Printer, label: "Impresión / Producción", description: "Señalética, rotulación, impresión gran formato" },
+  { id: "Diseño / Creativos", icon: PaintBucket, label: "Diseño / Creativos", description: "Agencias, estudios de diseño, freelancers" },
+  { id: "Construcción / Contratistas", icon: HardHat, label: "Construcción / Contratistas", description: "Obras, remodelaciones, contratistas generales" },
+  { id: "Eventos / Hospitality", icon: PartyPopper, label: "Eventos / Hospitality", description: "Producción de eventos, banquetes, venues" },
+  { id: "Retail / Tiendas", icon: ShoppingBag, label: "Retail / Tiendas", description: "Tiendas, franquicias, puntos de venta" },
+  { id: "Otro", icon: Package, label: "Otro", description: "Cualquier otro tipo de negocio de servicios" },
+];
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -18,6 +28,7 @@ const Onboarding = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
+    industry: "",
     companyName: "",
     logo: null as string | null,
     brandColor: "soft-blue",
@@ -49,15 +60,18 @@ const Onboarding = () => {
     }
   };
 
-  const handleNext = async () => {
-    if (currentStep === 1 && !formData.companyName.trim()) return;
+  const totalSteps = 4;
 
-    if (currentStep < 3) {
+  const handleNext = async () => {
+    if (currentStep === 1 && !formData.industry) return;
+    if (currentStep === 2 && !formData.companyName.trim()) return;
+
+    if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
       return;
     }
 
-    // Step 3 - complete onboarding
+    // Step 4 - complete onboarding
     if (!user) {
       toast({ title: "Error", description: "Usuario no autenticado", variant: "destructive" });
       return;
@@ -73,7 +87,6 @@ const Onboarding = () => {
         return;
       }
 
-      // Check if company already exists for this user
       const { data: existingCompany } = await supabase
         .from("companies")
         .select("id")
@@ -84,13 +97,12 @@ const Onboarding = () => {
       let companyId: string;
 
       if (existingCompany) {
-        await supabase
+        await (supabase as any)
           .from("companies")
-          .update({ name: formData.companyName, logo_url: formData.logo, brand_color: formData.brandColor })
+          .update({ name: formData.companyName, logo_url: formData.logo, brand_color: formData.brandColor, industry: formData.industry })
           .eq("id", existingCompany.id);
         companyId = existingCompany.id;
       } else {
-        // Check if there's a purchase token to link
         const purchaseToken = localStorage.getItem("purchase_token");
         let planId: string | undefined;
 
@@ -111,6 +123,7 @@ const Onboarding = () => {
           name: formData.companyName,
           logo_url: formData.logo,
           brand_color: formData.brandColor,
+          industry: formData.industry,
         };
         if (planId) insertData.plan_id = planId;
 
@@ -131,7 +144,6 @@ const Onboarding = () => {
         }
         companyId = newCompany.id;
 
-        // Link purchase to company
         if (purchaseToken) {
           await supabase
             .from("purchases")
@@ -142,10 +154,8 @@ const Onboarding = () => {
         }
       }
 
-      // Set company_id on profile
       await supabase.from("profiles").update({ company_id: companyId } as any).eq("id", user.id);
 
-      // Assign admin role if not already assigned
       const { data: existingRole } = await supabase
         .from("user_roles")
         .select("id")
@@ -157,7 +167,6 @@ const Onboarding = () => {
         await supabase.from("user_roles").insert({ user_id: user.id, role: "admin" } as any);
       }
 
-      // Update user settings
       await supabase
         .from("user_settings")
         .update({ brand_logo: formData.logo, brand_color: formData.brandColor })
@@ -173,22 +182,22 @@ const Onboarding = () => {
     }
   };
 
-  const stepTitles = ["Información de la Empresa", "Sube Tu Logo", "Elige el Color de Marca"];
+  const stepTitles = ["Selecciona tu Industria", "Información de la Empresa", "Sube Tu Logo", "Elige el Color de Marca"];
 
   return (
     <PageTransition>
       <div className="min-h-screen flex items-center justify-center px-6">
         <div className="w-full max-w-lg">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">¡Bienvenido a Sign Flow!</h1>
-            <p className="text-muted-foreground">Vamos a configurar tu espacio de trabajo en solo 3 pasos</p>
+            <h1 className="text-3xl font-bold mb-2">¡Bienvenido a SignFlow!</h1>
+            <p className="text-muted-foreground">Vamos a configurar tu espacio de trabajo en {totalSteps} pasos</p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="flex items-center justify-center mb-8">
-            {[1, 2, 3].map((step) => (
+            {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
               <div key={step} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${step <= currentStep ? "bg-soft-blue text-soft-blue-foreground" : "bg-white/10 text-muted-foreground"}`}>{step}</div>
-                {step < 3 && <div className={`w-12 h-1 mx-2 rounded transition-colors ${step < currentStep ? "bg-soft-blue" : "bg-white/10"}`} />}
+                {step < totalSteps && <div className={`w-12 h-1 mx-2 rounded transition-colors ${step < currentStep ? "bg-soft-blue" : "bg-white/10"}`} />}
               </div>
             ))}
           </motion.div>
@@ -200,6 +209,41 @@ const Onboarding = () => {
                   <div className="text-center mb-6">
                     <Building className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
                     <h2 className="text-xl font-semibold">{stepTitles[0]}</h2>
+                    <p className="text-sm text-muted-foreground mt-2">¿A qué se dedica tu negocio?</p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {INDUSTRIES.map((industry) => {
+                      const Icon = industry.icon;
+                      const isSelected = formData.industry === industry.id;
+                      return (
+                        <button
+                          key={industry.id}
+                          onClick={() => setFormData(prev => ({ ...prev, industry: industry.id }))}
+                          className={`flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200 border ${
+                            isSelected
+                              ? "bg-primary/10 border-primary/30 ring-2 ring-primary/20 scale-[1.02]"
+                              : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
+                          }`}
+                        >
+                          <div className={`p-2.5 rounded-xl ${isSelected ? "bg-primary/20" : "bg-white/10"}`}>
+                            <Icon className={`w-5 h-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`font-medium text-sm ${isSelected ? "text-foreground" : "text-foreground/80"}`}>{industry.label}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{industry.description}</p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+
+              {currentStep === 2 && (
+                <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <div className="text-center mb-6">
+                    <Building className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
+                    <h2 className="text-xl font-semibold">{stepTitles[1]}</h2>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="companyName">Nombre de la Empresa *</Label>
@@ -209,11 +253,11 @@ const Onboarding = () => {
                 </motion.div>
               )}
 
-              {currentStep === 2 && (
-                <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+              {currentStep === 3 && (
+                <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div className="text-center mb-6">
                     <Upload className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
-                    <h2 className="text-xl font-semibold">{stepTitles[1]}</h2>
+                    <h2 className="text-xl font-semibold">{stepTitles[2]}</h2>
                   </div>
                   <div className="space-y-4">
                     <input type="file" id="logo-upload" accept="image/*" onChange={handleLogoUpload} className="hidden" />
@@ -233,11 +277,11 @@ const Onboarding = () => {
                 </motion.div>
               )}
 
-              {currentStep === 3 && (
-                <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+              {currentStep === 4 && (
+                <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div className="text-center mb-6">
                     <Palette className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
-                    <h2 className="text-xl font-semibold">{stepTitles[2]}</h2>
+                    <h2 className="text-xl font-semibold">{stepTitles[3]}</h2>
                   </div>
                   <div className="space-y-6">
                     <div className="grid grid-cols-3 gap-4">
@@ -258,9 +302,12 @@ const Onboarding = () => {
             </AnimatePresence>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-8 flex justify-between">
-              <Button variant="ghost" onClick={() => setCurrentStep(Math.max(1, currentStep - 1))} disabled={currentStep === 1} className="btn-glass">Anterior</Button>
-              <Button onClick={handleNext} disabled={isLoading} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-                {isLoading ? "Guardando..." : currentStep === 3 ? "Completar Configuración" : "Siguiente"}
+              <Button variant="ghost" onClick={() => setCurrentStep(Math.max(1, currentStep - 1))} disabled={currentStep === 1} className="btn-glass">
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Anterior
+              </Button>
+              <Button onClick={handleNext} disabled={isLoading || (currentStep === 1 && !formData.industry)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
+                {isLoading ? "Guardando..." : currentStep === totalSteps ? "Completar Configuración" : "Siguiente"}
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             </motion.div>

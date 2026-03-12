@@ -42,7 +42,7 @@ const InstallerCompanies = () => {
       setCompanyToDelete(null);
       toast({
         title: "Empresa eliminada",
-        description: "Empresa instaladora eliminada con éxito.",
+        description: "Subcontratista eliminado con éxito.",
       });
     } catch (error) {
       setCompanyToDelete(null);
@@ -68,8 +68,8 @@ const InstallerCompanies = () => {
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Empresas Instaladoras</h1>
-            <p className="text-muted-foreground">Gestione sus empresas asociadas de instalación</p>
+            <h1 className="text-3xl font-bold">Subcontratistas</h1>
+            <p className="text-muted-foreground">Gestione sus empresas subcontratistas</p>
           </div>
           {canEdit && (
             <Button
@@ -162,7 +162,7 @@ const InstallerCompanies = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Eliminar Empresa</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Está seguro de que desea eliminar esta empresa instaladora? Esta acción no se puede deshacer.
+              ¿Está seguro de que desea eliminar este subcontratista? Esta acción no se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

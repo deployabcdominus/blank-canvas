@@ -84,7 +84,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 
   const handleCopyText = () => {
     const lines = [
-      `📋 ORDEN DE TRABAJO`,
+      `📋 ORDEN DE SERVICIO`,
       `Cliente: ${order.client}`,
       `Proyecto: ${order.project}`,
       `Fecha: ${new Date().toLocaleDateString('es-ES')}`,
@@ -107,7 +107,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-[800px] max-h-[90vh] p-0 bg-background/90 backdrop-blur-2xl border border-border/30 flex flex-col">
         <div className="px-6 py-4 border-b border-border/20 flex items-center justify-between">
-          <DialogTitle className="text-lg font-semibold">Orden de Trabajo</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Orden de Servicio</DialogTitle>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={handleCopyText} className="gap-1.5 text-xs">
               <Copy className="w-3.5 h-3.5" /> WhatsApp
@@ -121,7 +121,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
           <div ref={printRef} className="px-8 py-6 space-y-6 print-order">
             <div className="flex justify-between items-start border-b border-border/20 pb-4">
               <div>
-                <h2 className="text-xl font-bold">Orden de Trabajo</h2>
+                <h2 className="text-xl font-bold">Orden de Servicio</h2>
                 <p className="text-sm text-muted-foreground">Fecha: {new Date().toLocaleDateString('es-ES')}</p>
               </div>
               <Badge className={order.priority === 'Urgente' ? 'bg-destructive/20 text-destructive' : 'bg-muted'}>
@@ -346,7 +346,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
               <Package className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-base font-semibold">Nueva Orden de Trabajo</DialogTitle>
+              <DialogTitle className="text-base font-semibold">Nueva Orden de Servicio</DialogTitle>
               <p className="text-xs text-muted-foreground">Modo rápido</p>
             </div>
           </div>

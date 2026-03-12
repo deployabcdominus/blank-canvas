@@ -269,8 +269,8 @@ const Index = () => {
                 </h1>
 
                 <p className="text-[15px] sm:text-lg md:text-[19px] font-medium text-[hsl(228,12%,72%)] leading-[1.65] max-w-lg mx-auto md:mx-0 mb-8">
-                  Leads, propuestas, producción e instalación en un solo flujo.
-                  Hecho para talleres de rotulación, wrapping y fabricación.
+                  Leads, propuestas, producción y ejecución en un solo flujo.
+                  Hecho para negocios de servicios que quieren crecer.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
