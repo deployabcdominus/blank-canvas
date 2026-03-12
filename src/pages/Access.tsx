@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageTransition } from "@/components/PageTransition";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { AlertCircle, Loader2, LogIn, UserPlus } from "lucide-react";
+import { AlertCircle, Loader2, LogIn, UserPlus, ShieldCheck, CreditCard, Mail } from "lucide-react";
 
 type PurchaseData = {
   id: string;
@@ -20,14 +20,14 @@ const Access = () => {
   const navigate = useNavigate();
   const token = searchParams.get("token");
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!token);
   const [error, setError] = useState<string | null>(null);
   const [purchase, setPurchase] = useState<PurchaseData | null>(null);
 
   useEffect(() => {
     const validate = async () => {
       if (!token) {
-        setError("Token de acceso no proporcionado.");
+        // No token — show the general access page
         setLoading(false);
         return;
       }
@@ -58,10 +58,9 @@ const Access = () => {
   }, [token]);
 
   const handleRegister = () => {
-    // Store purchase context for onboarding
     localStorage.setItem("purchase_token", token || "");
     localStorage.setItem("purchase_email", purchase?.purchaser_email || "");
-    navigate("/register");
+    navigate("/register?token=" + (token || ""));
   };
 
   const handleLogin = () => {
@@ -80,6 +79,7 @@ const Access = () => {
     );
   }
 
+  // If there's a token error, show error state
   if (error) {
     return (
       <PageTransition>
@@ -101,8 +101,57 @@ const Access = () => {
     );
   }
 
-  const hasCompany = !!purchase?.company_id;
+  // If we have a valid purchase (token flow), show login/register options
+  if (purchase) {
+    const hasCompany = !!purchase.company_id;
 
+    return (
+      <PageTransition>
+        <div className="min-h-screen flex items-center justify-center px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-card p-8 max-w-md w-full"
+          >
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold mb-2">
+                {hasCompany ? "Accede a tu Empresa" : "Configura tu Empresa"}
+              </h1>
+              <p className="text-muted-foreground">
+                {hasCompany
+                  ? "Tu empresa ya está configurada. Inicia sesión para acceder."
+                  : "Eres el primer usuario. Regístrate para convertirte en administrador y configurar tu empresa."}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {!hasCompany && (
+                <Button
+                  onClick={handleRegister}
+                  className="w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover"
+                  size="lg"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Registrarme como Administrador
+                </Button>
+              )}
+              <Button
+                onClick={handleLogin}
+                variant={hasCompany ? "default" : "outline"}
+                className={hasCompany ? "w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover" : "w-full"}
+                size="lg"
+              >
+                <LogIn className="w-4 h-4 mr-2" />
+                Iniciar Sesión
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </PageTransition>
+    );
+  }
+
+  // General access page (no token) — gatekeeping message
   return (
     <PageTransition>
       <div className="min-h-screen flex items-center justify-center px-6">
@@ -111,36 +160,44 @@ const Access = () => {
           animate={{ opacity: 1, y: 0 }}
           className="glass-card p-8 max-w-md w-full"
         >
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold mb-2">
-              {hasCompany ? "Accede a tu Empresa" : "Configura tu Empresa"}
-            </h1>
-            <p className="text-muted-foreground">
-              {hasCompany
-                ? "Tu empresa ya está configurada. Inicia sesión para acceder."
-                : "Eres el primer usuario. Regístrate para convertirte en administrador y configurar tu empresa."}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-6 glass-card rounded-full flex items-center justify-center">
+              <ShieldCheck className="w-8 h-8 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold mb-3">Acceso a Sign Flow</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              El registro en Sign Flow está disponible únicamente después de adquirir un plan o mediante una invitación de tu administrador.
             </p>
           </div>
 
           <div className="space-y-3">
-            {!hasCompany && (
-              <Button
-                onClick={handleRegister}
-                className="w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover"
-                size="lg"
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                Registrarme como Administrador
-              </Button>
-            )}
             <Button
-              onClick={handleLogin}
-              variant={hasCompany ? "default" : "outline"}
-              className={hasCompany ? "w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover" : "w-full"}
+              onClick={() => navigate("/checkout")}
+              className="w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover"
+              size="lg"
+            >
+              <CreditCard className="w-4 h-4 mr-2" />
+              Ver planes
+            </Button>
+
+            <Button
+              onClick={() => navigate("/invite")}
+              variant="outline"
+              className="w-full"
+              size="lg"
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Tengo una invitación
+            </Button>
+
+            <Button
+              onClick={() => navigate("/login")}
+              variant="ghost"
+              className="w-full"
               size="lg"
             >
               <LogIn className="w-4 h-4 mr-2" />
-              Iniciar Sesión
+              Iniciar sesión
             </Button>
           </div>
         </motion.div>

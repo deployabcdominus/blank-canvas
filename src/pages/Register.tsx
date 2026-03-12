@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { hasCompany } from "@/lib/auth-helpers";
 import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { signUp } = useAuth();
   const [formData, setFormData] = useState({
@@ -23,6 +24,66 @@ const Register = () => {
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidating, setIsValidating] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    const validateAccess = async () => {
+      // Option 1: came from checkout with a plan param
+      const plan = searchParams.get("plan");
+      if (plan) {
+        setIsAuthorized(true);
+        setIsValidating(false);
+        return;
+      }
+
+      // Option 2: has a valid purchase token
+      const token = searchParams.get("token");
+      const storedToken = localStorage.getItem("purchase_token");
+      const accessToken = token || storedToken;
+
+      if (accessToken) {
+        const { data } = await supabase
+          .from("purchases")
+          .select("id, status")
+          .eq("access_token", accessToken)
+          .eq("status", "paid")
+          .maybeSingle();
+
+        if (data) {
+          setIsAuthorized(true);
+          setIsValidating(false);
+          return;
+        }
+      }
+
+      // Option 3: stored purchase_email from Access page flow
+      const storedEmail = localStorage.getItem("purchase_email");
+      if (storedEmail && storedToken) {
+        setIsAuthorized(true);
+        setIsValidating(false);
+        return;
+      }
+
+      // Not authorized
+      setIsAuthorized(false);
+      setIsValidating(false);
+    };
+
+    validateAccess();
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isValidating && !isAuthorized) {
+      toast({
+        title: "Acceso restringido",
+        description:
+          "El registro solo está disponible después de adquirir un plan. Si fuiste invitado, usa el link de invitación que recibiste.",
+        variant: "destructive",
+      });
+      navigate("/access", { replace: true });
+    }
+  }, [isValidating, isAuthorized, navigate, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +121,10 @@ const Register = () => {
         description: "Bienvenido a Sign Flow.",
       });
 
+      // Clean up stored tokens
+      localStorage.removeItem("purchase_token");
+      localStorage.removeItem("purchase_email");
+
       const { data: authData } = await supabase.auth.getUser();
       if (authData.user) {
         const userHasCompany = await hasCompany(authData.user.id);
@@ -73,6 +138,16 @@ const Register = () => {
 
     setIsLoading(false);
   };
+
+  if (isValidating || !isAuthorized) {
+    return (
+      <PageTransition>
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition>
