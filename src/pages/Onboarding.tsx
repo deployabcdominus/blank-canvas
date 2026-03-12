@@ -127,11 +127,19 @@ const Onboarding = () => {
         };
         if (planId) insertData.plan_id = planId;
 
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        console.log('[Onboarding] session user:', currentSession?.user?.id);
+        console.log('[Onboarding] user from context:', user?.id);
+        console.log('[Onboarding] insertData:', insertData);
+
         const { data: newCompany, error: insertError } = await supabase
           .from("companies")
           .insert(insertData)
           .select()
           .single();
+
+        console.log('[Onboarding] insertError:', insertError);
+        console.log('[Onboarding] newCompany:', newCompany);
 
         if (insertError) {
           if (insertError.message?.includes("foreign key") || insertError.code === "23503") {
