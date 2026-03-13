@@ -63,7 +63,7 @@ export const Sidebar = () => {
         key={item.path}
         to={item.path}
         className={`sidebar-nav-item min-h-[44px] ${
-          isTablet ? 'justify-center p-3' : 'gap-3 px-4 py-2.5'
+          isTablet ? 'justify-center p-3' : 'gap-3 px-4 py-3'
         } ${isActive ? 'sidebar-nav-active' : ''}`}
         title={isTablet ? label : undefined}
         aria-current={isActive ? "page" : undefined}
