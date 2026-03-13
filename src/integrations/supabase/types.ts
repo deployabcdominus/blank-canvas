@@ -540,11 +540,14 @@ export type Database = {
       }
       production_orders: {
         Row: {
+          assigned_to_user_id: string | null
           client: string
           company_id: string | null
           created_at: string
           end_date: string | null
+          estimated_delivery: string | null
           id: string
+          installer_company_id: string | null
           materials: Json | null
           notes: string | null
           owner_user_id: string | null
@@ -557,11 +560,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          assigned_to_user_id?: string | null
           client: string
           company_id?: string | null
           created_at?: string
           end_date?: string | null
+          estimated_delivery?: string | null
           id?: string
+          installer_company_id?: string | null
           materials?: Json | null
           notes?: string | null
           owner_user_id?: string | null
@@ -574,11 +580,14 @@ export type Database = {
           user_id: string
         }
         Update: {
+          assigned_to_user_id?: string | null
           client?: string
           company_id?: string | null
           created_at?: string
           end_date?: string | null
+          estimated_delivery?: string | null
           id?: string
+          installer_company_id?: string | null
           materials?: Json | null
           notes?: string | null
           owner_user_id?: string | null
@@ -592,10 +601,24 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "production_orders_assigned_to_user_id_fkey"
+            columns: ["assigned_to_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "production_orders_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_orders_installer_company_id_fkey"
+            columns: ["installer_company_id"]
+            isOneToOne: false
+            referencedRelation: "installer_companies"
             referencedColumns: ["id"]
           },
           {

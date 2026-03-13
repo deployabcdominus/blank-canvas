@@ -7,7 +7,7 @@ export interface WorkOrder {
   client: string;
   project: string;
   serviceType: string;
-  status: "Pendiente" | "En Progreso" | "Control de Calidad" | "Completada";
+  status: string;
   progress: number;
   materials: Array<{
     item: string;
@@ -19,8 +19,11 @@ export interface WorkOrder {
   companyId: string | null;
   ownerUserId: string | null;
   projectId: string | null;
-  notes: string | null;
-  priority: string | null;
+  notes?: string | null;
+  priority?: string | null;
+  estimatedDelivery?: string | null;
+  assignedToUserId?: string | null;
+  installerCompanyId?: string | null;
 }
 
 // Backward-compatible alias
@@ -51,7 +54,7 @@ export const useWorkOrders = () => {
 export const useProductionOrders = useWorkOrders;
 
 // Map DB statuses to new generic statuses
-const STATUS_MAP_FROM_DB: Record<string, WorkOrder['status']> = {
+const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Pendiente',
   'Materiales Pedidos': 'Pendiente',
   'En Producción': 'En Progreso',
@@ -71,7 +74,7 @@ const mapRow = (row: any): WorkOrder => ({
   client: row.client,
   project: row.project,
   serviceType: '',
-  status: STATUS_MAP_FROM_DB[row.status] || (row.status as WorkOrder['status']) || 'Pendiente',
+  status: STATUS_MAP_FROM_DB[row.status] || row.status || 'Pendiente',
   progress: row.progress || 0,
   materials: Array.isArray(row.materials) ? row.materials : [],
   startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
@@ -81,6 +84,9 @@ const mapRow = (row: any): WorkOrder => ({
   projectId: row.project_id,
   notes: row.notes || null,
   priority: row.priority || 'media',
+  estimatedDelivery: row.estimated_delivery || null,
+  assignedToUserId: row.assigned_to_user_id || null,
+  installerCompanyId: row.installer_company_id || null,
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -127,7 +133,12 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       materials: order.materials as any,
       start_date: order.startDate || new Date().toISOString(),
       end_date: order.estimatedCompletion || null,
+      estimated_delivery: order.estimatedDelivery || null,
       project_id: order.projectId || null,
+      notes: order.notes || null,
+      priority: order.priority || 'media',
+      assigned_to_user_id: order.assignedToUserId || null,
+      installer_company_id: order.installerCompanyId || null,
     });
     if (error) throw error;
     await fetchOrders();
@@ -142,8 +153,11 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.project !== undefined) dbUpdates.project = updates.project;
     if (updates.startDate !== undefined) dbUpdates.start_date = updates.startDate;
     if (updates.estimatedCompletion !== undefined) dbUpdates.end_date = updates.estimatedCompletion;
+    if (updates.estimatedDelivery !== undefined) dbUpdates.estimated_delivery = updates.estimatedDelivery;
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
+    if (updates.assignedToUserId !== undefined) dbUpdates.assigned_to_user_id = updates.assignedToUserId;
+    if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
     const { error } = await supabase.from('production_orders').update(dbUpdates).eq('id', id);
     if (error) throw error;
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));

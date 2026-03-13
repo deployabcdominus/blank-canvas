@@ -49,7 +49,7 @@ export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt
             <Pencil size={13} />
           </button>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
             <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
               <MoreHorizontal className="w-4 h-4" />
             </Button>

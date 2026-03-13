@@ -2,7 +2,7 @@ import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Eye, Printer, Share2, CheckCircle } from "lucide-react";
+import { MoreHorizontal, Eye, Printer, Share2, CheckCircle, Pencil } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -18,10 +18,11 @@ const STATUS_COLORS: Record<string, string> = {
 interface Props {
   orders: WorkOrder[];
   onOpen?: (order: WorkOrder) => void;
+  onEdit?: (order: WorkOrder) => void;
   onMarkBuilt?: (id: string) => void;
 }
 
-export function WorkOrdersTableView({ orders, onOpen, onMarkBuilt }: Props) {
+export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt }: Props) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <div className="glass-card rounded-2xl overflow-hidden border border-border/50">
@@ -35,6 +36,7 @@ export function WorkOrdersTableView({ orders, onOpen, onMarkBuilt }: Props) {
               <TableHead className="text-xs font-medium text-muted-foreground text-center">Progreso</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground">F. Inicio</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground">F. Estimada</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground w-10"></TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground w-12"></TableHead>
             </TableRow>
           </TableHeader>
@@ -54,7 +56,15 @@ export function WorkOrdersTableView({ orders, onOpen, onMarkBuilt }: Props) {
                 <TableCell className="text-center text-xs">{order.progress}%</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{order.startDate}</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{order.estimatedCompletion}</TableCell>
-                <TableCell>
+                  <TableCell>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onEdit?.(order); }}
+                      className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent text-muted-foreground hover:text-foreground"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                  </TableCell>
+                  <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
                       <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
