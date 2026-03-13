@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
-import { useTeam } from "@/contexts/TeamContext";
+
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
@@ -37,7 +37,7 @@ export default function Settings() {
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
   const { companies, updateCompany } = useInstallerCompanies();
-  const { roles, members, installations, allocations } = useTeam();
+  
   const { leads } = useLeads();
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
-import { useTeam } from "@/contexts/TeamContext";
+import { useInstallations } from "@/contexts/InstallationsContext";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
 import { statsConfig } from "@/constants/landingPageData";
 
@@ -10,10 +10,10 @@ export const SystemStats = () => {
   const { leads } = useLeads();
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();
-  const { members, installations } = useTeam();
+  const { installations } = useInstallations();
   const { companies } = useInstallerCompanies();
 
-  const statsValues = [leads.length, proposals.length, orders.length, installations.length, members.length, companies.length];
+  const statsValues = [leads.length, proposals.length, orders.length, installations.length, 0, companies.length];
 
   return (
     <motion.div
