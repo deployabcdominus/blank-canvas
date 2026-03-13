@@ -81,10 +81,20 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               <p className="text-muted-foreground text-sm truncate">{lead.name}</p>
             </div>
           </div>
-          <Badge className={`${getStatusColor(lead.status)} ${isMobile ? 'self-end' : ''} flex-shrink-0`}>
-            {lead.status}
-          </Badge>
-        </div>
+          <div className="flex items-center gap-2">
+            <Badge className={`${getStatusColor(lead.status)} ${isMobile ? 'self-end' : ''} flex-shrink-0`}>
+              {lead.status}
+            </Badge>
+            {onEdit && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onEdit(lead); }}
+                className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted text-muted-foreground hover:text-foreground"
+                aria-label="Editar lead"
+              >
+                <Pencil size={13} />
+              </button>
+            )}
+          </div>
 
         {/* Service type */}
         <p className="text-sm font-medium text-soft-blue-foreground mb-3">{lead.service}</p>
