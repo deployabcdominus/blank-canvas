@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 const Production = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders } = useProductionOrders();
+  const { orders, clearOrders, updateOrder } = useProductionOrders();
   const { toast } = useToast();
 
   // Control bar state
@@ -30,9 +30,22 @@ const Production = () => {
   const [dateTo, setDateTo] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
+  const [builtConfirmId, setBuiltConfirmId] = useState<string | null>(null);
 
-  const handleMarkAsBuilt = (_projectId: string) => {
-    // TODO: implement mark-as-built logic
+  const handleMarkAsBuilt = (id: string) => {
+    setBuiltConfirmId(id);
+  };
+
+  const confirmMarkAsBuilt = async () => {
+    if (!builtConfirmId) return;
+    try {
+      await updateOrder(builtConfirmId, { status: "Completada", progress: 100 });
+      toast({ title: "Producción lista", description: "La orden fue marcada como producida." });
+    } catch (error) {
+      toast({ title: "Error", description: "No se pudo actualizar la producción.", variant: "destructive" });
+      console.error(error);
+    }
+    setBuiltConfirmId(null);
   };
 
   const handleClearOrders = () => {
