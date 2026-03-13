@@ -327,6 +327,7 @@ export function AiBriefing() {
             ) : (
               <BriefingContent text={briefingText} />
             )}
+          </ScrollArea>
         </SheetContent>
       </Sheet>
     </>
