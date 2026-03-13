@@ -13,7 +13,7 @@ export const SystemModules = () => {
   const { leads } = useLeads();
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();
-  const { members, installations } = useTeam();
+  const { installations } = useInstallations();
   const { companies } = useInstallerCompanies();
 
   const moduleCounts = [leads.length, proposals.length, orders.length, installations.length, members.length, companies.length];
