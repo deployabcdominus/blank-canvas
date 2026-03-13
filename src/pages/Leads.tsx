@@ -40,6 +40,8 @@ const Leads = () => {
   const [assignLeadId, setAssignLeadId] = useState<string | null>(null);
   const [assignCurrentUser, setAssignCurrentUser] = useState<string | null>(null);
   const [convertLeadId, setConvertLeadId] = useState<string | null>(null);
+  const [editLead, setEditLead] = useState<Lead | null>(null);
+  const [editLeadMode, setEditLeadMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [ownershipFilter, setOwnershipFilter] = useState("todos");
 
