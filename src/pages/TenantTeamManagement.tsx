@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserCog, Users, Search, UserPlus, Mail, Clock, Trash2, RefreshCw, ShieldAlert } from "lucide-react";
 import { InviteMemberModal } from "@/components/InviteMemberModal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import RolePermissionsGuide from "@/components/team/RolePermissionsGuide";
 
 interface CompanyUser {
   id: string;
@@ -232,6 +233,10 @@ export default function TenantTeamManagement() {
                 {company?.name ? `Equipo de ${company.name}` : "Administra los usuarios de tu empresa"}
               </p>
             </div>
+          </div>
+
+          <div className="mb-8">
+            <RolePermissionsGuide />
           </div>
 
           <div className="flex items-center justify-between gap-4 flex-wrap">
