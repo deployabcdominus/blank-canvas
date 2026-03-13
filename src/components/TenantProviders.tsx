@@ -5,7 +5,7 @@ import { PaymentsProvider } from "@/contexts/PaymentsContext";
 import { WorkOrdersProvider } from "@/contexts/WorkOrdersContext";
 import { InstallationsProvider } from "@/contexts/InstallationsContext";
 import { InstallerCompaniesProvider } from "@/contexts/InstallerCompaniesContext";
-import { TeamProvider } from "@/contexts/TeamContext";
+
 import { ClientsProvider } from "@/contexts/ClientsContext";
 import { ProjectsProvider } from "@/contexts/ProjectsContext";
 
