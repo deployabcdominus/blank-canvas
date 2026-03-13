@@ -4,9 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Proposal, ProposalStatus } from "@/contexts/ProposalsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ProposalPDF } from "@/components/proposals/ProposalPDF";
 import {
   Clock, CheckCircle, XCircle, ExternalLink, Edit2, Trash2, Factory,
-  Calendar, Mail, Link2, User, RefreshCw, DollarSign,
+  Calendar, Mail, Link2, User, RefreshCw, DollarSign, Download,
 } from "lucide-react";
 
 const STATUS_CONFIG: Record<ProposalStatus, { color: string; icon: React.ReactNode; label: string }> = {
