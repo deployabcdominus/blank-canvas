@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
-import { useTeam } from "@/contexts/TeamContext";
+import { useInstallations } from "@/contexts/InstallationsContext";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
 import { systemModulesConfig } from "@/constants/landingPageData";
 
