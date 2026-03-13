@@ -4,9 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Proposal, ProposalStatus } from "@/contexts/ProposalsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ProposalPDF } from "@/components/proposals/ProposalPDF";
 import {
   Clock, CheckCircle, XCircle, ExternalLink, Edit2, Trash2, Factory,
-  Calendar, Mail, Link2, User, RefreshCw, DollarSign,
+  Calendar, Mail, Link2, User, RefreshCw, DollarSign, Download,
 } from "lucide-react";
 
 const STATUS_CONFIG: Record<ProposalStatus, { color: string; icon: React.ReactNode; label: string }> = {
@@ -40,9 +42,10 @@ interface ProposalCardProps {
   onDelete: (id: string) => void;
   onCreateOrder: (p: Proposal) => void;
   onRegisterPayment?: (p: Proposal) => void;
+  companyData?: { name: string; logo_url?: string | null } | null;
 }
 
-export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder, onRegisterPayment }: ProposalCardProps) => {
+export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder, onRegisterPayment, companyData }: ProposalCardProps) => {
   const navigate = useNavigate();
   const { getTotalPaidForProposal } = usePayments();
   const cfg = STATUS_CONFIG[proposal.status] || STATUS_CONFIG['Borrador'];
@@ -204,6 +207,22 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
               </Button>
             )}
           </>
+        )}
+        {companyData && (
+          <PDFDownloadLink
+            document={<ProposalPDF proposal={proposal} company={companyData} />}
+            fileName={`propuesta-${proposal.client.replace(/\s+/g, '-')}-${proposal.id.slice(0, 8)}.pdf`}
+          >
+            {({ loading: pdfLoading }) => (
+              <Button size="sm" variant="ghost" className="text-xs h-8 px-2 text-muted-foreground hover:text-primary" disabled={pdfLoading} title="Descargar PDF">
+                {pdfLoading ? (
+                  <span className="animate-spin inline-block w-3.5 h-3.5 border border-current border-t-transparent rounded-full" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+              </Button>
+            )}
+          </PDFDownloadLink>
         )}
         <div className="flex-1" />
         <Button size="sm" variant="ghost" onClick={() => onDelete(proposal.id)} className="text-xs h-8 px-2 text-destructive hover:text-destructive">

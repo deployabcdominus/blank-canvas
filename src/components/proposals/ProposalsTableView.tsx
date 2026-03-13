@@ -3,11 +3,13 @@ import { usePayments } from "@/contexts/PaymentsContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Edit2, Trash2, Factory, DollarSign } from "lucide-react";
+import { MoreHorizontal, Edit2, Trash2, Factory, DollarSign, Download } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
+import { pdf } from "@react-pdf/renderer";
+import { ProposalPDF } from "@/components/proposals/ProposalPDF";
 
 const STATUS_COLORS: Record<ProposalStatus, string> = {
   Borrador: "bg-muted/30 text-muted-foreground border-border/30",
@@ -22,9 +24,10 @@ interface Props {
   onDelete: (id: string) => void;
   onCreateOrder: (p: Proposal) => void;
   onRegisterPayment?: (p: Proposal) => void;
+  companyData?: { name: string; logo_url?: string | null } | null;
 }
 
-export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder, onRegisterPayment }: Props) {
+export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder, onRegisterPayment, companyData }: Props) {
   const { getTotalPaidForProposal } = usePayments();
 
   return (
@@ -81,6 +84,20 @@ export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder,
                               </DropdownMenuItem>
                             )}
                           </>
+                        )}
+                        {companyData && (
+                          <DropdownMenuItem onClick={async (e) => {
+                            e.stopPropagation();
+                            const blob = await pdf(<ProposalPDF proposal={p} company={companyData} />).toBlob();
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `propuesta-${p.client.replace(/\s+/g, '-')}-${p.id.slice(0, 8)}.pdf`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          }}>
+                            <Download className="w-3.5 h-3.5 mr-2" /> Descargar PDF
+                          </DropdownMenuItem>
                         )}
                         <DropdownMenuItem className="text-destructive" onClick={e => { e.stopPropagation(); onDelete(p.id); }}>
                           <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
