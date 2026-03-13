@@ -324,8 +324,9 @@ export function AiBriefing() {
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-[70%]" />
               </div>
+            ) : (
               <BriefingContent text={briefingText} />
-          </ScrollArea>
+            )}
         </SheetContent>
       </Sheet>
     </>
