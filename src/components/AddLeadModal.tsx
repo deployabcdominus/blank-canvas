@@ -201,7 +201,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {serviceTypes.map((type) => (
+                    {resolvedServices.map((type) => (
                       <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}
                   </SelectContent>
