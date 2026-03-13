@@ -42,9 +42,10 @@ interface ProposalCardProps {
   onDelete: (id: string) => void;
   onCreateOrder: (p: Proposal) => void;
   onRegisterPayment?: (p: Proposal) => void;
+  companyData?: { name: string; logo_url?: string | null } | null;
 }
 
-export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder, onRegisterPayment }: ProposalCardProps) => {
+export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder, onRegisterPayment, companyData }: ProposalCardProps) => {
   const navigate = useNavigate();
   const { getTotalPaidForProposal } = usePayments();
   const cfg = STATUS_CONFIG[proposal.status] || STATUS_CONFIG['Borrador'];
