@@ -91,9 +91,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       const { error } = await supabase.from("leads").delete().eq("id", lead.id);
       if (error) throw error;
       toast({ title: "Lead eliminado" });
+      setLeads(leads.filter(l => l.id !== lead.id));
       onClose();
-      // Force reload leads
-      window.location.reload();
     } catch {
       toast({ title: "Error al eliminar", variant: "destructive" });
     }
