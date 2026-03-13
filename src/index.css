@@ -203,12 +203,14 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Light mode: subtle gradient bg */
+  /* Light mode: subtle gradient bg — enables glassmorphism visibility */
   :root:not(.dark) body {
-    background: linear-gradient(135deg, #EFF2FF 0%, #F7F4FF 50%, #EFF6FF 100%);
+    background: linear-gradient(135deg, #EEF0FF 0%, #F5F3FF 40%, #EDF4FF 100%);
+    background-attachment: fixed;
   }
   .dark body {
     background: linear-gradient(135deg, #080B17 0%, #0C0F1D 60%, #080D1A 100%);
+    background-attachment: fixed;
   }
 
   /* Glass effect overrides for when disabled */
