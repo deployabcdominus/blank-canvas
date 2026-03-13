@@ -18,6 +18,7 @@ import { useProductionOrders, ProductionOrder } from "@/contexts/WorkOrdersConte
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { useCatalog } from "@/hooks/useCatalog";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ── Types ──
