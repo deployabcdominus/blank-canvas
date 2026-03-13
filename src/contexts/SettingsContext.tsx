@@ -93,6 +93,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     } else {
       root.classList.remove('dark');
     }
+    localStorage.setItem('sf-theme', settings.theme);
   }, [settings.theme]);
 
   // Apply glass effect changes
