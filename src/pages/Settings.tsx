@@ -515,6 +515,48 @@ export default function Settings() {
           </TabsContent>
         )}
         {isAdmin && !isSuperadmin && (
+          <TabsContent value="catalogos">
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-base font-semibold text-foreground">Catálogos del sistema</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Personaliza los valores que aparecen en los formularios de toda la app.
+                  Los cambios aplican inmediatamente para todo tu equipo.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CatalogManager
+                  type="lead_service"
+                  title="Servicios"
+                  description="Tipos de trabajo que ofreces. Aparece al crear un lead."
+                />
+                <CatalogManager
+                  type="lead_source"
+                  title="Fuentes de leads"
+                  description="Cómo te encontró el cliente. Aparece al crear un lead."
+                />
+                <CatalogManager
+                  type="lead_status"
+                  title="Estados de leads"
+                  description="Etapas del proceso de venta."
+                  hasColor
+                />
+                <CatalogManager
+                  type="order_status"
+                  title="Estados de órdenes"
+                  description="Etapas del proceso de producción e instalación."
+                  hasColor
+                />
+                <CatalogManager
+                  type="material_type"
+                  title="Tipos de materiales"
+                  description="Materiales disponibles al armar una propuesta."
+                />
+              </div>
+            </div>
+          </TabsContent>
+        )}
+        {isAdmin && !isSuperadmin && (
           <TabsContent value="integraciones">
             <IntegrationsCards />
           </TabsContent>
