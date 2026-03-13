@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
-import { useLeads } from "@/contexts/LeadsContext";
+import { useLeads, Lead } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { PageTransition } from "@/components/PageTransition";
