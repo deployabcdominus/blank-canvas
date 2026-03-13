@@ -3,7 +3,7 @@ import { Payment } from "@/contexts/PaymentsContext";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Trash2 } from "lucide-react";
 
 const METHOD_LABELS: Record<string, string> = {
   cash: "Efectivo", zelle: "Zelle", card: "Tarjeta",
@@ -24,9 +24,11 @@ const STATUS_LABELS: Record<string, string> = {
 interface Props {
   payments: Payment[];
   proposalMap: Map<string, { client: string; project: string }>;
+  canDelete?: boolean;
+  onDelete?: (id: string) => void;
 }
 
-export const PaymentsCardView = ({ payments, proposalMap }: Props) => {
+export const PaymentsCardView = ({ payments, proposalMap, canDelete, onDelete }: Props) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {payments.map((p, i) => {
@@ -37,7 +39,7 @@ export const PaymentsCardView = ({ payments, proposalMap }: Props) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.03 }}
-            className="glass-card p-4 space-y-3"
+            className="glass-card p-4 space-y-3 group"
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">
@@ -49,9 +51,19 @@ export const PaymentsCardView = ({ payments, proposalMap }: Props) => {
                   <p className="text-xs text-muted-foreground">{info?.project || "—"}</p>
                 </div>
               </div>
-              <Badge variant="outline" className={`text-[10px] ${STATUS_COLORS[p.status] || ""}`}>
-                {STATUS_LABELS[p.status] || p.status}
-              </Badge>
+              <div className="flex items-center gap-1">
+                {canDelete && (
+                  <button
+                    onClick={() => onDelete?.(p.id)}
+                    className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                )}
+                <Badge variant="outline" className={`text-[10px] ${STATUS_COLORS[p.status] || ""}`}>
+                  {STATUS_LABELS[p.status] || p.status}
+                </Badge>
+              </div>
             </div>
 
             <div className="flex items-end justify-between">
