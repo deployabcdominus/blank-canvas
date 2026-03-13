@@ -143,7 +143,7 @@ const Proposals = () => {
         ) : view === "cards" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {paginated.map((p, i) => (
-              <ProposalCard key={p.id} proposal={p} index={i} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} />
+              <ProposalCard key={p.id} proposal={p} index={i} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} companyData={company} />
             ))}
           </div>
         ) : (
