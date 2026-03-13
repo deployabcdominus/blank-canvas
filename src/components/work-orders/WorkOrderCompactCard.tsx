@@ -33,13 +33,21 @@ export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
-      className="glass-card p-4 hover:glow-lavender transition-all duration-200 hover:-translate-y-0.5 flex flex-col gap-3"
+      className="glass-card p-4 hover:glow-lavender transition-all duration-200 hover:-translate-y-0.5 flex flex-col gap-3 group cursor-pointer"
+      onClick={() => onOpen?.(order)}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-semibold truncate">{order.client}</h3>
           <p className="text-xs text-muted-foreground truncate">{order.project}</p>
         </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={(e) => { e.stopPropagation(); onEdit?.(order); }}
+            className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent text-muted-foreground hover:text-foreground"
+          >
+            <Pencil size={13} />
+          </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
