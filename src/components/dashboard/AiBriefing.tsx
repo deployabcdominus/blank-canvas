@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, CheckCircle2, Circle, TrendingUp, AlertTriangle, Target, Zap, ArrowRight } from "lucide-react";
+import { Sparkles, CheckCircle2, Circle, TrendingUp, AlertTriangle, Target, Zap, ArrowRight, BarChart2, Copy, type LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
