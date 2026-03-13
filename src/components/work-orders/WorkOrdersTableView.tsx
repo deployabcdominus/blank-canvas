@@ -18,10 +18,11 @@ const STATUS_COLORS: Record<string, string> = {
 interface Props {
   orders: WorkOrder[];
   onOpen?: (order: WorkOrder) => void;
+  onEdit?: (order: WorkOrder) => void;
   onMarkBuilt?: (id: string) => void;
 }
 
-export function WorkOrdersTableView({ orders, onOpen, onMarkBuilt }: Props) {
+export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt }: Props) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <div className="glass-card rounded-2xl overflow-hidden border border-border/50">
