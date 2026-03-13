@@ -31,8 +31,8 @@ const Production = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
 
-  const handleMarkAsBuilt = (projectId: string) => {
-    console.log(`Marking project ${projectId} as built`);
+  const handleMarkAsBuilt = (_projectId: string) => {
+    // TODO: implement mark-as-built logic
   };
 
   const handleClearOrders = () => {

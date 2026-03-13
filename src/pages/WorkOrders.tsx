@@ -32,8 +32,8 @@ const WorkOrders = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
 
-  const handleMarkCompleted = (id: string) => {
-    console.log(`Marking work order ${id} as completed`);
+  const handleMarkCompleted = (_id: string) => {
+    // TODO: implement mark-as-completed logic
   };
 
   const handleClearOrders = () => {
