@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban } from "lucide-react";
+import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil } from "lucide-react";
 import { Lead } from "@/contexts/LeadsContext";
 import { Proposal } from "@/contexts/ProposalsContext";
 
@@ -13,6 +13,8 @@ interface LeadCardProps {
   onAdvance: (leadId: string) => void;
   onAssign?: (leadId: string) => void;
   onConvert?: (leadId: string) => void;
+  onEdit?: (lead: Lead) => void;
+  onCardClick?: (lead: Lead) => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -44,7 +46,7 @@ function getProposalBadge(proposal: Proposal | null) {
   }
 }
 
-export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign, onConvert }: LeadCardProps) => {
+export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign, onConvert, onEdit, onCardClick }: LeadCardProps) => {
   const linkedProposal = getLeadProposal(lead.id, proposals);
   const proposalBadge = getProposalBadge(linkedProposal);
 
@@ -53,9 +55,10 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className="glass-card hover:glow-mint transition-all duration-300 p-5 md:p-6 flex flex-col justify-between"
+      className="glass-card hover:glow-mint transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer"
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}
+      onClick={() => onCardClick?.(lead)}
     >
       {/* Header: Company + Lead Status */}
       <div>
@@ -78,9 +81,20 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               <p className="text-muted-foreground text-sm truncate">{lead.name}</p>
             </div>
           </div>
-          <Badge className={`${getStatusColor(lead.status)} ${isMobile ? 'self-end' : ''} flex-shrink-0`}>
-            {lead.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className={`${getStatusColor(lead.status)} ${isMobile ? 'self-end' : ''} flex-shrink-0`}>
+              {lead.status}
+            </Badge>
+            {onEdit && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onEdit(lead); }}
+                className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted text-muted-foreground hover:text-foreground"
+                aria-label="Editar lead"
+              >
+                <Pencil size={13} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Service type */}
@@ -124,7 +138,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       </div>
 
       {/* Footer */}
-      <div className={`flex items-center justify-between pt-3 border-t border-border/50 ${isMobile ? 'flex-col gap-3' : ''}`}>
+      <div className={`flex items-center justify-between pt-3 border-t border-border/50 ${isMobile ? 'flex-col gap-3' : ''}`} onClick={e => e.stopPropagation()}>
         <span className="text-xs text-muted-foreground">
           hace {lead.daysAgo} día{lead.daysAgo !== 1 ? 's' : ''}
         </span>

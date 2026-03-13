@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
-import { useLeads } from "@/contexts/LeadsContext";
+import { useLeads, Lead } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { PageTransition } from "@/components/PageTransition";
@@ -10,6 +10,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Button } from "@/components/ui/button";
 import { AddLeadModal } from "@/components/AddLeadModal";
+import { EditLeadModal } from "@/components/EditLeadModal";
 import { AssignLeadModal } from "@/components/AssignLeadModal";
 import { ConvertLeadModal } from "@/components/ConvertLeadModal";
 import { LeadsKPIBar } from "@/components/LeadsKPIBar";
@@ -39,6 +40,8 @@ const Leads = () => {
   const [assignLeadId, setAssignLeadId] = useState<string | null>(null);
   const [assignCurrentUser, setAssignCurrentUser] = useState<string | null>(null);
   const [convertLeadId, setConvertLeadId] = useState<string | null>(null);
+  const [editLead, setEditLead] = useState<Lead | null>(null);
+  const [editLeadMode, setEditLeadMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [ownershipFilter, setOwnershipFilter] = useState("todos");
 
@@ -248,12 +251,21 @@ const Leads = () => {
                   onAdvance={handleAdvanceToProposal}
                   onAssign={canManageLeads ? handleAssignLead : undefined}
                   onConvert={(leadId) => setConvertLeadId(leadId)}
+                  onEdit={(l) => { setEditLead(l); setEditLeadMode(true); }}
+                  onCardClick={(l) => { setEditLead(l); setEditLeadMode(false); }}
                 />
               ))}
             </div>
           )}
 
           <AddLeadModal isOpen={isAddLeadModalOpen} onClose={() => setIsAddLeadModalOpen(false)} onAddLead={handleAddLead} />
+
+          <EditLeadModal
+            lead={editLead}
+            isOpen={!!editLead}
+            onClose={() => setEditLead(null)}
+            startInEditMode={editLeadMode}
+          />
 
           <AssignLeadModal
             isOpen={isAssignModalOpen}
