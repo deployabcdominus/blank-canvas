@@ -68,7 +68,7 @@ export const Sidebar = () => {
         title={isTablet ? label : undefined}
         aria-current={isActive ? "page" : undefined}
       >
-        <item.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+        <item.icon className="w-[18px] h-[18px] flex-shrink-0" aria-hidden="true" />
         {!isTablet && <span className="font-medium text-sm">{label}</span>}
       </NavLink>
     );
@@ -101,7 +101,7 @@ export const Sidebar = () => {
             ) : (
               <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
                 <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-3 min-h-[44px] w-full">
-                  <operationGroup.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+                  <operationGroup.icon className="w-[18px] h-[18px] flex-shrink-0" aria-hidden="true" />
                   <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
                   <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
                 </CollapsibleTrigger>
@@ -136,7 +136,7 @@ export const Sidebar = () => {
       {!isTablet ? (
         <div className="mb-8 flex-shrink-0 px-2">
           <BrandLogo size={44} showText variant="iconWithText" textClassName="text-2xl font-bold" />
-          <p className="text-xs text-muted-foreground mt-2 tracking-wide">
+          <p className="text-[11px] text-muted-foreground mt-2 uppercase tracking-[0.04em] font-medium">
             {isSuperadmin ? 'Platform Admin' : FIXED_BRANDING.appTagline}
           </p>
         </div>
@@ -148,19 +148,19 @@ export const Sidebar = () => {
 
       {isSuperadmin ? renderPlatformNav() : renderTenantNav()}
 
-      <div className="flex-shrink-0 mt-auto sidebar-footer-block rounded-xl p-2 space-y-1">
+      <div className="flex-shrink-0 mt-auto sidebar-footer-block space-y-1">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               className={`sidebar-nav-item min-h-[44px] w-full ${
-                isTablet ? 'justify-center p-3' : 'gap-3 px-3 py-2'
+                isTablet ? 'justify-center p-3' : 'gap-3 px-3 py-2.5'
               }`}
               title={isTablet ? "Mi Perfil" : undefined}
               aria-label="Menú del usuario"
             >
-              <Avatar className="w-9 h-9 flex-shrink-0 sidebar-avatar-ring">
+              <Avatar className="w-9 h-9 flex-shrink-0 ring-2 ring-primary/25">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
-                <AvatarFallback className="bg-primary/20 text-primary font-semibold text-xs">
+                <AvatarFallback className="bg-primary/15 text-primary font-semibold text-xs">
                   {initials}
                 </AvatarFallback>
               </Avatar>
@@ -174,28 +174,28 @@ export const Sidebar = () => {
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" side="right" className="glass-card border-white/20 w-56 z-50" sideOffset={8}>
+          <DropdownMenuContent align="end" side="right" className="glass-card w-56 z-50" sideOffset={8}>
             <div className="p-2">
-              <p className="font-medium">{fullName}</p>
+              <p className="font-semibold text-foreground">{fullName}</p>
               <p className="text-sm text-muted-foreground">{email}</p>
               {isSuperadmin && (
-                <Badge variant="outline" className="mt-1 text-xs border-primary/30 text-primary">
+                <Badge variant="outline" className="mt-1 text-xs border-primary/30 text-primary font-bold">
                   <Shield className="w-3 h-3 mr-1" />
                   Superadmin
                 </Badge>
               )}
             </div>
-            <DropdownMenuSeparator className="bg-white/20" />
-            <DropdownMenuItem onClick={() => navigate('/settings?tab=perfil')} className="hover:bg-white/10 min-h-[44px]">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate('/settings?tab=perfil')} className="min-h-[44px]">
               <User className="w-4 h-4 mr-2" /> Perfil
             </DropdownMenuItem>
             {isAdmin && (
-              <DropdownMenuItem onClick={() => navigate('/settings')} className="hover:bg-white/10 min-h-[44px]">
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="min-h-[44px]">
                 <Settings className="w-4 h-4 mr-2" /> Configuración
               </DropdownMenuItem>
             )}
-            <DropdownMenuSeparator className="bg-white/20" />
-            <DropdownMenuItem onClick={handleLogout} className="hover:bg-white/10 text-destructive min-h-[44px]">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-destructive min-h-[44px]">
               <LogOut className="w-4 h-4 mr-2" /> Salir
             </DropdownMenuItem>
           </DropdownMenuContent>

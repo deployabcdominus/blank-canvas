@@ -31,11 +31,11 @@ interface PipelineItem {
 }
 
 const COLS = [
-  { key: "leads" as KanbanColumn, label: "Leads", icon: Users, accent: "#00D2FF" },
-  { key: "propuesta" as KanbanColumn, label: "Propuesta", icon: FileText, accent: "#00D2FF" },
-  { key: "work-orders" as KanbanColumn, label: "Órdenes", icon: ClipboardList, accent: "#A259FF" },
-  { key: "entrega" as KanbanColumn, label: "Entrega", icon: MapPin, accent: "#A259FF" },
-  { key: "completado" as KanbanColumn, label: "Completado", icon: CheckCircle2, accent: "#00D2FF" },
+  { key: "leads" as KanbanColumn, label: "Leads", icon: Users, accentVar: "--primary" },
+  { key: "propuesta" as KanbanColumn, label: "Propuesta", icon: FileText, accentVar: "--color-info" },
+  { key: "work-orders" as KanbanColumn, label: "Órdenes", icon: ClipboardList, accentVar: "--lavender" },
+  { key: "entrega" as KanbanColumn, label: "Entrega", icon: MapPin, accentVar: "--color-warning" },
+  { key: "completado" as KanbanColumn, label: "Completado", icon: CheckCircle2, accentVar: "--color-success" },
 ];
 
 function daysAgo(dateStr?: string | null): number {
@@ -44,13 +44,13 @@ function daysAgo(dateStr?: string | null): number {
   catch { return 0; }
 }
 
-function getHealth(daysAgo: number): "green" | "yellow" | "red" {
-  if (daysAgo <= 3) return "green";
-  if (daysAgo <= 7) return "yellow";
+function getHealth(d: number): "green" | "yellow" | "red" {
+  if (d <= 3) return "green";
+  if (d <= 7) return "yellow";
   return "red";
 }
 
-const healthColor = { green: "#22c55e", yellow: "#eab308", red: "#ef4444" };
+const healthColor = { green: "hsl(var(--color-success))", yellow: "hsl(var(--color-warning))", red: "hsl(var(--color-danger))" };
 
 export const HudPipeline = ({ leads, proposals, orders, installations, activeFilter }: HudPipelineProps) => {
   const navigate = useNavigate();
@@ -94,8 +94,8 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-white/80">Pipeline de Proyectos</h2>
-        {activeFilter && <span className="text-[11px] text-white/40">Filtrando: {COLS.find(c => c.key === activeFilter)?.label}</span>}
+        <h2 className="text-lg font-bold text-foreground">Pipeline de Proyectos</h2>
+        {activeFilter && <span className="text-xs text-muted-foreground">Filtrando: {COLS.find(c => c.key === activeFilter)?.label}</span>}
       </div>
 
       <div className="flex gap-3 overflow-x-auto pb-2">
@@ -103,39 +103,62 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
           {visibleCols.map(col => {
             const colCards = cards.filter(c => c.column === col.key);
             const Icon = col.icon;
+            const accentColor = `hsl(var(${col.accentVar}))`;
             return (
               <motion.div key={col.key} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="flex-1 min-w-[200px]">
-                <div className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl border" style={{ background: `${col.accent}08`, borderColor: `${col.accent}20` }}>
-                  <Icon className="w-3.5 h-3.5" style={{ color: col.accent }} />
-                  <span className="font-semibold text-xs text-white/70">{col.label}</span>
-                  <span className="ml-auto text-xs font-bold" style={{ color: col.accent }}>{colCards.length}</span>
+                <div
+                  className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl border"
+                  style={{
+                    background: `hsl(var(${col.accentVar}) / 0.08)`,
+                    borderColor: `hsl(var(${col.accentVar}) / 0.20)`,
+                  }}
+                >
+                  <Icon className="w-3.5 h-3.5" style={{ color: accentColor }} />
+                  <span className="font-semibold text-xs text-foreground/70">{col.label}</span>
+                  <span className="ml-auto text-xs font-bold" style={{ color: accentColor }}>{colCards.length}</span>
                 </div>
                 <div className="space-y-2 min-h-[100px]">
                   {colCards.length === 0 ? (
-                    <div className="text-center py-8 text-white/20 text-[11px]">Sin proyectos</div>
+                    <div className="text-center py-8 text-muted-foreground text-xs">Sin proyectos</div>
                   ) : (
                     colCards.map((card, idx) => (
-                      <motion.div key={card.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.04 }} onClick={() => navigate(card.navigateTo)} className="rounded-xl border p-3 cursor-pointer transition-all duration-200 hover:scale-[1.02] group" style={{ background: "rgba(15,18,30,0.6)", borderColor: "rgba(255,255,255,0.06)" }} onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = `${col.accent}40`; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 16px -4px ${col.accent}30`; }} onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "none"; }}>
+                      <motion.div
+                        key={card.id}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.04 }}
+                        onClick={() => navigate(card.navigateTo)}
+                        className="dash-card p-3 cursor-pointer card-interactive group"
+                      >
                         <div className="flex items-start gap-2">
                           <div className="mt-1.5 flex-shrink-0">
                             <div className="w-2 h-2 rounded-full" style={{ background: healthColor[card.health], boxShadow: `0 0 6px ${healthColor[card.health]}60` }} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-sm text-white/80 truncate group-hover:text-white transition-colors">{card.company}</p>
-                            <p className="text-[11px] text-white/35 truncate">{card.project}</p>
+                            <p className="font-semibold text-sm text-foreground truncate">{card.company}</p>
+                            <p className="text-xs text-muted-foreground truncate">{card.project}</p>
                           </div>
                           {card.logoUrl && (
                             <Avatar className="w-6 h-6 flex-shrink-0">
                               <AvatarImage src={card.logoUrl} />
-                              <AvatarFallback className="bg-white/5 text-white/30 text-[8px]">{card.company.slice(0, 2).toUpperCase()}</AvatarFallback>
+                              <AvatarFallback className="bg-primary/10 text-primary text-[8px]">{card.company.slice(0, 2).toUpperCase()}</AvatarFallback>
                             </Avatar>
                           )}
                         </div>
                         <div className="flex items-center gap-1.5 mt-2">
-                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border" style={{ background: `${col.accent}10`, borderColor: `${col.accent}20`, color: `${col.accent}` }}>{card.status}</span>
-                          {card.value != null && card.value > 0 && <span className="text-[10px] font-bold text-white/50">${card.value.toLocaleString("es-MX")}</span>}
-                          <span className="ml-auto text-[10px] text-white/25">{card.daysAgo === 0 ? "hoy" : `${card.daysAgo}d`}</span>
-                          {card.health === "red" && <AlertTriangle className="w-3 h-3" style={{ color: "#ef4444" }} />}
+                          <span
+                            className="text-[10px] font-medium px-1.5 py-0.5 rounded border"
+                            style={{
+                              background: `hsl(var(${col.accentVar}) / 0.10)`,
+                              borderColor: `hsl(var(${col.accentVar}) / 0.20)`,
+                              color: accentColor,
+                            }}
+                          >
+                            {card.status}
+                          </span>
+                          {card.value != null && card.value > 0 && <span className="text-[10px] font-bold text-muted-foreground">${card.value.toLocaleString("es-MX")}</span>}
+                          <span className="ml-auto text-[10px] text-muted-foreground/60">{card.daysAgo === 0 ? "hoy" : `${card.daysAgo}d`}</span>
+                          {card.health === "red" && <AlertTriangle className="w-3 h-3" style={{ color: "hsl(var(--color-danger))" }} />}
                         </div>
                       </motion.div>
                     ))

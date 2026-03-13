@@ -12,9 +12,13 @@ interface HudCardProps {
   accentClass?: string;
 }
 
+const ACCENT_MAP: Record<string, { bg: string; color: string; colorVar: string }> = {
+  "hud-cyan": { bg: "hsl(var(--color-info) / 0.15)", color: "hsl(var(--color-info))", colorVar: "var(--color-info)" },
+  "hud-violet": { bg: "hsl(var(--lavender) / 0.15)", color: "hsl(var(--lavender))", colorVar: "var(--lavender)" },
+};
+
 export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, accentClass = "hud-cyan" }: HudCardProps) => {
-  const accentColor = accentClass === "hud-violet" ? "rgba(162,89,255,0.5)" : "rgba(0,210,255,0.5)";
-  const glowColor = accentClass === "hud-violet" ? "rgba(162,89,255,0.15)" : "rgba(0,210,255,0.15)";
+  const accent = ACCENT_MAP[accentClass] || ACCENT_MAP["hud-cyan"];
 
   return (
     <motion.button
@@ -23,54 +27,41 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
       transition={{ delay: index * 0.08, duration: 0.5, type: "spring" }}
       onClick={onClick}
       className={`
-        relative overflow-hidden rounded-2xl text-left transition-all duration-300 group
-        backdrop-blur-[24px] border p-5
-        ${isActive
-          ? "scale-[1.03] shadow-2xl"
-          : "hover:scale-[1.01] hover:shadow-xl"
-        }
+        stat-card relative overflow-hidden text-left group
+        dash-card card-interactive p-5
+        ${isActive ? "ring-2 ring-primary/40 shadow-lg" : ""}
       `}
-      style={{
-        background: "rgba(15,18,30,0.55)",
-        borderColor: isActive ? accentColor : "rgba(255,255,255,0.08)",
-        boxShadow: isActive ? `0 0 32px -4px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.05)` : "inset 0 1px 0 rgba(255,255,255,0.05)",
-      }}
     >
-      {/* Scan line effect */}
-      <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
-        <div className="hud-scan-line" />
-      </div>
-
       {/* Top glow accent */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-60"
-        style={{ background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-40"
+        style={{ background: `linear-gradient(90deg, transparent, ${accent.color}, transparent)` }}
       />
 
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3">
           <div
-            className="p-2 rounded-xl border"
+            className="w-10 h-10 flex items-center justify-center rounded-[10px] border"
             style={{
-              background: glowColor,
-              borderColor: `${accentColor}40`,
+              background: accent.bg,
+              borderColor: `${accent.color}30`,
             }}
           >
-            <Icon className="w-4 h-4" style={{ color: accentColor.replace("0.5", "1") }} />
+            <Icon className="w-5 h-5" style={{ color: accent.color }} />
           </div>
           {isActive && (
             <span
-              className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-              style={{ background: glowColor, color: accentColor.replace("0.5", "1") }}
+              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+              style={{ background: accent.bg, color: accent.color }}
             >
               Filtrado
             </span>
           )}
         </div>
 
-        <p className="font-bold text-3xl tracking-tight text-white/90">{value}</p>
-        <p className="text-sm font-medium mt-1 text-white/80">{label}</p>
-        <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>{desc}</p>
+        <p className="font-extrabold text-[32px] leading-none tracking-tight text-foreground">{value}</p>
+        <p className="text-sm font-semibold mt-2 text-foreground">{label}</p>
+        <p className="text-xs mt-0.5 text-muted-foreground">{desc}</p>
       </div>
     </motion.button>
   );
