@@ -79,6 +79,8 @@ const mapRow = (row: any): WorkOrder => ({
   companyId: row.company_id,
   ownerUserId: row.owner_user_id,
   projectId: row.project_id,
+  notes: row.notes || null,
+  priority: row.priority || 'media',
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
