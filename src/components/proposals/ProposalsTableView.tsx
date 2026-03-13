@@ -85,6 +85,20 @@ export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder,
                             )}
                           </>
                         )}
+                        {companyData && (
+                          <DropdownMenuItem onClick={async (e) => {
+                            e.stopPropagation();
+                            const blob = await pdf(<ProposalPDF proposal={p} company={companyData} />).toBlob();
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `propuesta-${p.client.replace(/\s+/g, '-')}-${p.id.slice(0, 8)}.pdf`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          }}>
+                            <Download className="w-3.5 h-3.5 mr-2" /> Descargar PDF
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuItem className="text-destructive" onClick={e => { e.stopPropagation(); onDelete(p.id); }}>
                           <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
                         </DropdownMenuItem>
