@@ -24,6 +24,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
+import IntegrationsCards from "@/components/settings/IntegrationsCards";
 import { supabase } from "@/integrations/supabase/client";
 
 
