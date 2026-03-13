@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
-import { useTeam } from "@/contexts/TeamContext";
+import { useInstallations } from "@/contexts/InstallationsContext";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
 import { statsConfig } from "@/constants/landingPageData";
 
