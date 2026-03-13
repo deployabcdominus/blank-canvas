@@ -13,6 +13,8 @@ interface LeadCardProps {
   onAdvance: (leadId: string) => void;
   onAssign?: (leadId: string) => void;
   onConvert?: (leadId: string) => void;
+  onEdit?: (lead: Lead) => void;
+  onCardClick?: (lead: Lead) => void;
 }
 
 const getStatusColor = (status: string) => {
