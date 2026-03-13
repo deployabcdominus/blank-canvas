@@ -42,7 +42,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
-        console.log('[ProtectedRoute] BLOCKED — redirecting to /dashboard');
+        
         navigate('/dashboard', { replace: true });
         return;
       }
