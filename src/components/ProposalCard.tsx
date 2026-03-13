@@ -208,6 +208,22 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
             )}
           </>
         )}
+        {companyData && (
+          <PDFDownloadLink
+            document={<ProposalPDF proposal={proposal} company={companyData} />}
+            fileName={`propuesta-${proposal.client.replace(/\s+/g, '-')}-${proposal.id.slice(0, 8)}.pdf`}
+          >
+            {({ loading: pdfLoading }) => (
+              <Button size="sm" variant="ghost" className="text-xs h-8 px-2 text-muted-foreground hover:text-primary" disabled={pdfLoading} title="Descargar PDF">
+                {pdfLoading ? (
+                  <span className="animate-spin inline-block w-3.5 h-3.5 border border-current border-t-transparent rounded-full" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        )}
         <div className="flex-1" />
         <Button size="sm" variant="ghost" onClick={() => onDelete(proposal.id)} className="text-xs h-8 px-2 text-destructive hover:text-destructive">
           <Trash2 className="w-3.5 h-3.5" />
