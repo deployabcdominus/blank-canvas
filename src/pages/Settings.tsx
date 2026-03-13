@@ -24,6 +24,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
+import IntegrationsCards from "@/components/settings/IntegrationsCards";
 import { supabase } from "@/integrations/supabase/client";
 
 
@@ -504,71 +505,7 @@ export default function Settings() {
         )}
         {isAdmin && !isSuperadmin && (
           <TabsContent value="integraciones">
-            <div className="grid gap-6">
-              <Card className="relative overflow-hidden border-0 bg-card/80 backdrop-blur-sm">
-                {/* Animated gradient border */}
-                <div className="absolute inset-0 rounded-lg p-[1px] bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 bg-[length:200%_100%] animate-[shimmer_3s_linear_infinite] -z-10" />
-                <div className="absolute inset-[1px] rounded-[7px] bg-card -z-[5]" />
-
-                {/* Q2 2026 badge */}
-                <div className="absolute top-4 right-4 z-10">
-                  <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-xs font-semibold">
-                    Q2 2026
-                  </Badge>
-                </div>
-
-                <CardHeader>
-                  <div className="flex items-center gap-4">
-                    {/* QB Logo */}
-                    <div className="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold opacity-60"
-                      style={{ backgroundColor: '#2CA01C', color: 'white' }}>
-                      QB
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <CardTitle className="text-lg">QuickBooks Online</CardTitle>
-                        <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 text-xs">
-                          Próximamente
-                        </Badge>
-                      </div>
-                      <CardDescription>
-                        Sincronización bidireccional automática de clientes, propuestas e invoices
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-5">
-                  <ul className="space-y-2.5">
-                    <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 flex-shrink-0" />
-                      Clientes sincronizados en tiempo real
-                    </li>
-                    <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 flex-shrink-0" />
-                      Propuestas convertidas a Estimates en QBO
-                    </li>
-                    <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 flex-shrink-0" />
-                      Pagos registrados como Invoices automáticamente
-                    </li>
-                  </ul>
-
-                  <Button
-                    className="flex items-center gap-2"
-                    onClick={() => {
-                      toast({
-                        title: '¡Te avisaremos cuando esté listo!',
-                        description: 'Recibirás una notificación cuando la integración con QuickBooks esté disponible.',
-                      });
-                    }}
-                  >
-                    <Bell className="w-4 h-4" />
-                    Notificarme cuando esté disponible
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+            <IntegrationsCards />
           </TabsContent>
         )}
       </Tabs>
