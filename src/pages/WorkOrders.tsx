@@ -9,6 +9,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { WorkOrderCompactCard } from "@/components/work-orders/WorkOrderCompactCard";
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
+import { EditWorkOrderModal } from "@/components/work-orders/EditWorkOrderModal";
 import { ClipboardList, Package, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
