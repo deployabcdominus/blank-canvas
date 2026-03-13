@@ -133,7 +133,12 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       materials: order.materials as any,
       start_date: order.startDate || new Date().toISOString(),
       end_date: order.estimatedCompletion || null,
+      estimated_delivery: order.estimatedDelivery || null,
       project_id: order.projectId || null,
+      notes: order.notes || null,
+      priority: order.priority || 'media',
+      assigned_to_user_id: order.assignedToUserId || null,
+      installer_company_id: order.installerCompanyId || null,
     });
     if (error) throw error;
     await fetchOrders();
