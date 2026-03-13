@@ -13,7 +13,7 @@ export const SystemStats = () => {
   const { installations } = useInstallations();
   const { companies } = useInstallerCompanies();
 
-  const statsValues = [leads.length, proposals.length, orders.length, installations.length, members.length, companies.length];
+  const statsValues = [leads.length, proposals.length, orders.length, installations.length, 0, companies.length];
 
   return (
     <motion.div

@@ -23,9 +23,7 @@ export const TenantProviders = ({ children }: { children: ReactNode }) => (
             <WorkOrdersProvider>
               <InstallationsProvider>
                 <InstallerCompaniesProvider>
-                  <TeamProvider>
                     {children}
-                  </TeamProvider>
                 </InstallerCompaniesProvider>
               </InstallationsProvider>
             </WorkOrdersProvider>

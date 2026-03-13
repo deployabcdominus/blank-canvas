@@ -16,7 +16,7 @@ export const SystemModules = () => {
   const { installations } = useInstallations();
   const { companies } = useInstallerCompanies();
 
-  const moduleCounts = [leads.length, proposals.length, orders.length, installations.length, members.length, companies.length];
+  const moduleCounts = [leads.length, proposals.length, orders.length, installations.length, 0, companies.length];
 
   return (
     <motion.div

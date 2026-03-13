@@ -37,7 +37,7 @@ export default function Settings() {
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
   const { companies, updateCompany } = useInstallerCompanies();
-  const { roles, members, installations, allocations } = useTeam();
+  
   const { leads } = useLeads();
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();
