@@ -169,6 +169,13 @@ const WorkOrders = () => {
 
         <NewWorkOrderModal isOpen={isNewOrderModalOpen} onClose={() => setIsNewOrderModalOpen(false)} />
 
+        <EditWorkOrderModal
+          order={editOrder}
+          isOpen={!!editOrder}
+          onClose={() => setEditOrder(null)}
+          startInEditMode={editOrderMode}
+        />
+
         <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
