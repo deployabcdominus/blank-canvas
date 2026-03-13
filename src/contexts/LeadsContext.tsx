@@ -86,6 +86,8 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
           },
           value: item.value || '',
           daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
+          source: (item as any).source || undefined,
+          notes: (item as any).notes || undefined,
           website: item.website || undefined,
           logoUrl: (item as any).logo_url || undefined,
           companyId: (item as any).company_id || undefined,
