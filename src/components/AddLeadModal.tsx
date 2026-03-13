@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, X } from "lucide-react";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { useCatalog } from "@/hooks/useCatalog";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 
