@@ -40,6 +40,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [service, setService] = useState("");
+  const [source, setSource] = useState("");
   const [status, setStatus] = useState("");
   const [value, setValue] = useState("");
   const [notes, setNotes] = useState("");
