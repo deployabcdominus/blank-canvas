@@ -10,6 +10,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Button } from "@/components/ui/button";
 import { AddLeadModal } from "@/components/AddLeadModal";
+import { EditLeadModal } from "@/components/EditLeadModal";
 import { AssignLeadModal } from "@/components/AssignLeadModal";
 import { ConvertLeadModal } from "@/components/ConvertLeadModal";
 import { LeadsKPIBar } from "@/components/LeadsKPIBar";
