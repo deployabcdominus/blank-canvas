@@ -24,9 +24,10 @@ interface Props {
   onDelete: (id: string) => void;
   onCreateOrder: (p: Proposal) => void;
   onRegisterPayment?: (p: Proposal) => void;
+  companyData?: { name: string; logo_url?: string | null } | null;
 }
 
-export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder, onRegisterPayment }: Props) {
+export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder, onRegisterPayment, companyData }: Props) {
   const { getTotalPaidForProposal } = usePayments();
 
   return (
