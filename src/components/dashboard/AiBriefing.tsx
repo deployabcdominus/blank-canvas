@@ -316,29 +316,44 @@ export function AiBriefing() {
       <Sheet open={briefingOpen} onOpenChange={setBriefingOpen}>
         <SheetContent side="right" className="w-full sm:max-w-lg">
           <SheetHeader>
-            <SheetTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Briefing Ejecutivo
-            </SheetTitle>
+            <div className="flex items-center justify-between">
+              <SheetTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Briefing Ejecutivo
+              </SheetTitle>
+              {briefingText && !briefingLoading && (
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(briefingText);
+                    toast({ title: "Copiado", description: "Briefing copiado al portapapeles" });
+                  }}
+                  className="p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                  title="Copiar briefing"
+                >
+                  <Copy size={14} />
+                </button>
+              )}
+            </div>
             <SheetDescription>
               Análisis generado con IA · {format(now, "d MMM yyyy", { locale: es })}
             </SheetDescription>
           </SheetHeader>
           <ScrollArea className="mt-4 h-[calc(100vh-140px)] pr-2">
             {briefingLoading ? (
-              <div className="space-y-4">
+              <div className="space-y-3 p-4">
                 <motion.p
-                  className="text-muted-foreground text-sm"
+                  className="text-muted-foreground text-sm mb-3"
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
                   Analizando tu negocio...
                 </motion.p>
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-[90%]" />
-                <Skeleton className="h-4 w-[80%]" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-[70%]" />
+                <div className="h-4 bg-muted/60 rounded animate-pulse w-1/3" />
+                <div className="h-3 bg-muted/30 rounded animate-pulse w-full" />
+                <div className="h-3 bg-muted/30 rounded animate-pulse w-5/6" />
+                <div className="h-4 bg-muted/60 rounded animate-pulse w-2/5 mt-4" />
+                <div className="h-3 bg-muted/30 rounded animate-pulse w-full" />
+                <div className="h-3 bg-muted/30 rounded animate-pulse w-4/6" />
               </div>
             ) : (
               <BriefingContent text={briefingText} />
