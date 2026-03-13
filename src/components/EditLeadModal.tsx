@@ -24,7 +24,7 @@ interface EditLeadModalProps {
 }
 
 export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }: EditLeadModalProps) => {
-  const { updateLead } = useLeads();
+  const { updateLead, leads, setLeads } = useLeads();
   const { isAdmin } = useUserRole();
   const { items: services } = useCatalog("lead_service");
   const { items: sources } = useCatalog("lead_source");
