@@ -114,11 +114,39 @@ export function AiBriefing() {
         clients: clientList,
       };
 
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw new Error("No se pudo validar tu sesión. Intenta nuevamente.");
+
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) {
+        throw new Error("Tu sesión expiró. Vuelve a iniciar sesión para generar el briefing.");
+      }
+
       const response = await supabase.functions.invoke("ai-briefing", {
         body: { businessData },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
-      if (response.error) throw new Error(response.error.message);
+      if (response.error) {
+        let errorMessage = response.error.message || "Error desconocido en la Edge Function";
+        const errorContext = (response.error as { context?: Response }).context;
+
+        if (errorContext) {
+          try {
+            const payload = await errorContext.clone().json();
+            if (payload?.error && typeof payload.error === "string") {
+              errorMessage = payload.error;
+            }
+          } catch {
+            // Keep default edge function error message
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
       setBriefingText(response.data?.briefing || "No se pudo generar el briefing.");
     } catch (e: any) {
       toast({ title: "Error al generar briefing", description: e.message, variant: "destructive" });
