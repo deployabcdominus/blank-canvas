@@ -21,10 +21,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell } from "lucide-react";
+import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell, List } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
 import IntegrationsCards from "@/components/settings/IntegrationsCards";
+import { CatalogManager } from "@/components/settings/CatalogManager";
+import { useSeedCatalogs } from "@/hooks/useSeedCatalogs";
 import { supabase } from "@/integrations/supabase/client";
 
 
@@ -56,6 +58,9 @@ export default function Settings() {
   const [resetSent, setResetSent] = useState(false);
   
   const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
+
+  // Seed default catalog items when admin visits settings
+  useSeedCatalogs();
 
 
   useEffect(() => {
@@ -145,6 +150,12 @@ export default function Settings() {
             <TabsTrigger value="configuracion">
               <SettingsIcon className="w-4 h-4 mr-2" />
               Configuración
+            </TabsTrigger>
+          )}
+          {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="catalogos">
+              <List className="w-4 h-4 mr-2" />
+              Catálogos
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
@@ -501,6 +512,48 @@ export default function Settings() {
               </CardContent>
             </Card>
           </div>
+          </TabsContent>
+        )}
+        {isAdmin && !isSuperadmin && (
+          <TabsContent value="catalogos">
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-base font-semibold text-foreground">Catálogos del sistema</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Personaliza los valores que aparecen en los formularios de toda la app.
+                  Los cambios aplican inmediatamente para todo tu equipo.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CatalogManager
+                  type="lead_service"
+                  title="Servicios"
+                  description="Tipos de trabajo que ofreces. Aparece al crear un lead."
+                />
+                <CatalogManager
+                  type="lead_source"
+                  title="Fuentes de leads"
+                  description="Cómo te encontró el cliente. Aparece al crear un lead."
+                />
+                <CatalogManager
+                  type="lead_status"
+                  title="Estados de leads"
+                  description="Etapas del proceso de venta."
+                  hasColor
+                />
+                <CatalogManager
+                  type="order_status"
+                  title="Estados de órdenes"
+                  description="Etapas del proceso de producción e instalación."
+                  hasColor
+                />
+                <CatalogManager
+                  type="material_type"
+                  title="Tipos de materiales"
+                  description="Materiales disponibles al armar una propuesta."
+                />
+              </div>
+            </div>
           </TabsContent>
         )}
         {isAdmin && !isSuperadmin && (

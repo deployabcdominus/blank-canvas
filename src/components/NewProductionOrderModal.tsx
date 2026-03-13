@@ -18,6 +18,7 @@ import { useProductionOrders, ProductionOrder } from "@/contexts/WorkOrdersConte
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { useCatalog } from "@/hooks/useCatalog";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ── Types ──
@@ -222,6 +223,8 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
   const { addOrder } = useProductionOrders();
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const resolvedServices = catalogServices.length > 0 ? catalogServices.map(s => s.label) : serviceTypes;
 
   // Zone 1
   const [selectedClientId, setSelectedClientId] = useState('');
@@ -426,7 +429,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                     <SelectContent>
-                      {serviceTypes.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                      {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

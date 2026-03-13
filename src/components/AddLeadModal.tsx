@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, X } from "lucide-react";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { useCatalog } from "@/hooks/useCatalog";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 
@@ -34,6 +35,10 @@ interface AddLeadModalProps {
 
 export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) => {
   const serviceTypes = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const resolvedServices = catalogServices.length > 0
+    ? catalogServices.map(s => s.label)
+    : serviceTypes;
   const [isLoading, setIsLoading] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -196,7 +201,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {serviceTypes.map((type) => (
+                    {resolvedServices.map((type) => (
                       <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}
                   </SelectContent>

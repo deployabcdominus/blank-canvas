@@ -18,6 +18,7 @@ import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { useCatalog } from "@/hooks/useCatalog";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ── Types ──
@@ -207,6 +208,8 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   const { addOrder } = useWorkOrders();
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const resolvedServices = catalogServices.length > 0 ? catalogServices.map(s => s.label) : serviceTypes;
 
   const [selectedClientId, setSelectedClientId] = useState('');
   const [customClient, setCustomClient] = useState('');
@@ -397,7 +400,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                     <SelectContent>
-                      {serviceTypes.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                      {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

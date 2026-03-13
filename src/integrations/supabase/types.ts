@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      catalog_items: {
+        Row: {
+          catalog_type: string
+          color: string | null
+          company_id: string
+          created_at: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          label: string
+          sort_order: number | null
+          value: string
+        }
+        Insert: {
+          catalog_type: string
+          color?: string | null
+          company_id: string
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          label: string
+          sort_order?: number | null
+          value: string
+        }
+        Update: {
+          catalog_type?: string
+          color?: string | null
+          company_id?: string
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          label?: string
+          sort_order?: number | null
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           client_name: string
