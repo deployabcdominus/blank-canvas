@@ -95,6 +95,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               </button>
             )}
           </div>
+        </div>
 
         {/* Service type */}
         <p className="text-sm font-medium text-soft-blue-foreground mb-3">{lead.service}</p>
