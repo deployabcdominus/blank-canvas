@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban } from "lucide-react";
+import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil } from "lucide-react";
 import { Lead } from "@/contexts/LeadsContext";
 import { Proposal } from "@/contexts/ProposalsContext";
 
