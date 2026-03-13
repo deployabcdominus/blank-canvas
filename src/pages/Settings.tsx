@@ -229,7 +229,7 @@ export default function Settings() {
                       <Shield className="w-4 h-4" />
                       Rol
                     </Label>
-                    <Badge variant="secondary" className="text-sm px-3 py-1.5">
+                    <Badge className="text-sm px-3 py-1.5 font-bold bg-primary/10 text-primary border border-primary/30 rounded-full">
                       {roleLabel}
                     </Badge>
                   </div>
