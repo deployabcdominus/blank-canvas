@@ -134,16 +134,16 @@ export default function Clients() {
       {/* KPI Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Total Clientes', value: clients.length, icon: Users },
-          { label: 'Clientes Activos', value: activeClients, icon: TrendingUp },
-          { label: 'Total Proyectos', value: totalProjects, icon: FolderOpen },
-          { label: 'Prom. Proy/Cliente', value: clients.length ? (totalProjects / clients.length).toFixed(1) : '0', icon: TrendingUp },
+          { label: 'Total Clientes', value: clients.length, icon: Users, iconBg: 'rgba(91,106,242,0.12)', iconColor: '#5B6AF2' },
+          { label: 'Clientes Activos', value: activeClients, icon: TrendingUp, iconBg: 'rgba(22,163,74,0.12)', iconColor: '#16A34A' },
+          { label: 'Total Proyectos', value: totalProjects, icon: FolderOpen, iconBg: 'rgba(14,165,233,0.12)', iconColor: '#0EA5E9' },
+          { label: 'Prom. Proy/Cliente', value: clients.length ? (totalProjects / clients.length).toFixed(1) : '0', icon: TrendingUp, iconBg: 'rgba(217,119,6,0.12)', iconColor: '#D97706' },
          ].map((kpi, i) => (
           <motion.div key={kpi.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="kpi-card card-interactive">
+            <Card className="kpi-card card-interactive glass-card">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-primary/10">
-                  <kpi.icon className="w-5 h-5 text-primary" />
+                <div className="w-10 h-10 flex items-center justify-center rounded-[10px]" style={{ background: kpi.iconBg }}>
+                  <kpi.icon className="w-5 h-5" style={{ color: kpi.iconColor }} />
                 </div>
                 <div>
                   <p className="kpi-label">{kpi.label}</p>
@@ -187,7 +187,7 @@ export default function Clients() {
         </div>
 
         {canEdit && (
-          <Button onClick={openNew} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue/90">
+          <Button onClick={openNew} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-md hover:shadow-lg transition-all btn-spring rounded-[10px]">
             <Plus className="w-4 h-4 mr-2" /> Nuevo Cliente
           </Button>
         )}

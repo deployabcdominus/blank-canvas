@@ -40,7 +40,7 @@ export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
       <div className="relative h-[180px] flex items-center justify-center">
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" data={chartData} startAngle={90} endAngle={-270} barSize={12}>
-            <RadialBar dataKey="value" cornerRadius={6} background={{ fill: "hsl(var(--border))" }} />
+            <RadialBar dataKey="value" cornerRadius={6} background={{ fill: "rgba(99, 115, 165, 0.15)" }} />
           </RadialBarChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -50,16 +50,16 @@ export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
       </div>
 
       <div className="grid grid-cols-3 gap-2 mt-2">
-        <div className="text-center border-r border-border/50">
-          <p className="text-[22px] font-bold" style={{ color: "hsl(var(--color-success))" }}>{stats.completed}</p>
+        <div className="text-center flex flex-col items-center">
+          <p className="text-[22px] font-bold" style={{ color: "#16A34A" }}>{stats.completed}</p>
           <p className="text-[11px] text-muted-foreground">Completadas</p>
         </div>
-        <div className="text-center border-r border-border/50">
-          <p className="text-[22px] font-bold" style={{ color: "hsl(var(--color-warning))" }}>{stats.inProgress}</p>
+        <div className="text-center flex flex-col items-center border-x" style={{ borderColor: 'rgba(99, 115, 165, 0.15)' }}>
+          <p className="text-[22px] font-bold" style={{ color: "#D97706" }}>{stats.inProgress}</p>
           <p className="text-[11px] text-muted-foreground">En curso</p>
         </div>
-        <div className="text-center">
-          <p className="text-[22px] font-bold text-foreground/60">{stats.pending}</p>
+        <div className="text-center flex flex-col items-center">
+          <p className="text-[22px] font-bold" style={{ color: "#DC2626" }}>{stats.pending}</p>
           <p className="text-[11px] text-muted-foreground">Pendientes</p>
         </div>
       </div>

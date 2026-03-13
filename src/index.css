@@ -77,7 +77,7 @@
     --secondary: 228 33% 96%;
     --secondary-foreground: 222 47% 11%;
     --muted: 228 33% 96%;
-    --muted-foreground: 228 16% 50%;
+    --muted-foreground: 228 18% 42%;
     --accent: 228 33% 96%;
     --accent-foreground: 222 47% 11%;
     --destructive: 0 72% 51%;
@@ -159,7 +159,7 @@
     --secondary: 234 18% 18%;
     --secondary-foreground: 228 40% 93%;
     --muted: 234 20% 14%;
-    --muted-foreground: 228 15% 60%;
+    --muted-foreground: 228 18% 65%;
     --accent: 234 18% 18%;
     --accent-foreground: 228 40% 93%;
     --destructive: 0 72% 51%;
@@ -203,12 +203,14 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Light mode: subtle gradient bg */
+  /* Light mode: subtle gradient bg — enables glassmorphism visibility */
   :root:not(.dark) body {
-    background: linear-gradient(135deg, #EFF2FF 0%, #F7F4FF 50%, #EFF6FF 100%);
+    background: linear-gradient(135deg, #EEF0FF 0%, #F5F3FF 40%, #EDF4FF 100%);
+    background-attachment: fixed;
   }
   .dark body {
     background: linear-gradient(135deg, #080B17 0%, #0C0F1D 60%, #080D1A 100%);
+    background-attachment: fixed;
   }
 
   /* Glass effect overrides for when disabled */
@@ -227,23 +229,37 @@
 /* ── Custom Utilities ── */
 @layer utilities {
   .glass {
-    background: hsl(var(--glass-bg));
+    background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid hsl(var(--glass-border));
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+  }
+  .dark .glass {
+    background: rgba(22, 27, 52, 0.65);
+    border: 1px solid rgba(148, 163, 220, 0.15);
   }
 
   .glass-card {
     @apply glass rounded-xl;
-    box-shadow: var(--shadow-glass);
+    box-shadow: 0 1px 3px rgba(99, 115, 165, 0.06), 0 4px 20px rgba(99, 115, 165, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  }
+  .dark .glass-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20), 0 4px 20px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
-  /* ── Dashboard card base ── */
+  /* ── Dashboard card base — real glassmorphism ── */
   .dash-card {
-    background: hsl(var(--dash-card-bg));
+    background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid hsl(var(--dash-card-border));
-    box-shadow: var(--shadow-card);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 1px 3px rgba(99, 115, 165, 0.06), 0 4px 20px rgba(99, 115, 165, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.90);
     border-radius: 16px;
+  }
+  .dark .dash-card {
+    background: rgba(22, 27, 52, 0.65);
+    border: 1px solid rgba(148, 163, 220, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20), 0 4px 20px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   /* Card hover micro-interaction */
@@ -254,7 +270,10 @@
   }
   .card-interactive:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-elevated);
+    box-shadow: 0 2px 8px rgba(99, 115, 165, 0.10), 0 12px 40px rgba(99, 115, 165, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+  .dark .card-interactive:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 12px 40px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   /* ── Stat card staggered entrance ── */
