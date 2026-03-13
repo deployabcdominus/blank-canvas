@@ -546,7 +546,9 @@ export type Database = {
           end_date: string | null
           id: string
           materials: Json | null
+          notes: string | null
           owner_user_id: string | null
+          priority: string | null
           progress: number | null
           project: string | null
           project_id: string | null
@@ -561,7 +563,9 @@ export type Database = {
           end_date?: string | null
           id?: string
           materials?: Json | null
+          notes?: string | null
           owner_user_id?: string | null
+          priority?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
@@ -576,7 +580,9 @@ export type Database = {
           end_date?: string | null
           id?: string
           materials?: Json | null
+          notes?: string | null
           owner_user_id?: string | null
+          priority?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
