@@ -45,10 +45,10 @@ const Dashboard = () => {
     }).length;
 
     return [
-      { key: "leads" as KanbanColumn, label: "Leads Activos", desc: "Sin propuesta asignada", value: activeLeads, icon: Users, accent: "hud-cyan" },
-      { key: "work-orders" as KanbanColumn, label: "En Progreso", desc: "Órdenes en curso", value: inProgress, icon: ClipboardList, accent: "hud-violet" },
+      { key: "leads" as KanbanColumn, label: "Leads Activos", desc: "Sin propuesta asignada", value: activeLeads, icon: Users, accent: "hud-indigo" },
+      { key: "work-orders" as KanbanColumn, label: "En Progreso", desc: "Órdenes en curso", value: inProgress, icon: ClipboardList, accent: "hud-amber" },
       { key: "entrega" as KanbanColumn, label: "Esperando Entrega", desc: "Agendadas pendientes", value: awaitingDelivery, icon: MapPin, accent: "hud-cyan" },
-      { key: "completado" as KanbanColumn, label: "Completados", desc: "Este mes", value: completedThisMonth, icon: CheckCircle2, accent: "hud-violet" },
+      { key: "completado" as KanbanColumn, label: "Completados", desc: "Este mes", value: completedThisMonth, icon: CheckCircle2, accent: "hud-green" },
     ];
   }, [leads, orders, installations]);
 

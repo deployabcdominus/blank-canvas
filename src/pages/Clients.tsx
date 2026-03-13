@@ -187,7 +187,7 @@ export default function Clients() {
         </div>
 
         {canEdit && (
-          <Button onClick={openNew} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue/90">
+          <Button onClick={openNew} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-md hover:shadow-lg transition-all btn-spring rounded-[10px]">
             <Plus className="w-4 h-4 mr-2" /> Nuevo Cliente
           </Button>
         )}

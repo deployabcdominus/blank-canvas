@@ -40,7 +40,7 @@ export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
       <div className="relative h-[180px] flex items-center justify-center">
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" data={chartData} startAngle={90} endAngle={-270} barSize={12}>
-            <RadialBar dataKey="value" cornerRadius={6} background={{ fill: "hsl(var(--border))" }} />
+            <RadialBar dataKey="value" cornerRadius={6} background={{ fill: "rgba(99, 115, 165, 0.15)" }} />
           </RadialBarChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center">

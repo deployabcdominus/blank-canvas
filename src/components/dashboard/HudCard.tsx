@@ -12,13 +12,17 @@ interface HudCardProps {
   accentClass?: string;
 }
 
-const ACCENT_MAP: Record<string, { bg: string; color: string; colorVar: string }> = {
-  "hud-cyan": { bg: "hsl(var(--color-info) / 0.15)", color: "hsl(var(--color-info))", colorVar: "var(--color-info)" },
-  "hud-violet": { bg: "hsl(var(--lavender) / 0.15)", color: "hsl(var(--lavender))", colorVar: "var(--lavender)" },
+const ACCENT_MAP: Record<string, { bg: string; color: string }> = {
+  "hud-indigo":  { bg: "rgba(91, 106, 242, 0.12)",  color: "#5B6AF2" },
+  "hud-amber":   { bg: "rgba(217, 119, 6, 0.12)",   color: "#D97706" },
+  "hud-cyan":    { bg: "rgba(14, 165, 233, 0.12)",   color: "#0EA5E9" },
+  "hud-green":   { bg: "rgba(22, 163, 74, 0.12)",    color: "#16A34A" },
+  // Legacy fallbacks
+  "hud-violet":  { bg: "rgba(91, 106, 242, 0.12)",   color: "#5B6AF2" },
 };
 
-export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, accentClass = "hud-cyan" }: HudCardProps) => {
-  const accent = ACCENT_MAP[accentClass] || ACCENT_MAP["hud-cyan"];
+export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, accentClass = "hud-indigo" }: HudCardProps) => {
+  const accent = ACCENT_MAP[accentClass] || ACCENT_MAP["hud-indigo"];
 
   return (
     <motion.button
@@ -41,10 +45,9 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3">
           <div
-            className="w-10 h-10 flex items-center justify-center rounded-[10px] border"
+            className="w-10 h-10 flex items-center justify-center rounded-[10px]"
             style={{
               background: accent.bg,
-              borderColor: `${accent.color}30`,
             }}
           >
             <Icon className="w-5 h-5" style={{ color: accent.color }} />
