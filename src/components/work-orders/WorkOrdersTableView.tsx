@@ -2,7 +2,7 @@ import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Eye, Printer, Share2, CheckCircle } from "lucide-react";
+import { MoreHorizontal, Eye, Printer, Share2, CheckCircle, Pencil } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
