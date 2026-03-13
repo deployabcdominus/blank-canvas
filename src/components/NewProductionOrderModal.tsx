@@ -335,7 +335,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
       materials: data.materials.map(m => ({ item: m.name, quantity: String(m.quantity), status: 'Pendiente' })),
       startDate: new Date().toISOString().split('T')[0],
       estimatedCompletion: data.targetDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
-      projectId: null,
+      projectId: null, notes: null, priority: 'media',
     });
 
     sonnerToast.success(`Orden creada para "${data.client}"`);
