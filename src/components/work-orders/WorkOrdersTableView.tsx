@@ -55,7 +55,15 @@ export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt }: Pro
                 <TableCell className="text-center text-xs">{order.progress}%</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{order.startDate}</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{order.estimatedCompletion}</TableCell>
-                <TableCell>
+                  <TableCell>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onEdit?.(order); }}
+                      className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent text-muted-foreground hover:text-foreground"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                  </TableCell>
+                  <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
                       <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
