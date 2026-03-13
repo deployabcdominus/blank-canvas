@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      bd_ativo: {
+        Row: {
+          created_at: string
+          id: number
+          num: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          num?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          num?: number | null
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           client_name: string
@@ -983,6 +1001,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      manter_bd_ativo: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role:
