@@ -158,7 +158,7 @@ export const Sidebar = () => {
               title={isTablet ? "Mi Perfil" : undefined}
               aria-label="Menú del usuario"
             >
-              <Avatar className="w-8 h-8 flex-shrink-0 sidebar-avatar-ring">
+              <Avatar className="w-9 h-9 flex-shrink-0 sidebar-avatar-ring">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
                 <AvatarFallback className="bg-primary/20 text-primary font-semibold text-xs">
                   {initials}
