@@ -166,8 +166,8 @@ export const Sidebar = () => {
               </Avatar>
               {!isTablet && (
                 <div className="text-left min-w-0">
-                  <span className="font-medium text-sm block leading-tight truncate text-foreground">{fullName.split(' ')[0]}</span>
-                  <span className="text-xs text-muted-foreground leading-tight truncate block">
+                  <span className="font-semibold text-sm block leading-tight truncate text-foreground">{fullName.split(' ')[0]}</span>
+                  <span className="text-[11px] text-muted-foreground leading-tight truncate block">
                     {isSuperadmin ? 'Superadmin' : email}
                   </span>
                 </div>
