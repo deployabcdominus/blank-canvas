@@ -38,7 +38,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     if (roleLoading || !role || isSuperadmin) return;
 
-    console.log('[ProtectedRoute] useEffect guard — role:', role, 'path:', location.pathname);
+    
 
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
