@@ -49,7 +49,7 @@ const Proposals = () => {
       client: proposal.client, project: proposal.project, serviceType: proposal.project,
       status: "Pendiente", progress: 0, materials: [],
       startDate: today, estimatedCompletion: endDate.toISOString().split('T')[0],
-      projectId: null,
+      projectId: null, notes: null, priority: 'media',
     });
     toast.success(`Orden creada para "${proposal.client}"`);
   };

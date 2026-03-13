@@ -19,6 +19,8 @@ export interface WorkOrder {
   companyId: string | null;
   ownerUserId: string | null;
   projectId: string | null;
+  notes: string | null;
+  priority: string | null;
 }
 
 // Backward-compatible alias
@@ -77,6 +79,8 @@ const mapRow = (row: any): WorkOrder => ({
   companyId: row.company_id,
   ownerUserId: row.owner_user_id,
   projectId: row.project_id,
+  notes: row.notes || null,
+  priority: row.priority || 'media',
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -138,6 +142,8 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.project !== undefined) dbUpdates.project = updates.project;
     if (updates.startDate !== undefined) dbUpdates.start_date = updates.startDate;
     if (updates.estimatedCompletion !== undefined) dbUpdates.end_date = updates.estimatedCompletion;
+    if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+    if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
     const { error } = await supabase.from('production_orders').update(dbUpdates).eq('id', id);
     if (error) throw error;
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));

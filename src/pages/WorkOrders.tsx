@@ -9,6 +9,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { WorkOrderCompactCard } from "@/components/work-orders/WorkOrderCompactCard";
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
+import { EditWorkOrderModal } from "@/components/work-orders/EditWorkOrderModal";
 import { ClipboardList, Package, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -32,6 +33,8 @@ const WorkOrders = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [completeConfirmId, setCompleteConfirmId] = useState<string | null>(null);
+  const [editOrder, setEditOrder] = useState<WorkOrder | null>(null);
+  const [editOrderMode, setEditOrderMode] = useState(false);
 
   const handleMarkCompleted = (id: string) => {
     setCompleteConfirmId(id);
@@ -137,11 +140,22 @@ const WorkOrders = () => {
             {view === "cards" ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {paginated.map((order, i) => (
-                  <WorkOrderCompactCard key={order.id} order={order} index={i} onMarkBuilt={handleMarkCompleted} />
+                  <WorkOrderCompactCard
+                    key={order.id}
+                    order={order}
+                    index={i}
+                    onMarkBuilt={handleMarkCompleted}
+                    onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
+                    onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+                  />
                 ))}
               </div>
             ) : (
-              <WorkOrdersTableView orders={paginated} onMarkBuilt={handleMarkCompleted} />
+              <WorkOrdersTableView
+                orders={paginated}
+                onMarkBuilt={handleMarkCompleted}
+                onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+              />
             )}
             <WorkOrdersPagination
               currentPage={safePage}
@@ -154,6 +168,13 @@ const WorkOrders = () => {
         )}
 
         <NewWorkOrderModal isOpen={isNewOrderModalOpen} onClose={() => setIsNewOrderModalOpen(false)} />
+
+        <EditWorkOrderModal
+          order={editOrder}
+          isOpen={!!editOrder}
+          onClose={() => setEditOrder(null)}
+          startInEditMode={editOrderMode}
+        />
 
         <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
           <AlertDialogContent>
