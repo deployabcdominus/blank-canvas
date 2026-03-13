@@ -46,7 +46,7 @@ function getProposalBadge(proposal: Proposal | null) {
   }
 }
 
-export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign, onConvert }: LeadCardProps) => {
+export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign, onConvert, onEdit, onCardClick }: LeadCardProps) => {
   const linkedProposal = getLeadProposal(lead.id, proposals);
   const proposalBadge = getProposalBadge(linkedProposal);
 
