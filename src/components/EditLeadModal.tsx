@@ -69,8 +69,10 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
         name,
         company,
         service,
+        source,
         status,
         value,
+        notes,
         contact: { phone, email, location },
       });
       toast({ title: "Lead actualizado" });
