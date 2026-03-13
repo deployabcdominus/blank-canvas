@@ -23,6 +23,7 @@ interface PaymentsContextType {
   payments: Payment[];
   loading: boolean;
   addPayment: (payment: Omit<Payment, 'id' | 'createdAt'>) => Promise<void>;
+  deletePayment: (id: string) => Promise<void>;
   getPaymentsForProposal: (proposalId: string) => Payment[];
   getTotalPaidForProposal: (proposalId: string) => number;
   refreshPayments: () => Promise<void>;
