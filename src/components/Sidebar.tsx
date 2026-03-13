@@ -134,15 +134,15 @@ export const Sidebar = () => {
       aria-label="Menu lateral principal"
     >
       {!isTablet ? (
-        <div className="mb-6 flex-shrink-0 px-1">
-          <BrandLogo size={40} showText variant="iconWithText" textClassName="text-2xl" />
-          <p className="text-xs text-muted-foreground mt-1.5 tracking-wide">
+        <div className="mb-8 flex-shrink-0 px-2">
+          <BrandLogo size={44} showText variant="iconWithText" textClassName="text-2xl font-bold" />
+          <p className="text-xs text-muted-foreground mt-2 tracking-wide">
             {isSuperadmin ? 'Platform Admin' : FIXED_BRANDING.appTagline}
           </p>
         </div>
       ) : (
-        <div className="mb-4 flex-shrink-0 flex justify-center">
-          <BrandLogo size={36} />
+        <div className="mb-6 flex-shrink-0 flex justify-center">
+          <BrandLogo size={40} />
         </div>
       )}
 
