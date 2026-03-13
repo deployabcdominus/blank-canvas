@@ -251,6 +251,8 @@ const Leads = () => {
                   onAdvance={handleAdvanceToProposal}
                   onAssign={canManageLeads ? handleAssignLead : undefined}
                   onConvert={(leadId) => setConvertLeadId(leadId)}
+                  onEdit={(l) => { setEditLead(l); setEditLeadMode(true); }}
+                  onCardClick={(l) => { setEditLead(l); setEditLeadMode(false); }}
                 />
               ))}
             </div>
