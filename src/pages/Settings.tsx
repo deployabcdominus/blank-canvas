@@ -59,6 +59,9 @@ export default function Settings() {
   
   const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
 
+  // Seed default catalog items when admin visits settings
+  useSeedCatalogs();
+
 
   useEffect(() => {
     if (company?.name) setOrgName(company.name);
