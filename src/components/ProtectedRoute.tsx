@@ -23,6 +23,9 @@ const ROUTE_ROLE_MAP: Record<string, string[]> = {
   '/proposals': ['admin', 'sales', 'member'],
   '/clients': ['admin', 'sales', 'operations', 'member'],
   '/projects': ['admin', 'sales', 'operations', 'member'],
+  '/production': ['admin', 'operations'],
+  '/map-hub': ['admin', 'operations', 'viewer'],
+  '/settings': ['admin', 'sales', 'operations', 'member', 'viewer'],
 };
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
