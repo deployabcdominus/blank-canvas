@@ -36,6 +36,7 @@ export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt }: Pro
               <TableHead className="text-xs font-medium text-muted-foreground text-center">Progreso</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground">F. Inicio</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground">F. Estimada</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground w-10"></TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground w-12"></TableHead>
             </TableRow>
           </TableHeader>
