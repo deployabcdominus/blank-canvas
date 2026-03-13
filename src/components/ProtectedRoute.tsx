@@ -81,7 +81,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   // 6. Role-based route blocking (render-time fallback)
-  console.log('[ProtectedRoute] render guard — role:', role, 'loading:', roleLoading, 'path:', location.pathname, 'isSuperadmin:', isSuperadmin);
+  
   if (role && !isSuperadmin) {
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
