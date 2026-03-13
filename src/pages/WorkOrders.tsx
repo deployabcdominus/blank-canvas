@@ -140,7 +140,14 @@ const WorkOrders = () => {
             {view === "cards" ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {paginated.map((order, i) => (
-                  <WorkOrderCompactCard key={order.id} order={order} index={i} onMarkBuilt={handleMarkCompleted} />
+                  <WorkOrderCompactCard
+                    key={order.id}
+                    order={order}
+                    index={i}
+                    onMarkBuilt={handleMarkCompleted}
+                    onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
+                    onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+                  />
                 ))}
               </div>
             ) : (
