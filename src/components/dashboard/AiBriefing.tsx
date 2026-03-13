@@ -19,6 +19,22 @@ import { format, differenceInDays, subDays, isThisMonth, isAfter } from "date-fn
 import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 
+function BriefingContent({ text }: { text: string }) {
+  const lines = text.split('\n').filter(Boolean);
+  return (
+    <div className="space-y-3">
+      {lines.map((line, i) => {
+        if (line.startsWith('## '))
+          return <h3 key={i} className="text-sm font-bold text-foreground/90 mt-4 first:mt-0">{line.replace('## ', '')}</h3>;
+        if (line.startsWith('# '))
+          return <h2 key={i} className="text-base font-bold text-foreground mb-1">{line.replace('# ', '')}</h2>;
+        const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return <p key={i} className="text-sm text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />;
+      })}
+    </div>
+  );
+}
+
 export function AiBriefing() {
   const { fullName } = useUserProfile();
   const { company } = useCompany();
