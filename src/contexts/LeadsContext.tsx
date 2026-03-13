@@ -15,6 +15,8 @@ export interface Lead {
   };
   value: string;
   daysAgo: number;
+  source?: string;
+  notes?: string;
   website?: string;
   logoUrl?: string;
   companyId?: string;
