@@ -53,9 +53,10 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       setEmail(lead.contact.email);
       setLocation(lead.contact.location);
       setService(lead.service);
+      setSource(lead.source || "");
       setStatus(lead.status);
       setValue(lead.value);
-      setNotes("");
+      setNotes(lead.notes || "");
       setEditing(startInEditMode);
     }
   }, [lead, startInEditMode]);
