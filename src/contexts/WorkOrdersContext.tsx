@@ -54,7 +54,7 @@ export const useWorkOrders = () => {
 export const useProductionOrders = useWorkOrders;
 
 // Map DB statuses to new generic statuses
-const STATUS_MAP_FROM_DB: Record<string, WorkOrder['status']> = {
+const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Pendiente',
   'Materiales Pedidos': 'Pendiente',
   'En Producción': 'En Progreso',
