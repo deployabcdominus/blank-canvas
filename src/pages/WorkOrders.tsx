@@ -33,6 +33,8 @@ const WorkOrders = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [completeConfirmId, setCompleteConfirmId] = useState<string | null>(null);
+  const [editOrder, setEditOrder] = useState<WorkOrder | null>(null);
+  const [editOrderMode, setEditOrderMode] = useState(false);
 
   const handleMarkCompleted = (id: string) => {
     setCompleteConfirmId(id);
