@@ -223,6 +223,8 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
   const { addOrder } = useProductionOrders();
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const resolvedServices = catalogServices.length > 0 ? catalogServices.map(s => s.label) : serviceTypes;
 
   // Zone 1
   const [selectedClientId, setSelectedClientId] = useState('');
