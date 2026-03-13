@@ -38,11 +38,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     if (roleLoading || !role || isSuperadmin) return;
 
-    console.log('[ProtectedRoute] useEffect guard — role:', role, 'path:', location.pathname);
+    
 
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
-        console.log('[ProtectedRoute] BLOCKED — redirecting to /dashboard');
+        
         navigate('/dashboard', { replace: true });
         return;
       }
@@ -81,7 +81,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   // 6. Role-based route blocking (render-time fallback)
-  console.log('[ProtectedRoute] render guard — role:', role, 'loading:', roleLoading, 'path:', location.pathname, 'isSuperadmin:', isSuperadmin);
+  
   if (role && !isSuperadmin) {
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
