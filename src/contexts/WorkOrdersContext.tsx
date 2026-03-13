@@ -19,6 +19,8 @@ export interface WorkOrder {
   companyId: string | null;
   ownerUserId: string | null;
   projectId: string | null;
+  notes: string | null;
+  priority: string | null;
 }
 
 // Backward-compatible alias
