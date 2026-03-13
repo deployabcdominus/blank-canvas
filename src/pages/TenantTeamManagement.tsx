@@ -235,6 +235,10 @@ export default function TenantTeamManagement() {
             </div>
           </div>
 
+          <div className="mb-8">
+            <RolePermissionsGuide />
+          </div>
+
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
