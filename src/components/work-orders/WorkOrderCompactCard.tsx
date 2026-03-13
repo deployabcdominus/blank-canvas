@@ -21,10 +21,11 @@ interface Props {
   order: WorkOrder;
   index: number;
   onOpen?: (order: WorkOrder) => void;
+  onEdit?: (order: WorkOrder) => void;
   onMarkBuilt?: (id: string) => void;
 }
 
-export function WorkOrderCompactCard({ order, index, onOpen, onMarkBuilt }: Props) {
+export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt }: Props) {
   const status = STATUS_MAP[order.status] || { color: "bg-muted text-muted-foreground", icon: <Clock className="w-3 h-3" /> };
 
   return (
