@@ -23,13 +23,31 @@ serve(async (req) => {
     if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not configured");
 
     const companyName = businessData?.companyName || "Mi empresa";
-    const promptText = `Eres un consultor de negocios experto en empresas de servicios en Miami. Analiza estos datos de la empresa "${companyName}" y genera un briefing ejecutivo en español con:
-1. Resumen del estado del negocio hoy
-2. Top 3 oportunidades inmediatas
-3. Top 2 riesgos a atender esta semana
-4. Una recomendación de acción concreta para hoy
+    const promptText = `Eres el asistente de negocio de ${companyName}, una empresa de señalética en Miami.
+Analiza estos datos y escribe un resumen ejecutivo en español, claro y directo.
+
 Datos: ${JSON.stringify(businessData)}
-Sé directo, específico y accionable. Máximo 300 palabras.`;
+
+Formato EXACTO a seguir — usa estos encabezados y estructura:
+
+## Situación de hoy
+Una o dos frases explicando el estado general del negocio en este momento. Sin tecnicismos.
+
+## Qué hacer primero
+Las 2 o 3 acciones más importantes para hoy, explicadas como si le hablaras a alguien ocupado. Cada punto en una línea nueva empezando con "→".
+
+## Qué vigilar esta semana
+Máximo 2 riesgos o situaciones que merecen atención, explicados en lenguaje simple.
+
+## Recomendación del día
+Una sola acción concreta y específica para hacer hoy antes de las 5pm.
+
+Reglas:
+- Máximo 250 palabras en total
+- Lenguaje simple, como si le hablaras a un dueño de negocio ocupado
+- Nada de jerga financiera ni términos técnicos
+- Si los números son todos cero, enfócate en qué hacer para conseguir el primer cliente
+- Tono positivo y orientado a soluciones, nunca alarmista`;
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
