@@ -154,6 +154,7 @@ const WorkOrders = () => {
               <WorkOrdersTableView
                 orders={paginated}
                 onMarkBuilt={handleMarkCompleted}
+                onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
                 onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
               />
             )}
