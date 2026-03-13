@@ -151,7 +151,11 @@ const WorkOrders = () => {
                 ))}
               </div>
             ) : (
-              <WorkOrdersTableView orders={paginated} onMarkBuilt={handleMarkCompleted} />
+              <WorkOrdersTableView
+                orders={paginated}
+                onMarkBuilt={handleMarkCompleted}
+                onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+              />
             )}
             <WorkOrdersPagination
               currentPage={safePage}
