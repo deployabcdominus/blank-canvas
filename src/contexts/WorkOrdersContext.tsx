@@ -74,7 +74,7 @@ const mapRow = (row: any): WorkOrder => ({
   client: row.client,
   project: row.project,
   serviceType: '',
-  status: STATUS_MAP_FROM_DB[row.status] || (row.status as WorkOrder['status']) || 'Pendiente',
+  status: STATUS_MAP_FROM_DB[row.status] || row.status || 'Pendiente',
   progress: row.progress || 0,
   materials: Array.isArray(row.materials) ? row.materials : [],
   startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
@@ -84,6 +84,9 @@ const mapRow = (row: any): WorkOrder => ({
   projectId: row.project_id,
   notes: row.notes || null,
   priority: row.priority || 'media',
+  estimatedDelivery: row.estimated_delivery || null,
+  assignedToUserId: row.assigned_to_user_id || null,
+  installerCompanyId: row.installer_company_id || null,
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
