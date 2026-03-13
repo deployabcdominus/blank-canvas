@@ -19,7 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders } = useWorkOrders();
+  const { orders, clearOrders, updateOrder } = useWorkOrders();
   const { canEdit, canDelete } = useUserRole();
   const { toast } = useToast();
 
@@ -31,9 +31,22 @@ const WorkOrders = () => {
   const [dateTo, setDateTo] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
+  const [completeConfirmId, setCompleteConfirmId] = useState<string | null>(null);
 
-  const handleMarkCompleted = (_id: string) => {
-    // TODO: implement mark-as-completed logic
+  const handleMarkCompleted = (id: string) => {
+    setCompleteConfirmId(id);
+  };
+
+  const confirmMarkCompleted = async () => {
+    if (!completeConfirmId) return;
+    try {
+      await updateOrder(completeConfirmId, { status: "Completada", progress: 100 });
+      toast({ title: "Orden completada", description: "La orden fue marcada como completada." });
+    } catch (error) {
+      toast({ title: "Error", description: "No se pudo completar la orden.", variant: "destructive" });
+      console.error(error);
+    }
+    setCompleteConfirmId(null);
   };
 
   const handleClearOrders = () => {
@@ -153,6 +166,19 @@ const WorkOrders = () => {
               <AlertDialogAction onClick={handleClearOrders} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                 Limpiar
               </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={!!completeConfirmId} onOpenChange={(open) => { if (!open) setCompleteConfirmId(null); }}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Confirmas que esta orden está completada?</AlertDialogTitle>
+              <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmMarkCompleted}>Confirmar</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
