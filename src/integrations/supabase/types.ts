@@ -164,6 +164,7 @@ export type Database = {
           id: string
           location: string | null
           notes: string | null
+          photos: string[] | null
           project: string | null
           project_id: string | null
           scheduled_date: string | null
@@ -178,6 +179,7 @@ export type Database = {
           id?: string
           location?: string | null
           notes?: string | null
+          photos?: string[] | null
           project?: string | null
           project_id?: string | null
           scheduled_date?: string | null
@@ -192,6 +194,7 @@ export type Database = {
           id?: string
           location?: string | null
           notes?: string | null
+          photos?: string[] | null
           project?: string | null
           project_id?: string | null
           scheduled_date?: string | null
