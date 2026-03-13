@@ -40,6 +40,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [service, setService] = useState("");
+  const [source, setSource] = useState("");
   const [status, setStatus] = useState("");
   const [value, setValue] = useState("");
   const [notes, setNotes] = useState("");
@@ -52,9 +53,10 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       setEmail(lead.contact.email);
       setLocation(lead.contact.location);
       setService(lead.service);
+      setSource(lead.source || "");
       setStatus(lead.status);
       setValue(lead.value);
-      setNotes("");
+      setNotes(lead.notes || "");
       setEditing(startInEditMode);
     }
   }, [lead, startInEditMode]);
@@ -67,8 +69,10 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
         name,
         company,
         service,
+        source,
         status,
         value,
+        notes,
         contact: { phone, email, location },
       });
       toast({ title: "Lead actualizado" });
@@ -181,6 +185,22 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                 </Select>
               ) : (
                 <p className="text-sm text-foreground mt-1">{service || "—"}</p>
+              )}
+            </div>
+
+            <div>
+              <Label>Fuente</Label>
+              {editing ? (
+                <Select value={source} onValueChange={setSource}>
+                  <SelectTrigger className={fieldClass}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                  <SelectContent>
+                    {sources.map(s => (
+                      <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="text-sm text-foreground mt-1">{source || "—"}</p>
               )}
             </div>
 

@@ -373,9 +373,11 @@ export type Database = {
           location: string | null
           logo_url: string | null
           name: string
+          notes: string | null
           phone: string | null
           project_id: string | null
           service: string | null
+          source: string | null
           status: string | null
           user_id: string
           value: string | null
@@ -393,9 +395,11 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           name: string
+          notes?: string | null
           phone?: string | null
           project_id?: string | null
           service?: string | null
+          source?: string | null
           status?: string | null
           user_id: string
           value?: string | null
@@ -413,9 +417,11 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           name?: string
+          notes?: string | null
           phone?: string | null
           project_id?: string | null
           service?: string | null
+          source?: string | null
           status?: string | null
           user_id?: string
           value?: string | null
