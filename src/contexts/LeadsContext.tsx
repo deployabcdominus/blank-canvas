@@ -177,6 +177,8 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (updates.service !== undefined) dbUpdates.service = updates.service;
     if (updates.status !== undefined) dbUpdates.status = updates.status;
     if (updates.value !== undefined) dbUpdates.value = updates.value;
+    if (updates.source !== undefined) dbUpdates.source = updates.source;
+    if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if ((updates as any).clientId !== undefined) dbUpdates.client_id = (updates as any).clientId;
     if ((updates as any).projectId !== undefined) dbUpdates.project_id = (updates as any).projectId;
     if (updates.contact) {

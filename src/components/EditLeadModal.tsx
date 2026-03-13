@@ -189,6 +189,22 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
             </div>
 
             <div>
+              <Label>Fuente</Label>
+              {editing ? (
+                <Select value={source} onValueChange={setSource}>
+                  <SelectTrigger className={fieldClass}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                  <SelectContent>
+                    {sources.map(s => (
+                      <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="text-sm text-foreground mt-1">{source || "—"}</p>
+              )}
+            </div>
+
+            <div>
               <Label>Estado</Label>
               {editing ? (
                 <Select value={status} onValueChange={setStatus}>
