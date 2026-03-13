@@ -23,6 +23,7 @@ interface PaymentsContextType {
   payments: Payment[];
   loading: boolean;
   addPayment: (payment: Omit<Payment, 'id' | 'createdAt'>) => Promise<void>;
+  deletePayment: (id: string) => Promise<void>;
   getPaymentsForProposal: (proposalId: string) => Payment[];
   getTotalPaidForProposal: (proposalId: string) => number;
   refreshPayments: () => Promise<void>;
@@ -103,6 +104,12 @@ export const PaymentsProvider: React.FC<{ children: ReactNode }> = ({ children }
     await fetchPayments();
   };
 
+  const deletePayment = async (id: string) => {
+    const { error } = await (supabase.from('payments' as any).delete().eq('id', id) as any);
+    if (error) throw error;
+    setPayments(prev => prev.filter(p => p.id !== id));
+  };
+
   const getPaymentsForProposal = (proposalId: string) =>
     payments.filter(p => p.proposalId === proposalId);
 
@@ -112,7 +119,7 @@ export const PaymentsProvider: React.FC<{ children: ReactNode }> = ({ children }
       .reduce((sum, p) => sum + p.amount, 0);
 
   return (
-    <PaymentsContext.Provider value={{ payments, loading, addPayment, getPaymentsForProposal, getTotalPaidForProposal, refreshPayments: fetchPayments }}>
+    <PaymentsContext.Provider value={{ payments, loading, addPayment, deletePayment, getPaymentsForProposal, getTotalPaidForProposal, refreshPayments: fetchPayments }}>
       {children}
     </PaymentsContext.Provider>
   );

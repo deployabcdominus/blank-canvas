@@ -3,16 +3,24 @@ import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { usePayments, Payment } from "@/contexts/PaymentsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { PaymentsKPIBar } from "@/components/payments/PaymentsKPIBar";
 import { PaymentsControlBar, type PaymentSortKey, type ViewMode } from "@/components/payments/PaymentsControlBar";
 import { PaymentsTableView } from "@/components/payments/PaymentsTableView";
 import { PaymentsCardView } from "@/components/payments/PaymentsCardView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import { DollarSign } from "lucide-react";
 
 const Payments = () => {
-  const { payments, loading } = usePayments();
+  const { payments, loading, deletePayment } = usePayments();
   const { proposals } = useProposals();
+  const { canDelete } = useUserRole();
+  const { toast } = useToast();
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<PaymentSortKey>("date_desc");
@@ -23,8 +31,8 @@ const Payments = () => {
   const [dateTo, setDateTo] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  // Build a map of proposal id -> proposal for enrichment
   const proposalMap = useMemo(() => {
     const map = new Map<string, { client: string; project: string }>();
     proposals.forEach(p => map.set(p.id, { client: p.client, project: p.project }));
@@ -33,7 +41,6 @@ const Payments = () => {
 
   const processed = useMemo(() => {
     let result = [...payments];
-
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(p => {
@@ -46,16 +53,10 @@ const Payments = () => {
         );
       });
     }
-
-    if (methodFilter.length > 0) {
-      result = result.filter(p => methodFilter.includes(p.method));
-    }
-    if (statusFilter.length > 0) {
-      result = result.filter(p => statusFilter.includes(p.status));
-    }
+    if (methodFilter.length > 0) result = result.filter(p => methodFilter.includes(p.method));
+    if (statusFilter.length > 0) result = result.filter(p => statusFilter.includes(p.status));
     if (dateFrom) result = result.filter(p => p.paidAt >= dateFrom);
     if (dateTo) result = result.filter(p => p.paidAt <= dateTo + "T23:59:59");
-
     result.sort((a, b) => {
       switch (sort) {
         case "date_desc": return b.paidAt.localeCompare(a.paidAt);
@@ -65,7 +66,6 @@ const Payments = () => {
         default: return 0;
       }
     });
-
     return result;
   }, [payments, search, methodFilter, statusFilter, dateFrom, dateTo, sort, proposalMap]);
 
@@ -75,6 +75,18 @@ const Payments = () => {
   const showing = processed.length > 0
     ? `Mostrando ${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, processed.length)} de ${processed.length}`
     : "Sin resultados";
+
+  const handleDeletePayment = async () => {
+    if (!deleteId) return;
+    try {
+      await deletePayment(deleteId);
+      toast({ title: "Pago eliminado" });
+      setDeleteId(null);
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Error al eliminar el pago", variant: "destructive" });
+    }
+  };
 
   return (
     <PageTransition>
@@ -111,9 +123,9 @@ const Payments = () => {
             <p className="text-muted-foreground">Los pagos se registran desde las propuestas aprobadas</p>
           </div>
         ) : view === "table" ? (
-          <PaymentsTableView payments={paginated} proposalMap={proposalMap} />
+          <PaymentsTableView payments={paginated} proposalMap={proposalMap} canDelete={canDelete} onDelete={setDeleteId} />
         ) : (
-          <PaymentsCardView payments={paginated} proposalMap={proposalMap} />
+          <PaymentsCardView payments={paginated} proposalMap={proposalMap} canDelete={canDelete} onDelete={setDeleteId} />
         )}
 
         <WorkOrdersPagination
@@ -123,6 +135,26 @@ const Payments = () => {
           onPageChange={setPage}
           onPageSizeChange={s => { setPageSize(s); setPage(1); }}
         />
+
+        <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Eliminar este pago?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta acción no se puede deshacer. El pago será eliminado permanentemente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={handleDeletePayment}
+              >
+                Eliminar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </ResponsiveLayout>
     </PageTransition>
   );
