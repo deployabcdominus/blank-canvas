@@ -7,15 +7,12 @@ interface GeoHeatmapProps {
   installations: Installation[];
 }
 
-/** Stylized dark "radar" heatmap — no external map library required */
 export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
   const activeCount = installations.filter(i => i.status !== "Completed").length;
   const completedCount = installations.filter(i => i.status === "Completed").length;
 
-  // Generate deterministic dots from installation data
   const dots = useMemo(() => {
     return installations.slice(0, 20).map((inst, i) => {
-      // Pseudo-random positions based on id hash
       let h = 0;
       const idStr = String(inst.id);
       for (let j = 0; j < idStr.length; j++) h = idStr.charCodeAt(j) + ((h << 5) - h);
@@ -31,36 +28,27 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.45, duration: 0.5 }}
-      className="rounded-2xl border p-5 backdrop-blur-[24px] relative overflow-hidden"
-      style={{
-        background: "rgba(15,18,30,0.55)",
-        borderColor: "rgba(255,255,255,0.08)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
-      }}
+      className="dash-card p-5 relative overflow-hidden"
     >
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h3 className="text-sm font-semibold text-white/80">Mapa de Instalaciones</h3>
-          <p className="text-[11px] text-white/40">{activeCount} activas · {completedCount} completadas</p>
+          <h3 className="text-[15px] font-bold text-foreground">Mapa de Instalaciones</h3>
+          <p className="text-xs text-muted-foreground">{activeCount} activas · {completedCount} completadas</p>
         </div>
-        <div className="p-2 rounded-xl" style={{ background: "rgba(0,210,255,0.1)", border: "1px solid rgba(0,210,255,0.2)" }}>
-          <MapPin className="w-4 h-4" style={{ color: "#00D2FF" }} />
+        <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
+          <MapPin className="w-5 h-5 text-primary" />
         </div>
       </div>
 
-      {/* Dark map canvas */}
-      <div className="relative w-full h-[200px] rounded-xl overflow-hidden" style={{ background: "rgba(8,10,20,0.8)" }}>
+      <div className="relative w-full h-[200px] rounded-xl overflow-hidden bg-secondary/50 dark:bg-card/50">
         {/* Grid pattern */}
-        <div className="absolute inset-0" style={{
-          backgroundImage: "linear-gradient(rgba(0,210,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,210,255,0.03) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }} />
+        <div className="absolute inset-0 empty-state-pattern opacity-50" />
 
-        {/* Radar sweep */}
+        {/* Radar circles */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-40 h-40 rounded-full border border-cyan-500/10" />
-          <div className="absolute w-24 h-24 rounded-full border border-cyan-500/5" />
-          <div className="absolute w-56 h-56 rounded-full border border-cyan-500/5" />
+          <div className="w-40 h-40 rounded-full border border-primary/10" />
+          <div className="absolute w-24 h-24 rounded-full border border-primary/5" />
+          <div className="absolute w-56 h-56 rounded-full border border-primary/5" />
         </div>
 
         {/* Dots */}
@@ -76,18 +64,17 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
               top: `${dot.y}%`,
               width: dot.size * 2,
               height: dot.size * 2,
-              background: dot.isActive ? "#00D2FF" : "rgba(162,89,255,0.6)",
+              background: dot.isActive ? "hsl(var(--primary))" : "hsl(var(--lavender) / 0.6)",
               boxShadow: dot.isActive
-                ? "0 0 12px 2px rgba(0,210,255,0.4)"
-                : "0 0 8px 1px rgba(162,89,255,0.3)",
+                ? "0 0 12px 2px hsl(var(--primary) / 0.4)"
+                : "0 0 8px 1px hsl(var(--lavender) / 0.3)",
             }}
           />
         ))}
 
-        {/* Empty state */}
         {dots.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-white/20 text-xs">Sin instalaciones registradas</p>
+            <p className="text-muted-foreground text-sm italic">Sin instalaciones registradas</p>
           </div>
         )}
       </div>

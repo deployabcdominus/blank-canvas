@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, CheckCircle2, Circle, Bell, TrendingUp, AlertTriangle, Target, Zap, ArrowRight } from "lucide-react";
+import { Sparkles, CheckCircle2, Circle, TrendingUp, AlertTriangle, Target, Zap, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,9 +9,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useCompany } from "@/hooks/useCompany";
-import { useLeads, Lead } from "@/contexts/LeadsContext";
-import { useProposals, Proposal } from "@/contexts/ProposalsContext";
-import { usePayments, Payment } from "@/contexts/PaymentsContext";
+import { useLeads } from "@/contexts/LeadsContext";
+import { useProposals } from "@/contexts/ProposalsContext";
+import { usePayments } from "@/contexts/PaymentsContext";
 import { useClients } from "@/contexts/ClientsContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,19 +41,16 @@ export function AiBriefing() {
 
   const hasEnoughData = proposals.length >= 3 || clients.length >= 2;
 
-  // Insights calculations
   const insights = useMemo(() => {
     const activeLeads = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido");
     const totalPipelineValue = activeLeads.reduce((s, l) => s + (parseFloat(l.value) || 0), 0);
 
-    // Proposals at risk: sent but no response for 7+ days
     const atRisk = proposals.filter(p => {
       if (p.status !== "Enviada externamente") return false;
       if (!p.sentDate) return false;
       return differenceInDays(now, new Date(p.sentDate)) > 7;
     });
 
-    // Close rate this month vs last month
     const thisMonthProposals = proposals.filter(p => p.createdAt && isThisMonth(new Date(p.createdAt)));
     const thisMonthApproved = thisMonthProposals.filter(p => p.status === "Aprobada").length;
     const thisMonthRate = thisMonthProposals.length > 0 ? Math.round((thisMonthApproved / thisMonthProposals.length) * 100) : 0;
@@ -67,7 +64,6 @@ export function AiBriefing() {
     const prevMonthApproved = prevMonthProposals.filter(p => p.status === "Aprobada").length;
     const prevMonthRate = prevMonthProposals.length > 0 ? Math.round((prevMonthApproved / prevMonthProposals.length) * 100) : 0;
 
-    // Alert: most urgent
     let alertText = "Sin alertas urgentes hoy";
     if (atRisk.length > 0) {
       alertText = `${atRisk.length} propuesta(s) sin respuesta en +7 días`;
@@ -86,7 +82,6 @@ export function AiBriefing() {
     };
   }, [leads, proposals]);
 
-  // Steps for activation
   const steps = useMemo(() => [
     { label: "Empresa configurada", done: !!company },
     { label: "Agrega 3 clientes", done: clients.length >= 3 },
@@ -126,7 +121,6 @@ export function AiBriefing() {
       if (response.error) throw new Error(response.error.message);
       setBriefingText(response.data?.briefing || "No se pudo generar el briefing.");
     } catch (e: any) {
-      console.error("Briefing error:", e);
       toast({ title: "Error al generar briefing", description: e.message, variant: "destructive" });
       setBriefingOpen(false);
     } finally {
@@ -136,6 +130,13 @@ export function AiBriefing() {
 
   const formatCurrency = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v.toFixed(0)}`;
 
+  const insightCards = [
+    { icon: Target, label: "Pipeline hoy", value: String(insights.activeLeads), sub: `${formatCurrency(insights.pipelineValue)} en valor` },
+    { icon: AlertTriangle, label: "En riesgo", value: String(insights.atRiskCount), sub: "Sin respuesta +7 días" },
+    { icon: TrendingUp, label: "Tasa de cierre", value: `${insights.thisMonthRate}%`, sub: `${insights.rateDiff >= 0 ? "+" : ""}${insights.rateDiff}% vs mes ant.` },
+    { icon: Zap, label: "Alerta", value: "", sub: insights.alertText },
+  ];
+
   return (
     <>
       <motion.div
@@ -144,51 +145,57 @@ export function AiBriefing() {
         transition={{ duration: 0.6 }}
         className="mb-8"
       >
-        <div className="relative rounded-xl p-[1px] overflow-hidden" style={{
-          background: "linear-gradient(135deg, hsl(260 60% 58%), hsl(225 80% 56%), hsl(260 60% 58%))",
-          backgroundSize: "200% 200%",
-          animation: "shimmer 4s linear infinite",
-        }}>
-          <Card className="border-0 bg-[hsl(240,6%,8%)] rounded-xl">
-            <CardContent className="p-5 sm:p-6">
+        {/* AI Panel — always dark for contrast */}
+        <div
+          className="rounded-[20px] p-[1px] overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, hsl(234 86% 65%), hsl(260 60% 58%), hsl(234 86% 65%))",
+            backgroundSize: "200% 200%",
+            animation: "shimmer 4s linear infinite",
+          }}
+        >
+          <div
+            className="rounded-[19px]"
+            style={{
+              background: "linear-gradient(135deg, #1E2340 0%, #141830 50%, #1A2048 100%)",
+            }}
+          >
+            <div className="p-5 sm:p-6">
               {/* Header */}
               <div className="flex items-start justify-between mb-5">
                 <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <motion.div
-                      animate={{ rotate: [0, 15, -15, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                    >
-                      <Sparkles className="h-6 w-6" style={{ color: "hsl(260 60% 58%)" }} />
-                    </motion.div>
-                  </div>
+                  <motion.div
+                    animate={{ rotate: [0, 15, -15, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                  >
+                    <Sparkles className="h-6 w-6 text-[#5B6AF2]" />
+                  </motion.div>
                   <div>
-                    <h2 className="text-foreground font-semibold text-lg">{greeting}, {firstName}</h2>
-                    <p className="text-muted-foreground text-xs">Tu resumen inteligente de hoy · {dateStr}</p>
+                    <h2 className="font-semibold text-lg" style={{ color: "#E8EAFF" }}>{greeting}, {firstName}</h2>
+                    <p className="text-xs" style={{ color: "rgba(200, 206, 255, 0.75)" }}>
+                      Tu resumen inteligente de hoy · {dateStr}
+                    </p>
                   </div>
-                  <Badge className="ml-2 text-[10px] px-2 py-0.5 border-0" style={{
-                    background: "hsl(260 60% 58% / 0.2)",
-                    color: "hsl(260 60% 92%)",
-                    boxShadow: "0 0 12px hsl(260 60% 58% / 0.3)",
-                  }}>AI</Badge>
+                  <Badge className="ml-2 text-[10px] px-2 py-0.5 border-0 font-bold bg-[#5B6AF2] text-white">
+                    AI
+                  </Badge>
                 </div>
-                <span className="text-muted-foreground text-[10px] hidden sm:block">
+                <span className="text-[10px] hidden sm:block" style={{ color: "rgba(160, 170, 230, 0.85)" }}>
                   Actualizado hace 1 min
                 </span>
               </div>
 
               {!hasEnoughData ? (
-                /* Activation state */
                 <div className="space-y-4">
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm" style={{ color: "rgba(200, 206, 255, 0.75)" }}>
                     Tu asistente de inteligencia está listo. Necesita conocer tu negocio primero.
                   </p>
-                  <div className="w-full bg-secondary rounded-full h-2">
+                  <div className="w-full rounded-full h-2" style={{ background: "rgba(255,255,255,0.08)" }}>
                     <div
                       className="h-2 rounded-full transition-all"
                       style={{
                         width: `${(completedSteps / steps.length) * 100}%`,
-                        background: "linear-gradient(90deg, hsl(260 60% 58%), hsl(225 80% 56%))",
+                        background: "linear-gradient(90deg, #5B6AF2, #7C6FEE)",
                       }}
                     />
                   </div>
@@ -198,9 +205,9 @@ export function AiBriefing() {
                         {step.done ? (
                           <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                         ) : (
-                          <Circle className="h-4 w-4 text-muted-foreground" />
+                          <Circle className="h-4 w-4" style={{ color: "rgba(160, 170, 230, 0.5)" }} />
                         )}
-                        <span className={step.done ? "text-muted-foreground line-through" : "text-foreground"}>
+                        <span style={{ color: step.done ? "rgba(160, 170, 230, 0.5)" : "#E8EAFF", textDecoration: step.done ? "line-through" : "none" }}>
                           {step.label}
                         </span>
                       </div>
@@ -208,60 +215,47 @@ export function AiBriefing() {
                   </div>
                   <Button
                     size="sm"
-                    className="mt-2"
+                    className="mt-2 bg-[#5B6AF2] hover:bg-[#4757E8] text-white font-semibold"
                     onClick={() => navigate("/clients")}
                   >
                     Completar configuración <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
                 </div>
               ) : (
-                /* Insight cards */
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {/* Card 1 — Pipeline */}
-                    <div className="rounded-lg bg-secondary/50 p-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
-                        <Target className="h-3.5 w-3.5" /> Pipeline hoy
-                      </div>
-                      <p className="text-foreground font-semibold text-lg">{insights.activeLeads}</p>
-                      <p className="text-muted-foreground text-[10px]">{formatCurrency(insights.pipelineValue)} en valor</p>
-                    </div>
-
-                    {/* Card 2 — At risk */}
-                    <div className="rounded-lg bg-secondary/50 p-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
-                        <AlertTriangle className="h-3.5 w-3.5" /> En riesgo
-                      </div>
-                      <p className="text-foreground font-semibold text-lg">{insights.atRiskCount}</p>
-                      <p className="text-muted-foreground text-[10px]">Sin respuesta +7 días</p>
-                    </div>
-
-                    {/* Card 3 — Close rate */}
-                    <div className="rounded-lg bg-secondary/50 p-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
-                        <TrendingUp className="h-3.5 w-3.5" /> Tasa de cierre
-                      </div>
-                      <p className="text-foreground font-semibold text-lg">{insights.thisMonthRate}%</p>
-                      <p className="text-muted-foreground text-[10px]">
-                        {insights.rateDiff >= 0 ? "+" : ""}{insights.rateDiff}% vs mes ant.
-                      </p>
-                    </div>
-
-                    {/* Card 4 — Alert */}
-                    <div className="rounded-lg bg-secondary/50 p-3 space-y-1">
-                      <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
-                        <Zap className="h-3.5 w-3.5" /> Alerta
-                      </div>
-                      <p className="text-foreground font-medium text-xs leading-tight">{insights.alertText}</p>
-                    </div>
+                    {insightCards.map((card, i) => {
+                      const IconComp = card.icon;
+                      return (
+                        <div
+                          key={i}
+                          className="rounded-xl p-4 space-y-1 transition-all duration-200 hover:bg-white/[0.10]"
+                          style={{
+                            background: "rgba(255, 255, 255, 0.06)",
+                            border: "1px solid rgba(255, 255, 255, 0.12)",
+                          }}
+                        >
+                          <div className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(180, 190, 240, 0.85)" }}>
+                            <IconComp className="h-3.5 w-3.5" /> {card.label}
+                          </div>
+                          {card.value && (
+                            <p className="font-bold text-[28px] leading-none text-white">{card.value}</p>
+                          )}
+                          <p className={`text-xs leading-tight ${card.value ? "" : "font-medium"}`} style={{ color: "rgba(160, 170, 220, 0.75)" }}>
+                            {card.sub}
+                          </p>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <Button
                     onClick={generateBriefing}
                     disabled={briefingLoading}
-                    className="w-full border-0"
+                    className="w-full border-0 font-semibold text-white btn-spring"
                     style={{
-                      background: "linear-gradient(135deg, hsl(260 60% 48%), hsl(225 80% 50%))",
+                      background: "linear-gradient(135deg, #5B6AF2, #7C6FEE)",
+                      boxShadow: "0 4px 20px rgba(91, 106, 242, 0.35)",
                     }}
                   >
                     <Sparkles className="mr-2 h-4 w-4" />
@@ -269,8 +263,8 @@ export function AiBriefing() {
                   </Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </motion.div>
 
@@ -279,7 +273,7 @@ export function AiBriefing() {
         <SheetContent side="right" className="w-full sm:max-w-lg">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5" style={{ color: "hsl(260 60% 58%)" }} />
+              <Sparkles className="h-5 w-5 text-primary" />
               Briefing Ejecutivo
             </SheetTitle>
             <SheetDescription>
@@ -301,8 +295,6 @@ export function AiBriefing() {
                 <Skeleton className="h-4 w-[80%]" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-[70%]" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-[85%]" />
               </div>
             ) : (
               <div className="text-foreground text-sm whitespace-pre-wrap leading-relaxed">
