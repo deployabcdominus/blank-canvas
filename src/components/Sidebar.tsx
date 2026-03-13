@@ -100,7 +100,7 @@ export const Sidebar = () => {
               visibleOperationItems.map(item => renderNavItem(item))
             ) : (
               <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
-                <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-2.5 min-h-[44px] w-full">
+                <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-3 min-h-[44px] w-full">
                   <operationGroup.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
                   <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
                   <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />

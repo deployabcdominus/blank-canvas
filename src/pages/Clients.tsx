@@ -197,10 +197,11 @@ export default function Clients() {
       {loading ? (
         <p className="text-muted-foreground text-center py-12">Cargando...</p>
       ) : sorted.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-16 empty-state-pattern rounded-xl">
+          <Users className="w-12 h-12 text-primary/40 mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">{search ? 'Sin resultados' : 'No hay clientes'}</h3>
-          <p className="text-muted-foreground mb-4">{search ? 'Intente otros términos.' : 'Cree su primer cliente.'}</p>
-          {!search && <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" /> Nuevo Cliente</Button>}
+          <p className="text-muted-foreground mb-6 text-sm">{search ? 'Intente otros términos.' : 'Cree su primer cliente para comenzar.'}</p>
+          {!search && <Button onClick={openNew} size="lg"><Plus className="w-4 h-4 mr-2" /> Nuevo Cliente</Button>}
         </div>
       ) : (
         <AnimatePresence mode="wait">
