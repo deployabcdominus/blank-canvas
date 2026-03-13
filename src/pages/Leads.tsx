@@ -260,6 +260,13 @@ const Leads = () => {
 
           <AddLeadModal isOpen={isAddLeadModalOpen} onClose={() => setIsAddLeadModalOpen(false)} onAddLead={handleAddLead} />
 
+          <EditLeadModal
+            lead={editLead}
+            isOpen={!!editLead}
+            onClose={() => setEditLead(null)}
+            startInEditMode={editLeadMode}
+          />
+
           <AssignLeadModal
             isOpen={isAssignModalOpen}
             onClose={() => setIsAssignModalOpen(false)}
