@@ -99,11 +99,9 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
               )}
 
               {item.is_default && (
-                <Lock
-                  size={11}
-                  className="text-muted-foreground/50 flex-shrink-0"
-                  title="Valor predeterminado"
-                />
+              <span title="Valor predeterminado">
+                <Lock size={11} className="text-muted-foreground/50 flex-shrink-0" />
+              </span>
               )}
 
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
