@@ -153,6 +153,12 @@ export default function Settings() {
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="catalogos">
+              <List className="w-4 h-4 mr-2" />
+              Catálogos
+            </TabsTrigger>
+          )}
+          {isAdmin && !isSuperadmin && (
             <TabsTrigger value="integraciones">
               <Plug className="w-4 h-4 mr-2" />
               Integraciones
