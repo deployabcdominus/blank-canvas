@@ -55,9 +55,10 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className="glass-card hover:glow-mint transition-all duration-300 p-5 md:p-6 flex flex-col justify-between"
+      className="glass-card hover:glow-mint transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer"
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}
+      onClick={() => onCardClick?.(lead)}
     >
       {/* Header: Company + Lead Status */}
       <div>
