@@ -138,7 +138,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       </div>
 
       {/* Footer */}
-      <div className={`flex items-center justify-between pt-3 border-t border-border/50 ${isMobile ? 'flex-col gap-3' : ''}`}>
+      <div className={`flex items-center justify-between pt-3 border-t border-border/50 ${isMobile ? 'flex-col gap-3' : ''}`} onClick={e => e.stopPropagation()}>
         <span className="text-xs text-muted-foreground">
           hace {lead.daysAgo} día{lead.daysAgo !== 1 ? 's' : ''}
         </span>
