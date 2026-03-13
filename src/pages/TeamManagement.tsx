@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { InviteMemberModal } from "@/components/InviteMemberModal";
 import { useUserRole } from "@/hooks/useUserRole";
+import RolePermissionsGuide from "@/components/team/RolePermissionsGuide";
 import { useTeam } from "@/contexts/TeamContext";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
 import { useSettings } from "@/contexts/SettingsContext";
