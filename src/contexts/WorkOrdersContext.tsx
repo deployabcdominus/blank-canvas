@@ -153,8 +153,11 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.project !== undefined) dbUpdates.project = updates.project;
     if (updates.startDate !== undefined) dbUpdates.start_date = updates.startDate;
     if (updates.estimatedCompletion !== undefined) dbUpdates.end_date = updates.estimatedCompletion;
+    if (updates.estimatedDelivery !== undefined) dbUpdates.estimated_delivery = updates.estimatedDelivery;
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
+    if (updates.assignedToUserId !== undefined) dbUpdates.assigned_to_user_id = updates.assignedToUserId;
+    if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
     const { error } = await supabase.from('production_orders').update(dbUpdates).eq('id', id);
     if (error) throw error;
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
