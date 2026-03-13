@@ -64,13 +64,13 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="mb-8"
+              className="mb-6"
             >
-              <div className="flex items-center gap-3 mb-2">
-                {Icon && <Icon className="w-8 h-8 text-primary" />}
-                {title && <h1 className="text-3xl font-bold">{title}</h1>}
+              <div className="flex items-center gap-3 mb-1">
+                {Icon && <Icon className="w-7 h-7 text-primary" />}
+                {title && <h1 className="text-2xl font-bold">{title}</h1>}
               </div>
-              {subtitle && <p className="text-muted-foreground text-lg">{subtitle}</p>}
+              {subtitle && <p className="text-muted-foreground text-sm">{subtitle}</p>}
             </motion.div>
           )}
           {children}

@@ -63,7 +63,7 @@ export const Sidebar = () => {
         key={item.path}
         to={item.path}
         className={`sidebar-nav-item min-h-[44px] ${
-          isTablet ? 'justify-center p-3' : 'gap-3 px-4 py-2.5'
+          isTablet ? 'justify-center p-3' : 'gap-3 px-4 py-3'
         } ${isActive ? 'sidebar-nav-active' : ''}`}
         title={isTablet ? label : undefined}
         aria-current={isActive ? "page" : undefined}
@@ -100,7 +100,7 @@ export const Sidebar = () => {
               visibleOperationItems.map(item => renderNavItem(item))
             ) : (
               <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
-                <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-2.5 min-h-[44px] w-full">
+                <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-3 min-h-[44px] w-full">
                   <operationGroup.icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
                   <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
                   <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
@@ -134,15 +134,15 @@ export const Sidebar = () => {
       aria-label="Menu lateral principal"
     >
       {!isTablet ? (
-        <div className="mb-6 flex-shrink-0 px-1">
-          <BrandLogo size={40} showText variant="iconWithText" textClassName="text-2xl" />
-          <p className="text-xs text-muted-foreground mt-1.5 tracking-wide">
+        <div className="mb-8 flex-shrink-0 px-2">
+          <BrandLogo size={44} showText variant="iconWithText" textClassName="text-2xl font-bold" />
+          <p className="text-xs text-muted-foreground mt-2 tracking-wide">
             {isSuperadmin ? 'Platform Admin' : FIXED_BRANDING.appTagline}
           </p>
         </div>
       ) : (
-        <div className="mb-4 flex-shrink-0 flex justify-center">
-          <BrandLogo size={36} />
+        <div className="mb-6 flex-shrink-0 flex justify-center">
+          <BrandLogo size={40} />
         </div>
       )}
 
@@ -158,7 +158,7 @@ export const Sidebar = () => {
               title={isTablet ? "Mi Perfil" : undefined}
               aria-label="Menú del usuario"
             >
-              <Avatar className="w-8 h-8 flex-shrink-0 sidebar-avatar-ring">
+              <Avatar className="w-9 h-9 flex-shrink-0 sidebar-avatar-ring">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
                 <AvatarFallback className="bg-primary/20 text-primary font-semibold text-xs">
                   {initials}
@@ -166,8 +166,8 @@ export const Sidebar = () => {
               </Avatar>
               {!isTablet && (
                 <div className="text-left min-w-0">
-                  <span className="font-medium text-sm block leading-tight truncate text-foreground">{fullName.split(' ')[0]}</span>
-                  <span className="text-xs text-muted-foreground leading-tight truncate block">
+                  <span className="font-semibold text-sm block leading-tight truncate text-foreground">{fullName.split(' ')[0]}</span>
+                  <span className="text-[11px] text-muted-foreground leading-tight truncate block">
                     {isSuperadmin ? 'Superadmin' : email}
                   </span>
                 </div>

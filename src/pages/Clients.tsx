@@ -138,16 +138,16 @@ export default function Clients() {
           { label: 'Clientes Activos', value: activeClients, icon: TrendingUp },
           { label: 'Total Proyectos', value: totalProjects, icon: FolderOpen },
           { label: 'Prom. Proy/Cliente', value: clients.length ? (totalProjects / clients.length).toFixed(1) : '0', icon: TrendingUp },
-        ].map((kpi, i) => (
+         ].map((kpi, i) => (
           <motion.div key={kpi.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="glass-card">
+            <Card className="kpi-card card-interactive">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-soft-blue/10">
-                  <kpi.icon className="w-4 h-4 text-soft-blue" />
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <kpi.icon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                  <p className="text-lg font-bold">{kpi.value}</p>
+                  <p className="kpi-label">{kpi.label}</p>
+                  <p className="kpi-value">{kpi.value}</p>
                 </div>
               </CardContent>
             </Card>
@@ -197,10 +197,11 @@ export default function Clients() {
       {loading ? (
         <p className="text-muted-foreground text-center py-12">Cargando...</p>
       ) : sorted.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-16 empty-state-pattern rounded-xl">
+          <Users className="w-12 h-12 text-primary/40 mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">{search ? 'Sin resultados' : 'No hay clientes'}</h3>
-          <p className="text-muted-foreground mb-4">{search ? 'Intente otros términos.' : 'Cree su primer cliente.'}</p>
-          {!search && <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" /> Nuevo Cliente</Button>}
+          <p className="text-muted-foreground mb-6 text-sm">{search ? 'Intente otros términos.' : 'Cree su primer cliente para comenzar.'}</p>
+          {!search && <Button onClick={openNew} size="lg"><Plus className="w-4 h-4 mr-2" /> Nuevo Cliente</Button>}
         </div>
       ) : (
         <AnimatePresence mode="wait">
