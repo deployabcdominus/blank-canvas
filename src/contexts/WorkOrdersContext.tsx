@@ -7,7 +7,7 @@ export interface WorkOrder {
   client: string;
   project: string;
   serviceType: string;
-  status: "Pendiente" | "En Progreso" | "Control de Calidad" | "Completada";
+  status: string;
   progress: number;
   materials: Array<{
     item: string;
@@ -19,8 +19,11 @@ export interface WorkOrder {
   companyId: string | null;
   ownerUserId: string | null;
   projectId: string | null;
-  notes: string | null;
-  priority: string | null;
+  notes?: string | null;
+  priority?: string | null;
+  estimatedDelivery?: string | null;
+  assignedToUserId?: string | null;
+  installerCompanyId?: string | null;
 }
 
 // Backward-compatible alias
