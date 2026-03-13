@@ -208,6 +208,8 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   const { addOrder } = useWorkOrders();
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const resolvedServices = catalogServices.length > 0 ? catalogServices.map(s => s.label) : serviceTypes;
 
   const [selectedClientId, setSelectedClientId] = useState('');
   const [customClient, setCustomClient] = useState('');
