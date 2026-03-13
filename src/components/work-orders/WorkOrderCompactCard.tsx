@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Package, Wrench, AlertTriangle, CheckCircle, Clock,
-  MoreHorizontal, Eye, Printer, Share2, Calendar,
+  MoreHorizontal, Eye, Printer, Share2, Calendar, Pencil,
 } from "lucide-react";
 
 const STATUS_MAP: Record<string, { color: string; icon: React.ReactNode }> = {
