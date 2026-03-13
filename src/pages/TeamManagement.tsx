@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { InviteMemberModal } from "@/components/InviteMemberModal";
 import { useUserRole } from "@/hooks/useUserRole";
+import RolePermissionsGuide from "@/components/team/RolePermissionsGuide";
 import { useTeam } from "@/contexts/TeamContext";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -95,6 +96,10 @@ export default function TeamManagement() {
         <div className="flex items-center gap-3">
           <UserCog className="w-8 h-8 text-primary" />
           <h1 className="text-3xl font-bold">Gestión de equipo</h1>
+        </div>
+
+        <div className="mb-8">
+          <RolePermissionsGuide />
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
