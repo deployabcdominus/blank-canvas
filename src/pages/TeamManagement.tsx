@@ -98,6 +98,10 @@ export default function TeamManagement() {
           <h1 className="text-3xl font-bold">Gestión de equipo</h1>
         </div>
 
+        <div className="mb-8">
+          <RolePermissionsGuide />
+        </div>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="glass">
             <TabsTrigger value="members" className="flex items-center gap-2">
