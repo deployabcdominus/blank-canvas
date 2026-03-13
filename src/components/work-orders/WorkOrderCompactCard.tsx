@@ -71,6 +71,7 @@ export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
