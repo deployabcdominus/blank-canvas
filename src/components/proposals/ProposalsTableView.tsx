@@ -3,11 +3,13 @@ import { usePayments } from "@/contexts/PaymentsContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Edit2, Trash2, Factory, DollarSign } from "lucide-react";
+import { MoreHorizontal, Edit2, Trash2, Factory, DollarSign, Download } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
+import { pdf } from "@react-pdf/renderer";
+import { ProposalPDF } from "@/components/proposals/ProposalPDF";
 
 const STATUS_COLORS: Record<ProposalStatus, string> = {
   Borrador: "bg-muted/30 text-muted-foreground border-border/30",
