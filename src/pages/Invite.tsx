@@ -224,36 +224,27 @@ const Invite = () => {
           </div>
 
           {mode === "info" && (
-            <>
-              {emailExists ? (
-                <div>
-                  <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 mb-6">
-                    <Info size={16} className="text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">
-                        Ya tienes una cuenta con este email
-                      </p>
-                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-0.5">
-                        Inicia sesión para aceptar la invitación y unirte al equipo.
-                      </p>
-                    </div>
-                  </div>
-                  <Button onClick={handleGoToLogin} className="w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover" size="lg">
-                    Iniciar sesión para aceptar →
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <Button onClick={() => setMode("register")} className="w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover" size="lg">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Crear Cuenta Nueva
-                  </Button>
-                  <Button onClick={handleGoToLogin} variant="outline" className="w-full" size="lg">
-                    Ya tengo cuenta - Iniciar Sesión
-                  </Button>
-                </div>
-              )}
-            </>
+            <div className="space-y-3">
+              <Button onClick={() => setMode("register")} className="w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover" size="lg">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Crear Cuenta Nueva
+              </Button>
+
+              <div className="flex items-center gap-3">
+                <hr className="flex-1 border-border" />
+                <span className="text-xs text-muted-foreground">o</span>
+                <hr className="flex-1 border-border" />
+              </div>
+
+              <Button onClick={handleGoToLogin} variant="outline" className="w-full" size="lg">
+                Ya tengo cuenta — Iniciar Sesión
+              </Button>
+
+              <p className="text-xs text-muted-foreground text-center mt-4">
+                Si tuviste problemas anteriores con esta invitación,<br/>
+                usa "Ya tengo cuenta" e inicia sesión con tu email y contraseña.
+              </p>
+            </div>
           )}
 
           {mode === "register" && (
