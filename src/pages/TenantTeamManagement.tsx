@@ -182,7 +182,8 @@ export default function TenantTeamManagement() {
   };
 
   const handleResendInvitation = async (invitation: Invitation) => {
-    const link = `${window.location.origin}/invite?token=${invitation.token}`;
+    const productionDomain = import.meta.env.VITE_APP_URL ?? window.location.origin;
+    const link = `${productionDomain}/invite?token=${invitation.token}`;
     try {
       await navigator.clipboard.writeText(link);
       toast({ title: "Link copiado", description: "El link de invitación fue copiado al portapapeles." });

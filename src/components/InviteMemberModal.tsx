@@ -48,7 +48,8 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
 
       if (error) throw error;
 
-      const link = `${window.location.origin}/invite?token=${(data as any).token}`;
+      const productionDomain = import.meta.env.VITE_APP_URL ?? window.location.origin;
+      const link = `${productionDomain}/invite?token=${(data as any).token}`;
       setInviteLink(link);
 
       const ROLE_LABELS: Record<string, string> = {
