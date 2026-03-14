@@ -20,6 +20,8 @@ interface InviteMemberModalProps {
 export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) => {
   const { user } = useAuth();
   const { company } = useCompany();
+  const { fullName } = useUserProfile();
+  const { sendInvitationEmail } = useEmail();
   const { toast } = useToast();
 
   const [email, setEmail] = useState("");
