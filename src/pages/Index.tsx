@@ -695,12 +695,12 @@ const Index = () => {
                         ? "rgba(91,106,242,0.08)"
                         : "rgba(255,255,255,0.04)",
                       border: plan.highlighted
-                        ? "1px solid rgba(91,106,242,0.40)"
+                        ? "1px solid rgba(91,106,242,0.50)"
                         : "1px solid rgba(255,255,255,0.08)",
                       borderRadius: 20,
                       padding: 32,
                       boxShadow: plan.highlighted
-                        ? "0 0 60px rgba(91,106,242,0.12)"
+                        ? "0 0 0 1px rgba(91,106,242,0.50), 0 0 80px rgba(91,106,242,0.15), 0 24px 48px rgba(0,0,0,0.40)"
                         : "none",
                     }}
                   >
