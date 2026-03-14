@@ -405,7 +405,7 @@ const Index = () => {
                       {row.before}
                     </p>
                     <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: "#5B6AF2" }} />
-                    <p className="text-sm sm:text-base font-semibold" style={{ color: "#F5F5F7" }}>
+                    <p className="text-base font-semibold" style={{ color: "#F5F5F7" }}>
                       {row.after}
                     </p>
                   </div>
