@@ -31,12 +31,13 @@ const Login = () => {
         description: "Inicio de sesión exitoso.",
       });
 
-      const inviteToken = localStorage.getItem("invite_token");
-      const inviteEmail = localStorage.getItem("invite_email");
-      if (inviteToken && inviteEmail) {
+      // Check for pending invite token (from sessionStorage or localStorage)
+      const pendingToken = sessionStorage.getItem("pendingInviteToken") || localStorage.getItem("invite_token");
+      if (pendingToken) {
+        sessionStorage.removeItem("pendingInviteToken");
         localStorage.removeItem("invite_token");
         localStorage.removeItem("invite_email");
-        navigate(`/invite?token=${inviteToken}`);
+        navigate(`/invite?token=${pendingToken}`);
         setIsLoading(false);
         return;
       }
