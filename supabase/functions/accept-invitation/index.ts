@@ -65,18 +65,37 @@ serve(async (req) => {
       .eq("id", user.id);
     if (profileError) throw new Error("Error actualizando perfil: " + profileError.message);
 
-    // Check if user already has a role
+    // Check if user already has a role for this company
     const { data: existingRole } = await supabaseAdmin
       .from("user_roles")
       .select("id")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!existingRole) {
+    if (existingRole) {
+      // Update existing role to match invitation
+      await supabaseAdmin
+        .from("user_roles")
+        .update({ role: invitation.role })
+        .eq("id", existingRole.id);
+    } else {
       const { error: roleError } = await supabaseAdmin
         .from("user_roles")
         .insert({ user_id: user.id, role: invitation.role });
       if (roleError) throw new Error("Error asignando rol: " + roleError.message);
+    }
+
+    // Ensure profile exists (handles re-invited/deleted users)
+    const { data: existingProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!existingProfile) {
+      await supabaseAdmin
+        .from("profiles")
+        .insert({ id: user.id, company_id: invitation.company_id, full_name: user.user_metadata?.full_name || null });
     }
 
     // Mark invitation as accepted
