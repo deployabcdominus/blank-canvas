@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProjects, Project } from "@/contexts/ProjectsContext";
 import { useInstallations } from "@/contexts/InstallationsContext";
@@ -11,6 +11,7 @@ import {
   MapPin, Layers, Filter, ChevronDown, ChevronUp,
   Building2, DollarSign, BarChart3, Shield, Calendar, AlertTriangle,
 } from "lucide-react";
+import { batchGeocode } from "@/hooks/useGeocoding";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
