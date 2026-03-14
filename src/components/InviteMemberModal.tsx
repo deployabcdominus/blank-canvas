@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCompany } from "@/hooks/useCompany";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useEmail } from "@/hooks/useEmail";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check, Mail } from "lucide-react";
 
