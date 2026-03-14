@@ -105,7 +105,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: `${fromName} <notificaciones@mail.signflowapp.com>`,
+        from: `${fromName} <hello@mail.signflowapp.com>`,
         to,
         subject: template.subject,
         html: template.html,
