@@ -1,974 +1,237 @@
-import { useRef, useEffect, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { PageTransition } from "@/components/PageTransition";
-import brandLogoSrc from "@/assets/brand-logo.png";
-import {
-  ArrowRight,
-  Check,
-  Star,
-  Sparkles,
-  BarChart3,
-  FileText,
-  Wrench,
-  Users,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-/* ─── Scroll-reveal wrapper ─── */
-const Reveal = ({
-  children,
-  className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-/* ─── Data ─── */
-const featureTabs = [
-  { id: "dashboard", label: "Dashboard ejecutivo", icon: BarChart3, description: "KPIs en tiempo real, AI briefing diario y pipeline completo en una sola vista." },
-  { id: "leads", label: "Leads y propuestas", icon: FileText, description: "Pipeline visual para leads, propuestas en PDF con tu marca y seguimiento automático." },
-  { id: "production", label: "Producción e instalación", icon: Wrench, description: "Órdenes de trabajo con estados, asignación de equipos y evidencia fotográfica." },
-  { id: "team", label: "Gestión de equipo", icon: Users, description: "Roles y permisos por función. Admin, comercial, operaciones — cada quien ve lo que necesita." },
-];
-
-const problemSolution = [
-  { before: "Leads perdidos en el chat", after: "Pipeline visual con seguimiento" },
-  { before: "Propuestas en Word sin control", after: "PDF profesional con un clic" },
-  { before: "Órdenes por WhatsApp", after: "Órdenes con estado en tiempo real" },
-  { before: "Fotos en el teléfono", after: "Evidencias en la nube por proyecto" },
-  { before: "Sin idea del estado financiero", after: "Dashboard con ingresos en vivo" },
-];
-
-const steps = [
-  { num: "01", title: "Captura el lead", description: "El cliente llega por referido, Instagram o tu web. Lo registras en segundos con toda su info." },
-  { num: "02", title: "Cotiza y produce", description: "Genera propuesta con PDF profesional. Al aprobarla se crea la orden de producción automáticamente." },
-  { num: "03", title: "Instala y cobra", description: "Tu equipo recibe la orden. Suben evidencias. El cliente recibe notificación. Tú cobras." },
-];
-
-const testimonials = [
-  { text: "Antes perdíamos leads por no darles seguimiento a tiempo. Ahora el dashboard nos avisa qué está caliente y qué hay que atender hoy.", name: "Carlos M.", role: "Director", company: "SignMakers Miami", initials: "CM", color: "#5B6AF2" },
-  { text: "Las propuestas en PDF con nuestro logo cambiaron cómo nos perciben los clientes. Cerramos 30% más en el primer mes.", name: "Elena R.", role: "Gerente Comercial", company: "VisualCorp CDMX", initials: "ER", color: "#8B5CF6" },
-  { text: "Por fin puedo saber dónde está cada instalación sin llamar a nadie. El mapa en tiempo real vale solo el precio del plan.", name: "David L.", role: "Operaciones", company: "BrandSpace Bogotá", initials: "DL", color: "#A78BFA" },
-];
-
-const plans = [
-  { name: "Starter", priceMonthly: 49, priceAnnual: 39, features: ["Hasta 3 usuarios", "Leads y propuestas", "Órdenes de servicio", "Soporte por email"], cta: "Elegir Starter", highlighted: false },
-  { name: "Professional", priceMonthly: 99, priceAnnual: 79, features: ["Hasta 10 usuarios", "Todo de Starter", "AI Briefing diario", "PDF de propuestas", "Reportes avanzados"], cta: "Elegir Professional", highlighted: true },
-  { name: "Enterprise", priceMonthly: 199, priceAnnual: 159, features: ["Usuarios ilimitados", "Todo de Professional", "Onboarding dedicado", "SLA garantizado"], cta: "Contactar ventas", highlighted: false },
-];
-
-/* ─── Component ─── */
-const Index = () => {
-  const navigate = useNavigate();
+export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
-  const [isAnnual, setIsAnnual] = useState(false);
-  const [activeTab, setActiveTab] = useState("dashboard");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  const handlePlanSelect = (plan: string) => {
-    localStorage.setItem("selectedPlan", plan);
-    localStorage.setItem("selectedBilling", isAnnual ? "annual" : "monthly");
-    navigate("/checkout");
-  };
-
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <PageTransition>
-      <div
-        className="min-h-screen overflow-x-hidden scroll-smooth"
-        style={{
-          background: "#000",
-          color: "#F5F5F7",
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif",
-        }}
-      >
-        {/* ═══════ NAVBAR ═══════ */}
-        <header
-          className="fixed top-0 inset-x-0 z-50 transition-all duration-300 h-16"
-          style={{
-            background: "rgba(0,0,0,0.72)",
-            backdropFilter: "blur(20px) saturate(180%)",
-            WebkitBackdropFilter: "blur(20px) saturate(180%)",
-            borderBottom: scrolled
-              ? "1px solid rgba(255,255,255,0.10)"
-              : "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div className="max-w-6xl mx-auto flex items-center justify-between px-5 h-full">
-            <a href="/" className="flex items-center gap-1.5" aria-label="Sign Flow">
-              <img src={brandLogoSrc} alt="" className="w-8 h-8 object-contain" draggable={false} />
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 18, color: "#F5F5F7" }}>
-                Sign Flow
-              </span>
-            </a>
+    <div style={{ background: "#000", color: "#F5F5F7", fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif", WebkitFontSmoothing: "antialiased", overflowX: "hidden" }}>
 
-            <nav className="hidden md:flex items-center gap-8 text-sm font-medium" style={{ color: "#A1A1A6" }}>
-              {[
-                { label: "Características", id: "features" },
-                { label: "Precios", id: "pricing" },
-                { label: "Demo", id: "how" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  className="transition-colors duration-200 hover:text-[#F5F5F7]"
-                  style={{ fontSize: 13, letterSpacing: "0.01em" }}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
+      {/* NAVBAR */}
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", background: scrolled ? "rgba(0,0,0,0.90)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none", transition: "all 300ms ease" }}>
+        <span style={{ fontSize: 16, fontWeight: 700, color: "#F5F5F7", letterSpacing: "-0.01em" }}>Sign Flow</span>
+        <div style={{ display: "flex", gap: 28 }}>
+          {["Características","Precios","Demo"].map(l => <a key={l} href={`#${l.toLowerCase()}`} style={{ fontSize: 13, color: "#6E6E73", textDecoration: "none", letterSpacing: "0.01em" }}>{l}</a>)}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Link to="/login" style={{ fontSize: 13, color: "#6E6E73", textDecoration: "none" }}>Iniciar sesión</Link>
+          <Link to="/access" style={{ fontSize: 13, fontWeight: 600, color: "#fff", background: "#5B6AF2", padding: "7px 18px", borderRadius: 980, textDecoration: "none" }}>Elegir Plan →</Link>
+        </div>
+      </nav>
 
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/login")}
-                className="hover:bg-transparent"
-                style={{ color: "#A1A1A6" }}
-              >
-                Iniciar sesión
-              </Button>
-              <button
-                onClick={() => scrollTo("pricing")}
-                  style={{
-                    background: "#5B6AF2",
-                    color: "#fff",
-                    borderRadius: 980,
-                    height: 34,
-                    padding: "0 18px",
-                    fontWeight: 600,
-                    fontSize: 13,
-                  border: "none",
-                  cursor: "pointer",
-                  transition: "opacity 150ms",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-              >
-                Elegir Plan →
-              </button>
+      {/* HERO */}
+      <section style={{ padding: "120px 48px 80px", textAlign: "center", background: "radial-gradient(ellipse 90% 50% at 50% -5%,rgba(91,106,242,0.20),transparent 65%)" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 980, background: "rgba(91,106,242,0.10)", border: "1px solid rgba(91,106,242,0.30)", fontSize: 12, color: "#8B9CF8", marginBottom: 28 }}>
+          <span style={{ color: "#5B6AF2" }}>✦</span> Diseñado para agencias de señalética
+        </div>
+        <h1 style={{ fontSize: "clamp(52px,8vw,80px)", fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.04em", margin: "0 0 20px", color: "#F5F5F7" }}>
+          Gestiona tu agencia<br />de señalética<br />
+          <span style={{ background: "linear-gradient(135deg,#818CF8,#A78BFA,#C084FC)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>sin caos.</span>
+        </h1>
+        <p style={{ fontSize: 19, color: "#A1A1A6", lineHeight: 1.6, maxWidth: 480, margin: "0 auto 36px" }}>
+          Leads, propuestas, producción e instalaciones en un solo flujo.<br />Tu equipo alineado. Tus clientes informados.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginBottom: 24 }}>
+          <Link to="/access" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 980, background: "#5B6AF2", color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none", boxShadow: "0 4px 24px rgba(91,106,242,0.40)" }}>Empezar gratis →</Link>
+          <a href="#demo" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 980, border: "1px solid rgba(255,255,255,0.14)", color: "#F5F5F7", fontSize: 15, textDecoration: "none" }}>Ver demo</a>
+        </div>
+        <p style={{ fontSize: 13, color: "#6E6E73", marginBottom: 60 }}>
+          <span style={{ color: "#FF9F0A" }}>★★★★★</span> Usado por agencias en Miami · CDMX · Bogotá · Madrid
+        </p>
+
+        {/* BROWSER MOCKUP */}
+        <div style={{ maxWidth: 860, margin: "0 auto", border: "1px solid rgba(255,255,255,0.10)", borderRadius: 16, overflow: "hidden", boxShadow: "0 0 0 1px rgba(255,255,255,0.05),0 40px 120px rgba(0,0,0,0.80),0 0 80px rgba(91,106,242,0.12)", transform: "perspective(1400px) rotateX(5deg)", transformOrigin: "top center" }}>
+          <div style={{ background: "#111", padding: "10px 16px", display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ display: "flex", gap: 5 }}>
+              {["#FF453A","#FF9F0A","#32D74B"].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: "50%", background: c }} />)}
+            </div>
+            <div style={{ flex: 1, background: "rgba(255,255,255,0.06)", borderRadius: 6, padding: "4px 12px", fontSize: 11, color: "#6E6E73", textAlign: "center" }}>signflowapp.com/dashboard</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#32D74B" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#32D74B" }} />En vivo
             </div>
           </div>
-        </header>
+          <img src="/screenshots/dashboard.png" alt="Sign Flow Dashboard" style={{ width: "100%", display: "block" }}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+        </div>
+      </section>
 
-        {/* ═══════ HERO ═══════ */}
-        <section
-          className="relative pt-32 pb-10 sm:pt-36 md:pt-44 px-5"
-          style={{
-            background: "radial-gradient(ellipse 100% 60% at 50% -10%, rgba(91,106,242,0.25), transparent 70%)",
-          }}
-        >
-          <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-            {/* Badge */}
-            <motion.span
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-8 px-4 py-2 rounded-full"
-              style={{
-                color: "#6B7AF8",
-                border: "1px solid rgba(91,106,242,0.40)",
-                background: "rgba(91,106,242,0.10)",
-              }}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              Diseñado para agencias de señalética
-            </motion.span>
+      {/* SOCIAL PROOF */}
+      <div style={{ padding: "24px 48px", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
+        <p style={{ fontSize: 11, color: "#3A3A3C", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 12 }}>Confiado por agencias en</p>
+        <div style={{ display: "flex", justifyContent: "center", gap: 32, fontSize: 13, color: "#4A4A4A" }}>
+          {["Miami","Ciudad de México","Bogotá","Buenos Aires","Madrid"].map(c => <span key={c}>{c}</span>)}
+        </div>
+      </div>
 
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                fontSize: "clamp(56px, 9vw, 88px)",
-                fontWeight: 800,
-                lineHeight: 0.95,
-                letterSpacing: "-0.04em",
-                color: "#F5F5F7",
-                marginBottom: 10,
-              }}
-            >
-              Gestiona tu agencia
-              <br />
-              de señalética.
-            </motion.h1>
-
-            {/* Shimmer line */}
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                fontSize: "clamp(56px, 9vw, 88px)",
-                fontWeight: 800,
-                lineHeight: 0.95,
-                letterSpacing: "-0.04em",
-                display: "block",
-                marginBottom: 28,
-                background: "linear-gradient(135deg, #818CF8, #A78BFA, #C084FC, #818CF8)",
-                backgroundSize: "300%",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                animation: "landing-shimmer 5s ease infinite",
-              }}
-            >
-              Sin el caos.
-            </motion.span>
-
-            {/* Sub */}
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{ color: "#A1A1A6", fontSize: 19, lineHeight: 1.6, maxWidth: 520, marginBottom: 36 }}
-            >
-              Leads, propuestas, producción e instalaciones en un solo flujo.
-              Tu equipo siempre alineado, tus clientes siempre informados.
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex flex-wrap justify-center gap-4 mb-6"
-            >
-              <button
-                onClick={() => scrollTo("pricing")}
-                style={{
-                  background: "#5B6AF2",
-                  color: "#fff",
-                  borderRadius: 980,
-                  height: 48,
-                  padding: "0 28px",
-                  fontWeight: 600,
-                  fontSize: 16,
-                  border: "none",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 20px rgba(91,106,242,0.40)",
-                  transition: "transform 150ms, opacity 150ms",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
-              >
-                Empezar gratis →
-              </button>
-              <button
-                onClick={() => scrollTo("how")}
-                style={{
-                  background: "transparent",
-                  color: "#F5F5F7",
-                  borderRadius: 980,
-                  height: 48,
-                  padding: "0 28px",
-                  fontWeight: 600,
-                  fontSize: 16,
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  cursor: "pointer",
-                  transition: "background 150ms",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-              >
-                Ver demo
-              </button>
-            </motion.div>
-
-            {/* Social proof */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex items-center gap-2 text-[13px] mb-16"
-              style={{ color: "#6E6E73" }}
-            >
-              <div className="flex" style={{ color: "#FF9F0A" }}>
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                ))}
-              </div>
-              <span>Usado por agencias en Miami · CDMX · Bogotá · Madrid</span>
-            </motion.div>
-
-            {/* Dashboard screenshot */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-5xl mx-auto"
-              style={{
-                perspective: 1400,
-              }}
-            >
-              <div
-                style={{
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  transform: "perspective(1400px) rotateX(8deg)",
-                  boxShadow: "0 0 120px rgba(91,106,242,0.20)",
-                }}
-              >
-                <img
-                  src="/screenshots/dashboard.png"
-                  alt="Sign Flow — Centro de Control"
-                  style={{ width: "100%", display: "block" }}
-                  loading="eager"
-                />
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ═══════ LOGOS ═══════ */}
-        <section
-          className="py-10"
-          style={{
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div className="max-w-4xl mx-auto text-center">
-            <p
-              className="uppercase tracking-[0.08em] mb-3"
-              style={{ color: "#3A3A3C", fontSize: 13 }}
-            >
-              Confiado por agencias en:
-            </p>
-            <p style={{ color: "#3A3A3C", fontSize: 13, letterSpacing: "0.08em" }}>
-              MIAMI &nbsp;·&nbsp; CIUDAD DE MÉXICO &nbsp;·&nbsp; BOGOTÁ &nbsp;·&nbsp; BUENOS AIRES &nbsp;·&nbsp; MADRID
-            </p>
-          </div>
-        </section>
-
-        {/* ═══════ PROBLEMA / SOLUCIÓN ═══════ */}
-        <section className="py-32 sm:py-40 px-5">
-          <div className="max-w-3xl mx-auto">
-            <Reveal>
-              <h2
-                className="text-center mb-16"
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
-                  fontWeight: 700,
-                  lineHeight: 1.15,
-                  color: "#F5F5F7",
-                }}
-              >
-                Tu agencia merece más que
-                <br />
-                hojas de cálculo y WhatsApps.
-              </h2>
-            </Reveal>
-
-            <div>
-              {problemSolution.map((row, i) => (
-                <Reveal key={i} delay={i * 0.08}>
-                  <div
-                    className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-6 px-4 rounded-lg transition-colors duration-200"
-                    style={{
-                      borderBottom: "1px solid rgba(255,255,255,0.06)",
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                  >
-                    <p className="text-base line-through" style={{ color: "#FF453A" }}>
-                      {row.before}
-                    </p>
-                    <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: "#5B6AF2" }} />
-                    <p className="text-base font-semibold" style={{ color: "#F5F5F7" }}>
-                      {row.after}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
+      {/* PROBLEMA / SOLUCIÓN */}
+      <section style={{ padding: "120px 48px" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", lineHeight: 1.05, marginBottom: 60 }}>
+            Tu agencia merece más que<br /><span style={{ color: "#6E6E73" }}>hojas de cálculo y WhatsApps.</span>
+          </h2>
+          {[
+            ["Leads perdidos en el chat","Pipeline visual con seguimiento"],
+            ["Propuestas en Word sin control","PDF profesional con un clic"],
+            ["Órdenes por WhatsApp","Órdenes con estado en tiempo real"],
+            ["Fotos en el teléfono","Evidencias en la nube por proyecto"],
+            ["Sin idea del estado financiero","Dashboard con ingresos en vivo"],
+          ].map(([before, after], i) => (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 40px 1fr", alignItems: "center", padding: "22px 0", borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
+              <span style={{ fontSize: 15, color: "#FF453A", textDecoration: "line-through" }}>{before}</span>
+              <span style={{ color: "#5B6AF2", fontSize: 20, textAlign: "center" }}>→</span>
+              <span style={{ fontSize: 15, color: "#F5F5F7", fontWeight: 600 }}>{after}</span>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section id="demo" style={{ padding: "120px 48px", background: "rgba(255,255,255,0.015)" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>Todo lo que necesitas,</h2>
+          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 40 }}>nada que no usarás.</p>
+          <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
+            {["Dashboard ejecutivo","Leads y propuestas","Producción e instalación","Gestión de equipo"].map((tab, i) => (
+              <div key={tab} style={{ padding: "8px 18px", borderRadius: 980, fontSize: 13, fontWeight: 500, cursor: "pointer", border: i === 0 ? "1px solid rgba(91,106,242,0.40)" : "1px solid rgba(255,255,255,0.10)", background: i === 0 ? "rgba(91,106,242,0.15)" : "transparent", color: i === 0 ? "#8B9CF8" : "#6E6E73" }}>{tab}</div>
+            ))}
           </div>
-        </section>
-
-        {/* ═══════ FEATURE SHOWCASE ═══════ */}
-        <section id="features" className="py-32 sm:py-40 px-5" style={{ background: "#000" }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <h2
-                className="text-center mb-4"
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
-                  fontWeight: 700,
-                  lineHeight: 1.15,
-                  color: "#F5F5F7",
-                }}
-              >
-                Todo lo que necesitas,
-                <br />
-                nada que no usarás.
-              </h2>
-            </Reveal>
-
-            <Reveal delay={0.1}>
-              <div className="flex flex-wrap justify-center gap-2 mt-10 mb-12">
-                {featureTabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200"
-                      style={{
-                        background: isActive ? "rgba(91,106,242,0.15)" : "transparent",
-                        border: isActive
-                          ? "1px solid rgba(91,106,242,0.40)"
-                          : "1px solid rgba(255,255,255,0.10)",
-                        color: isActive ? "#6B7AF8" : "#6E6E73",
-                      }}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span className="hidden sm:inline">{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </Reveal>
-
-            <AnimatePresence mode="wait">
-              {featureTabs
-                .filter((t) => t.id === activeTab)
-                .map((tab) => (
-                  <motion.div
-                    key={tab.id}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.4 }}
-                    className="text-center"
-                  >
-                    <div
-                      className="mx-auto max-w-4xl overflow-hidden"
-                      style={{
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 16,
-                      }}
-                    >
-                      <img src="/screenshots/dashboard.png" alt={tab.label} style={{ width: "100%", display: "block" }} loading="lazy" />
-                    </div>
-                    <p className="mt-6 text-base max-w-lg mx-auto" style={{ color: "#A1A1A6" }}>
-                      {tab.description}
-                    </p>
-                  </motion.div>
-                ))}
-            </AnimatePresence>
-          </div>
-        </section>
-
-        {/* ═══════ CÓMO FUNCIONA ═══════ */}
-        <section id="how" className="py-32 sm:py-40 px-5" style={{ background: "#0A0A0A" }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <h2
-                className="text-center mb-20"
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
-                  fontWeight: 700,
-                  lineHeight: 1.15,
-                  color: "#F5F5F7",
-                }}
-              >
-                De lead a entrega
-                <br />
-                en 3 pasos.
-              </h2>
-            </Reveal>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
-              {steps.map((step, i) => (
-                <Reveal key={step.num} delay={i * 0.08}>
-                  <div
-                    className="relative"
-                    style={{
-                      borderTop: i > 0 ? undefined : undefined,
-                      paddingTop: 0,
-                    }}
-                  >
-                    {/* Dashed divider on mobile between steps */}
-                    {i > 0 && (
-                      <div
-                        className="md:hidden mb-8"
-                        style={{ borderTop: "1px dashed rgba(255,255,255,0.10)" }}
-                      />
-                    )}
-                    <span
-                      style={{
-                        fontFamily: "'Outfit', sans-serif",
-                        fontSize: 80,
-                        fontWeight: 800,
-                        lineHeight: 1,
-                        background: "linear-gradient(135deg, #5B6AF2, #A78BFA)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        opacity: 0.4,
-                        display: "block",
-                        marginBottom: 12,
-                      }}
-                    >
-                      {step.num}
-                    </span>
-                    <h3
-                      className="mb-3"
-                      style={{
-                        fontFamily: "'Outfit', sans-serif",
-                        fontSize: 20,
-                        fontWeight: 700,
-                        color: "#F5F5F7",
-                      }}
-                    >
-                      {step.title}
-                    </h3>
-                    <p style={{ color: "#A1A1A6", fontSize: 15, lineHeight: 1.65 }}>
-                      {step.description}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
+          <div style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20, overflow: "hidden" }}>
+            <div style={{ padding: "28px 36px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <h3 style={{ fontSize: 22, fontWeight: 700, color: "#F5F5F7", marginBottom: 8 }}>Todo tu negocio en una pantalla.</h3>
+              <p style={{ fontSize: 15, color: "#A1A1A6", lineHeight: 1.6, margin: 0 }}>KPIs en tiempo real, briefing de IA cada mañana y pipeline visual. Sabes exactamente qué atender antes de abrir el primer WhatsApp.</p>
             </div>
+            <img src="/screenshots/dashboard.png" alt="Dashboard Sign Flow" style={{ width: "100%", display: "block" }}
+              onError={(e) => { (e.target as HTMLImageElement).style.height = "240px"; (e.target as HTMLImageElement).style.background = "#050505"; }} />
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ═══════ TESTIMONIOS ═══════ */}
-        <section className="py-32 sm:py-40 px-5" style={{ background: "#000" }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <h2
-                className="text-center mb-16"
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
-                  fontWeight: 700,
-                  lineHeight: 1.15,
-                  color: "#F5F5F7",
-                }}
-              >
-                Agencias que ya ordenaron
-                <br />
-                su operación.
-              </h2>
-            </Reveal>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {testimonials.map((t, i) => (
-                <Reveal key={i} delay={i * 0.08}>
-                  <div
-                    className="h-full flex flex-col transition-all duration-200"
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 16,
-                      padding: 36,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "rgba(91,106,242,0.30)";
-                      e.currentTarget.style.boxShadow = "0 0 40px rgba(91,106,242,0.08)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                      e.currentTarget.style.boxShadow = "none";
-                    }}
-                  >
-                    <div className="flex mb-4" style={{ color: "#FF9F0A" }}>
-                      {[...Array(5)].map((_, j) => (
-                        <Star key={j} className="w-4 h-4 fill-current" />
-                      ))}
-                    </div>
-                    <p className="flex-1 mb-5" style={{ color: "#A1A1A6", fontStyle: "italic", fontSize: 15, lineHeight: 1.8 }}>
-                      "{t.text}"
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                        style={{ background: t.color }}
-                      >
-                        {t.initials}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-sm" style={{ color: "#F5F5F7" }}>{t.name}</p>
-                        <p className="text-xs" style={{ color: "#6E6E73" }}>
-                          {t.role}, {t.company}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══════ PRECIOS ═══════ */}
-        <section id="pricing" className="py-32 sm:py-40 px-5" style={{ background: "#0A0A0A" }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <h2
-                className="text-center mb-2"
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
-                  fontWeight: 700,
-                  lineHeight: 1.15,
-                  color: "#F5F5F7",
-                }}
-              >
-                Elige tu plan.
-              </h2>
-              <p className="text-center mb-12" style={{ color: "#6E6E73", fontSize: 17 }}>
-                Sin contratos. Cancela cuando quieras.
-              </p>
-            </Reveal>
-
-            {/* Toggle */}
-            <Reveal delay={0.1}>
-              <div className="flex items-center justify-center gap-3 mb-14">
-                <span className="text-sm font-medium" style={{ color: !isAnnual ? "#F5F5F7" : "#6E6E73" }}>
-                  Mensual
-                </span>
-                <button
-                  onClick={() => setIsAnnual(!isAnnual)}
-                  className="relative w-12 h-7 rounded-full transition-colors duration-200"
-                  style={{ background: isAnnual ? "#5B6AF2" : "rgba(255,255,255,0.06)" }}
-                >
-                  <div
-                    className="absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200"
-                    style={{ transform: isAnnual ? "translateX(24px)" : "translateX(4px)" }}
-                  />
-                </button>
-                <span className="text-sm font-medium" style={{ color: isAnnual ? "#F5F5F7" : "#6E6E73" }}>
-                  Anual
-                </span>
-                {isAnnual && (
-                  <span
-                    className="text-xs font-semibold px-3 py-1 rounded-full"
-                    style={{ color: "#6B7AF8", background: "rgba(91,106,242,0.20)" }}
-                  >
-                    Ahorra 20%
-                  </span>
-                )}
-              </div>
-            </Reveal>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {plans.map((plan, i) => (
-                <Reveal key={plan.name} delay={i * 0.08}>
-                  <div
-                    className="h-full flex flex-col relative"
-                    style={{
-                      background: plan.highlighted
-                        ? "rgba(91,106,242,0.08)"
-                        : "rgba(255,255,255,0.04)",
-                      border: plan.highlighted
-                        ? "1px solid rgba(91,106,242,0.50)"
-                        : "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 20,
-                      padding: 32,
-                      boxShadow: plan.highlighted
-                        ? "0 0 0 1px rgba(91,106,242,0.50), 0 0 80px rgba(91,106,242,0.15), 0 24px 48px rgba(0,0,0,0.40)"
-                        : "none",
-                    }}
-                  >
-                    {plan.highlighted && (
-                      <span
-                        className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-4 py-1 rounded-full"
-                        style={{ background: "rgba(91,106,242,0.20)", color: "#6B7AF8" }}
-                      >
-                        Más popular
-                      </span>
-                    )}
-
-                    <h3
-                      className="mb-4"
-                      style={{ fontFamily: "'Outfit', sans-serif", fontSize: 20, fontWeight: 700, color: "#F5F5F7" }}
-                    >
-                      {plan.name}
-                    </h3>
-
-                    <div className="mb-6">
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={isAnnual ? "a" : "m"}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.25 }}
-                          style={{
-                            fontFamily: "'Outfit', sans-serif",
-                            fontSize: 48,
-                            fontWeight: 700,
-                            color: "#F5F5F7",
-                            display: "inline-block",
-                          }}
-                        >
-                          ${isAnnual ? plan.priceAnnual : plan.priceMonthly}
-                        </motion.span>
-                      </AnimatePresence>
-                      <span style={{ color: "#6E6E73", fontSize: 16, marginLeft: 4 }}>/mes</span>
-                    </div>
-
-                    <ul className="space-y-3 mb-8 flex-1">
-                      {plan.features.map((feat) => (
-                        <li key={feat} className="flex items-center gap-2.5 text-sm" style={{ color: "#A1A1A6" }}>
-                          <Check className="w-4 h-4 flex-shrink-0" style={{ color: "#32D74B" }} />
-                          {feat}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <button
-                      onClick={() => handlePlanSelect(plan.name)}
-                      style={{
-                        width: "100%",
-                        height: 44,
-                        borderRadius: 980,
-                        fontWeight: 600,
-                        fontSize: 15,
-                        cursor: "pointer",
-                        transition: "all 150ms",
-                        ...(plan.highlighted
-                          ? {
-                              background: "#5B6AF2",
-                              color: "#fff",
-                              border: "none",
-                              boxShadow: "0 4px 20px rgba(91,106,242,0.40)",
-                            }
-                          : {
-                              background: "transparent",
-                              color: "#F5F5F7",
-                              border: "1px solid rgba(255,255,255,0.18)",
-                            }),
-                      }}
-                      onMouseEnter={(e) => {
-                        if (plan.highlighted) {
-                          e.currentTarget.style.transform = "translateY(-1px)";
-                        } else {
-                          e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (plan.highlighted) {
-                          e.currentTarget.style.transform = "translateY(0)";
-                        } else {
-                          e.currentTarget.style.background = "transparent";
-                        }
-                      }}
-                    >
-                      {plan.cta}
-                    </button>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal delay={0.3}>
-              <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "#6E6E73" }}>
-                <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: "#32D74B" }} /> 14 días gratis
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: "#32D74B" }} /> Sin tarjeta
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: "#32D74B" }} /> Cancela cuando quieras
-                </span>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ═══════ CTA FINAL ═══════ */}
-        <section
-          className="relative py-32 sm:py-40 px-5"
-          style={{
-            background: "linear-gradient(180deg, #000000 0%, #0D0D1A 100%)",
-            borderTop: "1px solid rgba(91,106,242,0.20)",
-          }}
-        >
-          {/* Radial glow */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: "radial-gradient(ellipse 80% 100% at 50% 100%, rgba(91,106,242,0.18), transparent 70%)",
-            }}
-          />
-          <div className="relative max-w-3xl mx-auto text-center">
-            <Reveal>
-              <h2
-                className="mb-4"
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(44px, 6vw, 72px)",
-                  fontWeight: 800,
-                  letterSpacing: "-0.03em",
-                  color: "#F5F5F7",
-                }}
-              >
-                ¿Listo para ordenar tu agencia?
-              </h2>
-              <p className="mb-10" style={{ color: "#6E6E73", fontSize: 18 }}>
-                Empieza gratis hoy. Tu equipo lo agradecerá.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.15}>
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <button
-                  onClick={() => scrollTo("pricing")}
-                  style={{
-                    background: "#5B6AF2",
-                    color: "#fff",
-                    borderRadius: 980,
-                    height: 48,
-                    padding: "0 28px",
-                    fontWeight: 600,
-                    fontSize: 16,
-                    border: "none",
-                    cursor: "pointer",
-                    boxShadow: "0 4px 20px rgba(91,106,242,0.40)",
-                    transition: "transform 150ms",
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
-                >
-                  Empezar gratis →
-                </button>
-                <button
-                  onClick={() => navigate("/register")}
-                  style={{
-                    background: "transparent",
-                    color: "#F5F5F7",
-                    borderRadius: 980,
-                    height: 48,
-                    padding: "0 28px",
-                    fontWeight: 600,
-                    fontSize: 16,
-                    border: "1px solid rgba(255,255,255,0.18)",
-                    cursor: "pointer",
-                    transition: "background 150ms",
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                >
-                  Hablar con ventas
-                </button>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ═══════ FOOTER ═══════ */}
-        <footer
-          className="py-16 px-5"
-          style={{ background: "#000", borderTop: "1px solid rgba(255,255,255,0.06)" }}
-        >
-          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-1.5 mb-3">
-                <img src={brandLogoSrc} alt="" className="w-7 h-7 object-contain" />
-                <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: "#F5F5F7" }}>
-                  Sign Flow
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed" style={{ color: "#6E6E73" }}>
-                Gestión integral para agencias de señalética.
-              </p>
-            </div>
-
+      {/* 3 PASOS */}
+      <section style={{ padding: "120px 48px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>De lead a entrega</h2>
+          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 72 }}>en 3 pasos.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)" }}>
             {[
-              {
-                title: "Producto",
-                links: [
-                  { label: "Características", action: () => scrollTo("features") },
-                  { label: "Precios", action: () => scrollTo("pricing") },
-                  { label: "Demo", action: () => scrollTo("how") },
-                ],
-              },
-              {
-                title: "Empresa",
-                links: [
-                  { label: "Sobre nosotros", action: () => {} },
-                  { label: "Blog", action: () => {} },
-                  { label: "Contacto", action: () => {} },
-                ],
-              },
-              {
-                title: "Legal",
-                links: [
-                  { label: "Privacidad", action: () => {} },
-                  { label: "Términos", action: () => {} },
-                  { label: "Cookies", action: () => {} },
-                ],
-              },
-            ].map((col) => (
-              <div key={col.title}>
-                <h4 className="font-semibold text-sm mb-4" style={{ color: "#F5F5F7" }}>{col.title}</h4>
-                <ul className="space-y-2.5">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      <button
-                        onClick={link.action}
-                        className="text-sm transition-colors"
-                        style={{ color: "#6E6E73" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = "#F5F5F7"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = "#6E6E73"; }}
-                      >
-                        {link.label}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              { n: "01", t: "Captura el lead", d: "El cliente llega por referido, Instagram o tu web. Lo registras en segundos con toda su info y el servicio que necesita." },
+              { n: "02", t: "Cotiza y produce", d: "Genera propuesta con PDF profesional. Al aprobarla se crea la orden de producción automáticamente." },
+              { n: "03", t: "Instala y cobra", d: "Tu equipo recibe la orden. Suben evidencias. El cliente recibe notificación. Tú cobras." },
+            ].map((s, i) => (
+              <div key={i} style={{ padding: "0 40px", borderRight: i < 2 ? "1px dashed rgba(255,255,255,0.08)" : "none" }}>
+                <div style={{ fontSize: 80, fontWeight: 900, lineHeight: 1, background: "linear-gradient(135deg,#5B6AF2,#A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", opacity: 0.45, marginBottom: 16 }}>{s.n}</div>
+                <h3 style={{ fontSize: 19, fontWeight: 700, color: "#F5F5F7", marginBottom: 10 }}>{s.t}</h3>
+                <p style={{ fontSize: 14, color: "#6E6E73", lineHeight: 1.7, margin: 0 }}>{s.d}</p>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div
-            className="max-w-6xl mx-auto pt-6 text-center"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-          >
-            <p className="text-xs" style={{ color: "#6E6E73" }}>
-              © 2026 Sign Flow · signflowapp.com · Todos los derechos reservados
-            </p>
+      {/* TESTIMONIOS */}
+      <section style={{ padding: "120px 48px", background: "rgba(255,255,255,0.015)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>Agencias que ya ordenaron</h2>
+          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 56 }}>su operación.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+            {[
+              { i: "CM", n: "Carlos M.", r: "Director · SignMakers Miami", t: "\"Antes perdíamos leads por no dar seguimiento. Ahora el dashboard nos avisa qué está caliente y qué atender hoy.\"" },
+              { i: "ER", n: "Elena R.", r: "Gerente · VisualCorp CDMX", t: "\"Las propuestas en PDF con nuestro logo cambiaron cómo nos perciben. Cerramos 30% más en el primer mes.\"" },
+              { i: "DL", n: "David L.", r: "Operaciones · BrandSpace Bogotá", t: "\"Por fin sé dónde está cada instalación sin llamar a nadie. El mapa en tiempo real vale solo el precio del plan.\"" },
+            ].map((p, i) => (
+              <div key={i} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: 28 }}>
+                <div style={{ display: "flex", gap: 2, marginBottom: 16 }}>
+                  {[...Array(5)].map((_,j) => <span key={j} style={{ color: "#FF9F0A", fontSize: 13 }}>★</span>)}
+                </div>
+                <p style={{ fontSize: 14, color: "#A1A1A6", fontStyle: "italic", lineHeight: 1.75, margin: "0 0 20px" }}>{p.t}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: "50%", background: "rgba(91,106,242,0.20)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#8B9CF8", flexShrink: 0 }}>{p.i}</div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#F5F5F7" }}>{p.n}</div>
+                    <div style={{ fontSize: 11, color: "#6E6E73" }}>{p.r}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        </footer>
-      </div>
-    </PageTransition>
-  );
-};
+        </div>
+      </section>
 
-export default Index;
+      {/* PRECIOS */}
+      <section id="precios" style={{ padding: "120px 48px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>Elige tu plan.</h2>
+          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 48 }}>Sin contratos. Cancela cuando quieras.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+            {[
+              { name: "Starter", price: 49, features: ["Hasta 3 usuarios","Leads y propuestas","Órdenes de servicio","Soporte por email"], cta: "Elegir Starter", h: false },
+              { name: "Professional", price: 99, features: ["Hasta 10 usuarios","Todo de Starter","AI Briefing diario","PDF de propuestas","Reportes avanzados"], cta: "Elegir Professional →", h: true },
+              { name: "Enterprise", price: 199, features: ["Usuarios ilimitados","Todo de Professional","Onboarding dedicado","SLA garantizado"], cta: "Contactar ventas", h: false },
+            ].map((plan, i) => (
+              <div key={i} style={{ background: plan.h ? "rgba(91,106,242,0.07)" : "rgba(255,255,255,0.03)", border: plan.h ? "1px solid rgba(91,106,242,0.40)" : "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: 32, position: "relative", boxShadow: plan.h ? "0 0 80px rgba(91,106,242,0.10)" : "none" }}>
+                {plan.h && <div style={{ position: "absolute", top: -11, left: "50%", transform: "translateX(-50%)", background: "rgba(91,106,242,0.25)", border: "1px solid rgba(91,106,242,0.45)", borderRadius: 980, padding: "3px 14px", fontSize: 11, fontWeight: 700, color: "#8B9CF8", whiteSpace: "nowrap" }}>Más popular</div>}
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#A1A1A6", marginBottom: 10 }}>{plan.name}</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 24 }}>
+                  <span style={{ fontSize: 48, fontWeight: 800, color: "#F5F5F7", lineHeight: 1, letterSpacing: "-0.02em" }}>${plan.price}</span>
+                  <span style={{ fontSize: 14, color: "#6E6E73" }}>/mes</span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+                  {plan.features.map((f, j) => (
+                    <div key={j} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#A1A1A6" }}>
+                      <span style={{ color: "#32D74B", fontSize: 12, flexShrink: 0 }}>✓</span>{f}
+                    </div>
+                  ))}
+                </div>
+                <Link to="/access" style={{ display: "block", textAlign: "center", padding: 11, borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none", background: plan.h ? "#5B6AF2" : "transparent", color: plan.h ? "#fff" : "#F5F5F7", border: plan.h ? "none" : "1px solid rgba(255,255,255,0.14)", boxShadow: plan.h ? "0 4px 20px rgba(91,106,242,0.35)" : "none" }}>{plan.cta}</Link>
+              </div>
+            ))}
+          </div>
+          <p style={{ textAlign: "center", fontSize: 12, color: "#6E6E73", marginTop: 20 }}>✓ 14 días gratis &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Cancela cuando quieras</p>
+        </div>
+      </section>
+
+      {/* CTA FINAL */}
+      <section style={{ padding: "140px 48px", textAlign: "center", background: "linear-gradient(180deg,#000 0%,#080810 100%)", borderTop: "1px solid rgba(91,106,242,0.12)", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 90% at 50% 110%,rgba(91,106,242,0.14),transparent 70%)", pointerEvents: "none" }} />
+        <h2 style={{ fontSize: "clamp(40px,6vw,68px)", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: 16, position: "relative" }}>¿Listo para ordenar<br />tu agencia?</h2>
+        <p style={{ color: "#6E6E73", fontSize: 18, marginBottom: 40, position: "relative" }}>Empieza gratis hoy. Tu equipo lo agradecerá.</p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", position: "relative" }}>
+          <Link to="/access" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", borderRadius: 980, textDecoration: "none", background: "#5B6AF2", color: "#fff", fontWeight: 600, fontSize: 16, boxShadow: "0 4px 32px rgba(91,106,242,0.45)" }}>Empezar gratis →</Link>
+          <a href="mailto:hello@mail.signflowapp.com" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", borderRadius: 980, textDecoration: "none", background: "transparent", color: "#F5F5F7", fontWeight: 500, fontSize: 16, border: "1px solid rgba(255,255,255,0.15)" }}>Hablar con ventas</a>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{ background: "#000", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "48px 48px 28px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#F5F5F7", marginBottom: 8 }}>Sign Flow</div>
+              <div style={{ fontSize: 13, color: "#6E6E73", lineHeight: 1.6 }}>La plataforma de gestión operacional para agencias de señalética.</div>
+            </div>
+            {[
+              { title: "Producto", links: ["Características","Precios","Demo"] },
+              { title: "Empresa", links: ["Sobre nosotros","Blog","Contacto"] },
+              { title: "Legal", links: ["Privacidad","Términos","Cookies"] },
+            ].map(col => (
+              <div key={col.title}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#6E6E73", textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 14 }}>{col.title}</div>
+                {col.links.map(l => <a key={l} href="#" style={{ display: "block", fontSize: 13, color: "#6E6E73", textDecoration: "none", marginBottom: 10 }}>{l}</a>)}
+              </div>
+            ))}
+          </div>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 20, display: "flex", justifyContent: "space-between", fontSize: 12, color: "#3A3A3C" }}>
+            <span>© 2026 Sign Flow · signflowapp.com</span>
+            <span>Todos los derechos reservados</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
+}
