@@ -33,6 +33,7 @@ interface LeadsContextType {
   updateLead: (id: string, updates: Partial<Lead>) => Promise<void>;
   assignLead: (leadId: string, assignedToUserId: string | null) => Promise<void>;
   clearLeads: () => Promise<void>;
+  refreshLeads: () => Promise<void>;
   loading: boolean;
 }
 
