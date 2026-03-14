@@ -27,13 +27,13 @@ const Reveal = ({
   delay?: number;
 }) => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
@@ -41,7 +41,7 @@ const Reveal = ({
   );
 };
 
-/* ─── Feature tabs data ─── */
+/* ─── Data ─── */
 const featureTabs = [
   { id: "dashboard", label: "Dashboard ejecutivo", icon: BarChart3, description: "KPIs en tiempo real, AI briefing diario y pipeline completo en una sola vista." },
   { id: "leads", label: "Leads y propuestas", icon: FileText, description: "Pipeline visual para leads, propuestas en PDF con tu marca y seguimiento automático." },
@@ -49,36 +49,33 @@ const featureTabs = [
   { id: "team", label: "Gestión de equipo", icon: Users, description: "Roles y permisos por función. Admin, comercial, operaciones — cada quien ve lo que necesita." },
 ];
 
-/* ─── Problem/Solution rows ─── */
 const problemSolution = [
   { before: "Leads perdidos en el chat", after: "Pipeline visual con seguimiento" },
-  { before: "Propuestas en Word sin control", after: "Propuestas profesionales en PDF con un clic" },
-  { before: "Órdenes por WhatsApp", after: "Órdenes asignadas con estado en tiempo real" },
-  { before: "Fotos de instalación en el teléfono", after: "Evidencias en la nube, por proyecto" },
-  { before: "Sin idea del estado financiero", after: "Dashboard con ingresos y pipeline en vivo" },
+  { before: "Propuestas en Word sin control", after: "PDF profesional con un clic" },
+  { before: "Órdenes por WhatsApp", after: "Órdenes con estado en tiempo real" },
+  { before: "Fotos en el teléfono", after: "Evidencias en la nube por proyecto" },
+  { before: "Sin idea del estado financiero", after: "Dashboard con ingresos en vivo" },
 ];
 
-/* ─── Steps data ─── */
 const steps = [
-  { num: "01", title: "Captura el lead", description: "El cliente llega por Instagram, referido o tu web. Lo registras en segundos con toda su info y el servicio que necesita." },
-  { num: "02", title: "Cotiza y produce", description: "Genera la propuesta con PDF profesional. Al aprobarla, se crea la orden de producción automáticamente." },
-  { num: "03", title: "Instala y cobra", description: "Tu equipo recibe la orden en su celular. Suben fotos de la instalación. El cliente recibe notificación. Tú cobras." },
+  { num: "01", title: "Captura el lead", description: "El cliente llega por referido, Instagram o tu web. Lo registras en segundos con toda su info." },
+  { num: "02", title: "Cotiza y produce", description: "Genera propuesta con PDF profesional. Al aprobarla se crea la orden de producción automáticamente." },
+  { num: "03", title: "Instala y cobra", description: "Tu equipo recibe la orden. Suben evidencias. El cliente recibe notificación. Tú cobras." },
 ];
 
-/* ─── Testimonials ─── */
 const testimonials = [
-  { text: "Antes perdíamos leads por no darles seguimiento a tiempo. Ahora el dashboard nos avisa qué está caliente y qué hay que atender hoy.", name: "Carlos M.", role: "Director", company: "SignMakers Miami", initials: "CM", color: "bg-[#5B6AF2]" },
-  { text: "Las propuestas en PDF con nuestro logo cambiaron cómo nos perciben los clientes. Cerramos 30% más en el primer mes.", name: "Elena R.", role: "Gerente Comercial", company: "VisualCorp CDMX", initials: "ER", color: "bg-[#8B5CF6]" },
-  { text: "Por fin puedo saber dónde está cada instalación sin llamar a nadie. El mapa en tiempo real vale solo el precio del plan.", name: "David L.", role: "Operaciones", company: "BrandSpace Bogotá", initials: "DL", color: "bg-[#EC4899]" },
+  { text: "Antes perdíamos leads por no darles seguimiento a tiempo. Ahora el dashboard nos avisa qué está caliente y qué hay que atender hoy.", name: "Carlos M.", role: "Director", company: "SignMakers Miami", initials: "CM", color: "#5B6AF2" },
+  { text: "Las propuestas en PDF con nuestro logo cambiaron cómo nos perciben los clientes. Cerramos 30% más en el primer mes.", name: "Elena R.", role: "Gerente Comercial", company: "VisualCorp CDMX", initials: "ER", color: "#8B5CF6" },
+  { text: "Por fin puedo saber dónde está cada instalación sin llamar a nadie. El mapa en tiempo real vale solo el precio del plan.", name: "David L.", role: "Operaciones", company: "BrandSpace Bogotá", initials: "DL", color: "#A78BFA" },
 ];
 
-/* ─── Pricing plans ─── */
 const plans = [
   { name: "Starter", priceMonthly: 49, priceAnnual: 39, features: ["Hasta 3 usuarios", "Leads y propuestas", "Órdenes de servicio", "Soporte por email"], cta: "Elegir Starter", highlighted: false },
-  { name: "Professional", priceMonthly: 99, priceAnnual: 79, features: ["Hasta 10 usuarios", "Todo de Starter", "AI Briefing diario", "PDF de propuestas", "Reportes avanzados"], cta: "Elegir Professional →", highlighted: true },
+  { name: "Professional", priceMonthly: 99, priceAnnual: 79, features: ["Hasta 10 usuarios", "Todo de Starter", "AI Briefing diario", "PDF de propuestas", "Reportes avanzados"], cta: "Elegir Professional", highlighted: true },
   { name: "Enterprise", priceMonthly: 199, priceAnnual: 159, features: ["Usuarios ilimitados", "Todo de Professional", "Onboarding dedicado", "SLA garantizado"], cta: "Contactar ventas", highlighted: false },
 ];
 
+/* ─── Component ─── */
 const Index = () => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
@@ -103,24 +100,35 @@ const Index = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-black text-[#F5F5F7] overflow-x-hidden scroll-smooth" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" }}>
-        {/* ═══════ S1 — NAVBAR ═══════ */}
+      <div
+        className="min-h-screen overflow-x-hidden scroll-smooth"
+        style={{
+          background: "#000",
+          color: "#F5F5F7",
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif",
+        }}
+      >
+        {/* ═══════ NAVBAR ═══════ */}
         <header
-          className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 h-16 ${
-            scrolled
-              ? "bg-black/85 backdrop-blur-xl border-b border-white/[0.06]"
-              : "bg-transparent"
-          }`}
+          className="fixed top-0 inset-x-0 z-50 transition-all duration-300 h-16"
+          style={{
+            background: "rgba(0,0,0,0.72)",
+            backdropFilter: "blur(20px) saturate(180%)",
+            WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            borderBottom: scrolled
+              ? "1px solid rgba(255,255,255,0.10)"
+              : "1px solid rgba(255,255,255,0.06)",
+          }}
         >
           <div className="max-w-6xl mx-auto flex items-center justify-between px-5 h-full">
             <a href="/" className="flex items-center gap-1.5" aria-label="Sign Flow">
-              <img src={brandLogoSrc} alt="Sign Flow" className="w-9 h-9 object-contain" draggable={false} />
-              <span className="font-bold text-lg text-[#F5F5F7]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <img src={brandLogoSrc} alt="" className="w-8 h-8 object-contain" draggable={false} />
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 18, color: "#F5F5F7" }}>
                 Sign Flow
               </span>
             </a>
 
-            <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#6E6E73]">
+            <nav className="hidden md:flex items-center gap-8 text-sm font-medium" style={{ color: "#A1A1A6" }}>
               {[
                 { label: "Características", id: "features" },
                 { label: "Precios", id: "pricing" },
@@ -129,7 +137,7 @@ const Index = () => {
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
-                  className="hover:text-[#F5F5F7] transition-colors duration-200"
+                  className="transition-colors duration-200 hover:text-[#F5F5F7]"
                 >
                   {item.label}
                 </button>
@@ -141,132 +149,236 @@ const Index = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/login")}
-                className="text-[#A1A1A6] hover:text-[#F5F5F7] hover:bg-transparent"
+                className="hover:bg-transparent"
+                style={{ color: "#A1A1A6" }}
               >
                 Iniciar sesión
               </Button>
-              <Button
-                size="sm"
+              <button
                 onClick={() => scrollTo("pricing")}
-                className="text-white rounded-[10px] px-5 text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-                style={{ background: "linear-gradient(135deg, #5B6AF2, #8B5CF6)" }}
+                style={{
+                  background: "#5B6AF2",
+                  color: "#fff",
+                  borderRadius: 980,
+                  height: 36,
+                  padding: "0 20px",
+                  fontWeight: 600,
+                  fontSize: 14,
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "opacity 150ms",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 Elegir Plan →
-              </Button>
+              </button>
             </div>
           </div>
         </header>
 
-        {/* ═══════ S2 — HERO ═══════ */}
-        <section className="pt-28 pb-16 sm:pt-32 sm:pb-20 md:pt-40 md:pb-28 px-5">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
+        {/* ═══════ HERO ═══════ */}
+        <section
+          className="relative pt-32 pb-10 sm:pt-36 md:pt-44 px-5"
+          style={{
+            background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(91,106,242,0.15), transparent)",
+          }}
+        >
+          <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
+            {/* Badge */}
+            <motion.span
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-center lg:text-left"
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-8 px-4 py-2 rounded-full"
+              style={{
+                color: "#6B7AF8",
+                border: "1px solid rgba(91,106,242,0.40)",
+                background: "rgba(91,106,242,0.10)",
+              }}
             >
-              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#5B6AF2] mb-5 px-4 py-2 rounded-full border border-[#5B6AF2]/25 bg-[#5B6AF2]/10">
-                <Sparkles className="w-3.5 h-3.5" />
-                Diseñado para agencias de señalética
-              </span>
+              <Sparkles className="w-3.5 h-3.5" />
+              Diseñado para agencias de señalética
+            </motion.span>
 
-              <h1
-                className="text-[2.2rem] sm:text-[2.8rem] md:text-[3.2rem] lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight mb-6"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+            {/* Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "clamp(2.4rem, 5.5vw, 4rem)",
+                fontWeight: 700,
+                lineHeight: 1.08,
+                letterSpacing: "-0.02em",
+                color: "#F5F5F7",
+                marginBottom: 10,
+              }}
+            >
+              Gestiona tu agencia
+              <br />
+              de señalética.
+            </motion.h1>
+
+            {/* Shimmer line */}
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="landing-shimmer-text"
+              style={{
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "clamp(2.4rem, 5.5vw, 4rem)",
+                fontWeight: 700,
+                lineHeight: 1.08,
+                letterSpacing: "-0.02em",
+                display: "block",
+                marginBottom: 28,
+              }}
+            >
+              Sin el caos.
+            </motion.span>
+
+            {/* Sub */}
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              style={{ color: "#A1A1A6", fontSize: 19, lineHeight: 1.6, maxWidth: 520, marginBottom: 36 }}
+            >
+              Leads, propuestas, producción e instalaciones en un solo flujo.
+              Tu equipo siempre alineado, tus clientes siempre informados.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex flex-wrap justify-center gap-4 mb-6"
+            >
+              <button
+                onClick={() => scrollTo("pricing")}
+                style={{
+                  background: "#5B6AF2",
+                  color: "#fff",
+                  borderRadius: 980,
+                  height: 48,
+                  padding: "0 28px",
+                  fontWeight: 600,
+                  fontSize: 16,
+                  border: "none",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 20px rgba(91,106,242,0.40)",
+                  transition: "transform 150ms, opacity 150ms",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
               >
-                Gestiona tu agencia
-                <br />
-                de señalética{" "}
-                <span
-                  className="bg-clip-text text-transparent"
-                  style={{ backgroundImage: "linear-gradient(135deg, #5B6AF2, #8B5CF6)" }}
-                >
-                  sin caos.
-                </span>
-              </h1>
-
-              <p className="text-base sm:text-lg text-[#A1A1A6] leading-relaxed max-w-[480px] mx-auto lg:mx-0 mb-8">
-                Leads, propuestas, producción e instalaciones en un solo flujo.
-                Tu equipo siempre alineado, tus clientes siempre informados.
-              </p>
-
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-5">
-                <Button
-                  size="lg"
-                  onClick={() => scrollTo("pricing")}
-                  className="text-white rounded-xl h-12 px-7 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-                  style={{ background: "linear-gradient(135deg, #5B6AF2, #8B5CF6)" }}
-                >
-                  Empezar gratis →
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => scrollTo("how")}
-                  className="rounded-xl h-12 px-7 text-base font-medium border-white/10 text-[#A1A1A6] hover:bg-white/[0.04] bg-transparent"
-                >
-                  Ver demo
-                </Button>
-              </div>
-
-              <div className="flex items-center justify-center lg:justify-start gap-1.5 text-[13px] text-[#6E6E73]">
-                <div className="flex text-[#FBBF24]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                  ))}
-                </div>
-                <span className="ml-1">Usado por +50 agencias en Miami y LATAM</span>
-              </div>
+                Empezar gratis →
+              </button>
+              <button
+                onClick={() => scrollTo("how")}
+                style={{
+                  background: "transparent",
+                  color: "#F5F5F7",
+                  borderRadius: 980,
+                  height: 48,
+                  padding: "0 28px",
+                  fontWeight: 600,
+                  fontSize: 16,
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  cursor: "pointer",
+                  transition: "background 150ms",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+              >
+                Ver demo
+              </button>
             </motion.div>
 
-            {/* Right — Dashboard preview */}
+            {/* Social proof */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex items-center gap-2 text-[13px] mb-16"
+              style={{ color: "#6E6E73" }}
+            >
+              <div className="flex" style={{ color: "#FF9F0A" }}>
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                ))}
+              </div>
+              <span>Usado por agencias en Miami · CDMX · Bogotá · Madrid</span>
+            </motion.div>
+
+            {/* Dashboard screenshot */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-5xl mx-auto"
+              style={{
+                perspective: 1400,
+              }}
             >
               <div
-                className="rounded-2xl overflow-hidden border border-white/[0.08]"
                 style={{
-                  boxShadow: "0 24px 80px rgba(91,106,242,0.15)",
-                  transform: "perspective(1200px) rotateY(-5deg) rotateX(2deg)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  transform: "perspective(1400px) rotateX(8deg)",
+                  boxShadow: "0 0 120px rgba(91,106,242,0.20)",
                 }}
               >
-                <div className="bg-[#0A0A0A] border-b border-white/[0.06] px-4 py-2.5 flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#27CA40]" />
-                  </div>
-                  <div className="flex-1 bg-white/[0.06] rounded-md px-3 py-1 text-[11px] text-[#6E6E73] text-center border border-white/[0.06]">
-                    signflowapp.com
-                  </div>
-                </div>
-                <img src={dashboardPreview} alt="Sign Flow Dashboard" className="w-full block" loading="eager" />
+                <img
+                  src={dashboardPreview}
+                  alt="Sign Flow — Centro de Control"
+                  className="w-full block"
+                  loading="eager"
+                />
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* ═══════ S3 — SOCIAL PROOF BAR ═══════ */}
-        <section className="bg-white/[0.02] py-8 border-y border-white/[0.06]">
+        {/* ═══════ LOGOS ═══════ */}
+        <section
+          className="py-10"
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
           <div className="max-w-4xl mx-auto text-center">
-            <p className="text-sm text-[#6E6E73] mb-3">Confiado por agencias en:</p>
-            <p className="text-sm font-medium text-[#A1A1A6]">
-              Miami · Ciudad de México · Bogotá · Buenos Aires · Madrid
+            <p
+              className="uppercase tracking-[0.08em] mb-3"
+              style={{ color: "#3A3A3C", fontSize: 13 }}
+            >
+              Confiado por agencias en:
+            </p>
+            <p style={{ color: "#3A3A3C", fontSize: 13, letterSpacing: "0.08em" }}>
+              MIAMI &nbsp;·&nbsp; CIUDAD DE MÉXICO &nbsp;·&nbsp; BOGOTÁ &nbsp;·&nbsp; BUENOS AIRES &nbsp;·&nbsp; MADRID
             </p>
           </div>
         </section>
 
-        {/* ═══════ S4 — PROBLEMA / SOLUCIÓN ═══════ */}
-        <section className="py-20 sm:py-28 px-5">
+        {/* ═══════ PROBLEMA / SOLUCIÓN ═══════ */}
+        <section className="py-24 sm:py-32 px-5">
           <div className="max-w-3xl mx-auto">
             <Reveal>
               <h2
-                className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-14 leading-tight"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+                className="text-center mb-16"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  color: "#F5F5F7",
+                }}
               >
                 Tu agencia merece más que
                 <br />
@@ -274,15 +386,22 @@ const Index = () => {
               </h2>
             </Reveal>
 
-            <div className="space-y-0">
+            <div>
               {problemSolution.map((row, i) => (
                 <Reveal key={i} delay={i * 0.08}>
-                  <div className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-5 border-b border-white/[0.06] last:border-0 group hover:bg-white/[0.02] px-4 rounded-lg transition-colors">
-                    <p className="text-sm sm:text-base text-[#FF453A]/70 line-through">
+                  <div
+                    className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-5 px-4 rounded-lg transition-colors duration-200"
+                    style={{
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                  >
+                    <p className="text-sm sm:text-base line-through" style={{ color: "rgba(255,69,58,0.70)" }}>
                       {row.before}
                     </p>
-                    <ArrowRight className="w-4 h-4 text-[#5B6AF2] flex-shrink-0" />
-                    <p className="text-sm sm:text-base font-semibold text-[#F5F5F7]">
+                    <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: "#5B6AF2" }} />
+                    <p className="text-sm sm:text-base font-semibold" style={{ color: "#F5F5F7" }}>
                       {row.after}
                     </p>
                   </div>
@@ -292,13 +411,19 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══════ S5 — FEATURE SHOWCASE ═══════ */}
-        <section id="features" className="bg-white/[0.02] py-20 sm:py-28 px-5">
+        {/* ═══════ FEATURE SHOWCASE ═══════ */}
+        <section id="features" className="py-24 sm:py-32 px-5" style={{ background: "#000" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
-                className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 leading-tight"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+                className="text-center mb-4"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  color: "#F5F5F7",
+                }}
               >
                 Todo lo que necesitas,
                 <br />
@@ -307,7 +432,7 @@ const Index = () => {
             </Reveal>
 
             <Reveal delay={0.1}>
-              <div className="flex flex-wrap justify-center gap-2 mt-10 mb-10">
+              <div className="flex flex-wrap justify-center gap-2 mt-10 mb-12">
                 {featureTabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -315,12 +440,14 @@ const Index = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                        isActive
-                          ? "text-white shadow-md"
-                          : "bg-white/[0.04] text-[#6E6E73] border border-white/[0.08] hover:border-[#5B6AF2]/30 hover:text-[#A1A1A6]"
-                      }`}
-                      style={isActive ? { background: "linear-gradient(135deg, #5B6AF2, #8B5CF6)" } : {}}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200"
+                      style={{
+                        background: isActive ? "rgba(91,106,242,0.15)" : "transparent",
+                        border: isActive
+                          ? "1px solid rgba(91,106,242,0.40)"
+                          : "1px solid rgba(255,255,255,0.10)",
+                        color: isActive ? "#6B7AF8" : "#6E6E73",
+                      }}
                     >
                       <Icon className="w-4 h-4" />
                       <span className="hidden sm:inline">{tab.label}</span>
@@ -343,12 +470,15 @@ const Index = () => {
                     className="text-center"
                   >
                     <div
-                      className="rounded-2xl overflow-hidden border border-white/[0.08] mx-auto max-w-4xl"
-                      style={{ boxShadow: "0 4px 24px rgba(91,106,242,0.08)" }}
+                      className="mx-auto max-w-4xl overflow-hidden"
+                      style={{
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: 16,
+                      }}
                     >
                       <img src={dashboardPreview} alt={tab.label} className="w-full block" loading="lazy" />
                     </div>
-                    <p className="text-[#A1A1A6] mt-6 text-base max-w-lg mx-auto">
+                    <p className="mt-6 text-base max-w-lg mx-auto" style={{ color: "#A1A1A6" }}>
                       {tab.description}
                     </p>
                   </motion.div>
@@ -357,35 +487,71 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══════ S6 — CÓMO FUNCIONA ═══════ */}
-        <section id="how" className="py-20 sm:py-28 px-5">
+        {/* ═══════ CÓMO FUNCIONA ═══════ */}
+        <section id="how" className="py-24 sm:py-32 px-5" style={{ background: "#0A0A0A" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
-                className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-16 leading-tight"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+                className="text-center mb-20"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  color: "#F5F5F7",
+                }}
               >
-                De lead a entrega en 3 pasos.
+                De lead a entrega
+                <br />
+                en 3 pasos.
               </h2>
             </Reveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
               {steps.map((step, i) => (
-                <Reveal key={step.num} delay={i * 0.15}>
-                  <div className="text-center md:text-left">
+                <Reveal key={step.num} delay={i * 0.08}>
+                  <div
+                    className="relative"
+                    style={{
+                      borderTop: i > 0 ? undefined : undefined,
+                      paddingTop: 0,
+                    }}
+                  >
+                    {/* Dashed divider on mobile between steps */}
+                    {i > 0 && (
+                      <div
+                        className="md:hidden mb-8"
+                        style={{ borderTop: "1px dashed rgba(255,255,255,0.10)" }}
+                      />
+                    )}
                     <span
-                      className="text-5xl md:text-6xl font-extrabold bg-clip-text text-transparent mb-4 block"
                       style={{
                         fontFamily: "'Outfit', sans-serif",
-                        backgroundImage: "linear-gradient(135deg, #5B6AF2, #8B5CF6)",
+                        fontSize: 80,
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        background: "linear-gradient(135deg, #5B6AF2, #A78BFA)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        opacity: 0.4,
+                        display: "block",
+                        marginBottom: 12,
                       }}
                     >
                       {step.num}
                     </span>
-                    <h3 className="text-xl font-bold mb-3 text-[#F5F5F7]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    <h3
+                      className="mb-3"
+                      style={{
+                        fontFamily: "'Outfit', sans-serif",
+                        fontSize: 20,
+                        fontWeight: 700,
+                        color: "#F5F5F7",
+                      }}
+                    >
                       {step.title}
                     </h3>
-                    <p className="text-[#A1A1A6] leading-relaxed text-[15px]">
+                    <p style={{ color: "#A1A1A6", fontSize: 15, lineHeight: 1.65 }}>
                       {step.description}
                     </p>
                   </div>
@@ -395,13 +561,19 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══════ S7 — TESTIMONIOS ═══════ */}
-        <section className="bg-white/[0.02] py-20 sm:py-28 px-5">
+        {/* ═══════ TESTIMONIOS ═══════ */}
+        <section className="py-24 sm:py-32 px-5" style={{ background: "#000" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
-                className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-14 leading-tight"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+                className="text-center mb-16"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  color: "#F5F5F7",
+                }}
               >
                 Agencias que ya ordenaron
                 <br />
@@ -411,28 +583,42 @@ const Index = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
-                <Reveal key={i} delay={i * 0.12}>
+                <Reveal key={i} delay={i * 0.08}>
                   <div
-                    className="bg-white/[0.04] rounded-2xl p-6 border border-white/[0.08] h-full flex flex-col"
-                    style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.30)" }}
+                    className="h-full flex flex-col transition-all duration-200"
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 16,
+                      padding: 24,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "rgba(91,106,242,0.30)";
+                      e.currentTarget.style.boxShadow = "0 0 40px rgba(91,106,242,0.08)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
                   >
-                    <div className="flex text-[#FBBF24] mb-4">
+                    <div className="flex mb-4" style={{ color: "#FF9F0A" }}>
                       {[...Array(5)].map((_, j) => (
                         <Star key={j} className="w-4 h-4 fill-current" />
                       ))}
                     </div>
-                    <p className="text-[#A1A1A6] italic leading-relaxed text-[15px] flex-1 mb-5">
+                    <p className="flex-1 mb-5" style={{ color: "#A1A1A6", fontStyle: "italic", fontSize: 15, lineHeight: 1.65 }}>
                       "{t.text}"
                     </p>
                     <div className="flex items-center gap-3">
                       <div
-                        className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white text-sm font-bold`}
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                        style={{ background: t.color }}
                       >
                         {t.initials}
                       </div>
                       <div>
-                        <p className="font-semibold text-sm text-[#F5F5F7]">{t.name}</p>
-                        <p className="text-xs text-[#6E6E73]">
+                        <p className="font-semibold text-sm" style={{ color: "#F5F5F7" }}>{t.name}</p>
+                        <p className="text-xs" style={{ color: "#6E6E73" }}>
                           {t.role}, {t.company}
                         </p>
                       </div>
@@ -444,43 +630,51 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══════ S8 — PRECIOS ═══════ */}
-        <section id="pricing" className="py-20 sm:py-28 px-5">
+        {/* ═══════ PRECIOS ═══════ */}
+        <section id="pricing" className="py-24 sm:py-32 px-5" style={{ background: "#0A0A0A" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
-                className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-3 leading-tight"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+                className="text-center mb-2"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.625rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  color: "#F5F5F7",
+                }}
               >
-                Elige tu plan y empieza hoy.
+                Elige tu plan.
               </h2>
-              <p className="text-center text-[#A1A1A6] mb-10">
+              <p className="text-center mb-12" style={{ color: "#6E6E73", fontSize: 17 }}>
                 Sin contratos. Cancela cuando quieras.
               </p>
             </Reveal>
 
+            {/* Toggle */}
             <Reveal delay={0.1}>
-              <div className="flex items-center justify-center gap-3 mb-12">
-                <span className={`text-sm font-medium ${!isAnnual ? "text-[#F5F5F7]" : "text-[#6E6E73]"}`}>
+              <div className="flex items-center justify-center gap-3 mb-14">
+                <span className="text-sm font-medium" style={{ color: !isAnnual ? "#F5F5F7" : "#6E6E73" }}>
                   Mensual
                 </span>
                 <button
                   onClick={() => setIsAnnual(!isAnnual)}
-                  className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-                    isAnnual ? "bg-[#5B6AF2]" : "bg-white/10"
-                  }`}
+                  className="relative w-12 h-7 rounded-full transition-colors duration-200"
+                  style={{ background: isAnnual ? "#5B6AF2" : "rgba(255,255,255,0.06)" }}
                 >
                   <div
-                    className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
-                      isAnnual ? "translate-x-6" : "translate-x-0.5"
-                    }`}
+                    className="absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200"
+                    style={{ transform: isAnnual ? "translateX(24px)" : "translateX(4px)" }}
                   />
                 </button>
-                <span className={`text-sm font-medium ${isAnnual ? "text-[#F5F5F7]" : "text-[#6E6E73]"}`}>
+                <span className="text-sm font-medium" style={{ color: isAnnual ? "#F5F5F7" : "#6E6E73" }}>
                   Anual
                 </span>
                 {isAnnual && (
-                  <span className="text-xs font-semibold text-[#5B6AF2] bg-[#5B6AF2]/10 px-2.5 py-1 rounded-full border border-[#5B6AF2]/25">
+                  <span
+                    className="text-xs font-semibold px-3 py-1 rounded-full"
+                    style={{ color: "#6B7AF8", background: "rgba(91,106,242,0.20)" }}
+                  >
                     Ahorra 20%
                   </span>
                 )}
@@ -489,146 +683,224 @@ const Index = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {plans.map((plan, i) => (
-                <Reveal key={plan.name} delay={i * 0.1}>
+                <Reveal key={plan.name} delay={i * 0.08}>
                   <div
-                    className={`rounded-2xl p-6 sm:p-8 border h-full flex flex-col relative ${
-                      plan.highlighted
-                        ? "border-[#5B6AF2] border-2 bg-white/[0.04]"
-                        : "border-white/[0.08] bg-white/[0.02]"
-                    }`}
+                    className="h-full flex flex-col relative"
                     style={{
+                      background: plan.highlighted
+                        ? "rgba(91,106,242,0.08)"
+                        : "rgba(255,255,255,0.04)",
+                      border: plan.highlighted
+                        ? "1px solid rgba(91,106,242,0.40)"
+                        : "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 20,
+                      padding: 32,
                       boxShadow: plan.highlighted
-                        ? "0 8px 40px rgba(91,106,242,0.12)"
-                        : "0 4px 24px rgba(0,0,0,0.20)",
+                        ? "0 0 60px rgba(91,106,242,0.12)"
+                        : "none",
                     }}
                   >
                     {plan.highlighted && (
                       <span
-                        className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold text-white px-4 py-1 rounded-full"
-                        style={{ background: "linear-gradient(135deg, #5B6AF2, #8B5CF6)" }}
+                        className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-4 py-1 rounded-full"
+                        style={{ background: "rgba(91,106,242,0.20)", color: "#6B7AF8" }}
                       >
                         Más popular
                       </span>
                     )}
 
-                    <h3 className="text-lg font-bold text-[#F5F5F7] mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    <h3
+                      className="mb-4"
+                      style={{ fontFamily: "'Outfit', sans-serif", fontSize: 20, fontWeight: 700, color: "#F5F5F7" }}
+                    >
                       {plan.name}
                     </h3>
 
                     <div className="mb-6">
                       <AnimatePresence mode="wait">
                         <motion.span
-                          key={isAnnual ? "annual" : "monthly"}
+                          key={isAnnual ? "a" : "m"}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.3 }}
-                          className="text-4xl font-bold text-[#F5F5F7] inline-block"
-                          style={{ fontFamily: "'Outfit', sans-serif" }}
+                          transition={{ duration: 0.25 }}
+                          style={{
+                            fontFamily: "'Outfit', sans-serif",
+                            fontSize: 48,
+                            fontWeight: 700,
+                            color: "#F5F5F7",
+                            display: "inline-block",
+                          }}
                         >
                           ${isAnnual ? plan.priceAnnual : plan.priceMonthly}
                         </motion.span>
                       </AnimatePresence>
-                      <span className="text-[#6E6E73] text-sm ml-1">/mes</span>
+                      <span style={{ color: "#6E6E73", fontSize: 16, marginLeft: 4 }}>/mes</span>
                     </div>
 
                     <ul className="space-y-3 mb-8 flex-1">
                       {plan.features.map((feat) => (
-                        <li key={feat} className="flex items-center gap-2.5 text-sm text-[#A1A1A6]">
-                          <Check className="w-4 h-4 text-[#5B6AF2] flex-shrink-0" />
+                        <li key={feat} className="flex items-center gap-2.5 text-sm" style={{ color: "#A1A1A6" }}>
+                          <Check className="w-4 h-4 flex-shrink-0" style={{ color: "#32D74B" }} />
                           {feat}
                         </li>
                       ))}
                     </ul>
 
-                    <Button
+                    <button
                       onClick={() => handlePlanSelect(plan.name)}
-                      className={`w-full rounded-xl h-11 font-semibold transition-all duration-200 ${
-                        plan.highlighted
-                          ? "text-white shadow-md hover:shadow-lg"
-                          : "bg-transparent text-[#A1A1A6] border border-white/10 hover:border-[#5B6AF2]/30 hover:text-[#F5F5F7]"
-                      }`}
-                      style={
-                        plan.highlighted
-                          ? { background: "linear-gradient(135deg, #5B6AF2, #8B5CF6)" }
-                          : {}
-                      }
-                      variant={plan.highlighted ? "default" : "outline"}
+                      style={{
+                        width: "100%",
+                        height: 44,
+                        borderRadius: 980,
+                        fontWeight: 600,
+                        fontSize: 15,
+                        cursor: "pointer",
+                        transition: "all 150ms",
+                        ...(plan.highlighted
+                          ? {
+                              background: "#5B6AF2",
+                              color: "#fff",
+                              border: "none",
+                              boxShadow: "0 4px 20px rgba(91,106,242,0.40)",
+                            }
+                          : {
+                              background: "transparent",
+                              color: "#F5F5F7",
+                              border: "1px solid rgba(255,255,255,0.18)",
+                            }),
+                      }}
+                      onMouseEnter={(e) => {
+                        if (plan.highlighted) {
+                          e.currentTarget.style.transform = "translateY(-1px)";
+                        } else {
+                          e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (plan.highlighted) {
+                          e.currentTarget.style.transform = "translateY(0)";
+                        } else {
+                          e.currentTarget.style.background = "transparent";
+                        }
+                      }}
                     >
                       {plan.cta}
-                    </Button>
+                    </button>
                   </div>
                 </Reveal>
               ))}
             </div>
 
             <Reveal delay={0.3}>
-              <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-[#A1A1A6]">
+              <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "#6E6E73" }}>
                 <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-[#5B6AF2]" /> Prueba gratis 14 días
+                  <Check className="w-4 h-4" style={{ color: "#32D74B" }} /> 14 días gratis
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-[#5B6AF2]" /> Sin tarjeta de crédito
+                  <Check className="w-4 h-4" style={{ color: "#32D74B" }} /> Sin tarjeta
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-[#5B6AF2]" /> Cancela cuando quieras
+                  <Check className="w-4 h-4" style={{ color: "#32D74B" }} /> Cancela cuando quieras
                 </span>
               </div>
             </Reveal>
           </div>
         </section>
 
-        {/* ═══════ S9 — CTA FINAL ═══════ */}
+        {/* ═══════ CTA FINAL ═══════ */}
         <section
-          className="py-20 sm:py-28 px-5"
-          style={{ background: "linear-gradient(135deg, #5B6AF2 0%, #8B5CF6 100%)" }}
+          className="relative py-24 sm:py-32 px-5"
+          style={{
+            background: "linear-gradient(180deg, #000000 0%, #0D0D1A 100%)",
+            borderTop: "1px solid rgba(91,106,242,0.20)",
+          }}
         >
-          <div className="max-w-3xl mx-auto text-center">
+          {/* Radial glow */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse 60% 80% at 50% 100%, rgba(91,106,242,0.12), transparent)",
+            }}
+          />
+          <div className="relative max-w-3xl mx-auto text-center">
             <Reveal>
               <h2
-                className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 leading-tight"
-                style={{ fontFamily: "'Outfit', sans-serif" }}
+                className="mb-4"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontSize: "clamp(1.8rem, 4vw, 3rem)",
+                  fontWeight: 700,
+                  color: "#F5F5F7",
+                }}
               >
                 ¿Listo para ordenar tu agencia?
               </h2>
-              <p className="text-white/80 text-lg mb-10">
+              <p className="mb-10" style={{ color: "#6E6E73", fontSize: 18 }}>
                 Empieza gratis hoy. Tu equipo lo agradecerá.
               </p>
             </Reveal>
 
             <Reveal delay={0.15}>
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <Button
-                  size="lg"
+                <button
                   onClick={() => scrollTo("pricing")}
-                  className="bg-white text-[#5B6AF2] hover:bg-white/90 rounded-xl h-12 px-8 text-base font-semibold shadow-lg"
+                  style={{
+                    background: "#5B6AF2",
+                    color: "#fff",
+                    borderRadius: 980,
+                    height: 48,
+                    padding: "0 28px",
+                    fontWeight: 600,
+                    fontSize: 16,
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 20px rgba(91,106,242,0.40)",
+                    transition: "transform 150ms",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
                 >
                   Empezar gratis →
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
+                </button>
+                <button
                   onClick={() => navigate("/register")}
-                  className="rounded-xl h-12 px-8 text-base font-medium border-white/30 text-white hover:bg-white/10 bg-transparent"
+                  style={{
+                    background: "transparent",
+                    color: "#F5F5F7",
+                    borderRadius: 980,
+                    height: 48,
+                    padding: "0 28px",
+                    fontWeight: 600,
+                    fontSize: 16,
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    cursor: "pointer",
+                    transition: "background 150ms",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
                   Hablar con ventas
-                </Button>
+                </button>
               </div>
             </Reveal>
           </div>
         </section>
 
-        {/* ═══════ S10 — FOOTER ═══════ */}
-        <footer className="bg-black border-t border-white/[0.06] py-16 px-5">
+        {/* ═══════ FOOTER ═══════ */}
+        <footer
+          className="py-16 px-5"
+          style={{ background: "#000", borderTop: "1px solid rgba(255,255,255,0.06)" }}
+        >
           <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-1.5 mb-3">
-                <img src={brandLogoSrc} alt="Sign Flow" className="w-7 h-7 object-contain" />
-                <span className="font-bold text-[#F5F5F7]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <img src={brandLogoSrc} alt="" className="w-7 h-7 object-contain" />
+                <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: "#F5F5F7" }}>
                   Sign Flow
                 </span>
               </div>
-              <p className="text-sm text-[#6E6E73] leading-relaxed">
+              <p className="text-sm leading-relaxed" style={{ color: "#6E6E73" }}>
                 Gestión integral para agencias de señalética.
               </p>
             </div>
@@ -660,13 +932,16 @@ const Index = () => {
               },
             ].map((col) => (
               <div key={col.title}>
-                <h4 className="font-semibold text-sm text-[#F5F5F7] mb-4">{col.title}</h4>
+                <h4 className="font-semibold text-sm mb-4" style={{ color: "#F5F5F7" }}>{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
                     <li key={link.label}>
                       <button
                         onClick={link.action}
-                        className="text-sm text-[#6E6E73] hover:text-[#5B6AF2] transition-colors"
+                        className="text-sm transition-colors"
+                        style={{ color: "#6E6E73" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = "#F5F5F7"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = "#6E6E73"; }}
                       >
                         {link.label}
                       </button>
@@ -677,8 +952,11 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="max-w-6xl mx-auto border-t border-white/[0.06] pt-6 text-center">
-            <p className="text-xs text-[#6E6E73]">
+          <div
+            className="max-w-6xl mx-auto pt-6 text-center"
+            style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+          >
+            <p className="text-xs" style={{ color: "#6E6E73" }}>
               © 2026 Sign Flow · signflowapp.com · Todos los derechos reservados
             </p>
           </div>
