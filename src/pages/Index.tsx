@@ -208,10 +208,10 @@ const Index = () => {
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 fontFamily: "'Outfit', sans-serif",
-                fontSize: "clamp(2.4rem, 5.5vw, 4rem)",
-                fontWeight: 700,
-                lineHeight: 1.08,
-                letterSpacing: "-0.02em",
+                fontSize: "clamp(56px, 9vw, 88px)",
+                fontWeight: 800,
+                lineHeight: 0.95,
+                letterSpacing: "-0.04em",
                 color: "#F5F5F7",
                 marginBottom: 10,
               }}
@@ -226,15 +226,19 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="landing-shimmer-text"
               style={{
                 fontFamily: "'Outfit', sans-serif",
-                fontSize: "clamp(2.4rem, 5.5vw, 4rem)",
-                fontWeight: 700,
-                lineHeight: 1.08,
-                letterSpacing: "-0.02em",
+                fontSize: "clamp(56px, 9vw, 88px)",
+                fontWeight: 800,
+                lineHeight: 0.95,
+                letterSpacing: "-0.04em",
                 display: "block",
                 marginBottom: 28,
+                background: "linear-gradient(135deg, #818CF8, #A78BFA, #C084FC, #818CF8)",
+                backgroundSize: "300%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                animation: "landing-shimmer 5s ease infinite",
               }}
             >
               Sin el caos.
