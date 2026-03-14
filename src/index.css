@@ -352,6 +352,22 @@
   100% { background-position: -200% 0; }
 }
 
+/* Landing hero shimmer gradient text */
+@keyframes landing-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.landing-shimmer-text {
+  background: linear-gradient(135deg, #5B6AF2, #A78BFA, #5B6AF2);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: landing-shimmer 4s ease infinite;
+}
+
 /* ── Integration Card Animated Borders ── */
 @keyframes border-rotate { to { --angle: 360deg; } }
 
