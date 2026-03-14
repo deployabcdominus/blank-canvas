@@ -137,6 +137,7 @@ const Index = () => {
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
                   className="transition-colors duration-200 hover:text-[#F5F5F7]"
+                  style={{ fontSize: 13, letterSpacing: "0.01em" }}
                 >
                   {item.label}
                 </button>
