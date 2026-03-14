@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCompany } from "@/hooks/useCompany";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useEmail } from "@/hooks/useEmail";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check, Mail } from "lucide-react";
 
@@ -18,6 +20,8 @@ interface InviteMemberModalProps {
 export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) => {
   const { user } = useAuth();
   const { company } = useCompany();
+  const { fullName } = useUserProfile();
+  const { sendInvitationEmail } = useEmail();
   const { toast } = useToast();
 
   const [email, setEmail] = useState("");
@@ -46,6 +50,20 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
 
       const link = `${window.location.origin}/invite?token=${(data as any).token}`;
       setInviteLink(link);
+
+      const ROLE_LABELS: Record<string, string> = {
+        admin: "Admin", sales: "Ventas", operations: "Operaciones",
+        member: "Comercial", viewer: "Visor",
+      };
+
+      // Fire-and-forget: email never blocks the invitation flow
+      sendInvitationEmail(email.trim().toLowerCase(), {
+        inviterName: fullName,
+        companyName: company.name,
+        logoUrl: company.logo_url || "",
+        roleName: ROLE_LABELS[role] || role,
+        inviteUrl: link,
+      });
 
       toast({ title: "Invitación creada", description: `Link de invitación generado para ${email}` });
     } catch (err: any) {
