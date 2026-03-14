@@ -824,7 +824,7 @@ const Index = () => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse 60% 80% at 50% 100%, rgba(91,106,242,0.12), transparent)",
+              background: "radial-gradient(ellipse 80% 100% at 50% 100%, rgba(91,106,242,0.18), transparent 70%)",
             }}
           />
           <div className="relative max-w-3xl mx-auto text-center">
