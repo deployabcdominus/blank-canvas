@@ -183,7 +183,7 @@ export function SuperadminCompanies({
                 ))}
               </TableBody>
             </Table>
-            {loadingUsers && <div className="p-6 text-center text-muted-foreground">Cargando usuarios...</div>}
+            {loadingUsers && <div className="p-4"><TableSkeleton cols={4} rows={3} /></div>}
             {!loadingUsers && companyUsers.length === 0 && (
               <div className="p-8 text-center">
                 <UserPlus className="w-10 h-10 mx-auto text-muted-foreground/30 mb-3" />

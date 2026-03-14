@@ -475,7 +475,7 @@ export default function TenantTeamManagement() {
                     })}
                   </TableBody>
                 </Table>
-                {loadingInvitations && <div className="p-8 text-center text-muted-foreground">Cargando...</div>}
+                {loadingInvitations && <div className="p-4"><TableSkeleton cols={4} rows={3} /></div>}
                 {!loadingInvitations && filteredInvitations.length === 0 && (
                   <div className="p-8 text-center">
                     <Mail className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />

@@ -110,9 +110,8 @@ export function SuperadminUsers({
           </TableBody>
         </Table>
         {loadingAllUsers && (
-          <div className="p-12 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto mb-3" />
-            <p className="text-muted-foreground">Cargando usuarios...</p>
+          <div className="p-4">
+            <TableSkeleton cols={6} rows={5} />
           </div>
         )}
         {!loadingAllUsers && filtered.length === 0 && (
