@@ -96,37 +96,12 @@ const Invite = () => {
     setMode("accepting");
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("No hay sesión activa");
-      const userId = session.user.id;
+      const { data, error: fnError } = await supabase.functions.invoke("accept-invitation", {
+        body: { token: invitation.token },
+      });
 
-      // Profile update
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ company_id: invitation.company_id } as any)
-        .eq("id", userId);
-      if (profileError) throw new Error("Error actualizando perfil: " + profileError.message);
-
-      // Role check & insert
-      const { data: existingRole } = await supabase
-        .from("user_roles")
-        .select("id")
-        .eq("user_id", userId)
-        .maybeSingle();
-
-      if (!existingRole) {
-        const { error: roleError } = await supabase
-          .from("user_roles")
-          .insert({ user_id: userId, role: invitation.role as any });
-        if (roleError) throw new Error("Error asignando rol: " + roleError.message);
-      }
-
-      // Mark invitation as accepted
-      const { error: inviteError } = await supabase
-        .from("invitations")
-        .update({ accepted_at: new Date().toISOString(), used: true })
-        .eq("id", invitation.id);
-      if (inviteError) throw new Error("Error actualizando invitación: " + inviteError.message);
+      if (fnError) throw new Error(fnError.message || "Error al aceptar la invitación");
+      if (data?.error) throw new Error(data.error);
 
       toast({ title: "¡Bienvenido!", description: "Te has unido al equipo exitosamente." });
       navigate("/dashboard");
