@@ -31,19 +31,7 @@ const STATUS_COLORS: Record<string, { fill: string; stroke: string; label: strin
 
 const getStatusCfg = (status: string) => STATUS_COLORS[status] || STATUS_COLORS.Lead;
 
-function hashCode(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  return h;
-}
-
-function addressToLatLng(address: string): [number, number] {
-  if (!address) return [25.7617, -80.1918];
-  const h = Math.abs(hashCode(address));
-  const lat = 25.7 + (h % 1000) / 10000;
-  const lng = -80.3 + ((h >> 10) % 1000) / 10000;
-  return [lat, lng];
-}
+// addressToLatLng removed — now using real geocoding via Nominatim
 
 function getMunicipality(address: string): string {
   const lower = (address || "").toLowerCase();
