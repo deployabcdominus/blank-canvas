@@ -3,7 +3,6 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import brandLogoSrc from "@/assets/brand-logo.png";
-import dashboardPreview from "@/assets/dashboard-preview.png";
 import {
   ArrowRight,
   Check,
@@ -138,6 +137,7 @@ const Index = () => {
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
                   className="transition-colors duration-200 hover:text-[#F5F5F7]"
+                  style={{ fontSize: 13, letterSpacing: "0.01em" }}
                 >
                   {item.label}
                 </button>
@@ -156,14 +156,14 @@ const Index = () => {
               </Button>
               <button
                 onClick={() => scrollTo("pricing")}
-                style={{
-                  background: "#5B6AF2",
-                  color: "#fff",
-                  borderRadius: 980,
-                  height: 36,
-                  padding: "0 20px",
-                  fontWeight: 600,
-                  fontSize: 14,
+                  style={{
+                    background: "#5B6AF2",
+                    color: "#fff",
+                    borderRadius: 980,
+                    height: 34,
+                    padding: "0 18px",
+                    fontWeight: 600,
+                    fontSize: 13,
                   border: "none",
                   cursor: "pointer",
                   transition: "opacity 150ms",
@@ -181,7 +181,7 @@ const Index = () => {
         <section
           className="relative pt-32 pb-10 sm:pt-36 md:pt-44 px-5"
           style={{
-            background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(91,106,242,0.15), transparent)",
+            background: "radial-gradient(ellipse 100% 60% at 50% -10%, rgba(91,106,242,0.25), transparent 70%)",
           }}
         >
           <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
@@ -208,10 +208,10 @@ const Index = () => {
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 fontFamily: "'Outfit', sans-serif",
-                fontSize: "clamp(2.4rem, 5.5vw, 4rem)",
-                fontWeight: 700,
-                lineHeight: 1.08,
-                letterSpacing: "-0.02em",
+                fontSize: "clamp(56px, 9vw, 88px)",
+                fontWeight: 800,
+                lineHeight: 0.95,
+                letterSpacing: "-0.04em",
                 color: "#F5F5F7",
                 marginBottom: 10,
               }}
@@ -226,15 +226,19 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="landing-shimmer-text"
               style={{
                 fontFamily: "'Outfit', sans-serif",
-                fontSize: "clamp(2.4rem, 5.5vw, 4rem)",
-                fontWeight: 700,
-                lineHeight: 1.08,
-                letterSpacing: "-0.02em",
+                fontSize: "clamp(56px, 9vw, 88px)",
+                fontWeight: 800,
+                lineHeight: 0.95,
+                letterSpacing: "-0.04em",
                 display: "block",
                 marginBottom: 28,
+                background: "linear-gradient(135deg, #818CF8, #A78BFA, #C084FC, #818CF8)",
+                backgroundSize: "300%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                animation: "landing-shimmer 5s ease infinite",
               }}
             >
               Sin el caos.
@@ -335,9 +339,9 @@ const Index = () => {
                 }}
               >
                 <img
-                  src={dashboardPreview}
+                  src="/screenshots/dashboard.png"
                   alt="Sign Flow — Centro de Control"
-                  className="w-full block"
+                  style={{ width: "100%", display: "block" }}
                   loading="eager"
                 />
               </div>
@@ -367,7 +371,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ PROBLEMA / SOLUCIÓN ═══════ */}
-        <section className="py-24 sm:py-32 px-5">
+        <section className="py-32 sm:py-40 px-5">
           <div className="max-w-3xl mx-auto">
             <Reveal>
               <h2
@@ -390,18 +394,18 @@ const Index = () => {
               {problemSolution.map((row, i) => (
                 <Reveal key={i} delay={i * 0.08}>
                   <div
-                    className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-5 px-4 rounded-lg transition-colors duration-200"
+                    className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-6 px-4 rounded-lg transition-colors duration-200"
                     style={{
                       borderBottom: "1px solid rgba(255,255,255,0.06)",
                     }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                   >
-                    <p className="text-sm sm:text-base line-through" style={{ color: "rgba(255,69,58,0.70)" }}>
+                    <p className="text-base line-through" style={{ color: "#FF453A" }}>
                       {row.before}
                     </p>
                     <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: "#5B6AF2" }} />
-                    <p className="text-sm sm:text-base font-semibold" style={{ color: "#F5F5F7" }}>
+                    <p className="text-base font-semibold" style={{ color: "#F5F5F7" }}>
                       {row.after}
                     </p>
                   </div>
@@ -412,7 +416,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ FEATURE SHOWCASE ═══════ */}
-        <section id="features" className="py-24 sm:py-32 px-5" style={{ background: "#000" }}>
+        <section id="features" className="py-32 sm:py-40 px-5" style={{ background: "#000" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
@@ -476,7 +480,7 @@ const Index = () => {
                         borderRadius: 16,
                       }}
                     >
-                      <img src={dashboardPreview} alt={tab.label} className="w-full block" loading="lazy" />
+                      <img src="/screenshots/dashboard.png" alt={tab.label} style={{ width: "100%", display: "block" }} loading="lazy" />
                     </div>
                     <p className="mt-6 text-base max-w-lg mx-auto" style={{ color: "#A1A1A6" }}>
                       {tab.description}
@@ -488,7 +492,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ CÓMO FUNCIONA ═══════ */}
-        <section id="how" className="py-24 sm:py-32 px-5" style={{ background: "#0A0A0A" }}>
+        <section id="how" className="py-32 sm:py-40 px-5" style={{ background: "#0A0A0A" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
@@ -562,7 +566,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ TESTIMONIOS ═══════ */}
-        <section className="py-24 sm:py-32 px-5" style={{ background: "#000" }}>
+        <section className="py-32 sm:py-40 px-5" style={{ background: "#000" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
@@ -590,7 +594,7 @@ const Index = () => {
                       background: "rgba(255,255,255,0.04)",
                       border: "1px solid rgba(255,255,255,0.08)",
                       borderRadius: 16,
-                      padding: 24,
+                      padding: 36,
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = "rgba(91,106,242,0.30)";
@@ -606,7 +610,7 @@ const Index = () => {
                         <Star key={j} className="w-4 h-4 fill-current" />
                       ))}
                     </div>
-                    <p className="flex-1 mb-5" style={{ color: "#A1A1A6", fontStyle: "italic", fontSize: 15, lineHeight: 1.65 }}>
+                    <p className="flex-1 mb-5" style={{ color: "#A1A1A6", fontStyle: "italic", fontSize: 15, lineHeight: 1.8 }}>
                       "{t.text}"
                     </p>
                     <div className="flex items-center gap-3">
@@ -631,7 +635,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ PRECIOS ═══════ */}
-        <section id="pricing" className="py-24 sm:py-32 px-5" style={{ background: "#0A0A0A" }}>
+        <section id="pricing" className="py-32 sm:py-40 px-5" style={{ background: "#0A0A0A" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
@@ -691,12 +695,12 @@ const Index = () => {
                         ? "rgba(91,106,242,0.08)"
                         : "rgba(255,255,255,0.04)",
                       border: plan.highlighted
-                        ? "1px solid rgba(91,106,242,0.40)"
+                        ? "1px solid rgba(91,106,242,0.50)"
                         : "1px solid rgba(255,255,255,0.08)",
                       borderRadius: 20,
                       padding: 32,
                       boxShadow: plan.highlighted
-                        ? "0 0 60px rgba(91,106,242,0.12)"
+                        ? "0 0 0 1px rgba(91,106,242,0.50), 0 0 80px rgba(91,106,242,0.15), 0 24px 48px rgba(0,0,0,0.40)"
                         : "none",
                     }}
                   >
@@ -810,7 +814,7 @@ const Index = () => {
 
         {/* ═══════ CTA FINAL ═══════ */}
         <section
-          className="relative py-24 sm:py-32 px-5"
+          className="relative py-32 sm:py-40 px-5"
           style={{
             background: "linear-gradient(180deg, #000000 0%, #0D0D1A 100%)",
             borderTop: "1px solid rgba(91,106,242,0.20)",
@@ -820,7 +824,7 @@ const Index = () => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse 60% 80% at 50% 100%, rgba(91,106,242,0.12), transparent)",
+              background: "radial-gradient(ellipse 80% 100% at 50% 100%, rgba(91,106,242,0.18), transparent 70%)",
             }}
           />
           <div className="relative max-w-3xl mx-auto text-center">
@@ -829,8 +833,9 @@ const Index = () => {
                 className="mb-4"
                 style={{
                   fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(1.8rem, 4vw, 3rem)",
-                  fontWeight: 700,
+                  fontSize: "clamp(44px, 6vw, 72px)",
+                  fontWeight: 800,
+                  letterSpacing: "-0.03em",
                   color: "#F5F5F7",
                 }}
               >
