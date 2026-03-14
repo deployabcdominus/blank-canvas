@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProjects, Project } from "@/contexts/ProjectsContext";
 import { useInstallations } from "@/contexts/InstallationsContext";
@@ -11,6 +11,7 @@ import {
   MapPin, Layers, Filter, ChevronDown, ChevronUp,
   Building2, DollarSign, BarChart3, Shield, Calendar, AlertTriangle,
 } from "lucide-react";
+import { batchGeocode } from "@/hooks/useGeocoding";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -30,19 +31,7 @@ const STATUS_COLORS: Record<string, { fill: string; stroke: string; label: strin
 
 const getStatusCfg = (status: string) => STATUS_COLORS[status] || STATUS_COLORS.Lead;
 
-function hashCode(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  return h;
-}
-
-function addressToLatLng(address: string): [number, number] {
-  if (!address) return [25.7617, -80.1918];
-  const h = Math.abs(hashCode(address));
-  const lat = 25.7 + (h % 1000) / 10000;
-  const lng = -80.3 + ((h >> 10) % 1000) / 10000;
-  return [lat, lng];
-}
+// addressToLatLng removed — now using real geocoding via Nominatim
 
 function getMunicipality(address: string): string {
   const lower = (address || "").toLowerCase();
@@ -113,17 +102,40 @@ export const ProjectMapView = () => {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterMunicipality, setFilterMunicipality] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
+  const [geocodedCoords, setGeocodedCoords] = useState<Map<string, { lat: number; lng: number }>>(new Map());
+  const [geocoding, setGeocoding] = useState(false);
 
   const handleBoundsChange = useCallback((b: LatLngBounds) => setBounds(b), []);
 
+  // Geocode project addresses
+  useEffect(() => {
+    if (!projects.length) return;
+    let cancelled = false;
+    async function load() {
+      setGeocoding(true);
+      const results = await batchGeocode(projects, p => p.installAddress || undefined);
+      if (!cancelled) {
+        setGeocodedCoords(results);
+        setGeocoding(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [projects]);
+
   const enrichedProjects = useMemo(() =>
-    projects.map(p => ({
-      ...p,
-      coords: addressToLatLng(p.installAddress),
-      municipality: getMunicipality(p.installAddress),
-      projectType: getProjectType(p.projectName),
-    }))
-  , [projects]);
+    projects
+      .filter(p => geocodedCoords.has(p.id))
+      .map(p => {
+        const coords = geocodedCoords.get(p.id)!;
+        return {
+          ...p,
+          coords: [coords.lat, coords.lng] as [number, number],
+          municipality: getMunicipality(p.installAddress),
+          projectType: getProjectType(p.projectName),
+        };
+      })
+  , [projects, geocodedCoords]);
 
   const filtered = useMemo(() =>
     enrichedProjects.filter(p => {
