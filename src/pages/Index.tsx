@@ -814,7 +814,7 @@ const Index = () => {
 
         {/* ═══════ CTA FINAL ═══════ */}
         <section
-          className="relative py-24 sm:py-32 px-5"
+          className="relative py-32 sm:py-40 px-5"
           style={{
             background: "linear-gradient(180deg, #000000 0%, #0D0D1A 100%)",
             borderTop: "1px solid rgba(91,106,242,0.20)",
