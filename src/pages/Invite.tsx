@@ -143,10 +143,12 @@ const Invite = () => {
       },
     });
 
-    if (signUpError) {
+      if (signUpError) {
       if (signUpError.message?.includes("already registered")) {
-        // Instead of red toast, set emailExists and go back to info mode
-        setEmailExists(true);
+        toast({
+          title: "Ya tienes una cuenta",
+          description: "Inicia sesión con tu email y contraseña para aceptar la invitación.",
+        });
         setMode("info");
       } else {
         toast({ title: "Error al registrarse", description: signUpError.message, variant: "destructive" });
