@@ -339,9 +339,9 @@ const Index = () => {
                 }}
               >
                 <img
-                  src={dashboardPreview}
+                  src="/screenshots/dashboard.png"
                   alt="Sign Flow — Centro de Control"
-                  className="w-full block"
+                  style={{ width: "100%", display: "block" }}
                   loading="eager"
                 />
               </div>
