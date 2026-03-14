@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { ListCardSkeleton } from "@/components/ui/skeleton-card";
 import { useClients, Client } from "@/contexts/ClientsContext";
 import { useProjects } from "@/contexts/ProjectsContext";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -195,7 +196,9 @@ export default function Clients() {
 
       {/* Content */}
       {loading ? (
-        <p className="text-muted-foreground text-center py-12">Cargando...</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => <ListCardSkeleton key={i} />)}
+        </div>
       ) : sorted.length === 0 ? (
         <div className="text-center py-16 empty-state-pattern rounded-xl">
           <Users className="w-12 h-12 text-primary/40 mx-auto mb-4" />
