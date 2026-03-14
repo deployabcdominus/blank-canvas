@@ -833,8 +833,9 @@ const Index = () => {
                 className="mb-4"
                 style={{
                   fontFamily: "'Outfit', sans-serif",
-                  fontSize: "clamp(1.8rem, 4vw, 3rem)",
-                  fontWeight: 700,
+                  fontSize: "clamp(44px, 6vw, 72px)",
+                  fontWeight: 800,
+                  letterSpacing: "-0.03em",
                   color: "#F5F5F7",
                 }}
               >
