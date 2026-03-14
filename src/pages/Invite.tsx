@@ -34,7 +34,6 @@ const Invite = () => {
   const [formData, setFormData] = useState({ fullName: "", password: "", confirmPassword: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [emailExists, setEmailExists] = useState(false);
 
   // Validate invitation token
   useEffect(() => {
@@ -73,20 +72,6 @@ const Invite = () => {
 
     validate();
   }, [token]);
-
-  // Check if email already has an account
-  useEffect(() => {
-    if (!invitation?.email) return;
-
-    supabase.auth.signInWithPassword({
-      email: invitation.email,
-      password: "check-exists-only-____",
-    }).then(({ error }) => {
-      if (error?.message?.includes("Invalid login credentials")) {
-        setEmailExists(true);
-      }
-    });
-  }, [invitation?.email]);
 
   // If user is already logged in, try to accept directly
   useEffect(() => {
