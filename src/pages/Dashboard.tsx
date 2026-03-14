@@ -16,6 +16,7 @@ import { useWorkOrders } from "@/contexts/WorkOrdersContext";
 import { useInstallations } from "@/contexts/InstallationsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { isThisMonth } from "date-fns";
 import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 
