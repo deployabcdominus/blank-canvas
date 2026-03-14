@@ -394,14 +394,14 @@ const Index = () => {
               {problemSolution.map((row, i) => (
                 <Reveal key={i} delay={i * 0.08}>
                   <div
-                    className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-5 px-4 rounded-lg transition-colors duration-200"
+                    className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-6 px-4 rounded-lg transition-colors duration-200"
                     style={{
                       borderBottom: "1px solid rgba(255,255,255,0.06)",
                     }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                   >
-                    <p className="text-sm sm:text-base line-through" style={{ color: "rgba(255,69,58,0.70)" }}>
+                    <p className="text-base line-through" style={{ color: "#FF453A" }}>
                       {row.before}
                     </p>
                     <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: "#5B6AF2" }} />
