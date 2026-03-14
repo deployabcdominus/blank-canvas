@@ -24,6 +24,7 @@ const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
   const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
+  useRealtimeDashboard();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
