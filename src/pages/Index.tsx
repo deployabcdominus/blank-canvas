@@ -492,7 +492,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ CÓMO FUNCIONA ═══════ */}
-        <section id="how" className="py-24 sm:py-32 px-5" style={{ background: "#0A0A0A" }}>
+        <section id="how" className="py-32 sm:py-40 px-5" style={{ background: "#0A0A0A" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
