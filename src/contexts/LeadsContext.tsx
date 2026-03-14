@@ -223,8 +223,42 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     setLeads([]);
   };
 
+  const refreshLeads = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('leads')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data) {
+      const transformedLeads: Lead[] = data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        company: item.company || '',
+        service: item.service || '',
+        status: item.status || 'Nuevo',
+        contact: {
+          phone: item.phone || '',
+          email: item.email || '',
+          location: item.location || ''
+        },
+        value: item.value || '',
+        daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
+        source: item.source || undefined,
+        notes: item.notes || undefined,
+        website: item.website || undefined,
+        logoUrl: item.logo_url || undefined,
+        companyId: item.company_id || undefined,
+        createdByUserId: item.created_by_user_id || undefined,
+        assignedToUserId: item.assigned_to_user_id || undefined,
+        clientId: item.client_id || undefined,
+        projectId: item.project_id || undefined,
+      }));
+      setLeads(transformedLeads);
+    }
+  };
+
   return (
-    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, clearLeads, loading }}>
+    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, clearLeads, refreshLeads, loading }}>
       {children}
     </LeadsContext.Provider>
   );
