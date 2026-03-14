@@ -416,7 +416,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ FEATURE SHOWCASE ═══════ */}
-        <section id="features" className="py-24 sm:py-32 px-5" style={{ background: "#000" }}>
+        <section id="features" className="py-32 sm:py-40 px-5" style={{ background: "#000" }}>
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
