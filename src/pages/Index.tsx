@@ -480,7 +480,7 @@ const Index = () => {
                         borderRadius: 16,
                       }}
                     >
-                      <img src={dashboardPreview} alt={tab.label} className="w-full block" loading="lazy" />
+                      <img src="/screenshots/dashboard.png" alt={tab.label} style={{ width: "100%", display: "block" }} loading="lazy" />
                     </div>
                     <p className="mt-6 text-base max-w-lg mx-auto" style={{ color: "#A1A1A6" }}>
                       {tab.description}
