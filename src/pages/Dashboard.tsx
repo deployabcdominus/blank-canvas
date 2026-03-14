@@ -16,6 +16,7 @@ import { useWorkOrders } from "@/contexts/WorkOrdersContext";
 import { useInstallations } from "@/contexts/InstallationsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { isThisMonth } from "date-fns";
 import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 
@@ -23,6 +24,7 @@ const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
   const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
+  useRealtimeDashboard();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
@@ -61,11 +63,20 @@ const Dashboard = () => {
   return (
     <PageTransition>
       <ResponsiveLayout>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6">
-          <h1 className="font-bold text-2xl text-foreground">Centro de Control</h1>
-          <p className="text-muted-foreground text-sm">
-            {showFinancials ? "Vista ejecutiva · Datos en tiempo real" : "Vista operativa · Tus tareas de hoy"}
-          </p>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6 flex items-end justify-between">
+          <div>
+            <h1 className="font-bold text-2xl text-foreground">Centro de Control</h1>
+            <p className="text-muted-foreground text-sm">
+              {showFinancials ? "Vista ejecutiva · Datos en tiempo real" : "Vista operativa · Tus tareas de hoy"}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            <span className="text-xs text-muted-foreground">En vivo</span>
+          </div>
         </motion.div>
 
         {isAdmin && <AiBriefing />}
