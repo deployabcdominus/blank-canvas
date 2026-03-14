@@ -102,17 +102,40 @@ export const ProjectMapView = () => {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterMunicipality, setFilterMunicipality] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
+  const [geocodedCoords, setGeocodedCoords] = useState<Map<string, { lat: number; lng: number }>>(new Map());
+  const [geocoding, setGeocoding] = useState(false);
 
   const handleBoundsChange = useCallback((b: LatLngBounds) => setBounds(b), []);
 
+  // Geocode project addresses
+  useEffect(() => {
+    if (!projects.length) return;
+    let cancelled = false;
+    async function load() {
+      setGeocoding(true);
+      const results = await batchGeocode(projects, p => p.installAddress || undefined);
+      if (!cancelled) {
+        setGeocodedCoords(results);
+        setGeocoding(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [projects]);
+
   const enrichedProjects = useMemo(() =>
-    projects.map(p => ({
-      ...p,
-      coords: addressToLatLng(p.installAddress),
-      municipality: getMunicipality(p.installAddress),
-      projectType: getProjectType(p.projectName),
-    }))
-  , [projects]);
+    projects
+      .filter(p => geocodedCoords.has(p.id))
+      .map(p => {
+        const coords = geocodedCoords.get(p.id)!;
+        return {
+          ...p,
+          coords: [coords.lat, coords.lng] as [number, number],
+          municipality: getMunicipality(p.installAddress),
+          projectType: getProjectType(p.projectName),
+        };
+      })
+  , [projects, geocodedCoords]);
 
   const filtered = useMemo(() =>
     enrichedProjects.filter(p => {
