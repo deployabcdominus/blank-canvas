@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { FullPageSpinnerSkeleton } from "@/components/ui/skeleton-card";
 import { motion } from "framer-motion";
 import { useSearchParams, Navigate } from "react-router-dom";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";

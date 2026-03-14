@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { TableSkeleton } from "@/components/ui/skeleton-card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";

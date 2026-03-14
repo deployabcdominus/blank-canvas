@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { TableSkeleton } from "@/components/ui/skeleton-card";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { PageTransition } from "@/components/PageTransition";
 import { useAuth } from "@/contexts/AuthContext";
