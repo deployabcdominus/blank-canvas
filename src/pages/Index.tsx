@@ -7,18 +7,12 @@ import dashboardPreview from "@/assets/dashboard-preview.png";
 import {
   ArrowRight,
   Check,
-  LogIn,
   Star,
-  Zap,
+  Sparkles,
   BarChart3,
   FileText,
   Wrench,
   Users,
-  MapPin,
-  Camera,
-  Shield,
-  Clock,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -49,152 +43,40 @@ const Reveal = ({
 
 /* ─── Feature tabs data ─── */
 const featureTabs = [
-  {
-    id: "dashboard",
-    label: "Dashboard ejecutivo",
-    icon: BarChart3,
-    description:
-      "KPIs en tiempo real, AI briefing diario y pipeline completo en una sola vista.",
-  },
-  {
-    id: "leads",
-    label: "Leads y propuestas",
-    icon: FileText,
-    description:
-      "Pipeline visual para leads, propuestas en PDF con tu marca y seguimiento automático.",
-  },
-  {
-    id: "production",
-    label: "Producción e instalación",
-    icon: Wrench,
-    description:
-      "Órdenes de trabajo con estados, asignación de equipos y evidencia fotográfica.",
-  },
-  {
-    id: "team",
-    label: "Gestión de equipo",
-    icon: Users,
-    description:
-      "Roles y permisos por función. Admin, comercial, operaciones — cada quien ve lo que necesita.",
-  },
+  { id: "dashboard", label: "Dashboard ejecutivo", icon: BarChart3, description: "KPIs en tiempo real, AI briefing diario y pipeline completo en una sola vista." },
+  { id: "leads", label: "Leads y propuestas", icon: FileText, description: "Pipeline visual para leads, propuestas en PDF con tu marca y seguimiento automático." },
+  { id: "production", label: "Producción e instalación", icon: Wrench, description: "Órdenes de trabajo con estados, asignación de equipos y evidencia fotográfica." },
+  { id: "team", label: "Gestión de equipo", icon: Users, description: "Roles y permisos por función. Admin, comercial, operaciones — cada quien ve lo que necesita." },
 ];
 
 /* ─── Problem/Solution rows ─── */
 const problemSolution = [
-  {
-    before: "Leads perdidos en el chat",
-    after: "Pipeline visual con seguimiento",
-  },
-  {
-    before: "Propuestas en Word sin control",
-    after: "Propuestas profesionales en PDF con un clic",
-  },
-  {
-    before: "Órdenes por WhatsApp",
-    after: "Órdenes asignadas con estado en tiempo real",
-  },
-  {
-    before: "Fotos de instalación en el teléfono",
-    after: "Evidencias en la nube, por proyecto",
-  },
-  {
-    before: "Sin idea del estado financiero",
-    after: "Dashboard con ingresos y pipeline en vivo",
-  },
+  { before: "Leads perdidos en el chat", after: "Pipeline visual con seguimiento" },
+  { before: "Propuestas en Word sin control", after: "Propuestas profesionales en PDF con un clic" },
+  { before: "Órdenes por WhatsApp", after: "Órdenes asignadas con estado en tiempo real" },
+  { before: "Fotos de instalación en el teléfono", after: "Evidencias en la nube, por proyecto" },
+  { before: "Sin idea del estado financiero", after: "Dashboard con ingresos y pipeline en vivo" },
 ];
 
 /* ─── Steps data ─── */
 const steps = [
-  {
-    num: "01",
-    title: "Captura el lead",
-    description:
-      "El cliente llega por Instagram, referido o tu web. Lo registras en segundos con toda su info y el servicio que necesita.",
-  },
-  {
-    num: "02",
-    title: "Cotiza y produce",
-    description:
-      "Genera la propuesta con PDF profesional. Al aprobarla, se crea la orden de producción automáticamente.",
-  },
-  {
-    num: "03",
-    title: "Instala y cobra",
-    description:
-      "Tu equipo recibe la orden en su celular. Suben fotos de la instalación. El cliente recibe notificación. Tú cobras.",
-  },
+  { num: "01", title: "Captura el lead", description: "El cliente llega por Instagram, referido o tu web. Lo registras en segundos con toda su info y el servicio que necesita." },
+  { num: "02", title: "Cotiza y produce", description: "Genera la propuesta con PDF profesional. Al aprobarla, se crea la orden de producción automáticamente." },
+  { num: "03", title: "Instala y cobra", description: "Tu equipo recibe la orden en su celular. Suben fotos de la instalación. El cliente recibe notificación. Tú cobras." },
 ];
 
 /* ─── Testimonials ─── */
 const testimonials = [
-  {
-    text: "Antes perdíamos leads por no darles seguimiento a tiempo. Ahora el dashboard nos avisa qué está caliente y qué hay que atender hoy.",
-    name: "Carlos M.",
-    role: "Director",
-    company: "SignMakers Miami",
-    initials: "CM",
-    color: "bg-[#5B6AF2]",
-  },
-  {
-    text: "Las propuestas en PDF con nuestro logo cambiaron cómo nos perciben los clientes. Cerramos 30% más en el primer mes.",
-    name: "Elena R.",
-    role: "Gerente Comercial",
-    company: "VisualCorp CDMX",
-    initials: "ER",
-    color: "bg-[#8B5CF6]",
-  },
-  {
-    text: "Por fin puedo saber dónde está cada instalación sin llamar a nadie. El mapa en tiempo real vale solo el precio del plan.",
-    name: "David L.",
-    role: "Operaciones",
-    company: "BrandSpace Bogotá",
-    initials: "DL",
-    color: "bg-[#EC4899]",
-  },
+  { text: "Antes perdíamos leads por no darles seguimiento a tiempo. Ahora el dashboard nos avisa qué está caliente y qué hay que atender hoy.", name: "Carlos M.", role: "Director", company: "SignMakers Miami", initials: "CM", color: "bg-[#5B6AF2]" },
+  { text: "Las propuestas en PDF con nuestro logo cambiaron cómo nos perciben los clientes. Cerramos 30% más en el primer mes.", name: "Elena R.", role: "Gerente Comercial", company: "VisualCorp CDMX", initials: "ER", color: "bg-[#8B5CF6]" },
+  { text: "Por fin puedo saber dónde está cada instalación sin llamar a nadie. El mapa en tiempo real vale solo el precio del plan.", name: "David L.", role: "Operaciones", company: "BrandSpace Bogotá", initials: "DL", color: "bg-[#EC4899]" },
 ];
 
 /* ─── Pricing plans ─── */
 const plans = [
-  {
-    name: "Starter",
-    priceMonthly: 49,
-    priceAnnual: 39,
-    features: [
-      "Hasta 3 usuarios",
-      "Leads y propuestas",
-      "Órdenes de servicio",
-      "Soporte por email",
-    ],
-    cta: "Elegir Starter",
-    highlighted: false,
-  },
-  {
-    name: "Professional",
-    priceMonthly: 99,
-    priceAnnual: 79,
-    features: [
-      "Hasta 10 usuarios",
-      "Todo de Starter",
-      "AI Briefing diario",
-      "PDF de propuestas",
-      "Reportes avanzados",
-    ],
-    cta: "Elegir Professional →",
-    highlighted: true,
-  },
-  {
-    name: "Enterprise",
-    priceMonthly: 199,
-    priceAnnual: 159,
-    features: [
-      "Usuarios ilimitados",
-      "Todo de Professional",
-      "Onboarding dedicado",
-      "SLA garantizado",
-    ],
-    cta: "Contactar ventas",
-    highlighted: false,
-  },
+  { name: "Starter", priceMonthly: 49, priceAnnual: 39, features: ["Hasta 3 usuarios", "Leads y propuestas", "Órdenes de servicio", "Soporte por email"], cta: "Elegir Starter", highlighted: false },
+  { name: "Professional", priceMonthly: 99, priceAnnual: 79, features: ["Hasta 10 usuarios", "Todo de Starter", "AI Briefing diario", "PDF de propuestas", "Reportes avanzados"], cta: "Elegir Professional →", highlighted: true },
+  { name: "Enterprise", priceMonthly: 199, priceAnnual: 159, features: ["Usuarios ilimitados", "Todo de Professional", "Onboarding dedicado", "SLA garantizado"], cta: "Contactar ventas", highlighted: false },
 ];
 
 const Index = () => {
@@ -221,24 +103,24 @@ const Index = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-white text-[#0F1523] overflow-x-hidden scroll-smooth" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <div className="min-h-screen bg-black text-[#F5F5F7] overflow-x-hidden scroll-smooth" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" }}>
         {/* ═══════ S1 — NAVBAR ═══════ */}
         <header
           className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 h-16 ${
             scrolled
-              ? "bg-white/85 backdrop-blur-xl shadow-[0_1px_0_#E5E7EB]"
+              ? "bg-black/85 backdrop-blur-xl border-b border-white/[0.06]"
               : "bg-transparent"
           }`}
         >
           <div className="max-w-6xl mx-auto flex items-center justify-between px-5 h-full">
             <a href="/" className="flex items-center gap-1.5" aria-label="Sign Flow">
               <img src={brandLogoSrc} alt="Sign Flow" className="w-9 h-9 object-contain" draggable={false} />
-              <span className="font-bold text-lg text-[#0F1523]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <span className="font-bold text-lg text-[#F5F5F7]" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Sign Flow
               </span>
             </a>
 
-            <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#6B7699]">
+            <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#6E6E73]">
               {[
                 { label: "Características", id: "features" },
                 { label: "Precios", id: "pricing" },
@@ -247,7 +129,7 @@ const Index = () => {
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
-                  className="hover:text-[#0F1523] transition-colors duration-200"
+                  className="hover:text-[#F5F5F7] transition-colors duration-200"
                 >
                   {item.label}
                 </button>
@@ -259,7 +141,7 @@ const Index = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/login")}
-                className="text-[#6B7699] hover:text-[#0F1523] hover:bg-transparent"
+                className="text-[#A1A1A6] hover:text-[#F5F5F7] hover:bg-transparent"
               >
                 Iniciar sesión
               </Button>
@@ -278,14 +160,13 @@ const Index = () => {
         {/* ═══════ S2 — HERO ═══════ */}
         <section className="pt-28 pb-16 sm:pt-32 sm:pb-20 md:pt-40 md:pb-28 px-5">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
-            {/* Left */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="text-center lg:text-left"
             >
-              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#5B6AF2] mb-5 px-4 py-2 rounded-full border border-[#C7CCFA] bg-[#EEF0FF]">
+              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#5B6AF2] mb-5 px-4 py-2 rounded-full border border-[#5B6AF2]/25 bg-[#5B6AF2]/10">
                 <Sparkles className="w-3.5 h-3.5" />
                 Diseñado para agencias de señalética
               </span>
@@ -305,7 +186,7 @@ const Index = () => {
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-[#6B7699] leading-relaxed max-w-[480px] mx-auto lg:mx-0 mb-8">
+              <p className="text-base sm:text-lg text-[#A1A1A6] leading-relaxed max-w-[480px] mx-auto lg:mx-0 mb-8">
                 Leads, propuestas, producción e instalaciones en un solo flujo.
                 Tu equipo siempre alineado, tus clientes siempre informados.
               </p>
@@ -323,13 +204,13 @@ const Index = () => {
                   variant="outline"
                   size="lg"
                   onClick={() => scrollTo("how")}
-                  className="rounded-xl h-12 px-7 text-base font-medium border-[#E5E7EB] text-[#3D4663] hover:bg-[#F7F8FF] bg-white"
+                  className="rounded-xl h-12 px-7 text-base font-medium border-white/10 text-[#A1A1A6] hover:bg-white/[0.04] bg-transparent"
                 >
                   Ver demo
                 </Button>
               </div>
 
-              <div className="flex items-center justify-center lg:justify-start gap-1.5 text-[13px] text-[#9BA8C5]">
+              <div className="flex items-center justify-center lg:justify-start gap-1.5 text-[13px] text-[#6E6E73]">
                 <div className="flex text-[#FBBF24]">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-current" />
@@ -346,41 +227,34 @@ const Index = () => {
               transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
             >
-              {/* Browser frame */}
               <div
-                className="rounded-2xl overflow-hidden border border-[#E5E7EB]"
+                className="rounded-2xl overflow-hidden border border-white/[0.08]"
                 style={{
-                  boxShadow: "0 24px 80px rgba(91,106,242,0.20)",
+                  boxShadow: "0 24px 80px rgba(91,106,242,0.15)",
                   transform: "perspective(1200px) rotateY(-5deg) rotateX(2deg)",
                 }}
               >
-                {/* Browser bar */}
-                <div className="bg-[#F7F8FF] border-b border-[#E5E7EB] px-4 py-2.5 flex items-center gap-2">
+                <div className="bg-[#0A0A0A] border-b border-white/[0.06] px-4 py-2.5 flex items-center gap-2">
                   <div className="flex gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
                     <div className="w-2.5 h-2.5 rounded-full bg-[#27CA40]" />
                   </div>
-                  <div className="flex-1 bg-white rounded-md px-3 py-1 text-[11px] text-[#9BA8C5] text-center border border-[#E5E7EB]">
+                  <div className="flex-1 bg-white/[0.06] rounded-md px-3 py-1 text-[11px] text-[#6E6E73] text-center border border-white/[0.06]">
                     signflowapp.com
                   </div>
                 </div>
-                <img
-                  src={dashboardPreview}
-                  alt="Sign Flow Dashboard"
-                  className="w-full block"
-                  loading="eager"
-                />
+                <img src={dashboardPreview} alt="Sign Flow Dashboard" className="w-full block" loading="eager" />
               </div>
             </motion.div>
           </div>
         </section>
 
         {/* ═══════ S3 — SOCIAL PROOF BAR ═══════ */}
-        <section className="bg-[#F7F8FF] py-8 border-y border-[#E5E7EB]">
+        <section className="bg-white/[0.02] py-8 border-y border-white/[0.06]">
           <div className="max-w-4xl mx-auto text-center">
-            <p className="text-sm text-[#9BA8C5] mb-3">Confiado por agencias en:</p>
-            <p className="text-sm font-medium text-[#3D4663]">
+            <p className="text-sm text-[#6E6E73] mb-3">Confiado por agencias en:</p>
+            <p className="text-sm font-medium text-[#A1A1A6]">
               Miami · Ciudad de México · Bogotá · Buenos Aires · Madrid
             </p>
           </div>
@@ -403,12 +277,12 @@ const Index = () => {
             <div className="space-y-0">
               {problemSolution.map((row, i) => (
                 <Reveal key={i} delay={i * 0.08}>
-                  <div className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-5 border-b border-[#E5E7EB] last:border-0 group hover:bg-[#FAFBFF] px-4 rounded-lg transition-colors">
-                    <p className="text-sm sm:text-base text-[#DC2626]/70 line-through">
+                  <div className="grid grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center py-5 border-b border-white/[0.06] last:border-0 group hover:bg-white/[0.02] px-4 rounded-lg transition-colors">
+                    <p className="text-sm sm:text-base text-[#FF453A]/70 line-through">
                       {row.before}
                     </p>
                     <ArrowRight className="w-4 h-4 text-[#5B6AF2] flex-shrink-0" />
-                    <p className="text-sm sm:text-base font-semibold text-[#0F1523]">
+                    <p className="text-sm sm:text-base font-semibold text-[#F5F5F7]">
                       {row.after}
                     </p>
                   </div>
@@ -419,7 +293,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ S5 — FEATURE SHOWCASE ═══════ */}
-        <section id="features" className="bg-[#F7F8FF] py-20 sm:py-28 px-5">
+        <section id="features" className="bg-white/[0.02] py-20 sm:py-28 px-5">
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
@@ -444,7 +318,7 @@ const Index = () => {
                       className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
                         isActive
                           ? "text-white shadow-md"
-                          : "bg-white text-[#6B7699] border border-[#E5E7EB] hover:border-[#C7CCFA] hover:text-[#5B6AF2]"
+                          : "bg-white/[0.04] text-[#6E6E73] border border-white/[0.08] hover:border-[#5B6AF2]/30 hover:text-[#A1A1A6]"
                       }`}
                       style={isActive ? { background: "linear-gradient(135deg, #5B6AF2, #8B5CF6)" } : {}}
                     >
@@ -469,17 +343,12 @@ const Index = () => {
                     className="text-center"
                   >
                     <div
-                      className="rounded-2xl overflow-hidden border border-[#E5E7EB] mx-auto max-w-4xl"
-                      style={{ boxShadow: "0 4px 24px rgba(91,106,242,0.10)" }}
+                      className="rounded-2xl overflow-hidden border border-white/[0.08] mx-auto max-w-4xl"
+                      style={{ boxShadow: "0 4px 24px rgba(91,106,242,0.08)" }}
                     >
-                      <img
-                        src={dashboardPreview}
-                        alt={tab.label}
-                        className="w-full block"
-                        loading="lazy"
-                      />
+                      <img src={dashboardPreview} alt={tab.label} className="w-full block" loading="lazy" />
                     </div>
-                    <p className="text-[#6B7699] mt-6 text-base max-w-lg mx-auto">
+                    <p className="text-[#A1A1A6] mt-6 text-base max-w-lg mx-auto">
                       {tab.description}
                     </p>
                   </motion.div>
@@ -513,10 +382,10 @@ const Index = () => {
                     >
                       {step.num}
                     </span>
-                    <h3 className="text-xl font-bold mb-3 text-[#0F1523]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    <h3 className="text-xl font-bold mb-3 text-[#F5F5F7]" style={{ fontFamily: "'Outfit', sans-serif" }}>
                       {step.title}
                     </h3>
-                    <p className="text-[#6B7699] leading-relaxed text-[15px]">
+                    <p className="text-[#A1A1A6] leading-relaxed text-[15px]">
                       {step.description}
                     </p>
                   </div>
@@ -527,7 +396,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ S7 — TESTIMONIOS ═══════ */}
-        <section className="bg-[#F7F8FF] py-20 sm:py-28 px-5">
+        <section className="bg-white/[0.02] py-20 sm:py-28 px-5">
           <div className="max-w-5xl mx-auto">
             <Reveal>
               <h2
@@ -544,15 +413,15 @@ const Index = () => {
               {testimonials.map((t, i) => (
                 <Reveal key={i} delay={i * 0.12}>
                   <div
-                    className="bg-white rounded-2xl p-6 border border-[#E5E7EB] h-full flex flex-col"
-                    style={{ boxShadow: "0 4px 24px rgba(91,106,242,0.06)" }}
+                    className="bg-white/[0.04] rounded-2xl p-6 border border-white/[0.08] h-full flex flex-col"
+                    style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.30)" }}
                   >
                     <div className="flex text-[#FBBF24] mb-4">
                       {[...Array(5)].map((_, j) => (
                         <Star key={j} className="w-4 h-4 fill-current" />
                       ))}
                     </div>
-                    <p className="text-[#3D4663] italic leading-relaxed text-[15px] flex-1 mb-5">
+                    <p className="text-[#A1A1A6] italic leading-relaxed text-[15px] flex-1 mb-5">
                       "{t.text}"
                     </p>
                     <div className="flex items-center gap-3">
@@ -562,8 +431,8 @@ const Index = () => {
                         {t.initials}
                       </div>
                       <div>
-                        <p className="font-semibold text-sm text-[#0F1523]">{t.name}</p>
-                        <p className="text-xs text-[#9BA8C5]">
+                        <p className="font-semibold text-sm text-[#F5F5F7]">{t.name}</p>
+                        <p className="text-xs text-[#6E6E73]">
                           {t.role}, {t.company}
                         </p>
                       </div>
@@ -585,21 +454,20 @@ const Index = () => {
               >
                 Elige tu plan y empieza hoy.
               </h2>
-              <p className="text-center text-[#6B7699] mb-10">
+              <p className="text-center text-[#A1A1A6] mb-10">
                 Sin contratos. Cancela cuando quieras.
               </p>
             </Reveal>
 
-            {/* Toggle */}
             <Reveal delay={0.1}>
               <div className="flex items-center justify-center gap-3 mb-12">
-                <span className={`text-sm font-medium ${!isAnnual ? "text-[#0F1523]" : "text-[#9BA8C5]"}`}>
+                <span className={`text-sm font-medium ${!isAnnual ? "text-[#F5F5F7]" : "text-[#6E6E73]"}`}>
                   Mensual
                 </span>
                 <button
                   onClick={() => setIsAnnual(!isAnnual)}
                   className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-                    isAnnual ? "bg-[#5B6AF2]" : "bg-[#E5E7EB]"
+                    isAnnual ? "bg-[#5B6AF2]" : "bg-white/10"
                   }`}
                 >
                   <div
@@ -608,11 +476,11 @@ const Index = () => {
                     }`}
                   />
                 </button>
-                <span className={`text-sm font-medium ${isAnnual ? "text-[#0F1523]" : "text-[#9BA8C5]"}`}>
+                <span className={`text-sm font-medium ${isAnnual ? "text-[#F5F5F7]" : "text-[#6E6E73]"}`}>
                   Anual
                 </span>
                 {isAnnual && (
-                  <span className="text-xs font-semibold text-[#5B6AF2] bg-[#EEF0FF] px-2.5 py-1 rounded-full border border-[#C7CCFA]">
+                  <span className="text-xs font-semibold text-[#5B6AF2] bg-[#5B6AF2]/10 px-2.5 py-1 rounded-full border border-[#5B6AF2]/25">
                     Ahorra 20%
                   </span>
                 )}
@@ -625,13 +493,13 @@ const Index = () => {
                   <div
                     className={`rounded-2xl p-6 sm:p-8 border h-full flex flex-col relative ${
                       plan.highlighted
-                        ? "border-[#5B6AF2] border-2 bg-white"
-                        : "border-[#E5E7EB] bg-white"
+                        ? "border-[#5B6AF2] border-2 bg-white/[0.04]"
+                        : "border-white/[0.08] bg-white/[0.02]"
                     }`}
                     style={{
                       boxShadow: plan.highlighted
-                        ? "0 8px 40px rgba(91,106,242,0.15)"
-                        : "0 4px 24px rgba(91,106,242,0.06)",
+                        ? "0 8px 40px rgba(91,106,242,0.12)"
+                        : "0 4px 24px rgba(0,0,0,0.20)",
                     }}
                   >
                     {plan.highlighted && (
@@ -643,7 +511,7 @@ const Index = () => {
                       </span>
                     )}
 
-                    <h3 className="text-lg font-bold text-[#0F1523] mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    <h3 className="text-lg font-bold text-[#F5F5F7] mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>
                       {plan.name}
                     </h3>
 
@@ -655,18 +523,18 @@ const Index = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.3 }}
-                          className="text-4xl font-bold text-[#0F1523] inline-block"
+                          className="text-4xl font-bold text-[#F5F5F7] inline-block"
                           style={{ fontFamily: "'Outfit', sans-serif" }}
                         >
                           ${isAnnual ? plan.priceAnnual : plan.priceMonthly}
                         </motion.span>
                       </AnimatePresence>
-                      <span className="text-[#9BA8C5] text-sm ml-1">/mes</span>
+                      <span className="text-[#6E6E73] text-sm ml-1">/mes</span>
                     </div>
 
                     <ul className="space-y-3 mb-8 flex-1">
                       {plan.features.map((feat) => (
-                        <li key={feat} className="flex items-center gap-2.5 text-sm text-[#3D4663]">
+                        <li key={feat} className="flex items-center gap-2.5 text-sm text-[#A1A1A6]">
                           <Check className="w-4 h-4 text-[#5B6AF2] flex-shrink-0" />
                           {feat}
                         </li>
@@ -678,7 +546,7 @@ const Index = () => {
                       className={`w-full rounded-xl h-11 font-semibold transition-all duration-200 ${
                         plan.highlighted
                           ? "text-white shadow-md hover:shadow-lg"
-                          : "bg-white text-[#3D4663] border border-[#E5E7EB] hover:border-[#C7CCFA] hover:text-[#5B6AF2]"
+                          : "bg-transparent text-[#A1A1A6] border border-white/10 hover:border-[#5B6AF2]/30 hover:text-[#F5F5F7]"
                       }`}
                       style={
                         plan.highlighted
@@ -695,7 +563,7 @@ const Index = () => {
             </div>
 
             <Reveal delay={0.3}>
-              <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-[#6B7699]">
+              <div className="flex flex-wrap justify-center gap-6 mt-10 text-sm text-[#A1A1A6]">
                 <span className="flex items-center gap-1.5">
                   <Check className="w-4 h-4 text-[#5B6AF2]" /> Prueba gratis 14 días
                 </span>
@@ -751,16 +619,16 @@ const Index = () => {
         </section>
 
         {/* ═══════ S10 — FOOTER ═══════ */}
-        <footer className="bg-white border-t border-[#E5E7EB] py-16 px-5">
+        <footer className="bg-black border-t border-white/[0.06] py-16 px-5">
           <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-1.5 mb-3">
                 <img src={brandLogoSrc} alt="Sign Flow" className="w-7 h-7 object-contain" />
-                <span className="font-bold text-[#0F1523]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <span className="font-bold text-[#F5F5F7]" style={{ fontFamily: "'Outfit', sans-serif" }}>
                   Sign Flow
                 </span>
               </div>
-              <p className="text-sm text-[#9BA8C5] leading-relaxed">
+              <p className="text-sm text-[#6E6E73] leading-relaxed">
                 Gestión integral para agencias de señalética.
               </p>
             </div>
@@ -792,13 +660,13 @@ const Index = () => {
               },
             ].map((col) => (
               <div key={col.title}>
-                <h4 className="font-semibold text-sm text-[#0F1523] mb-4">{col.title}</h4>
+                <h4 className="font-semibold text-sm text-[#F5F5F7] mb-4">{col.title}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map((link) => (
                     <li key={link.label}>
                       <button
                         onClick={link.action}
-                        className="text-sm text-[#9BA8C5] hover:text-[#5B6AF2] transition-colors"
+                        className="text-sm text-[#6E6E73] hover:text-[#5B6AF2] transition-colors"
                       >
                         {link.label}
                       </button>
@@ -809,8 +677,8 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="max-w-6xl mx-auto border-t border-[#E5E7EB] pt-6 text-center">
-            <p className="text-xs text-[#9BA8C5]">
+          <div className="max-w-6xl mx-auto border-t border-white/[0.06] pt-6 text-center">
+            <p className="text-xs text-[#6E6E73]">
               © 2026 Sign Flow · signflowapp.com · Todos los derechos reservados
             </p>
           </div>
