@@ -371,7 +371,7 @@ const Index = () => {
         </section>
 
         {/* ═══════ PROBLEMA / SOLUCIÓN ═══════ */}
-        <section className="py-24 sm:py-32 px-5">
+        <section className="py-32 sm:py-40 px-5">
           <div className="max-w-3xl mx-auto">
             <Reveal>
               <h2
