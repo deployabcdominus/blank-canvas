@@ -3,7 +3,6 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import brandLogoSrc from "@/assets/brand-logo.png";
-import dashboardPreview from "@/assets/dashboard-preview.png";
 import {
   ArrowRight,
   Check,
