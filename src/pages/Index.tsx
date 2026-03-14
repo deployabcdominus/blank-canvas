@@ -610,7 +610,7 @@ const Index = () => {
                         <Star key={j} className="w-4 h-4 fill-current" />
                       ))}
                     </div>
-                    <p className="flex-1 mb-5" style={{ color: "#A1A1A6", fontStyle: "italic", fontSize: 15, lineHeight: 1.65 }}>
+                    <p className="flex-1 mb-5" style={{ color: "#A1A1A6", fontStyle: "italic", fontSize: 15, lineHeight: 1.8 }}>
                       "{t.text}"
                     </p>
                     <div className="flex items-center gap-3">
