@@ -156,14 +156,14 @@ const Index = () => {
               </Button>
               <button
                 onClick={() => scrollTo("pricing")}
-                style={{
-                  background: "#5B6AF2",
-                  color: "#fff",
-                  borderRadius: 980,
-                  height: 36,
-                  padding: "0 20px",
-                  fontWeight: 600,
-                  fontSize: 14,
+                  style={{
+                    background: "#5B6AF2",
+                    color: "#fff",
+                    borderRadius: 980,
+                    height: 34,
+                    padding: "0 18px",
+                    fontWeight: 600,
+                    fontSize: 13,
                   border: "none",
                   cursor: "pointer",
                   transition: "opacity 150ms",
