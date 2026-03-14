@@ -341,7 +341,7 @@ export default function TenantTeamManagement() {
                     ))}
                   </TableBody>
                 </Table>
-                {loadingUsers && <div className="p-8 text-center text-muted-foreground">Cargando...</div>}
+                {loadingUsers && <div className="p-4"><TableSkeleton cols={5} rows={4} /></div>}
                 {!loadingUsers && filteredUsers.length === 0 && (
                   <div className="p-8 text-center">
                     <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
