@@ -181,7 +181,7 @@ const Index = () => {
         <section
           className="relative pt-32 pb-10 sm:pt-36 md:pt-44 px-5"
           style={{
-            background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(91,106,242,0.15), transparent)",
+            background: "radial-gradient(ellipse 100% 60% at 50% -10%, rgba(91,106,242,0.25), transparent 70%)",
           }}
         >
           <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
