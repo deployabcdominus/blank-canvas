@@ -51,6 +51,20 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
       const link = `${window.location.origin}/invite?token=${(data as any).token}`;
       setInviteLink(link);
 
+      const ROLE_LABELS: Record<string, string> = {
+        admin: "Admin", sales: "Ventas", operations: "Operaciones",
+        member: "Comercial", viewer: "Visor",
+      };
+
+      // Fire-and-forget: email never blocks the invitation flow
+      sendInvitationEmail(email.trim().toLowerCase(), {
+        inviterName: fullName,
+        companyName: company.name,
+        logoUrl: company.logo_url || "",
+        roleName: ROLE_LABELS[role] || role,
+        inviteUrl: link,
+      });
+
       toast({ title: "Invitación creada", description: `Link de invitación generado para ${email}` });
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "No se pudo crear la invitación", variant: "destructive" });
