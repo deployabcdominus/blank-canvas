@@ -594,7 +594,7 @@ const Index = () => {
                       background: "rgba(255,255,255,0.04)",
                       border: "1px solid rgba(255,255,255,0.08)",
                       borderRadius: 16,
-                      padding: 24,
+                      padding: 36,
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = "rgba(91,106,242,0.30)";
