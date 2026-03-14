@@ -601,13 +601,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "production_orders_assigned_to_user_id_fkey"
-            columns: ["assigned_to_user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "production_orders_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
