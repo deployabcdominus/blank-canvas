@@ -35,7 +35,7 @@ import MapHub from "./pages/MapHub";
 import Payments from "./pages/Payments";
 import Production from "./pages/Production";
 import WorkerTabletView from "./components/production/WorkerTabletView";
-import AuditLog from "./pages/AuditLog";
+import MobileTechnicianView from "./components/work-orders/MobileTechnicianView";
 import ProposalApproval from "./pages/ProposalApproval";
 
 const queryClient = new QueryClient({
