@@ -120,7 +120,9 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
   const deleteClient = async (id: string) => {
     const { error } = await (supabase as any).from('clients').delete().eq('id', id);
     if (error) throw error;
+    const client = clients.find(c => c.id === id);
     setClients(prev => prev.filter(c => c.id !== id));
+    logAudit({ action: 'eliminado', entityType: 'cliente', entityId: id, entityLabel: client?.clientName });
   };
 
   return (
