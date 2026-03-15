@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
   ChevronRight, ChevronLeft, Upload, Building, X, Plus,
-  Briefcase, Check, Sparkles, ArrowRight, Settings2
+  Briefcase, Check, Sparkles, ArrowRight, Palette, Users, Zap,
+  FileText, CheckCircle2
 } from "lucide-react";
 import { compressImage } from "@/lib/image";
 import { supabase } from "@/integrations/supabase/client";
