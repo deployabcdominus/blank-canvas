@@ -33,7 +33,9 @@ interface InstallerCompanyModalProps {
 
 export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ isOpen, onClose, company }) => {
   const { addCompany, updateCompany } = useInstallerCompanies();
-  const serviceTypes = useServiceTypes();
+  const fallbackServices = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const serviceTypes = catalogServices.length > 0 ? catalogServices.map(s => s.label) : fallbackServices;
   const [logoFile, setLogoFile] = useState<string | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
