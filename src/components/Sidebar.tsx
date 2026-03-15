@@ -105,7 +105,7 @@ export const Sidebar = () => {
 const isActive = (location: { pathname: string; search: string }, path: string) =>
   location.pathname + location.search === path || location.pathname === path;
 
-const getLabel = (item: NavItem, industryLabels: Record<string, string>) => {
+const getLabel = (item: NavItem, industryLabels: Record<string, any>) => {
   if (item.labelKey && industryLabels[item.labelKey]) return industryLabels[item.labelKey];
   return item.label;
 };
