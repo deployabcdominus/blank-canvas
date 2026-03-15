@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 const TENANT_ONLY_ROUTES = [
   "/dashboard", "/clients", "/projects", "/leads", "/proposals",
   "/payments", "/work-orders", "/production", "/installation",
-  "/map-hub", "/installer-companies", "/team-management",
+  "/map-hub", "/installer-companies", "/team-management", "/taller",
 ];
 
 const ROUTE_ROLE_MAP: Record<string, string[]> = {
@@ -23,7 +23,8 @@ const ROUTE_ROLE_MAP: Record<string, string[]> = {
   '/proposals': ['admin', 'sales', 'member'],
   '/clients': ['admin', 'sales', 'operations', 'member'],
   '/projects': ['admin', 'sales', 'operations', 'member'],
-  '/production': ['admin', 'operations'],
+  '/production': ['admin', 'operations', 'member'],
+  '/taller': ['admin', 'operations', 'member'],
   '/map-hub': ['admin', 'operations', 'viewer'],
   '/settings': ['admin', 'sales', 'operations', 'member', 'viewer'],
 };

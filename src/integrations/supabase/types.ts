@@ -623,6 +623,65 @@ export type Database = {
           },
         ]
       }
+      production_steps: {
+        Row: {
+          assigned_name: string | null
+          assigned_to: string | null
+          company_id: string
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          name: string
+          production_order_id: string
+          sort_order: number
+          started_at: string | null
+          status: string
+          tip: string | null
+        }
+        Insert: {
+          assigned_name?: string | null
+          assigned_to?: string | null
+          company_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          name: string
+          production_order_id: string
+          sort_order?: number
+          started_at?: string | null
+          status?: string
+          tip?: string | null
+        }
+        Update: {
+          assigned_name?: string | null
+          assigned_to?: string | null
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          name?: string
+          production_order_id?: string
+          sort_order?: number
+          started_at?: string | null
+          status?: string
+          tip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_steps_production_order_id_fkey"
+            columns: ["production_order_id"]
+            isOneToOne: false
+            referencedRelation: "production_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1004,6 +1063,54 @@ export type Database = {
           id?: string
           theme?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      worker_stats: {
+        Row: {
+          company_id: string
+          id: string
+          last_activity_date: string | null
+          level: number | null
+          level_title: string | null
+          streak_days: number | null
+          tasks_today: number | null
+          tasks_total: number | null
+          tasks_week: number | null
+          updated_at: string | null
+          user_id: string
+          xp_today: number | null
+          xp_total: number | null
+        }
+        Insert: {
+          company_id: string
+          id?: string
+          last_activity_date?: string | null
+          level?: number | null
+          level_title?: string | null
+          streak_days?: number | null
+          tasks_today?: number | null
+          tasks_total?: number | null
+          tasks_week?: number | null
+          updated_at?: string | null
+          user_id: string
+          xp_today?: number | null
+          xp_total?: number | null
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          last_activity_date?: string | null
+          level?: number | null
+          level_title?: string | null
+          streak_days?: number | null
+          tasks_today?: number | null
+          tasks_total?: number | null
+          tasks_week?: number | null
+          updated_at?: string | null
+          user_id?: string
+          xp_today?: number | null
+          xp_total?: number | null
         }
         Relationships: []
       }

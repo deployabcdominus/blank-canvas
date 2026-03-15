@@ -14,14 +14,18 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
+import WorkerTabletView from "@/components/production/WorkerTabletView";
+import WorkerLeaderboard from "@/components/production/WorkerLeaderboard";
+import ProductionStepsTimeline from "@/components/production/ProductionStepsTimeline";
 
 const Production = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { orders, clearOrders, updateOrder } = useProductionOrders();
   const { toast } = useToast();
-
-  // Control bar state
+  const { isAdmin, role } = useUserRole();
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
   const [view, setView] = useState<ViewMode>("cards");
@@ -94,6 +98,17 @@ const Production = () => {
     ? `Mostrando ${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, processed.length)} de ${processed.length}`
     : "Sin resultados";
 
+  // Workers (operations/member) see tablet view
+  if (role === "operations" || role === "member") {
+    return (
+      <PageTransition>
+        <div className="min-h-screen bg-background">
+          <WorkerTabletView />
+        </div>
+      </PageTransition>
+    );
+  }
+
   return (
     <PageTransition>
       <ResponsiveLayout>
@@ -115,47 +130,65 @@ const Production = () => {
           </div>
         </div>
 
-        {orders.length === 0 ? (
-          <div className="text-center py-12 glass-card">
-            <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">Ninguna orden en producción</h3>
-            <p className="text-muted-foreground mb-4">Comience creando su primera orden</p>
-            <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
-              <Plus className="w-4 h-4 mr-2" /> Nueva Orden
-            </Button>
-          </div>
-        ) : (
-          <>
-            <ProductionControlBar
-              search={search} onSearchChange={v => { setSearch(v); setPage(1); }}
-              sort={sort} onSortChange={setSort}
-              view={view} onViewChange={setView}
-              statusFilter={statusFilter} onStatusFilterChange={v => { setStatusFilter(v); setPage(1); }}
-              dateFrom={dateFrom} onDateFromChange={setDateFrom}
-              dateTo={dateTo} onDateToChange={setDateTo}
-              totalItems={processed.length}
-              showing={showing}
-            />
-
-            {view === "cards" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {paginated.map((order, i) => (
-                  <ProductionCompactCard key={order.id} order={order} index={i} onMarkBuilt={handleMarkAsBuilt} />
-                ))}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main content */}
+          <div className="lg:col-span-2">
+            {orders.length === 0 ? (
+              <div className="text-center py-12 glass-card">
+                <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg font-semibold mb-2">Ninguna orden en producción</h3>
+                <p className="text-muted-foreground mb-4">Comience creando su primera orden</p>
+                <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
+                  <Plus className="w-4 h-4 mr-2" /> Nueva Orden
+                </Button>
               </div>
             ) : (
-              <ProductionTableView orders={paginated} onMarkBuilt={handleMarkAsBuilt} />
-            )}
+              <>
+                <ProductionControlBar
+                  search={search} onSearchChange={v => { setSearch(v); setPage(1); }}
+                  sort={sort} onSortChange={setSort}
+                  view={view} onViewChange={setView}
+                  statusFilter={statusFilter} onStatusFilterChange={v => { setStatusFilter(v); setPage(1); }}
+                  dateFrom={dateFrom} onDateFromChange={setDateFrom}
+                  dateTo={dateTo} onDateToChange={setDateTo}
+                  totalItems={processed.length}
+                  showing={showing}
+                />
 
-            <ProductionPagination
-              currentPage={safePage}
-              totalItems={processed.length}
-              pageSize={pageSize}
-              onPageChange={setPage}
-              onPageSizeChange={s => { setPageSize(s); setPage(1); }}
-            />
-          </>
-        )}
+                {view === "cards" ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {paginated.map((order, i) => (
+                      <div key={order.id} onClick={() => setSelectedOrderId(order.id === selectedOrderId ? null : order.id)} className="cursor-pointer">
+                        <ProductionCompactCard order={order} index={i} onMarkBuilt={handleMarkAsBuilt} />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <ProductionTableView orders={paginated} onMarkBuilt={handleMarkAsBuilt} />
+                )}
+
+                <ProductionPagination
+                  currentPage={safePage}
+                  totalItems={processed.length}
+                  pageSize={pageSize}
+                  onPageChange={setPage}
+                  onPageSizeChange={s => { setPageSize(s); setPage(1); }}
+                />
+              </>
+            )}
+          </div>
+
+          {/* Sidebar: Leaderboard + Steps Timeline */}
+          <div className="space-y-6">
+            {selectedOrderId && (
+              <div className="rounded-2xl border border-border bg-card p-5">
+                <h3 className="font-bold text-foreground mb-3">Etapas de Producción</h3>
+                <ProductionStepsTimeline orderId={selectedOrderId} />
+              </div>
+            )}
+            <WorkerLeaderboard />
+          </div>
+        </div>
 
         <NewProductionOrderModal isOpen={isNewOrderModalOpen} onClose={() => setIsNewOrderModalOpen(false)} />
 

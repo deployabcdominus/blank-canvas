@@ -33,6 +33,8 @@ import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 import MapHub from "./pages/MapHub";
 import Payments from "./pages/Payments";
+import Production from "./pages/Production";
+import WorkerTabletView from "./components/production/WorkerTabletView";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,6 +81,8 @@ const App = () => (
                 <Route path="/map-hub" element={<ProtectedRoute><TenantProviders><MapHub /></TenantProviders></ProtectedRoute>} />
                 <Route path="/installer-companies" element={<ProtectedRoute><TenantProviders><InstallerCompanies /></TenantProviders></ProtectedRoute>} />
                 <Route path="/team-management" element={<ProtectedRoute><TenantProviders><TenantTeamManagement /></TenantProviders></ProtectedRoute>} />
+                <Route path="/production" element={<ProtectedRoute><TenantProviders><Production /></TenantProviders></ProtectedRoute>} />
+                <Route path="/taller" element={<ProtectedRoute><TenantProviders><div className="min-h-screen bg-background p-4"><WorkerTabletView /></div></TenantProviders></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><TenantProviders><Settings /></TenantProviders></ProtectedRoute>} />
 
                 <Route path="*" element={<NotFound />} />
