@@ -417,7 +417,18 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
               )}
             </div>
 
-            {editing && (
+            {/* Blueprint Annotator */}
+            <div className="pt-2 border-t border-border/20">
+              <BlueprintAnnotator
+                imageUrl={blueprintUrl}
+                annotations={annotations}
+                onChange={(newAnnotations) => setAnnotations(newAnnotations)}
+                onImageUpload={handleBlueprintUpload}
+                readOnly={!editing}
+              />
+            </div>
+
+
               <div className="flex gap-3 pt-4">
                 <Button variant="outline" onClick={() => setEditing(false)} className={fieldClass} disabled={saving}>
                   Cancelar
