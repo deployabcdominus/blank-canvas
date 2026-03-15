@@ -338,6 +338,34 @@
     flex-shrink: 0;
   }
 
+  /* Scroll fade masks — smooth content edges */
+  .scroll-fade-y {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 3%,
+      black 97%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 3%,
+      black 97%,
+      transparent 100%
+    );
+  }
+
+  .scroll-fade-top {
+    mask-image: linear-gradient(to bottom, transparent 0%, black 4%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 4%);
+  }
+
+  .scroll-fade-bottom {
+    mask-image: linear-gradient(to bottom, black 96%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 96%, transparent 100%);
+  }
+
   /* Premium shimmer hover for cards */
   .shimmer-hover {
     position: relative;
