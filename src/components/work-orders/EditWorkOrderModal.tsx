@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, CheckCircle, Loader2, Pencil, Trash2 } from "lucide-react";
@@ -27,6 +27,7 @@ import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { BlueprintAnnotator, type Annotation } from "./BlueprintAnnotator";
 
 interface EditWorkOrderModalProps {
   order: WorkOrder | null;
