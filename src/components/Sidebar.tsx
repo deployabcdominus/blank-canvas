@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User, ChevronDown, Shield, Settings } from "lucide-react";
+import { NotificationBell } from "@/components/NotificationBell";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
@@ -149,6 +150,9 @@ export const Sidebar = () => {
       {isSuperadmin ? renderPlatformNav() : renderTenantNav()}
 
       <div className="flex-shrink-0 mt-auto sidebar-footer-block space-y-1">
+        <div className={`flex ${isTablet ? 'justify-center' : 'px-3'} py-1`}>
+          <NotificationBell />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button

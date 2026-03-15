@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Settings, User, Menu } from "lucide-react";
+import { NotificationBell } from "@/components/NotificationBell";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -57,6 +58,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
         </div>
 
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="glass-card p-0 min-h-[44px] min-w-[44px]" aria-label="Menú del usuario">

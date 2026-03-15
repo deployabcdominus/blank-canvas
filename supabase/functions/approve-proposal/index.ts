@@ -100,7 +100,97 @@ Deno.serve(async (req) => {
 
     if (woErr) {
       console.error("Error creating work order:", woErr);
-      // Non-blocking — proposal is already approved
+    }
+
+    // ── Send email notification to admin ──
+    try {
+      const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+      if (RESEND_API_KEY && proposal.company_id) {
+        // Get admin emails
+        const { data: admins } = await admin
+          .from("user_roles")
+          .select("user_id")
+          .in("role", ["admin", "superadmin"]);
+
+        if (admins && admins.length > 0) {
+          // Get admin profiles with company match
+          const adminIds = admins.map((a: any) => a.user_id);
+          const { data: profiles } = await admin
+            .from("profiles")
+            .select("id")
+            .eq("company_id", proposal.company_id)
+            .in("id", adminIds);
+
+          if (profiles && profiles.length > 0) {
+            // Get emails from auth
+            const emails: string[] = [];
+            for (const p of profiles) {
+              const { data: authUser } = await admin.auth.admin.getUserById(p.id);
+              if (authUser?.user?.email) emails.push(authUser.user.email);
+            }
+
+            // Get company name
+            const { data: comp } = await admin
+              .from("companies")
+              .select("name, logo_url")
+              .eq("id", proposal.company_id)
+              .single();
+
+            const companyName = comp?.name || "Sign Flow";
+            const logoHtml = comp?.logo_url
+              ? `<img src="${comp.logo_url}" style="height:40px;object-fit:contain;margin-bottom:16px" />`
+              : `<h2 style="margin:0 0 16px;color:#E8712A;font-size:24px">Sign Flow</h2>`;
+
+            const formattedValue = proposal.value
+              ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(proposal.value)
+              : "—";
+
+            for (const email of emails) {
+              await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${RESEND_API_KEY}`,
+                },
+                body: JSON.stringify({
+                  from: `${companyName} <hello@mail.signflowapp.com>`,
+                  to: email,
+                  subject: `🚀 ¡Propuesta Aprobada! - ${proposal.client}`,
+                  html: `
+                    <div style="font-family:'Inter',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#0a0a0a;color:#e4e4e7;border-radius:12px">
+                      ${logoHtml}
+                      <div style="background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(249,115,22,0.05));border:1px solid rgba(249,115,22,0.2);border-radius:12px;padding:24px;margin-bottom:24px">
+                        <p style="margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:#a1a1aa">Propuesta aprobada</p>
+                        <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#f97316">🚀 ¡${proposal.client} ha firmado!</h1>
+                        <p style="margin:0;color:#d4d4d8;font-size:15px;line-height:1.6">
+                          La propuesta <strong>${proposal.project || proposal.client}</strong> ha sido aprobada
+                          y firmada por <strong>${signerName.trim()}</strong>.
+                        </p>
+                      </div>
+                      <div style="display:flex;gap:16px;margin-bottom:24px">
+                        <div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px;text-align:center">
+                          <p style="margin:0;font-size:11px;color:#71717a;text-transform:uppercase">Monto</p>
+                          <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#f97316">${formattedValue}</p>
+                        </div>
+                        <div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px;text-align:center">
+                          <p style="margin:0;font-size:11px;color:#71717a;text-transform:uppercase">Firmado por</p>
+                          <p style="margin:4px 0 0;font-size:14px;font-weight:600;color:#e4e4e7">${signerName.trim()}</p>
+                        </div>
+                      </div>
+                      <p style="color:#52525b;font-size:11px;margin:0;text-align:center">
+                        Se ha creado automáticamente una orden de trabajo · ${companyName} via Sign Flow
+                      </p>
+                    </div>
+                  `,
+                }),
+              });
+            }
+          }
+        }
+      }
+    } catch (emailErr) {
+      console.error("Error sending approval email:", emailErr);
+      // Non-blocking
     }
 
     return new Response(JSON.stringify({ success: true, proposalId: proposal.id }), {
