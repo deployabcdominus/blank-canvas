@@ -80,6 +80,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
       });
 
       await updateLead(lead.id, {
+        status: 'Convertido',
         clientId: clientId,
         projectId: project.id,
       } as any);

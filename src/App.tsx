@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { TenantProviders } from "@/components/TenantProviders";
+import { TenantLayout } from "@/components/TenantLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PublicRoute } from "@/components/PublicRoute";
 import { OnboardingGate } from "@/components/OnboardingGate";
@@ -69,23 +69,25 @@ const App = () => (
                 {/* Superadmin — no tenant providers needed */}
                 <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
 
-                {/* Tenant routes — wrapped in domain providers */}
-                <Route path="/dashboard" element={<ProtectedRoute><TenantProviders><Dashboard /></TenantProviders></ProtectedRoute>} />
-                <Route path="/clients" element={<ProtectedRoute><TenantProviders><Clients /></TenantProviders></ProtectedRoute>} />
-                <Route path="/clients/:id" element={<ProtectedRoute><TenantProviders><ClientDetail /></TenantProviders></ProtectedRoute>} />
-                <Route path="/projects" element={<ProtectedRoute><TenantProviders><Projects /></TenantProviders></ProtectedRoute>} />
-                <Route path="/leads" element={<ProtectedRoute><TenantProviders><Leads /></TenantProviders></ProtectedRoute>} />
-                <Route path="/proposals" element={<ProtectedRoute><TenantProviders><Proposals /></TenantProviders></ProtectedRoute>} />
-                <Route path="/work-orders" element={<ProtectedRoute><TenantProviders><WorkOrders /></TenantProviders></ProtectedRoute>} />
-                <Route path="/payments" element={<ProtectedRoute><TenantProviders><Payments /></TenantProviders></ProtectedRoute>} />
-                <Route path="/installation" element={<ProtectedRoute><TenantProviders><Installation /></TenantProviders></ProtectedRoute>} />
-                <Route path="/map-hub" element={<ProtectedRoute><TenantProviders><MapHub /></TenantProviders></ProtectedRoute>} />
-                <Route path="/installer-companies" element={<ProtectedRoute><TenantProviders><InstallerCompanies /></TenantProviders></ProtectedRoute>} />
-                <Route path="/team-management" element={<ProtectedRoute><TenantProviders><TenantTeamManagement /></TenantProviders></ProtectedRoute>} />
-                <Route path="/production" element={<ProtectedRoute><TenantProviders><Production /></TenantProviders></ProtectedRoute>} />
-                <Route path="/taller" element={<ProtectedRoute><TenantProviders><div className="min-h-screen bg-background p-4"><WorkerTabletView /></div></TenantProviders></ProtectedRoute>} />
-                <Route path="/audit-log" element={<ProtectedRoute><TenantProviders><AuditLog /></TenantProviders></ProtectedRoute>} />
-                <Route path="/settings" element={<ProtectedRoute><TenantProviders><Settings /></TenantProviders></ProtectedRoute>} />
+                {/* Tenant routes — single TenantProviders wrapper via layout route */}
+                <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/clients" element={<Clients />} />
+                  <Route path="/clients/:id" element={<ClientDetail />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/leads" element={<Leads />} />
+                  <Route path="/proposals" element={<Proposals />} />
+                  <Route path="/work-orders" element={<WorkOrders />} />
+                  <Route path="/payments" element={<Payments />} />
+                  <Route path="/installation" element={<Installation />} />
+                  <Route path="/map-hub" element={<MapHub />} />
+                  <Route path="/installer-companies" element={<InstallerCompanies />} />
+                  <Route path="/team-management" element={<TenantTeamManagement />} />
+                  <Route path="/production" element={<Production />} />
+                  <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><WorkerTabletView /></div>} />
+                  <Route path="/audit-log" element={<AuditLog />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Route>
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
