@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logAudit } from '@/lib/audit';
@@ -36,6 +36,9 @@ interface LeadsContextType {
   clearLeads: () => Promise<void>;
   refreshLeads: () => Promise<void>;
   loading: boolean;
+  totalCount: number;
+  hasMore: boolean;
+  loadMore: () => Promise<void>;
 }
 
 const LeadsContext = createContext<LeadsContextType | undefined>(undefined);
@@ -48,6 +51,32 @@ export const useLeads = () => {
   return context;
 };
 
+const PAGE_SIZE = 500;
+
+const mapRow = (item: any): Lead => ({
+  id: item.id,
+  name: item.name,
+  company: item.company || '',
+  service: item.service || '',
+  status: item.status || 'Nuevo',
+  contact: {
+    phone: item.phone || '',
+    email: item.email || '',
+    location: item.location || ''
+  },
+  value: item.value || '',
+  daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
+  source: item.source || undefined,
+  notes: item.notes || undefined,
+  website: item.website || undefined,
+  logoUrl: item.logo_url || undefined,
+  companyId: item.company_id || undefined,
+  createdByUserId: item.created_by_user_id || undefined,
+  assignedToUserId: item.assigned_to_user_id || undefined,
+  clientId: item.client_id || undefined,
+  projectId: item.project_id || undefined,
+});
+
 interface LeadsProviderProps {
   children: ReactNode;
 }
@@ -56,55 +85,42 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   const { user } = useAuth();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
 
-  // Load leads from Supabase when user changes
-  useEffect(() => {
-    const loadLeads = async () => {
-      if (!user) {
-        setLeads([]);
-        setLoading(false);
-        return;
-      }
+  const fetchPage = useCallback(async (pageNum: number, append = false) => {
+    if (!user) { setLeads([]); setLoading(false); return; }
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
-      const { data, error } = await supabase
-        .from('leads')
-        .select('*')
-        .order('created_at', { ascending: false });
+    const { data, error, count } = await supabase
+      .from('leads')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
 
-      if (error) {
-        if (import.meta.env.DEV) console.error('Error loading leads:', error);
-      } else {
-        // Transform data to match the Lead interface
-        const transformedLeads: Lead[] = data.map(item => ({
-          id: item.id,
-          name: item.name,
-          company: item.company || '',
-          service: item.service || '',
-          status: item.status || 'Nuevo',
-          contact: {
-            phone: item.phone || '',
-            email: item.email || '',
-            location: item.location || ''
-          },
-          value: item.value || '',
-          daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
-          source: (item as any).source || undefined,
-          notes: (item as any).notes || undefined,
-          website: item.website || undefined,
-          logoUrl: (item as any).logo_url || undefined,
-          companyId: (item as any).company_id || undefined,
-          createdByUserId: (item as any).created_by_user_id || undefined,
-          assignedToUserId: (item as any).assigned_to_user_id || undefined,
-          clientId: (item as any).client_id || undefined,
-          projectId: (item as any).project_id || undefined,
-        }));
-        setLeads(transformedLeads);
-      }
-      setLoading(false);
-    };
-
-    loadLeads();
+    if (error) {
+      if (import.meta.env.DEV) console.error('Error loading leads:', error);
+    } else {
+      const mapped = (data || []).map(mapRow);
+      setLeads(prev => append ? [...prev, ...mapped] : mapped);
+      if (count !== null) setTotalCount(count);
+    }
+    setLoading(false);
   }, [user]);
+
+  useEffect(() => {
+    setPage(0);
+    fetchPage(0);
+  }, [user, fetchPage]);
+
+  const hasMore = leads.length < totalCount;
+
+  const loadMore = useCallback(async () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    await fetchPage(nextPage, true);
+  }, [page, fetchPage]);
 
   // Fetch user's company_id for multi-tenant inserts
   const getCompanyId = async (): Promise<string | null> => {
@@ -148,26 +164,9 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     }
 
     if (data) {
-      const newLead: Lead = {
-        id: data.id,
-        name: data.name,
-        company: data.company || '',
-        service: data.service || '',
-        status: data.status || 'Nuevo',
-        contact: {
-          phone: data.phone || '',
-          email: data.email || '',
-          location: data.location || ''
-        },
-        value: data.value || '',
-        daysAgo: 0,
-        website: data.website || undefined,
-        logoUrl: (data as any).logo_url || undefined,
-        companyId: (data as any).company_id || undefined,
-        createdByUserId: (data as any).created_by_user_id || undefined,
-        assignedToUserId: (data as any).assigned_to_user_id || undefined,
-      };
+      const newLead = mapRow(data);
       setLeads(prev => [newLead, ...prev]);
+      setTotalCount(prev => prev + 1);
       logAudit({ action: 'creado', entityType: 'lead', entityId: newLead.id, entityLabel: newLead.name });
     }
   };
@@ -227,44 +226,16 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     }
 
     setLeads([]);
+    setTotalCount(0);
   };
 
-  const refreshLeads = async () => {
-    if (!user) return;
-    const { data, error } = await supabase
-      .from('leads')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && data) {
-      const transformedLeads: Lead[] = data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        company: item.company || '',
-        service: item.service || '',
-        status: item.status || 'Nuevo',
-        contact: {
-          phone: item.phone || '',
-          email: item.email || '',
-          location: item.location || ''
-        },
-        value: item.value || '',
-        daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
-        source: item.source || undefined,
-        notes: item.notes || undefined,
-        website: item.website || undefined,
-        logoUrl: item.logo_url || undefined,
-        companyId: item.company_id || undefined,
-        createdByUserId: item.created_by_user_id || undefined,
-        assignedToUserId: item.assigned_to_user_id || undefined,
-        clientId: item.client_id || undefined,
-        projectId: item.project_id || undefined,
-      }));
-      setLeads(transformedLeads);
-    }
-  };
+  const refreshLeads = useCallback(async () => {
+    setPage(0);
+    await fetchPage(0);
+  }, [fetchPage]);
 
   return (
-    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, clearLeads, refreshLeads, loading }}>
+    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, clearLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
       {children}
     </LeadsContext.Provider>
   );

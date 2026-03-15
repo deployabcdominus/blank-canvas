@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logAudit } from '@/lib/audit';
 
 export interface WorkOrder {
   id: string;
@@ -122,7 +123,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
   const addOrder = async (order: Omit<WorkOrder, 'id' | 'companyId' | 'ownerUserId'>) => {
     if (!user) throw new Error('Not authenticated');
     const companyId = await getCompanyId();
-    const { error } = await supabase.from('production_orders').insert({
+    const { data, error } = await supabase.from('production_orders').insert({
       user_id: user.id,
       company_id: companyId,
       owner_user_id: user.id,
@@ -139,8 +140,9 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       priority: order.priority || 'media',
       assigned_to_user_id: order.assignedToUserId || null,
       installer_company_id: order.installerCompanyId || null,
-    });
+    }).select().single();
     if (error) throw error;
+    logAudit({ action: 'creado', entityType: 'orden_produccion', entityId: data?.id, entityLabel: order.client });
     await fetchOrders();
   };
 
@@ -160,13 +162,18 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
     const { error } = await supabase.from('production_orders').update(dbUpdates).eq('id', id);
     if (error) throw error;
+    const order = orders.find(o => o.id === id);
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
+    const auditAction = updates.status ? 'cambio_estado' as const : 'editado' as const;
+    logAudit({ action: auditAction, entityType: 'orden_produccion', entityId: id, entityLabel: order?.client, details: updates.status ? { before: order?.status, after: updates.status } : dbUpdates });
   };
 
   const deleteOrder = async (id: string) => {
+    const order = orders.find(o => o.id === id);
     const { error } = await supabase.from('production_orders').delete().eq('id', id);
     if (error) throw error;
     setOrders(prev => prev.filter(o => o.id !== id));
+    logAudit({ action: 'eliminado', entityType: 'orden_produccion', entityId: id, entityLabel: order?.client });
   };
 
   const getAvailableForInstallation = () => {

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,7 +18,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#ffffff">
         <div style="margin-bottom:24px">
-          ${data.logoUrl ? `<img src="${data.logoUrl}" style="height:48px;object-fit:contain" />` : `<h2 style="margin:0;color:#5B6AF2">Sign Flow</h2>`}
+          ${data.logoUrl ? `<img src="${data.logoUrl}" style="height:48px;object-fit:contain" />` : `<h2 style="margin:0;color:#E8712A">Sign Flow</h2>`}
         </div>
         <h1 style="font-size:22px;font-weight:700;color:#0F1523;margin:0 0 8px">
           ${data.inviterName} te invita a unirte
@@ -27,7 +28,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
           en Sign Flow como <strong>${data.roleName}</strong>.
         </p>
         <a href="${data.inviteUrl}"
-           style="display:inline-block;background:#5B6AF2;color:#ffffff;font-weight:600;
+           style="display:inline-block;background:#E8712A;color:#ffffff;font-weight:600;
                   font-size:14px;padding:12px 28px;border-radius:10px;text-decoration:none">
           Aceptar invitación →
         </a>
@@ -51,9 +52,9 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
         <p style="color:#3D4663;font-size:15px;line-height:1.6;margin:0 0 20px">
           La orden <strong>${data.orderTitle}</strong> ha sido actualizada.
         </p>
-        <div style="background:#F8F9FF;border-radius:10px;padding:16px;margin-bottom:20px">
+        <div style="background:#FFF7ED;border-radius:10px;padding:16px;margin-bottom:20px">
           <p style="margin:0;color:#6B7699;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Nuevo estado</p>
-          <p style="margin:6px 0 0;font-size:18px;font-weight:700;color:#5B6AF2">${data.newStatus}</p>
+          <p style="margin:6px 0 0;font-size:18px;font-weight:700;color:#E8712A">${data.newStatus}</p>
         </div>
         ${data.notes ? `<p style="color:#3D4663;font-size:14px;line-height:1.6">${data.notes}</p>` : ""}
         <hr style="border:none;border-top:1px solid #F3F4F6;margin:24px 0" />
@@ -73,7 +74,7 @@ const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: str
           <strong>${data.companyName}</strong> te ha enviado una propuesta
           por <strong>${data.amount}</strong>.
         </p>
-        <div style="background:#F8F9FF;border-radius:10px;padding:16px;margin-bottom:20px">
+        <div style="background:#FFF7ED;border-radius:10px;padding:16px;margin-bottom:20px">
           <p style="margin:0;color:#6B7699;font-size:11px;text-transform:uppercase;letter-spacing:0.08em">Propuesta</p>
           <p style="margin:4px 0 0;font-size:16px;font-weight:700;color:#0F1523">${data.proposalTitle}</p>
           ${data.dueDate ? `<p style="margin:6px 0 0;color:#D97706;font-size:12px;font-weight:600">Válida hasta: ${data.dueDate}</p>` : ""}
@@ -90,6 +91,28 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // ── JWT validation ──
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "No autorizado" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabase = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: "Token inválido" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { type, to, data }: EmailPayload = await req.json();
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
