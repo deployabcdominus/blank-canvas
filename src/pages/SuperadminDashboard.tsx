@@ -292,6 +292,7 @@ export default function SuperadminDashboard() {
           { key: "companies", label: "Companies", icon: Building },
           { key: "users", label: "Users", icon: Users },
           { key: "provisioning", label: "Provisioning", icon: ServerCog },
+          { key: "audit", label: "Auditoría", icon: ScrollText },
         ].map(t => (
           <Button key={t.key} variant={activeTab === t.key ? "default" : "outline"} size="sm" onClick={() => setTab(t.key)} className="gap-2">
             <t.icon className="w-4 h-4" />{t.label}
