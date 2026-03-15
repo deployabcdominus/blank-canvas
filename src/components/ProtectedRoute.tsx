@@ -1,7 +1,9 @@
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { usePlanAccess } from "@/hooks/usePlanAccess";
 import { useEffect } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -31,9 +33,15 @@ const ROUTE_ROLE_MAP: Record<string, string[]> = {
   '/settings': ['admin', 'sales', 'operations', 'member', 'viewer'],
 };
 
+/** Routes that require a specific plan feature */
+const ROUTE_PLAN_MAP: Record<string, "access_portal" | "access_previews" | "access_advanced_fields" | "access_audit"> = {
+  '/audit-log': 'access_audit',
+};
+
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading: authLoading } = useAuth();
   const { role, isSuperadmin, loading: roleLoading, companyId } = useUserRole();
+  const { canAccess } = usePlanAccess();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -41,16 +49,26 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     if (roleLoading || !role || isSuperadmin) return;
 
-    
-
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
-        
         navigate('/dashboard', { replace: true });
         return;
       }
     }
-  }, [location.pathname, role, roleLoading, isSuperadmin, navigate]);
+
+    // Plan-based route blocking
+    for (const [routePrefix, feature] of Object.entries(ROUTE_PLAN_MAP)) {
+      if (location.pathname.startsWith(routePrefix) && !canAccess(feature)) {
+        toast({
+          title: "Función Premium",
+          description: "Tu plan actual no incluye esta función. Actualiza tu suscripción para acceder.",
+          variant: "destructive",
+        });
+        navigate('/settings?tab=suscripcion', { replace: true });
+        return;
+      }
+    }
+  }, [location.pathname, role, roleLoading, isSuperadmin, navigate, canAccess]);
 
   // 1. Wait for auth
   if (authLoading) {
@@ -62,13 +80,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/login" replace />;
   }
 
-  // 3. Wait for role — MUST be before any role-based guard
+  // 3. Wait for role
   if (roleLoading) {
     return <Spinner />;
   }
 
-  // Defensive guard: if role is not resolved yet, keep waiting to avoid
-  // transient redirects (e.g. superadmin briefly evaluated as non-superadmin)
   if (!isSuperadmin && role === null) {
     return <Spinner />;
   }
@@ -84,7 +100,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   // 6. Role-based route blocking (render-time fallback)
-  
   if (role && !isSuperadmin) {
     for (const [routePrefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !allowedRoles.includes(role)) {
