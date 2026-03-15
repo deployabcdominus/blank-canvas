@@ -227,6 +227,7 @@ export default function SuperadminDashboard() {
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("PASSWORD_RESET", resetPasswordUser.email);
       toast({ title: "Contraseña reseteada", description: `Nueva contraseña asignada a ${resetPasswordUser.email}.` });
       setResetPasswordUser(null); setResetPasswordValue("");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
