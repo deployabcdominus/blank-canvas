@@ -25,6 +25,8 @@ export interface WorkOrder {
   estimatedDelivery?: string | null;
   assignedToUserId?: string | null;
   installerCompanyId?: string | null;
+  blueprintUrl?: string | null;
+  annotations?: any[];
 }
 
 // Backward-compatible alias
@@ -88,6 +90,8 @@ const mapRow = (row: any): WorkOrder => ({
   estimatedDelivery: row.estimated_delivery || null,
   assignedToUserId: row.assigned_to_user_id || null,
   installerCompanyId: row.installer_company_id || null,
+  blueprintUrl: row.blueprint_url || null,
+  annotations: Array.isArray(row.annotations) ? row.annotations : [],
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -160,6 +164,8 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
     if (updates.assignedToUserId !== undefined) dbUpdates.assigned_to_user_id = updates.assignedToUserId;
     if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
+    if (updates.blueprintUrl !== undefined) dbUpdates.blueprint_url = updates.blueprintUrl;
+    if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations;
     const { error } = await supabase.from('production_orders').update(dbUpdates).eq('id', id);
     if (error) throw error;
     const order = orders.find(o => o.id === id);

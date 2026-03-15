@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, CheckCircle, Loader2, Pencil, Trash2 } from "lucide-react";
@@ -27,6 +27,7 @@ import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { BlueprintAnnotator, type Annotation } from "./BlueprintAnnotator";
 
 interface EditWorkOrderModalProps {
   order: WorkOrder | null;
@@ -75,6 +76,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const [installerCompanyId, setInstallerCompanyId] = useState<string>("none");
   const [notes, setNotes] = useState("");
   const [priority, setPriority] = useState("media");
+  const [blueprintUrl, setBlueprintUrl] = useState<string | null>(null);
+  const [annotations, setAnnotations] = useState<Annotation[]>([]);
 
   const [operators, setOperators] = useState<OperatorOption[]>([]);
   const [installers, setInstallers] = useState<InstallerOption[]>([]);
@@ -91,6 +94,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     setInstallerCompanyId(order.installerCompanyId || "none");
     setNotes(order.notes || "");
     setPriority(order.priority || "media");
+    setBlueprintUrl(order.blueprintUrl || null);
+    setAnnotations(Array.isArray(order.annotations) ? order.annotations : []);
     setEditing(startInEditMode);
   }, [order, startInEditMode]);
 
@@ -143,6 +148,18 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     [status]
   );
 
+  const handleBlueprintUpload = useCallback(async (file: File) => {
+    if (!order) return;
+    const ext = file.name.split(".").pop() || "png";
+    const path = `${order.companyId || "unknown"}/${order.id}/blueprint.${ext}`;
+    const { error } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
+    if (error) { toast({ title: "Error al subir imagen", variant: "destructive" }); console.error(error); return; }
+    const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+    const url = urlData.publicUrl + "?t=" + Date.now();
+    setBlueprintUrl(url);
+    await updateOrder(order.id, { blueprintUrl: url });
+  }, [order, updateOrder, toast]);
+
   const handleSave = async () => {
     if (!order) return;
     setSaving(true);
@@ -161,6 +178,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         installerCompanyId: installerCompanyId === "none" ? null : installerCompanyId,
         notes,
         priority,
+        blueprintUrl,
+        annotations,
       });
 
       toast({ title: "Orden actualizada" });
@@ -396,6 +415,17 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
               ) : (
                 <p className="text-sm text-muted-foreground mt-1">{notes || "Sin notas"}</p>
               )}
+            </div>
+
+            {/* Blueprint Annotator */}
+            <div className="pt-2 border-t border-border/20">
+              <BlueprintAnnotator
+                imageUrl={blueprintUrl}
+                annotations={annotations}
+                onChange={(newAnnotations) => setAnnotations(newAnnotations)}
+                onImageUpload={handleBlueprintUpload}
+                readOnly={!editing}
+              />
             </div>
 
             {editing && (
