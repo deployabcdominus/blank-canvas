@@ -194,8 +194,8 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (error) throw error;
     const lead = leads.find(l => l.id === id);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, ...updates } : l));
-    const action = updates.status ? 'cambio_estado' : 'editado';
-    logAudit({ action, entityType: 'lead', entityId: id, entityLabel: lead?.name, details: updates.status ? { before: lead?.status, after: updates.status } : dbUpdates });
+    const auditAction = updates.status ? 'cambio_estado' as const : 'editado' as const;
+    logAudit({ action: auditAction, entityType: 'lead', entityId: id, entityLabel: lead?.name, details: updates.status ? { before: lead?.status, after: updates.status } : dbUpdates });
   };
 
   const assignLead = async (leadId: string, assignedToUserId: string | null) => {
