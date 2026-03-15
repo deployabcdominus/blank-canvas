@@ -15,6 +15,7 @@ import {
   ArrowLeft, Mail, Phone, StickyNote, FolderOpen, FileText, BarChart3,
   Calendar, MapPin, TrendingUp, DollarSign, CheckCircle, Clock,
 } from "lucide-react";
+import { VisualStatusTracker } from "@/components/VisualStatusTracker";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 
