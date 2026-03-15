@@ -9,7 +9,6 @@ import type { LucideIcon } from "lucide-react";
 export interface NavItem {
   icon: LucideIcon;
   label: string;
-  /** Key used by useIndustryLabels to override label dynamically */
   labelKey?: "projects" | "leads" | "workOrders" | "installation" | "installerCompanies";
   path: string;
   roles?: AppRole[];
@@ -31,7 +30,54 @@ export const platformItems: NavItem[] = [
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
-// ── Tenant items ──
+// ── Tenant groups ──
+
+export const principalGroup: NavGroup = {
+  groupLabel: "Principal",
+  icon: LayoutDashboard,
+  items: [
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+  ],
+};
+
+export const crmGroup: NavGroup = {
+  groupLabel: "CRM & Ventas",
+  icon: Users,
+  items: [
+    { icon: Users, label: "Leads", labelKey: "leads", path: "/leads", roles: ['admin', 'sales', 'member'] },
+    { icon: FileText, label: "Propuestas", path: "/proposals", roles: ['admin', 'sales', 'member'] },
+    { icon: Contact, label: "Clientes", path: "/clients", roles: ['admin', 'sales', 'operations', 'member'] },
+  ],
+};
+
+export const productionGroup: NavGroup = {
+  groupLabel: "Producción",
+  icon: FolderKanban,
+  items: [
+    { icon: FolderKanban, label: "Proyectos", labelKey: "projects", path: "/projects", roles: ['admin', 'sales', 'operations', 'member'] },
+    { icon: ClipboardList, label: "Órdenes de Trabajo", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
+    { icon: Building, label: "Subcontratistas", labelKey: "installerCompanies", path: "/installer-companies", roles: ['admin', 'operations'] },
+  ],
+};
+
+export const adminGroup: NavGroup = {
+  groupLabel: "Administración",
+  icon: DollarSign,
+  items: [
+    { icon: DollarSign, label: "Pagos", path: "/payments", roles: ['admin', 'sales'] },
+    { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
+  ],
+};
+
+export const utilityItems: NavItem[] = [
+  { icon: Activity, label: "Auditoría", path: "/audit-log", roles: ['admin'] },
+  { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin'] },
+];
+
+// ── All tenant groups (ordered) ──
+export const tenantGroups: NavGroup[] = [principalGroup, crmGroup, productionGroup, adminGroup];
+
+// ── Backward compat (keep old exports so nothing breaks) ──
 export const mainItems: NavItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: Contact, label: "Clientes", path: "/clients", roles: ['admin', 'sales', 'operations', 'member'] },

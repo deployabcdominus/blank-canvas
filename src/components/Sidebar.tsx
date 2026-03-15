@@ -8,17 +8,18 @@ import { useIndustryLabels } from "@/hooks/useIndustryLabels";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, ChevronDown, Shield, Settings } from "lucide-react";
+import { LogOut, User, Shield, Settings } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { platformItems, mainItems, operationGroup, adminItems, type NavItem } from "@/constants/navigation";
+import {
+  platformItems, tenantGroups, utilityItems,
+  type NavItem, type NavGroup,
+} from "@/constants/navigation";
 
 export const Sidebar = () => {
   const location = useLocation();
@@ -30,17 +31,14 @@ export const Sidebar = () => {
   const { fullName, email, initials } = useUserProfile();
   const industryLabels = useIndustryLabels();
 
-  const isOperationActive = operationGroup.items.some(i => location.pathname === i.path);
-  const [operationOpen, setOperationOpen] = useState(isOperationActive);
-  
-  if (breakpoint === 'mobile') return null;
+  if (breakpoint === "mobile") return null;
   if (roleLoading) return null;
 
-  const isTablet = breakpoint === 'tablet';
+  const isTablet = breakpoint === "tablet";
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/login');
+    navigate("/login");
   };
 
   const canSee = (item: NavItem) => {
@@ -56,70 +54,91 @@ export const Sidebar = () => {
     return item.label;
   };
 
+  const isActive = (path: string) =>
+    location.pathname + location.search === path || location.pathname === path;
+
+  // ── Nav item renderer ──
   const renderNavItem = (item: NavItem) => {
-    const isActive = location.pathname + location.search === item.path || location.pathname === item.path;
+    const active = isActive(item.path);
     const label = getLabel(item);
     return (
       <NavLink
         key={item.path}
         to={item.path}
-        className={`sidebar-nav-item min-h-[44px] ${
-          isTablet ? 'justify-center p-3' : 'gap-3 px-4 py-3'
-        } ${isActive ? 'sidebar-nav-active' : ''}`}
+        className={`group relative flex items-center rounded-lg transition-colors duration-200 min-h-[40px] ${
+          isTablet ? "justify-center p-2.5" : "gap-3 px-3 py-2"
+        } ${
+          active
+            ? "text-foreground font-semibold bg-primary/[0.06]"
+            : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+        }`}
         title={isTablet ? label : undefined}
-        aria-current={isActive ? "page" : undefined}
+        aria-current={active ? "page" : undefined}
       >
-        <item.icon className="w-[18px] h-[18px] flex-shrink-0" aria-hidden="true" />
-        {!isTablet && <span className="font-medium text-sm">{label}</span>}
+        {/* Active indicator — thin orange left bar */}
+        {active && (
+          <motion.div
+            layoutId="sidebar-active"
+            className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-full bg-primary"
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          />
+        )}
+        <item.icon className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+        {!isTablet && <span className="text-[13px] leading-tight">{label}</span>}
       </NavLink>
     );
   };
 
+  // ── Group renderer ──
+  const renderGroup = (group: NavGroup) => {
+    const visibleItems = group.items.filter(canSee);
+    if (visibleItems.length === 0) return null;
+    return (
+      <div key={group.groupLabel} className="space-y-0.5">
+        {!isTablet && (
+          <p className="px-3 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/60 select-none">
+            {group.groupLabel}
+          </p>
+        )}
+        {visibleItems.map(renderNavItem)}
+      </div>
+    );
+  };
+
+  // ── Platform nav (superadmin) ──
   const renderPlatformNav = () => (
-    <nav className="flex-1 overflow-y-auto space-y-1 min-h-0 px-1">
+    <nav className="flex-1 overflow-y-auto space-y-1 min-h-0 px-1.5">
       {!isTablet && (
-        <div className="px-3 py-2 mb-2">
-          <span className="sidebar-section-label">Plataforma</span>
-        </div>
+        <p className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/60">
+          Plataforma
+        </p>
       )}
-      {platformItems.map(item => renderNavItem(item))}
+      {platformItems.map(renderNavItem)}
     </nav>
   );
 
+  // ── Tenant nav ──
   const renderTenantNav = () => {
-    const visibleMainItems = mainItems.filter(canSee);
-    const visibleOperationItems = operationGroup.items.filter(canSee);
-    const visibleAdminItems = adminItems.filter(canSee);
+    const visibleUtilities = utilityItems.filter(canSee);
 
     return (
-      <nav className="flex-1 overflow-y-auto space-y-1 min-h-0 px-1">
-        {visibleMainItems.map(item => renderNavItem(item))}
-        {visibleOperationItems.length > 0 && (
-          <>
-            <div className="my-3 mx-2 border-t sidebar-divider" />
-            {isTablet ? (
-              visibleOperationItems.map(item => renderNavItem(item))
-            ) : (
-              <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
-                <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-3 min-h-[44px] w-full">
-                  <operationGroup.icon className="w-[18px] h-[18px] flex-shrink-0" aria-hidden="true" />
-                  <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pl-4 space-y-0.5 mt-0.5">
-                  {visibleOperationItems.map(item => renderNavItem(item))}
-                </CollapsibleContent>
-              </Collapsible>
+      <>
+        <nav className="flex-1 overflow-y-auto min-h-0 px-1.5 space-y-5">
+          {tenantGroups.map(renderGroup)}
+        </nav>
+
+        {/* Utility section — pinned at bottom above user */}
+        {visibleUtilities.length > 0 && (
+          <div className="px-1.5 pt-3 mt-2 border-t border-border/10 space-y-0.5">
+            {!isTablet && (
+              <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/40 select-none">
+                Utilidades
+              </p>
             )}
-          </>
+            {visibleUtilities.map(renderNavItem)}
+          </div>
         )}
-        {visibleAdminItems.length > 0 && (
-          <>
-            <div className="my-3 mx-2 border-t sidebar-divider" />
-            {visibleAdminItems.map(item => renderNavItem(item))}
-          </>
-        )}
-      </nav>
+      </>
     );
   };
 
@@ -129,50 +148,54 @@ export const Sidebar = () => {
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed left-0 top-0 sidebar-premium h-screen z-10 flex flex-col ${
-        isTablet ? 'w-20 p-3' : 'w-64 p-4'
+        isTablet ? "w-20 p-3" : "w-60 p-3"
       }`}
       role="navigation"
       aria-label="Menu lateral principal"
     >
+      {/* Logo */}
       {!isTablet ? (
-        <div className="mb-8 flex-shrink-0 px-2">
-          <BrandLogo size={44} showText variant="iconWithText" textClassName="text-2xl font-bold" />
-          <p className="text-[11px] text-muted-foreground mt-2 uppercase tracking-[0.04em] font-medium">
-            {isSuperadmin ? 'Platform Admin' : FIXED_BRANDING.appTagline}
+        <div className="mb-6 flex-shrink-0 px-2">
+          <BrandLogo size={40} showText variant="iconWithText" textClassName="text-xl font-bold" />
+          <p className="text-[10px] text-muted-foreground/50 mt-1.5 uppercase tracking-[0.06em] font-medium">
+            {isSuperadmin ? "Platform Admin" : FIXED_BRANDING.appTagline}
           </p>
         </div>
       ) : (
-        <div className="mb-6 flex-shrink-0 flex justify-center">
-          <BrandLogo size={40} />
+        <div className="mb-5 flex-shrink-0 flex justify-center">
+          <BrandLogo size={36} />
         </div>
       )}
 
       {isSuperadmin ? renderPlatformNav() : renderTenantNav()}
 
-      <div className="flex-shrink-0 mt-auto sidebar-footer-block space-y-1">
-        <div className={`flex ${isTablet ? 'justify-center' : 'px-3'} py-1`}>
+      {/* User footer */}
+      <div className="flex-shrink-0 mt-3 space-y-1">
+        <div className={`flex ${isTablet ? "justify-center" : "px-2"} py-0.5`}>
           <NotificationBell />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={`sidebar-nav-item min-h-[44px] w-full ${
-                isTablet ? 'justify-center p-3' : 'gap-3 px-3 py-2.5'
+              className={`flex items-center rounded-lg transition-colors hover:bg-muted/30 w-full min-h-[44px] ${
+                isTablet ? "justify-center p-2.5" : "gap-3 px-2.5 py-2"
               }`}
               title={isTablet ? "Mi Perfil" : undefined}
               aria-label="Menú del usuario"
             >
-              <Avatar className="w-9 h-9 flex-shrink-0 ring-2 ring-primary/25">
+              <Avatar className="w-8 h-8 flex-shrink-0 ring-1 ring-primary/20">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
-                <AvatarFallback className="bg-primary/15 text-primary font-semibold text-xs">
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-[11px]">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               {!isTablet && (
                 <div className="text-left min-w-0">
-                  <span className="font-semibold text-sm block leading-tight truncate text-foreground">{fullName.split(' ')[0]}</span>
-                  <span className="text-[11px] text-muted-foreground leading-tight truncate block">
-                    {isSuperadmin ? 'Superadmin' : email}
+                  <span className="font-semibold text-[13px] block leading-tight truncate text-foreground">
+                    {fullName.split(" ")[0]}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground/60 leading-tight truncate block">
+                    {isSuperadmin ? "Superadmin" : email}
                   </span>
                 </div>
               )}
@@ -190,11 +213,11 @@ export const Sidebar = () => {
               )}
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate('/settings?tab=perfil')} className="min-h-[44px]">
+            <DropdownMenuItem onClick={() => navigate("/settings?tab=perfil")} className="min-h-[44px]">
               <User className="w-4 h-4 mr-2" /> Perfil
             </DropdownMenuItem>
             {isAdmin && (
-              <DropdownMenuItem onClick={() => navigate('/settings')} className="min-h-[44px]">
+              <DropdownMenuItem onClick={() => navigate("/settings")} className="min-h-[44px]">
                 <Settings className="w-4 h-4 mr-2" /> Configuración
               </DropdownMenuItem>
             )}
