@@ -98,6 +98,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     setPriority(order.priority || "media");
     setBlueprintUrl(order.blueprintUrl || null);
     setAnnotations(Array.isArray(order.annotations) ? order.annotations : []);
+    setTechnicalDetails(order.technicalDetails || {});
     setEditing(startInEditMode);
   }, [order, startInEditMode]);
 
