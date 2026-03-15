@@ -168,6 +168,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
         assignedToUserId: (data as any).assigned_to_user_id || undefined,
       };
       setLeads(prev => [newLead, ...prev]);
+      logAudit({ action: 'creado', entityType: 'lead', entityId: newLead.id, entityLabel: newLead.name });
     }
   };
 
