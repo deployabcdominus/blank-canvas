@@ -154,8 +154,12 @@ export default function Clients() {
       if (editingClient) {
         const updates: Partial<Omit<Client, 'id' | 'companyId'>> = {
           clientName: form.clientName.trim(),
+          contactName: form.contactName.trim() || null,
           primaryEmail: form.primaryEmail.trim() || null,
           primaryPhone: form.primaryPhone.trim() || null,
+          address: form.address.trim() || null,
+          website: form.website.trim() || null,
+          serviceType: form.serviceType || null,
           notes: form.notes.trim() || null,
         };
         if (logoUrl !== undefined) updates.logoUrl = logoUrl;
@@ -164,8 +168,12 @@ export default function Clients() {
       } else {
         await addClient({
           clientName: form.clientName.trim(),
+          contactName: form.contactName.trim() || null,
           primaryEmail: form.primaryEmail.trim() || null,
           primaryPhone: form.primaryPhone.trim() || null,
+          address: form.address.trim() || null,
+          website: form.website.trim() || null,
+          serviceType: form.serviceType || null,
           notes: form.notes.trim() || null,
           logoUrl: logoUrl || null,
         });
