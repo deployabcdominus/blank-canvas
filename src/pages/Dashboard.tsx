@@ -82,13 +82,13 @@ const Dashboard = () => {
 
         {isAdmin && <AiBriefing />}
 
-        <div className={`grid gap-4 mb-8 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
+        <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
           {stats.map((stat, index) => (
             <HudCard key={stat.key} label={stat.label} desc={stat.desc} value={stat.value} icon={stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} />
           ))}
         </div>
 
-        <div className={`grid gap-4 mb-8 ${isMobile ? "grid-cols-1" : showFinancials ? "grid-cols-3" : "grid-cols-2"}`}>
+        <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-1" : showFinancials ? "grid-cols-3" : "grid-cols-2"}`}>
           {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
           {canViewOperations && <WorkOrdersRadial orders={orders} />}
           <GeoHeatmap installations={installations} />
