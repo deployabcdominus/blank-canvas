@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell, List } from "lucide-react";
+import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell, List, Moon } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
 import IntegrationsCards from "@/components/settings/IntegrationsCards";
@@ -433,25 +433,16 @@ export default function Settings() {
                 <CardHeader>
                   <CardTitle>Apariencia</CardTitle>
                 <CardDescription>
-                  Configure el tema y efectos visuales
+                  Configure los efectos visuales
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <Label>Tema</Label>
-                  <RadioGroup
-                    value={formData.theme}
-                    onValueChange={(value: 'light' | 'dark') => setFormData(prev => ({ ...prev, theme: value }))}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="light" id="light" />
-                      <Label htmlFor="light">Claro</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="dark" id="dark" />
-                      <Label htmlFor="dark">Oscuro</Label>
-                    </div>
-                  </RadioGroup>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Moon className="w-4 h-4" />
+                    <span>Modo oscuro permanente</span>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between">

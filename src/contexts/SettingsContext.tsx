@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
 
 export interface AppSettings {
-  theme: 'light' | 'dark';
+  theme: 'dark';
   glassEffect: boolean;
 }
 
@@ -20,16 +20,8 @@ interface SettingsContextType {
   resetToDefaults: () => void;
 }
 
-const getInitialTheme = (): 'light' | 'dark' => {
-  if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('sf-theme');
-    if (stored === 'light' || stored === 'dark') return stored;
-  }
-  return 'light';
-};
-
 const defaultSettings: AppSettings = {
-  theme: getInitialTheme(),
+  theme: 'dark',
   glassEffect: true,
 };
 
@@ -48,7 +40,12 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [settings, setSettings] = useState<AppSettings>(defaultSettings);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load settings from Supabase
+  // Always enforce dark mode on mount
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
+
+  // Load settings from Supabase (only glassEffect is user-configurable)
   useEffect(() => {
     const loadSettings = async () => {
       if (!user) {
@@ -68,11 +65,10 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         if (data) {
           setSettings({
-            theme: (data.theme as 'light' | 'dark') || defaultSettings.theme,
+            theme: 'dark', // Always dark
             glassEffect: data.glass_effect ?? defaultSettings.glassEffect,
           });
         } else {
-          // If no data exists, use default settings
           setSettings(defaultSettings);
         }
       } catch (error) {
@@ -85,17 +81,6 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     loadSettings();
   }, [user]);
 
-  // Apply theme changes
-  useEffect(() => {
-    const root = document.documentElement;
-    if (settings.theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('sf-theme', settings.theme);
-  }, [settings.theme]);
-
   // Apply glass effect changes
   useEffect(() => {
     const body = document.body;
@@ -107,7 +92,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [settings.glassEffect]);
 
   const updateSettings = async (updates: Partial<AppSettings>) => {
-    const newSettings = { ...settings, ...updates };
+    // Ignore theme changes — always dark
+    const newSettings = { ...settings, ...updates, theme: 'dark' as const };
     setSettings(newSettings);
 
     if (user) {
@@ -115,7 +101,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         await supabase
           .from('user_settings')
           .update({
-            theme: newSettings.theme,
+            theme: 'dark',
             glass_effect: newSettings.glassEffect,
           })
           .eq('user_id', user.id);
@@ -133,7 +119,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         await supabase
           .from('user_settings')
           .update({
-            theme: defaultSettings.theme,
+            theme: 'dark',
             glass_effect: defaultSettings.glassEffect,
           })
           .eq('user_id', user.id);
