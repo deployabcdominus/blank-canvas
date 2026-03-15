@@ -850,6 +850,7 @@ export type Database = {
           description: string | null
           id: string
           lead_id: string | null
+          mockup_url: string | null
           owner_user_id: string | null
           project: string | null
           sent_date: string | null
@@ -873,6 +874,7 @@ export type Database = {
           description?: string | null
           id?: string
           lead_id?: string | null
+          mockup_url?: string | null
           owner_user_id?: string | null
           project?: string | null
           sent_date?: string | null
@@ -896,6 +898,7 @@ export type Database = {
           description?: string | null
           id?: string
           lead_id?: string | null
+          mockup_url?: string | null
           owner_user_id?: string | null
           project?: string | null
           sent_date?: string | null
