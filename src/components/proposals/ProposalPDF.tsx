@@ -1,6 +1,9 @@
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 
-const BRAND_ORANGE = "#E8750A";
+const BRAND = "#E8750A";
+const DARK = "#0a0a0a";
+const GRAY = "#71717a";
+const LIGHT = "#e4e4e7";
 
 const styles = StyleSheet.create({
   page: {
@@ -8,38 +11,90 @@ const styles = StyleSheet.create({
     fontSize: 10,
     padding: 40,
     backgroundColor: "#FFFFFF",
-    color: "#0F1523",
+    color: "#18181b",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 32,
-    paddingBottom: 20,
-    borderBottom: "1px solid #E5E7EB",
+    alignItems: "center",
+    marginBottom: 28,
+    paddingBottom: 16,
+    borderBottom: `2px solid ${BRAND}`,
   },
-  logo: { width: 80, height: 80, objectFit: "contain" },
+  logo: { width: 70, height: 70, objectFit: "contain", borderRadius: 8 },
   companyInfo: { alignItems: "flex-end" },
-  companyName: { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#0F1523", marginBottom: 4 },
-  companyDetail: { fontSize: 9, color: "#6B7699", marginBottom: 2 },
-  proposalTitle: { fontSize: 22, fontFamily: "Helvetica-Bold", color: BRAND_ORANGE, marginBottom: 6 },
-  proposalNumber: { fontSize: 10, color: "#6B7699", marginBottom: 24 },
-  section: { marginBottom: 20 },
-  sectionTitle: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#0F1523", marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 },
-  row: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 6, borderBottom: "0.5px solid #F3F4F6" },
-  label: { color: "#6B7699", flex: 1 },
-  value: { color: "#0F1523", fontFamily: "Helvetica-Bold", textAlign: "right" },
-  totalRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 12, paddingTop: 10, borderTop: `1.5px solid ${BRAND_ORANGE}` },
-  totalLabel: { fontSize: 12, fontFamily: "Helvetica-Bold", color: "#0F1523", marginRight: 16 },
-  totalValue: { fontSize: 16, fontFamily: "Times-Bold", color: BRAND_ORANGE },
-  footer: { position: "absolute", bottom: 30, left: 40, right: 40, flexDirection: "row", justifyContent: "space-between", borderTop: "0.5px solid #E5E7EB", paddingTop: 10 },
-  footerText: { fontSize: 8, color: "#9BA8C5" },
-  badge: { backgroundColor: "#FFF4EB", borderRadius: 4, padding: "3 8", alignSelf: "flex-start", marginBottom: 16 },
-  badgeText: { fontSize: 9, color: BRAND_ORANGE, fontFamily: "Helvetica-Bold" },
-  notes: { backgroundColor: "#FAFAFA", borderRadius: 4, padding: 12, marginTop: 8 },
-  notesText: { fontSize: 9, color: "#3D4663", lineHeight: 1.5 },
-  /* Amounts use serif for elegance */
-  amountValue: { fontFamily: "Times-Bold", fontSize: 11, color: "#0F1523", textAlign: "right" },
+  companyName: { fontSize: 14, fontFamily: "Helvetica-Bold", color: DARK, marginBottom: 3 },
+  companyDetail: { fontSize: 8, color: GRAY, marginBottom: 1 },
+
+  heroTitle: { fontSize: 20, fontFamily: "Helvetica-Bold", color: DARK, marginBottom: 4 },
+  heroSub: { fontSize: 10, color: GRAY, marginBottom: 20 },
+
+  badge: {
+    backgroundColor: "#FFF7ED",
+    borderRadius: 6,
+    padding: "4 10",
+    alignSelf: "flex-start",
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#fed7aa",
+  },
+  badgeText: { fontSize: 9, color: BRAND, fontFamily: "Helvetica-Bold", textTransform: "uppercase" },
+
+  section: { marginBottom: 16 },
+  sectionTitle: {
+    fontSize: 9,
+    fontFamily: "Helvetica-Bold",
+    color: GRAY,
+    marginBottom: 8,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+  },
+
+  table: { borderWidth: 1, borderColor: "#e4e4e7", borderRadius: 8, overflow: "hidden" },
+  tableRow: { flexDirection: "row", borderBottomWidth: 0.5, borderBottomColor: "#f4f4f5" },
+  tableLabel: { flex: 1, padding: "8 12", color: GRAY, fontSize: 9 },
+  tableValue: { flex: 1, padding: "8 12", textAlign: "right", fontFamily: "Helvetica-Bold", fontSize: 9, color: DARK },
+
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 2,
+    borderTopColor: BRAND,
+  },
+  totalLabel: { fontSize: 11, fontFamily: "Helvetica-Bold", color: DARK, marginRight: 16 },
+  totalValue: { fontSize: 18, fontFamily: "Times-Bold", color: BRAND },
+
+  notes: { backgroundColor: "#fafafa", borderRadius: 6, padding: 12, marginTop: 8, borderWidth: 1, borderColor: "#f4f4f5" },
+  notesText: { fontSize: 9, color: "#3f3f46", lineHeight: 1.6 },
+
+  mockupImage: { width: "100%", borderRadius: 8, marginBottom: 16, objectFit: "contain" },
+
+  watermark: {
+    position: "absolute",
+    top: "45%",
+    left: "15%",
+    fontSize: 32,
+    fontFamily: "Helvetica-Bold",
+    color: BRAND,
+    opacity: 0.06,
+    transform: "rotate(-30deg)",
+  },
+
+  footer: {
+    position: "absolute",
+    bottom: 28,
+    left: 40,
+    right: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopWidth: 0.5,
+    borderTopColor: "#e4e4e7",
+    paddingTop: 8,
+  },
+  footerText: { fontSize: 7, color: "#a1a1aa" },
 });
 
 interface ProposalPDFProps {
@@ -52,6 +107,7 @@ interface ProposalPDFProps {
     createdAt: string;
     sentDate?: string | null;
     approvedTotal?: number | null;
+    mockupUrl?: string | null;
   };
   company: {
     name: string;
@@ -69,6 +125,9 @@ export function ProposalPDF({ proposal, company }: ProposalPDFProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Watermark */}
+        <Text style={styles.watermark}>{company.name}</Text>
+
         {/* Header */}
         <View style={styles.header}>
           <View>
@@ -80,38 +139,46 @@ export function ProposalPDF({ proposal, company }: ProposalPDFProps) {
           </View>
           <View style={styles.companyInfo}>
             {company.logo_url && <Text style={styles.companyName}>{company.name}</Text>}
+            <Text style={styles.companyDetail}>Propuesta Comercial</Text>
           </View>
         </View>
 
         {/* Title */}
-        <Text style={styles.proposalTitle}>Propuesta Comercial</Text>
-        <Text style={styles.proposalNumber}>{proposal.project}</Text>
+        <Text style={styles.heroTitle}>{proposal.project || "Propuesta"}</Text>
+        <Text style={styles.heroSub}>Preparada para {proposal.client}</Text>
 
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>{proposal.status.toUpperCase()}</Text>
+          <Text style={styles.badgeText}>{proposal.status}</Text>
         </View>
 
-        {/* Info */}
+        {/* Mockup if available */}
+        {proposal.mockupUrl && (
+          <Image src={proposal.mockupUrl} style={styles.mockupImage} />
+        )}
+
+        {/* Info table */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Información</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Cliente</Text>
-            <Text style={styles.value}>{proposal.client}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Proyecto</Text>
-            <Text style={styles.value}>{proposal.project}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Fecha de emisión</Text>
-            <Text style={styles.value}>{formatDate(proposal.createdAt)}</Text>
-          </View>
-          {proposal.sentDate && (
-            <View style={styles.row}>
-              <Text style={styles.label}>Fecha de envío</Text>
-              <Text style={styles.value}>{formatDate(proposal.sentDate)}</Text>
+          <Text style={styles.sectionTitle}>Información del proyecto</Text>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Cliente</Text>
+              <Text style={styles.tableValue}>{proposal.client}</Text>
             </View>
-          )}
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Proyecto</Text>
+              <Text style={styles.tableValue}>{proposal.project}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableLabel}>Fecha de emisión</Text>
+              <Text style={styles.tableValue}>{formatDate(proposal.createdAt)}</Text>
+            </View>
+            {proposal.sentDate && (
+              <View style={styles.tableRow}>
+                <Text style={styles.tableLabel}>Fecha de envío</Text>
+                <Text style={styles.tableValue}>{formatDate(proposal.sentDate)}</Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Total */}
@@ -122,7 +189,7 @@ export function ProposalPDF({ proposal, company }: ProposalPDFProps) {
           </Text>
         </View>
 
-        {/* Description / Notes */}
+        {/* Notes */}
         {proposal.description && !proposal.description.match(/^Propuesta creada a partir del lead:/i) && (
           <View style={[styles.section, { marginTop: 20 }]}>
             <Text style={styles.sectionTitle}>Notas y condiciones</Text>
@@ -134,7 +201,7 @@ export function ProposalPDF({ proposal, company }: ProposalPDFProps) {
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>{company.name}</Text>
+          <Text style={styles.footerText}>{company.name} · Propuesta confidencial</Text>
           <Text
             style={styles.footerText}
             render={({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) =>
