@@ -209,6 +209,7 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "delete-user", userId: userToDelete.id } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("USER_DELETED", userToDelete.full_name || userToDelete.email, { email: userToDelete.email });
       toast({ title: "Usuario eliminado", description: `${userToDelete.full_name || userToDelete.email} ha sido eliminado permanentemente.` });
       setUserToDelete(null);
       if (activeTab === "users") fetchAllUsers();
