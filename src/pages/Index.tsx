@@ -100,32 +100,32 @@ const AnimatedPrice = ({ value }: { value: number }) => (
 
 /* ─── Section Badge ─── */
 const SectionBadge = ({ icon: Icon, label }: { icon: any; label: string }) => (
-  <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-400/60 mb-6 px-3.5 py-1.5 rounded-full border border-amber-500/8 bg-amber-500/[0.03]">
+  <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-400/60 mb-6 px-3.5 py-1.5 rounded-full border border-orange-500/10 bg-orange-500/[0.04]">
     <Icon className="w-3.5 h-3.5" />
     {label}
   </span>
 );
 
 /* ═══════════════════════════════════════════════════════ */
-/*           FLOATING DASHBOARD (HERO MOCKUP)             */
+/*     FLOATING DASHBOARD (HERO MOCKUP) — ISOMETRIC       */
 /* ═══════════════════════════════════════════════════════ */
 const FloatingDashboard = () => (
   <div
     className="relative w-full max-w-5xl mx-auto"
     style={{ perspective: "1400px" }}
   >
-    {/* Deep ambient glow — warm amber/gold, NOT orange */}
-    <div className="absolute -inset-32 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(200,160,60,0.06),transparent_60%)] pointer-events-none" />
+    {/* Deep ambient glow */}
+    <div className="absolute -inset-32 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(249,115,22,0.06),transparent_60%)] pointer-events-none" />
 
-    {/* Main dashboard — deep glassmorphism */}
+    {/* Main dashboard */}
     <motion.div
       initial={{ opacity: 0, y: 60, rotateX: 10 }}
       animate={{ opacity: 1, y: 0, rotateX: 3 }}
       transition={{ duration: 1.3, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="relative rounded-[20px] border border-white/[0.05] bg-[#0a0a0a]/90 backdrop-blur-2xl overflow-hidden"
+      className="relative rounded-[20px] border border-orange-500/[0.08] bg-[#0a0a0a]/90 backdrop-blur-2xl overflow-hidden"
       style={{
         boxShadow:
-          "0 4px 8px rgba(0,0,0,0.3), 0 16px 40px rgba(0,0,0,0.5), 0 48px 120px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04)",
+          "0 4px 8px rgba(0,0,0,0.3), 0 16px 40px rgba(0,0,0,0.5), 0 48px 120px -20px rgba(0,0,0,0.7), 0 0 60px -20px rgba(249,115,22,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
       }}
     >
       {/* Title bar */}
@@ -141,9 +141,9 @@ const FloatingDashboard = () => (
       {/* Content */}
       <div className="p-5 grid grid-cols-4 gap-3 min-h-[260px] sm:min-h-[320px]">
         {[
-          { label: "Leads activos", value: "127", trend: "+18%", accent: "text-amber-400/60" },
+          { label: "Leads activos", value: "127", trend: "+18%", accent: "text-orange-400/60" },
           { label: "Propuestas enviadas", value: "43", trend: "+24%", accent: "text-cyan-400/50" },
-          { label: "En producción", value: "18", trend: "—", accent: "text-amber-400/50" },
+          { label: "En producción", value: "18", trend: "—", accent: "text-orange-400/50" },
           { label: "Completados", value: "89", trend: "+12%", accent: "text-emerald-400/50" },
         ].map((kpi, i) => (
           <motion.div
@@ -151,7 +151,7 @@ const FloatingDashboard = () => (
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 + i * 0.1, duration: 0.5 }}
-            className="rounded-xl border border-white/[0.04] bg-white/[0.015] p-3"
+            className="rounded-xl border border-white/[0.04] bg-white/[0.015] p-3 hover:border-orange-500/10 transition-colors duration-500"
           >
             <p className="text-[9px] text-zinc-500 uppercase tracking-wider font-medium">
               {kpi.label}
@@ -179,7 +179,7 @@ const FloatingDashboard = () => (
                 key={i}
                 className="flex-1 rounded-sm"
                 style={{
-                  background: `linear-gradient(to top, rgba(200,160,60,0.4), rgba(200,160,60,${0.05 + i * 0.025}))`,
+                  background: `linear-gradient(to top, rgba(249,115,22,0.5), rgba(249,115,22,${0.05 + i * 0.03}))`,
                 }}
                 initial={{ height: 0 }}
                 animate={{ height: `${h}%` }}
@@ -218,15 +218,15 @@ const FloatingDashboard = () => (
       </div>
     </motion.div>
 
-    {/* Floating proposal card — deep glass */}
+    {/* Floating proposal card */}
     <motion.div
       initial={{ opacity: 0, x: -50, y: 30 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{ delay: 1.6, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute -left-4 sm:-left-10 bottom-6 sm:bottom-10 w-[200px] sm:w-[240px] rounded-2xl border border-white/[0.06] bg-[#0c0c0c]/90 backdrop-blur-2xl p-4 z-20"
+      className="absolute -left-4 sm:-left-10 bottom-6 sm:bottom-10 w-[200px] sm:w-[240px] rounded-2xl border border-orange-500/[0.08] bg-[#0c0c0c]/90 backdrop-blur-2xl p-4 z-20"
       style={{
         boxShadow:
-          "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03)",
+          "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(249,115,22,0.06), inset 0 1px 0 rgba(255,255,255,0.03)",
       }}
     >
       <div className="flex items-center gap-2 mb-2">
@@ -248,15 +248,15 @@ const FloatingDashboard = () => (
       </div>
     </motion.div>
 
-    {/* Floating status card — deep glass */}
+    {/* Floating status card */}
     <motion.div
       initial={{ opacity: 0, x: 50, y: 30 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{ delay: 1.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute -right-4 sm:-right-10 bottom-14 sm:bottom-18 w-[180px] sm:w-[220px] rounded-2xl border border-white/[0.06] bg-[#0c0c0c]/90 backdrop-blur-2xl p-4 z-20"
+      className="absolute -right-4 sm:-right-10 bottom-14 sm:bottom-18 w-[180px] sm:w-[220px] rounded-2xl border border-orange-500/[0.06] bg-[#0c0c0c]/90 backdrop-blur-2xl p-4 z-20"
       style={{
         boxShadow:
-          "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03)",
+          "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(249,115,22,0.04), inset 0 1px 0 rgba(255,255,255,0.03)",
       }}
     >
       <div className="flex items-center gap-2 mb-2">
@@ -277,7 +277,7 @@ const FloatingDashboard = () => (
           </div>
           <div className="h-1 rounded-full bg-white/[0.03] overflow-hidden">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-amber-600/50 to-amber-400/25"
+              className="h-full rounded-full bg-gradient-to-r from-orange-600/60 to-orange-400/30"
               initial={{ width: 0 }}
               animate={{ width: `${s.pct}%` }}
               transition={{ delay: 2 + Math.random() * 0.3, duration: 0.8 }}
@@ -303,7 +303,7 @@ const PillarLeadUI = () => (
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 + i * 0.1 }}
-          className="flex items-center gap-2 text-[11px] text-zinc-400 px-3 py-2.5 rounded-lg border border-white/[0.03] bg-white/[0.01]"
+          className="flex items-center gap-2 text-[11px] text-zinc-400 px-3 py-2.5 rounded-lg border border-white/[0.03] bg-white/[0.01] hover:border-orange-500/10 transition-colors duration-300"
         >
           <CircleDot className="w-3 h-3 text-orange-400/40 flex-shrink-0" />
           <span className="truncate">{l}</span>
@@ -321,11 +321,11 @@ const PillarProposalUI = () => (
       <BadgeCheck className="w-3.5 h-3.5 text-emerald-400/40" />
     </div>
     <div className="h-[2px] rounded bg-white/[0.03] mb-2.5">
-      <div className="h-full w-3/4 rounded bg-gradient-to-r from-amber-600/30 to-amber-400/10" />
+      <div className="h-full w-3/4 rounded bg-gradient-to-r from-orange-600/40 to-orange-400/15" />
     </div>
     <div className="flex items-center justify-between">
       <span className="text-[12px] font-bold text-zinc-300">$18,200</span>
-      <span className="text-[9px] text-orange-400/40 border border-orange-500/10 px-2 py-0.5 rounded-full">
+      <span className="text-[9px] text-orange-400/50 border border-orange-500/15 px-2 py-0.5 rounded-full bg-orange-500/[0.04]">
         Aprobada
       </span>
     </div>
@@ -343,7 +343,7 @@ const PillarProductionUI = () => (
         <span className="w-20 truncate">{t.task}</span>
         <div className="flex-1 h-1.5 rounded-full bg-white/[0.03] overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-amber-600/40 to-amber-400/15"
+            className="h-full rounded-full bg-gradient-to-r from-orange-600/50 to-orange-400/20"
             initial={{ width: 0 }}
             whileInView={{ width: `${t.pct}%` }}
             viewport={{ once: true }}
@@ -514,6 +514,123 @@ const testimonials = [
 ];
 
 /* ═══════════════════════════════════════════════════════ */
+/*        BONUS: Proposal Status Visualization            */
+/* ═══════════════════════════════════════════════════════ */
+const ProposalStatusDemo = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const t1 = setTimeout(() => setStage(1), 800);
+    const t2 = setTimeout(() => setStage(2), 2000);
+    const t3 = setTimeout(() => setStage(3), 3200);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [inView]);
+
+  const stages = [
+    { label: "Borrador", color: "border-zinc-700/30 bg-zinc-800/20 text-zinc-500", dot: "bg-zinc-600" },
+    { label: "Enviada", color: "border-blue-500/20 bg-blue-500/[0.06] text-blue-400/70", dot: "bg-blue-400/60" },
+    { label: "En Revisión", color: "border-amber-500/20 bg-amber-500/[0.06] text-amber-400/70", dot: "bg-amber-400/60 animate-pulse" },
+    { label: "Aprobada ✓", color: "border-orange-500/30 bg-orange-500/[0.08] text-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.12)]", dot: "bg-orange-400" },
+  ];
+
+  return (
+    <div ref={ref} className="flex flex-col items-center gap-4">
+      {/* Status card visualization */}
+      <div className="relative w-full max-w-sm mx-auto">
+        <motion.div
+          className="rounded-2xl border bg-[#0a0a0a]/80 backdrop-blur-xl p-6 overflow-hidden"
+          animate={{
+            borderColor: stage === 3 ? "rgba(249,115,22,0.25)" : "rgba(255,255,255,0.04)",
+            boxShadow: stage === 3
+              ? "0 0 40px rgba(249,115,22,0.08), 0 8px 32px rgba(0,0,0,0.4)"
+              : "0 8px 32px rgba(0,0,0,0.4)",
+          }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-zinc-500" />
+              <span className="text-xs text-zinc-500 font-medium">Propuesta #3291</span>
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={stage}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className={`text-[10px] font-bold px-3 py-1 rounded-full border flex items-center gap-1.5 transition-all duration-700 ${stages[stage].color}`}
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${stages[stage].dot}`} />
+                {stages[stage].label}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="text-2xl font-bold text-white/90">$34,800</span>
+            <span className="text-[11px] text-zinc-600">Cliente: NovaTech</span>
+          </div>
+
+          {/* Progress bar */}
+          <div className="h-1 rounded-full bg-white/[0.03] overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{
+                background: stage === 3
+                  ? "linear-gradient(90deg, rgba(249,115,22,0.7), rgba(249,115,22,0.4))"
+                  : "linear-gradient(90deg, rgba(161,161,170,0.3), rgba(161,161,170,0.1))",
+              }}
+              animate={{ width: `${(stage + 1) * 25}%` }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            />
+          </div>
+
+          {/* Ambient glow on approval */}
+          <AnimatePresence>
+            {stage === 3 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="absolute -inset-4 bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.04),transparent_70%)] pointer-events-none"
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      {/* Step dots */}
+      <div className="flex items-center gap-2 mt-2">
+        {stages.map((s, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <motion.div
+              className="w-2 h-2 rounded-full"
+              animate={{
+                backgroundColor: i <= stage ? "rgba(249,115,22,0.7)" : "rgba(63,63,70,0.4)",
+                scale: i === stage ? 1.3 : 1,
+              }}
+              transition={{ duration: 0.4 }}
+            />
+            {i < stages.length - 1 && (
+              <motion.div
+                className="w-6 h-[1px]"
+                animate={{
+                  backgroundColor: i < stage ? "rgba(249,115,22,0.3)" : "rgba(63,63,70,0.2)",
+                }}
+                transition={{ duration: 0.4 }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-zinc-600 mt-1">Transición automática en tiempo real</p>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════ */
 /*                       MAIN PAGE                        */
 /* ═══════════════════════════════════════════════════════ */
 
@@ -540,7 +657,7 @@ const Index = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-[#050505] text-[#e4e4e7] overflow-x-hidden scroll-smooth selection:bg-orange-500/15 selection:text-white">
+      <div className="noise-bg min-h-screen bg-[#050505] text-[#e4e4e7] overflow-x-hidden scroll-smooth selection:bg-orange-500/15 selection:text-white">
         {/* ── Shimmer keyframe ── */}
         <style>{`
           @keyframes shimmer-sweep {
@@ -551,23 +668,26 @@ const Index = () => {
 
         {/* ── Background layers ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+          {/* Subtle grid */}
           <div
-            className="absolute inset-0 opacity-[0.02]"
+            className="absolute inset-0 opacity-[0.015]"
             style={{
               backgroundImage:
                 "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
               backgroundSize: "64px 64px",
             }}
           />
-          {/* Warm amber ambient — very subtle */}
-          <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-[radial-gradient(ellipse_at_center,rgba(200,160,60,0.035),transparent_50%)]" />
+          {/* Multiple warm radial glows */}
+          <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.04),transparent_50%)]" />
+          <div className="absolute top-[40%] left-[-10%] w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.02),transparent_60%)]" />
+          <div className="absolute top-[60%] right-[-10%] w-[500px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.015),transparent_60%)]" />
         </div>
 
         {/* ═══════════ HEADER ═══════════ */}
         <header
           className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
             scrolled
-              ? "bg-[#050505]/85 backdrop-blur-2xl border-b border-white/[0.03]"
+              ? "bg-[#050505]/85 backdrop-blur-2xl border-b border-orange-500/[0.04]"
               : "bg-transparent"
           }`}
         >
@@ -638,7 +758,7 @@ const Index = () => {
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               >
                 <motion.span
-                  className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-400/50 mb-8 px-4 py-2 rounded-full border border-amber-500/8 bg-amber-500/[0.03]"
+                  className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-400/60 mb-8 px-4 py-2 rounded-full border border-orange-500/10 bg-orange-500/[0.04]"
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.6 }}
@@ -648,17 +768,17 @@ const Index = () => {
                 </motion.span>
 
                 <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.2rem] lg:text-[4.2rem] font-extrabold leading-[1.04] tracking-[-0.045em] mb-8 text-white">
-                  Domina cada etapa de tu
+                  Optimiza tu ciclo operativo
                   <br className="hidden sm:block" />
-                  <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 bg-clip-text text-transparent">
-                    {" "}operación comercial.
+                  <span className="bg-gradient-to-r from-orange-300 via-orange-500 to-amber-500 bg-clip-text text-transparent">
+                    {" "}de punta a punta.
                   </span>
                 </h1>
 
                 <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
                   Desde el primer contacto hasta la entrega final. Centraliza
                   tus leads, automatiza propuestas profesionales y supervisa la
-                  ejecución en tiempo real con una trazabilidad absoluta.
+                  ejecución en tiempo real con trazabilidad absoluta.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center gap-4">
@@ -689,7 +809,7 @@ const Index = () => {
                       variant="outline"
                       size="lg"
                       onClick={() => scrollTo("flow")}
-                      className="rounded-full px-10 text-base font-medium border-white/[0.05] text-zinc-400 hover:text-zinc-200 hover:border-white/10 bg-transparent transition-all duration-300"
+                      className="rounded-full px-10 text-base font-medium border-white/[0.05] text-zinc-400 hover:text-zinc-200 hover:border-orange-500/10 bg-transparent transition-all duration-300"
                     >
                       Ver cómo funciona
                     </Button>
@@ -707,7 +827,7 @@ const Index = () => {
 
         {/* ═══════════ TRUST BAR ═══════════ */}
         <Reveal>
-          <section className="pt-28 pb-16 border-y border-white/[0.025]">
+          <section className="pt-28 pb-16 border-y border-orange-500/[0.04]">
             <div className="max-w-5xl mx-auto flex flex-wrap justify-center gap-x-20 gap-y-6">
               {[
                 { value: "500+", label: "Negocios activos" },
@@ -751,14 +871,14 @@ const Index = () => {
                     <motion.div
                       whileHover={{
                         y: -6,
-                        borderColor: "rgba(255,255,255,0.08)",
+                        borderColor: "rgba(249,115,22,0.12)",
                       }}
-                      className="group relative h-full p-8 sm:p-9 rounded-2xl border border-white/[0.04] bg-zinc-950/50 transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
+                      className="glow-orange-card group relative h-full p-8 sm:p-9 rounded-2xl border border-white/[0.04] bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6),0_0_30px_-10px_rgba(249,115,22,0.04)]"
                     >
                       <ShimmerOverlay />
                       <div className="relative z-10">
-                        <div className="w-11 h-11 rounded-xl bg-white/[0.025] border border-white/[0.04] flex items-center justify-center mb-6 group-hover:border-orange-500/15 transition-all duration-500">
-                          <Icon className="w-5 h-5 text-orange-400/50 group-hover:text-orange-400/70 transition-all duration-500" />
+                        <div className="w-11 h-11 rounded-xl bg-orange-500/[0.04] border border-orange-500/[0.08] flex items-center justify-center mb-6 group-hover:border-orange-500/20 group-hover:bg-orange-500/[0.06] transition-all duration-500">
+                          <Icon className="w-5 h-5 text-orange-400/50 group-hover:text-orange-400/80 transition-all duration-500" />
                         </div>
                         <h3 className="text-[15px] font-bold mb-3 text-white tracking-[-0.01em]">
                           {f.title}
@@ -778,7 +898,7 @@ const Index = () => {
         {/* ═══════════ BUSINESS CYCLE — 4 PILLARS ═══════════ */}
         <section id="flow" className="py-36 md:py-44 lg:py-56 px-5 relative overflow-hidden">
           <div className="absolute inset-0 bg-[#030303] pointer-events-none" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_35%_at_50%_0%,rgba(200,160,60,0.02),transparent)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_35%_at_50%_0%,rgba(249,115,22,0.025),transparent)] pointer-events-none" />
 
           <div className="max-w-6xl mx-auto relative">
             <Reveal>
@@ -794,19 +914,26 @@ const Index = () => {
               </div>
             </Reveal>
 
-            {/* Connecting line */}
+            {/* Connecting line — orange glow animated */}
             <div className="relative">
               <div className="hidden lg:block absolute top-[60px] left-[12%] right-[12%] z-0">
                 <motion.div
-                  className="h-[1px] rounded-full"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, rgba(200,160,60,0.25), rgba(200,160,60,0.08), rgba(200,160,60,0.25), rgba(200,160,60,0.06))",
-                  }}
+                  className="h-[2px] rounded-full flow-line-animated"
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                />
+                {/* Glow behind the line */}
+                <motion.div
+                  className="h-[1px] rounded-full mt-[-1px] blur-[3px]"
+                  style={{
+                    background: "linear-gradient(90deg, transparent, rgba(249,115,22,0.3), rgba(249,115,22,0.5), rgba(249,115,22,0.3), transparent)",
+                  }}
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  whileInView={{ scaleX: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 />
               </div>
 
@@ -817,16 +944,16 @@ const Index = () => {
                   return (
                     <Reveal key={p.title} delay={i * 0.12}>
                       <motion.div
-                        whileHover={{ y: -6 }}
-                        className="group flex flex-col p-7 rounded-2xl border border-white/[0.04] hover:border-white/[0.07] bg-zinc-950/50 transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
+                        whileHover={{ y: -6, borderColor: "rgba(249,115,22,0.12)" }}
+                        className="glow-orange-card group flex flex-col p-7 rounded-2xl border border-white/[0.04] hover:border-orange-500/[0.08] bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
                       >
                         <ShimmerOverlay />
                         <div className="relative z-10">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-700 mb-3 block">
+                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-orange-400/30 mb-3 block">
                             Paso {p.step}
                           </span>
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-white/[0.04] bg-white/[0.02] group-hover:border-orange-500/15 transition-all duration-500">
-                            <Icon className="w-5 h-5 text-orange-400/45 group-hover:text-orange-400/65 transition-all duration-500" />
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-orange-500/[0.08] bg-orange-500/[0.03] group-hover:border-orange-500/20 group-hover:bg-orange-500/[0.06] transition-all duration-500">
+                            <Icon className="w-5 h-5 text-orange-400/50 group-hover:text-orange-400/80 transition-all duration-500" />
                           </div>
                           <h3 className="text-[15px] font-bold text-white mb-2 tracking-[-0.01em]">
                             {p.title}
@@ -843,7 +970,7 @@ const Index = () => {
               </div>
             </div>
 
-            {/* ─── BEFORE vs AFTER — rich visual treatment ─── */}
+            {/* ─── BEFORE vs AFTER ─── */}
             <Reveal>
               <div className="mt-32 lg:mt-40 max-w-4xl mx-auto">
                 <div className="text-center mb-14">
@@ -856,7 +983,7 @@ const Index = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* BEFORE — desaturated, noisy feel */}
+                  {/* BEFORE */}
                   <div
                     className="rounded-2xl border border-white/[0.03] p-7 space-y-1"
                     style={{
@@ -887,13 +1014,13 @@ const Index = () => {
                     ))}
                   </div>
 
-                  {/* AFTER — clean, subtle orange accent border */}
-                  <div className="rounded-2xl border border-orange-500/12 p-7 space-y-1 bg-[#0a0a0a]">
+                  {/* AFTER */}
+                  <div className="rounded-2xl border border-orange-500/15 p-7 space-y-1 bg-[#0a0a0a] shadow-[0_0_30px_-10px_rgba(249,115,22,0.04)]">
                     <div className="flex items-center gap-2.5 mb-5">
-                      <div className="w-9 h-9 rounded-lg bg-orange-500/[0.05] flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-orange-400/50" />
+                      <div className="w-9 h-9 rounded-lg bg-orange-500/[0.06] flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-orange-400/60" />
                       </div>
-                      <span className="text-sm font-bold text-orange-400/45 uppercase tracking-wider">
+                      <span className="text-sm font-bold text-orange-400/50 uppercase tracking-wider">
                         Con Sign Flow
                       </span>
                     </div>
@@ -906,12 +1033,27 @@ const Index = () => {
                         transition={{ delay: i * 0.06 }}
                         className="flex items-center gap-3 text-[13px] text-zinc-300 py-2.5 border-b border-orange-500/[0.04] last:border-0"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-orange-400/40 flex-shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-orange-400/50 flex-shrink-0" />
                         {item.after}
                       </motion.div>
                     ))}
                   </div>
                 </div>
+              </div>
+            </Reveal>
+
+            {/* ─── PROPOSAL STATUS DEMO (Bonus) ─── */}
+            <Reveal>
+              <div className="mt-32 lg:mt-40 max-w-4xl mx-auto">
+                <div className="text-center mb-12">
+                  <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-white">
+                    Aprobación en tiempo real
+                  </h3>
+                  <p className="text-zinc-500 text-sm mt-3">
+                    Observa cómo una propuesta pasa de borrador a aprobada
+                  </p>
+                </div>
+                <ProposalStatusDemo />
               </div>
             </Reveal>
           </div>
@@ -933,13 +1075,13 @@ const Index = () => {
               {testimonials.map((t, i) => (
                 <Reveal key={t.name} delay={i * 0.1}>
                   <motion.div
-                    whileHover={{ y: -4 }}
-                    className="group relative flex flex-col p-8 sm:p-9 rounded-2xl border border-white/[0.04] bg-zinc-950/50 transition-all duration-500 h-full hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
+                    whileHover={{ y: -4, borderColor: "rgba(249,115,22,0.10)" }}
+                    className="glow-orange-card group relative flex flex-col p-8 sm:p-9 rounded-2xl border border-white/[0.04] bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 h-full hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
                   >
                     <ShimmerOverlay />
                     <div className="relative z-10 flex flex-col h-full">
-                      <Quote className="w-7 h-7 text-zinc-800 mb-6" />
-                      <div className="inline-flex self-start items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400/60 bg-emerald-500/[0.04] border border-emerald-500/8 px-3 py-1 rounded-full mb-6">
+                      <Quote className="w-7 h-7 text-orange-500/10 mb-6" />
+                      <div className="inline-flex self-start items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-orange-400/60 bg-orange-500/[0.04] border border-orange-500/10 px-3 py-1 rounded-full mb-6">
                         <TrendingUp className="w-3 h-3" />
                         {t.result}
                       </div>
@@ -947,7 +1089,7 @@ const Index = () => {
                         "{t.quote}"
                       </p>
                       <div className="border-t border-white/[0.03] pt-6 flex items-center gap-3.5">
-                        <div className="w-11 h-11 rounded-full bg-zinc-900 border border-white/[0.04] flex items-center justify-center text-sm font-bold text-zinc-400 flex-shrink-0">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/10 flex items-center justify-center text-sm font-bold text-orange-400/60 flex-shrink-0">
                           {t.avatar}
                         </div>
                         <div>
@@ -971,6 +1113,8 @@ const Index = () => {
         {/* ═══════════ PRICING ═══════════ */}
         <section id="pricing" className="py-36 md:py-44 lg:py-56 px-5 relative">
           <div className="absolute inset-0 bg-[#030303] pointer-events-none" />
+          {/* Orange ambient behind pricing */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[radial-gradient(ellipse,rgba(249,115,22,0.025),transparent_60%)] pointer-events-none" />
 
           <div className="max-w-5xl mx-auto relative">
             <Reveal>
@@ -1042,15 +1186,15 @@ const Index = () => {
                       whileHover={{ y: -6 }}
                       className={`group relative flex flex-col rounded-2xl transition-all duration-500 ${
                         plan.recommended
-                          ? "border border-orange-500/20 bg-[#0a0a0a] shadow-[0_0_48px_-12px_rgba(200,160,60,0.08)] md:scale-[1.04]"
-                          : "border border-white/[0.04] bg-[#0a0a0a] opacity-80 hover:opacity-100"
+                          ? "border-2 border-orange-500/25 bg-[#0a0a0a] electric-glow electric-glow-animate md:scale-[1.04]"
+                          : "border border-white/[0.04] bg-[#0a0a0a] opacity-80 hover:opacity-100 glow-orange-card"
                       }`}
                     >
                       <ShimmerOverlay />
 
                       {plan.recommended && (
                         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                          <span className="bg-gradient-to-b from-orange-500 to-orange-600 text-white text-[10px] font-bold px-5 py-1.5 rounded-full shadow-[0_2px_10px_rgba(249,115,22,0.2)] flex items-center gap-1.5">
+                          <span className="bg-gradient-to-b from-orange-500 to-orange-600 text-white text-[10px] font-bold px-5 py-1.5 rounded-full shadow-[0_2px_10px_rgba(249,115,22,0.25)] flex items-center gap-1.5">
                             <Star className="w-3 h-3 fill-current" />
                             Más Popular
                           </span>
@@ -1062,7 +1206,7 @@ const Index = () => {
                           {plan.plan}
                         </h3>
                         {plan.recommended && (
-                          <p className="text-[11px] text-orange-400/35 font-medium mb-4">
+                          <p className="text-[11px] text-orange-400/40 font-medium mb-4">
                             Elegido por negocios en crecimiento
                           </p>
                         )}
@@ -1099,7 +1243,7 @@ const Index = () => {
                               <Check
                                 className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
                                   plan.recommended
-                                    ? "text-orange-400/50"
+                                    ? "text-orange-400/60"
                                     : "text-zinc-600"
                                 }`}
                               />
@@ -1114,7 +1258,7 @@ const Index = () => {
                             className={`relative overflow-hidden w-full rounded-xl h-12 font-semibold text-[14px] transition-all duration-500 group/btn ${
                               plan.recommended
                                 ? "bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 shadow-[0_2px_12px_rgba(249,115,22,0.15)] hover:shadow-[0_4px_20px_rgba(249,115,22,0.25)]"
-                                : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/[0.04] hover:border-white/[0.07]"
+                                : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/[0.04] hover:border-orange-500/10"
                             }`}
                           >
                             <span className="relative z-10 flex items-center justify-center">
@@ -1144,7 +1288,7 @@ const Index = () => {
         {/* ═══════════ FINAL CTA ═══════════ */}
         <section className="py-40 md:py-48 lg:py-56 px-5 relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[radial-gradient(ellipse,rgba(200,160,60,0.03),transparent_55%)] blur-[40px]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[radial-gradient(ellipse,rgba(249,115,22,0.04),transparent_55%)] blur-[40px]" />
           </div>
 
           <Reveal>
@@ -1154,15 +1298,15 @@ const Index = () => {
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-center mx-auto mb-10"
+                className="w-14 h-14 rounded-2xl bg-orange-500/[0.04] border border-orange-500/10 flex items-center justify-center mx-auto mb-10"
               >
-                <Zap className="w-7 h-7 text-orange-400/45" />
+                <Zap className="w-7 h-7 text-orange-400/60" />
               </motion.div>
 
               <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3rem] font-extrabold leading-[1.1] tracking-[-0.035em] mb-7 text-white">
                 ¿Listo para optimizar tu
                 <br className="hidden sm:block" />
-                <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-orange-300 via-orange-500 to-amber-500 bg-clip-text text-transparent">
                   {" "}operación y escalar
                 </span>
                 <br className="hidden sm:block" />
@@ -1208,7 +1352,7 @@ const Index = () => {
 
         {/* ═══════════ FOOTER ═══════════ */}
         <footer
-          className="border-t border-white/[0.025] py-16 sm:py-20 px-5 relative"
+          className="border-t border-orange-500/[0.04] py-16 sm:py-20 px-5 relative"
           role="contentinfo"
         >
           <div className="absolute inset-0 bg-[#020202] pointer-events-none" />
@@ -1245,7 +1389,7 @@ const Index = () => {
                       <li key={item}>
                         <a
                           href="#"
-                          className="text-[13px] text-zinc-600 hover:text-zinc-300 transition-colors duration-300"
+                          className="text-[13px] text-zinc-600 hover:text-orange-400/60 transition-colors duration-300"
                         >
                           {item}
                         </a>
@@ -1264,7 +1408,7 @@ const Index = () => {
                   <a
                     key={i}
                     href="#"
-                    className="w-9 h-9 rounded-full border border-white/[0.03] flex items-center justify-center text-zinc-600 hover:text-zinc-300 hover:border-white/[0.07] transition-all duration-300"
+                    className="w-9 h-9 rounded-full border border-white/[0.03] flex items-center justify-center text-zinc-600 hover:text-orange-400/60 hover:border-orange-500/10 transition-all duration-300"
                   >
                     <Icon className="w-4 h-4" />
                   </a>
