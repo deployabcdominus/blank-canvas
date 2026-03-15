@@ -148,6 +148,18 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     [status]
   );
 
+  const handleBlueprintUpload = useCallback(async (file: File) => {
+    if (!order) return;
+    const ext = file.name.split(".").pop() || "png";
+    const path = `${order.companyId || "unknown"}/${order.id}/blueprint.${ext}`;
+    const { error } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
+    if (error) { toast({ title: "Error al subir imagen", variant: "destructive" }); console.error(error); return; }
+    const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+    const url = urlData.publicUrl + "?t=" + Date.now();
+    setBlueprintUrl(url);
+    await updateOrder(order.id, { blueprintUrl: url });
+  }, [order, updateOrder, toast]);
+
   const handleSave = async () => {
     if (!order) return;
     setSaving(true);
@@ -166,6 +178,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         installerCompanyId: installerCompanyId === "none" ? null : installerCompanyId,
         notes,
         priority,
+        blueprintUrl,
+        annotations,
       });
 
       toast({ title: "Orden actualizada" });
