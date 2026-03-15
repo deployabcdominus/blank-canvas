@@ -12,6 +12,9 @@ interface CompanyData {
   service_types: string[] | null;
   industry: string | null;
   plan_id: string | null;
+  subscription_status: string | null;
+  stripe_customer_id: string | null;
+  subscription_end_date: string | null;
 }
 
 export function useCompany() {
