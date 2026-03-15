@@ -71,6 +71,7 @@ const Onboarding = () => {
 
   const [serviceTypes, setServiceTypes] = useState<string[]>([]);
   const [newServiceInput, setNewServiceInput] = useState("");
+  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   const preset = INDUSTRY_PRESETS[formData.industry] || null;
   const labels = getIndustryLabels(formData.industry || null);
