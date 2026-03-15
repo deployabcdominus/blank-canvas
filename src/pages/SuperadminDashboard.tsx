@@ -253,7 +253,7 @@ export default function SuperadminDashboard() {
     if (ids.length === 0) return;
     setBulkProcessing(true);
     try {
-      const { error } = await supabase.from("companies").update({ is_active: action === "activate" } as any).in("id", ids);
+      const { error } = await supabase.from("companies").update({ is_active: action === "activate" }).in("id", ids);
       if (error) throw error;
       toast({ title: "Empresas actualizadas", description: `${ids.length} empresas ${action === "activate" ? "activadas" : "desactivadas"}.` });
       setSelectedCompanyIds(new Set()); fetchCompanies();
