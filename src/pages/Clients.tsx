@@ -323,8 +323,8 @@ export default function Clients() {
 
       {/* Add/Edit Modal with Logo Upload */}
       <Dialog open={modalOpen} onOpenChange={(open) => { if (!open) { resetLogoState(); } setModalOpen(open); }}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader><DialogTitle>{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</DialogTitle></DialogHeader>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader><DialogTitle className="text-lg font-semibold">{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</DialogTitle></DialogHeader>
           <div className="space-y-5">
             {/* Avatar/Logo Upload */}
             <div className="flex flex-col items-center gap-3">
@@ -332,11 +332,8 @@ export default function Clients() {
                 {logoPreview ? (
                   <div className="relative w-20 h-20 rounded-full overflow-hidden ring-2 ring-white/[0.06] shadow-lg">
                     <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => { resetLogoState(); }}
-                      className="absolute top-0 right-0 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
+                    <button type="button" onClick={() => { resetLogoState(); }}
+                      className="absolute top-0 right-0 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -345,11 +342,8 @@ export default function Clients() {
                     <ClientAvatar name={form.clientName || 'C'} size="lg" className="w-20 h-20 text-xl" />
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
-                >
+                <button type="button" onClick={() => fileInputRef.current?.click()}
+                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors">
                   <Camera className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -357,19 +351,34 @@ export default function Clients() {
               <p className="text-[11px] text-muted-foreground">JPG, PNG. Máx 2MB</p>
             </div>
 
-            <div className="space-y-2">
-              <Label>Nombre del cliente *</Label>
-              <Input value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} placeholder="Ej: Acme Corp" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Email</Label>
-                <Input type="email" value={form.primaryEmail} onChange={e => setForm(f => ({ ...f, primaryEmail: e.target.value }))} />
+                <Label>Empresa (Razón Social) *</Label>
+                <Input value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} placeholder="Nombre de la empresa" className="min-h-[44px]" />
               </div>
+              <div className="space-y-2">
+                <Label>Persona de contacto</Label>
+                <Input value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} placeholder="Nombre completo" className="min-h-[44px]" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Teléfono</Label>
-                <Input value={form.primaryPhone} onChange={e => setForm(f => ({ ...f, primaryPhone: e.target.value }))} />
+                <Input value={form.primaryPhone} onChange={e => setForm(f => ({ ...f, primaryPhone: e.target.value }))} placeholder="(11) 99999-9999" className="min-h-[44px]" />
               </div>
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input type="email" value={form.primaryEmail} onChange={e => setForm(f => ({ ...f, primaryEmail: e.target.value }))} placeholder="email@ejemplo.com" className="min-h-[44px]" />
+              </div>
+            </div>
+            <ServiceTypeSelect value={form.serviceType} onChange={v => setForm(f => ({ ...f, serviceType: v }))} />
+            <div className="space-y-2">
+              <Label>Dirección</Label>
+              <Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Calle, número, ciudad" className="min-h-[44px]" />
+            </div>
+            <div className="space-y-2">
+              <Label>Sitio Web</Label>
+              <Input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://www.ejemplo.com" className="min-h-[44px]" />
             </div>
             <div className="space-y-2">
               <Label>Notas</Label>
