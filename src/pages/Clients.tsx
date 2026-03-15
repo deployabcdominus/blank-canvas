@@ -373,7 +373,15 @@ export default function Clients() {
                 <Input type="email" value={form.primaryEmail} onChange={e => setForm(f => ({ ...f, primaryEmail: e.target.value }))} placeholder="email@ejemplo.com" className="min-h-[44px]" />
               </div>
             </div>
-            <ServiceTypeSelect value={form.serviceType} onChange={v => setForm(f => ({ ...f, serviceType: v }))} />
+            <div className="space-y-2">
+              <Label>Tipo de Servicio</Label>
+              <Select value={form.serviceType} onValueChange={v => setForm(f => ({ ...f, serviceType: v }))}>
+                <SelectTrigger className="min-h-[44px]"><SelectValue placeholder="Seleccione un servicio" /></SelectTrigger>
+                <SelectContent>
+                  {catalogServices.map(s => <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="space-y-2">
               <Label>Dirección</Label>
               <Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Calle, número, ciudad" className="min-h-[44px]" />
