@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { ListCardSkeleton } from "@/components/ui/skeleton-card";
+import { useCatalog } from "@/hooks/useCatalog";
 import { useClients, Client } from "@/contexts/ClientsContext";
 import { useProjects } from "@/contexts/ProjectsContext";
 import { useUserRole } from "@/hooks/useUserRole";
