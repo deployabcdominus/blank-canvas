@@ -588,3 +588,53 @@
   background-size: 200% 100%;
   animation: flow-line 3s ease-in-out infinite;
 }
+
+/* ── Leaflet Glass Popup ── */
+.leaflet-glow-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.glass-popup .leaflet-popup-content-wrapper {
+  background: rgba(9, 9, 11, 0.85) !important;
+  backdrop-filter: blur(40px) saturate(130%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  color: #f4f4f5 !important;
+  padding: 12px !important;
+}
+
+.glass-popup .leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.glass-popup .leaflet-popup-tip {
+  background: rgba(9, 9, 11, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-top: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
+}
+
+.glass-popup .leaflet-popup-close-button {
+  color: #a1a1aa !important;
+  font-size: 18px !important;
+  top: 8px !important;
+  right: 10px !important;
+}
+
+.glass-popup .leaflet-popup-close-button:hover {
+  color: #fff !important;
+}
+
+/* Hide Leaflet default attribution */
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+/* Map container dark bg */
+.leaflet-container {
+  background: #09090b !important;
+}
