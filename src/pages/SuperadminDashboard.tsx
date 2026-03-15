@@ -386,12 +386,50 @@ export default function SuperadminDashboard() {
       {activeTab === "audit" && <SuperadminAuditLogs />}
 
       <Dialog open={showCreateCompany} onOpenChange={setShowCreateCompany}>
-        <DialogContent className="glass-card border-white/20">
-          <DialogHeader><DialogTitle>Nueva Empresa</DialogTitle><DialogDescription>Crea una nueva empresa en la plataforma.</DialogDescription></DialogHeader>
-          <div className="space-y-4"><div><Label>Nombre de la empresa</Label><Input value={newCompanyName} onChange={e => setNewCompanyName(e.target.value)} placeholder="Ej: Acme Corp" className="glass mt-1" /></div></div>
+        <DialogContent className="glass-card border-white/20 sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Building className="w-5 h-5" /> Crear Tenant Manual</DialogTitle>
+            <DialogDescription>Crea una empresa con plan asignado manualmente (bypass de Stripe).</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Nombre de la Empresa</Label>
+              <Input value={newCompanyName} onChange={e => setNewCompanyName(e.target.value)} placeholder="Ej: Acme Corp" className="glass mt-1" />
+            </div>
+            <div>
+              <Label>Email del Admin <span className="text-muted-foreground text-xs">(opcional)</span></Label>
+              <Input type="email" value={newCompanyEmail} onChange={e => setNewCompanyEmail(e.target.value)} placeholder="admin@empresa.com" className="glass mt-1" />
+              <p className="text-xs text-muted-foreground mt-1">Se creará un usuario admin con contraseña temporal.</p>
+            </div>
+            <div>
+              <Label>Industria</Label>
+              <Select value={newCompanyIndustry} onValueChange={setNewCompanyIndustry}>
+                <SelectTrigger className="glass mt-1"><SelectValue placeholder="Selecciona industria" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="signage">Señalética / Rotulación</SelectItem>
+                  <SelectItem value="it_services">IT / Servicios Técnicos</SelectItem>
+                  <SelectItem value="maintenance">Mantenimiento</SelectItem>
+                  <SelectItem value="construction">Construcción</SelectItem>
+                  <SelectItem value="hvac">HVAC / Climatización</SelectItem>
+                  <SelectItem value="other">Otra</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Plan a Asignar</Label>
+              <Select value={newCompanyPlan} onValueChange={setNewCompanyPlan}>
+                <SelectTrigger className="glass mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="start">Start ($29/mes)</SelectItem>
+                  <SelectItem value="pro">Pro ($79/mes)</SelectItem>
+                  <SelectItem value="elite">Elite ($149/mes)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateCompany(false)}>Cancelar</Button>
-            <Button onClick={handleCreateCompany} disabled={creatingCompany || !newCompanyName.trim()}>{creatingCompany ? "Creando..." : "Crear Empresa"}</Button>
+            <Button onClick={handleCreateCompany} disabled={creatingCompany || !newCompanyName.trim()}>{creatingCompany ? "Creando..." : "Crear Tenant"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
