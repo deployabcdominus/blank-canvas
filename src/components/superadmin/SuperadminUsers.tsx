@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Search, Trash2, Users, UserCheck, UserMinus, Shield, Briefcase, Archive, KeyRound } from "lucide-react";
 import { BulkActionBar } from "./BulkActionBar";
 
@@ -33,6 +34,7 @@ interface Props {
   bulkProcessing: boolean;
   clearSelection: () => void;
   loadingAllUsers: boolean;
+  currentUserId?: string;
   onToggleUserActive: (userId: string) => void;
   onDeleteUser: (u: CompanyUser) => void;
   onBulkActivate: () => void;
@@ -46,7 +48,7 @@ interface Props {
 export function SuperadminUsers({
   allUsers, search, setSearch, selectedUserIds, toggleUserSelection,
   toggleAllUsers, bulkProcessing, clearSelection, loadingAllUsers,
-  onToggleUserActive, onDeleteUser, onBulkActivate, onBulkDeactivate,
+  currentUserId, onToggleUserActive, onDeleteUser, onBulkActivate, onBulkDeactivate,
   onBulkChangeRole, onBulkAssignCompany, onBulkRemoveCompany, onResetPassword,
 }: Props) {
   const filtered = allUsers.filter(u =>
@@ -88,26 +90,51 @@ export function SuperadminUsers({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map(u => (
-              <TableRow key={u.id} className={`border-border/10 hover:bg-muted/20 ${selectedUserIds.has(u.id) ? "bg-primary/5" : ""}`}>
-                <TableCell><Checkbox checked={selectedUserIds.has(u.id)} onCheckedChange={() => toggleUserSelection(u.id)} /></TableCell>
-                <TableCell className="font-medium">{u.full_name || "—"}</TableCell>
-                <TableCell className="text-sm">{u.email}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">{u.company_name || "Sin empresa"}</TableCell>
-                <TableCell><Badge variant="outline" className="text-xs">{ROLE_LABELS[u.role] || u.role}</Badge></TableCell>
-                <TableCell>
-                  <Badge variant="outline" className={u.is_active ? "bg-green-500/20 text-green-400 border-green-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}>
-                    {u.is_active ? "Activo" : "Inactivo"}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">{new Date(u.created_at).toLocaleDateString("es")}</TableCell>
-                <TableCell className="text-right space-x-1">
-                  <Button variant="ghost" size="sm" onClick={() => onResetPassword(u)} title="Resetear contraseña"><KeyRound className="w-4 h-4" /></Button>
-                  <Button variant="ghost" size="sm" onClick={() => onToggleUserActive(u.id)}>{u.is_active ? "Desactivar" : "Activar"}</Button>
-                  <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => onDeleteUser(u)}><Trash2 className="w-4 h-4" /></Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filtered.map(u => {
+              const isSelf = u.id === currentUserId;
+              return (
+                <TableRow key={u.id} className={`border-border/10 hover:bg-muted/20 ${selectedUserIds.has(u.id) ? "bg-primary/5" : ""}`}>
+                  <TableCell><Checkbox checked={selectedUserIds.has(u.id)} onCheckedChange={() => toggleUserSelection(u.id)} /></TableCell>
+                  <TableCell className="font-medium">
+                    {u.full_name || "—"}
+                    {isSelf && <Badge variant="outline" className="ml-2 text-[10px] px-1.5 py-0 border-primary/30 text-primary">Tú</Badge>}
+                  </TableCell>
+                  <TableCell className="text-sm">{u.email}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{u.company_name || "Sin empresa"}</TableCell>
+                  <TableCell><Badge variant="outline" className="text-xs">{ROLE_LABELS[u.role] || u.role}</Badge></TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={u.is_active ? "bg-green-500/20 text-green-400 border-green-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}>
+                      {u.is_active ? "Activo" : "Inactivo"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{new Date(u.created_at).toLocaleDateString("es")}</TableCell>
+                  <TableCell className="text-right space-x-1">
+                    <Button variant="ghost" size="sm" onClick={() => onResetPassword(u)} title="Resetear contraseña"><KeyRound className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="sm" onClick={() => onToggleUserActive(u.id)} disabled={isSelf}>
+                      {u.is_active ? "Desactivar" : "Activar"}
+                    </Button>
+                    {isSelf ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex">
+                            <Button variant="ghost" size="sm" disabled className="opacity-20 cursor-not-allowed">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="left" className="text-xs">
+                          No puedes eliminar tu propia cuenta de Superadmin
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => onDeleteUser(u)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
         {loadingAllUsers && (

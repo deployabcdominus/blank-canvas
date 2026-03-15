@@ -315,6 +315,7 @@ export default function SuperadminDashboard() {
           toggleAllUsers={toggleAllUsers} bulkProcessing={bulkProcessing}
           clearSelection={() => setSelectedUserIds(new Set())}
           loadingAllUsers={loadingAllUsers}
+          currentUserId={user?.id}
           onToggleUserActive={handleToggleActive} onDeleteUser={setUserToDelete}
           onBulkActivate={() => setBulkConfirm({ title: "Activar usuarios", description: `¿Activar ${selectedUserIds.size} usuario(s)?`, onConfirm: () => { runBulkUserAction("bulk-activate-users"); setBulkConfirm(null); } })}
           onBulkDeactivate={() => setBulkConfirm({ title: "Desactivar usuarios", description: `¿Desactivar ${selectedUserIds.size} usuario(s)?`, onConfirm: () => { runBulkUserAction("bulk-deactivate-users"); setBulkConfirm(null); } })}
