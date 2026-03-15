@@ -111,6 +111,11 @@ export default function SuperadminDashboard() {
     setLoadingUsers(false);
   };
 
+  const logAudit = useCallback(async (action_type: string, target_name: string, details?: Record<string, any>) => {
+    if (!user) return;
+    await supabase.from("platform_audit_logs" as any).insert({ actor_id: user.id, action_type, target_name, details: details || {} } as any);
+  }, [user]);
+
   // ── Actions ──
   const handleCreateCompany = async () => {
     if (!newCompanyName.trim() || !user) return;
@@ -118,6 +123,7 @@ export default function SuperadminDashboard() {
     try {
       const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id } as any);
       if (error) throw error;
+      await logAudit("COMPANY_CREATED", newCompanyName.trim());
       toast({ title: "Empresa creada", description: `"${newCompanyName}" fue creada exitosamente.` });
       setNewCompanyName(""); setShowCreateCompany(false); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
