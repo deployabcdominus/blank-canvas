@@ -28,6 +28,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { BlueprintAnnotator, type Annotation } from "./BlueprintAnnotator";
+import { TechnicalSheet, type TechnicalDetails } from "./TechnicalSheet";
 
 interface EditWorkOrderModalProps {
   order: WorkOrder | null;
@@ -78,6 +79,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const [priority, setPriority] = useState("media");
   const [blueprintUrl, setBlueprintUrl] = useState<string | null>(null);
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
+  const [technicalDetails, setTechnicalDetails] = useState<TechnicalDetails>({});
 
   const [operators, setOperators] = useState<OperatorOption[]>([]);
   const [installers, setInstallers] = useState<InstallerOption[]>([]);
@@ -96,6 +98,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     setPriority(order.priority || "media");
     setBlueprintUrl(order.blueprintUrl || null);
     setAnnotations(Array.isArray(order.annotations) ? order.annotations : []);
+    setTechnicalDetails(order.technicalDetails || {});
     setEditing(startInEditMode);
   }, [order, startInEditMode]);
 
@@ -180,6 +183,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         priority,
         blueprintUrl,
         annotations,
+        technicalDetails,
       });
 
       toast({ title: "Orden actualizada" });
@@ -415,6 +419,15 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
               ) : (
                 <p className="text-sm text-muted-foreground mt-1">{notes || "Sin notas"}</p>
               )}
+            </div>
+
+            {/* Technical Sheet */}
+            <div className="pt-2 border-t border-border/20">
+              <TechnicalSheet
+                value={technicalDetails}
+                onChange={setTechnicalDetails}
+                readOnly={!editing}
+              />
             </div>
 
             {/* Blueprint Annotator */}

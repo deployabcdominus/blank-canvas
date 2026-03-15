@@ -681,6 +681,7 @@ export type Database = {
           project_id: string | null
           start_date: string | null
           status: string | null
+          technical_details: Json | null
           user_id: string
         }
         Insert: {
@@ -703,6 +704,7 @@ export type Database = {
           project_id?: string | null
           start_date?: string | null
           status?: string | null
+          technical_details?: Json | null
           user_id: string
         }
         Update: {
@@ -725,6 +727,7 @@ export type Database = {
           project_id?: string | null
           start_date?: string | null
           status?: string | null
+          technical_details?: Json | null
           user_id?: string
         }
         Relationships: [
