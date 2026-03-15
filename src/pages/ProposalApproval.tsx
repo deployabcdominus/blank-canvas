@@ -13,6 +13,7 @@ interface ProposalPublic {
   approved_at: string | null;
   approval_token: string;
   company_id: string | null;
+  mockup_url: string | null;
 }
 
 interface CompanyPublic {
