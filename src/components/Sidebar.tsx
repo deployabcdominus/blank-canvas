@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
+import type { IndustryLabels } from "@/hooks/useIndustryLabels";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAvatarUrl } from "@/hooks/useAvatarUrl";
