@@ -180,6 +180,9 @@ export type Database = {
           network_base_path: string | null
           plan_id: string | null
           service_types: string[] | null
+          stripe_customer_id: string | null
+          subscription_end_date: string | null
+          subscription_status: string | null
           updated_at: string
           user_id: string
         }
@@ -195,6 +198,9 @@ export type Database = {
           network_base_path?: string | null
           plan_id?: string | null
           service_types?: string[] | null
+          stripe_customer_id?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: string | null
           updated_at?: string
           user_id: string
         }
@@ -210,6 +216,9 @@ export type Database = {
           network_base_path?: string | null
           plan_id?: string | null
           service_types?: string[] | null
+          stripe_customer_id?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -1289,6 +1298,9 @@ export type Database = {
           network_base_path: string | null
           plan_id: string | null
           service_types: string[] | null
+          stripe_customer_id: string | null
+          subscription_end_date: string | null
+          subscription_status: string | null
           updated_at: string
           user_id: string
         }
