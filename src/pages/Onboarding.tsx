@@ -299,6 +299,7 @@ const Onboarding = () => {
                         <Upload className="w-8 h-8 mx-auto mb-4 text-muted-foreground" />
                         <p className="text-muted-foreground mb-2">Arrastra y suelta tu logo aquí, o haz clic para elegir</p>
                         <span className="text-sm text-soft-blue-foreground font-medium">Haz Clic para Elegir Archivo</span>
+                        <p className="text-xs text-orange-400 mt-2 font-medium">* Obligatorio — Se usa como marca de agua en mockups y propuestas</p>
                       </label>
                     )}
                   </div>
