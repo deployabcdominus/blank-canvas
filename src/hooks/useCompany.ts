@@ -11,6 +11,7 @@ interface CompanyData {
   network_base_path: string | null;
   service_types: string[] | null;
   industry: string | null;
+  plan_id: string | null;
 }
 
 export function useCompany() {
