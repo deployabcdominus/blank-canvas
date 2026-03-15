@@ -27,6 +27,7 @@ export interface Proposal {
   lead: ProposalLead | null;
   approvedTotal: number | null;
   approvedAt: string | null;
+  approvalToken: string | null;
 }
 
 interface ProposalsContextType {
