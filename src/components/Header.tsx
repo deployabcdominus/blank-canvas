@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Settings, User, Menu } from "lucide-react";
+import { NotificationBell } from "@/components/NotificationBell";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
