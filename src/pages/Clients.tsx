@@ -35,6 +35,7 @@ export default function Clients() {
   const { projects } = useProjects();
   const { canDelete, canEdit } = useUserRole();
   const { toast } = useToast();
+  const { items: catalogServices } = useCatalog("lead_service");
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
