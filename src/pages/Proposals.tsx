@@ -14,6 +14,7 @@ import { useProposals, type Proposal } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
 import { useCompany } from "@/hooks/useCompany";
 import { useUserRole } from "@/hooks/useUserRole";
+import { logAudit } from "@/lib/audit";
 import { FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -28,7 +29,6 @@ const Proposals = () => {
   const [editingProposal, setEditingProposal] = useState<Proposal | null>(null);
   const [paymentProposal, setPaymentProposal] = useState<Proposal | null>(null);
 
-  // Control bar state
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<ProposalSortKey>("updated");
   const [view, setView] = useState<ViewMode>("cards");
@@ -39,7 +39,43 @@ const Proposals = () => {
   const [pageSize, setPageSize] = useState(12);
 
   const handleAdd = async (data: any) => { await addProposal(data); };
-  const handleEdit = async (data: any) => { const { id, ...rest } = data; await updateProposal(id, rest); toast.success("Propuesta actualizada"); };
+
+  const handleEdit = async (data: any) => {
+    const { id, ...rest } = data;
+    const previousProposal = proposals.find(p => p.id === id);
+    await updateProposal(id, rest);
+
+    // Auto-create work order when manually approved
+    if (rest.status === 'Aprobada' && previousProposal?.status !== 'Aprobada') {
+      const today = new Date().toISOString().split('T')[0];
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 7);
+      await addOrder({
+        client: rest.client || previousProposal?.client || '',
+        project: rest.project || previousProposal?.project || '',
+        serviceType: rest.project || previousProposal?.project || '',
+        status: "Pendiente",
+        progress: 0,
+        materials: [],
+        startDate: today,
+        estimatedCompletion: endDate.toISOString().split('T')[0],
+        projectId: null,
+        notes: `Orden generada automáticamente desde propuesta aprobada manualmente.`,
+        priority: 'media',
+      });
+      logAudit({
+        action: 'aprobado',
+        entityType: 'propuesta',
+        entityId: id,
+        entityLabel: rest.client || previousProposal?.client,
+        details: { method: 'manual', auto_work_order: true },
+      });
+      toast.success(`Propuesta aprobada → Orden de Trabajo creada para "${rest.client || previousProposal?.client}"`);
+    } else {
+      toast.success("Propuesta actualizada");
+    }
+  };
+
   const handleDelete = async (id: string) => { await deleteProposal(id); toast.success("Propuesta eliminada"); };
 
   const handleCreateOrder = async (proposal: Proposal) => {
@@ -59,17 +95,13 @@ const Proposals = () => {
   const openPayment = (p: Proposal) => { setPaymentProposal(p); setIsPaymentOpen(true); };
   const closePayment = () => { setPaymentProposal(null); setIsPaymentOpen(false); };
 
-  // Filter + sort
   const processed = useMemo(() => {
     let result = [...proposals];
-
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(p => p.client.toLowerCase().includes(q) || p.project.toLowerCase().includes(q));
     }
-    if (statusFilter.length > 0) {
-      result = result.filter(p => statusFilter.includes(p.status));
-    }
+    if (statusFilter.length > 0) result = result.filter(p => statusFilter.includes(p.status));
     if (dateFrom) result = result.filter(p => (p.sentDate || p.createdAt) >= dateFrom);
     if (dateTo) result = result.filter(p => (p.sentDate || p.createdAt) <= dateTo);
 
@@ -96,23 +128,20 @@ const Proposals = () => {
   return (
     <PageTransition>
       <ResponsiveLayout>
-        {/* Title */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <h1 className="text-2xl font-bold mb-1">Propuestas</h1>
-            <p className="text-muted-foreground text-sm">Registro de propuestas enviadas externamente</p>
+            <p className="text-muted-foreground text-sm">Registro interno de propuestas comerciales</p>
           </div>
           {canEdit && (
-            <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-              <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
+            <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-primary text-primary-foreground hover:bg-primary/90">
+              <Plus className="w-4 h-4 mr-2" /> Nueva Propuesta
             </Button>
           )}
         </div>
 
-        {/* KPIs */}
         <ProposalsKPIBar proposals={proposals} />
 
-        {/* Control bar */}
         <ProposalsControlBar
           search={search} onSearchChange={v => { setSearch(v); setPage(1); }}
           sort={sort} onSortChange={setSort}
@@ -124,7 +153,6 @@ const Proposals = () => {
           showing={showing}
         />
 
-        {/* Content */}
         {loading ? (
           <div className="text-center py-12 glass-card">
             <p className="text-muted-foreground">Cargando propuestas...</p>
@@ -133,21 +161,21 @@ const Proposals = () => {
           <div className="text-center py-16 glass-card">
             <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-lg font-semibold mb-2">Sin propuestas</h3>
-            <p className="text-muted-foreground mb-4">Registre una propuesta enviada externamente</p>
+            <p className="text-muted-foreground mb-4">Registre una propuesta comercial</p>
             {canEdit && (
-              <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-                <Plus className="w-4 h-4 mr-2" /> Registrar Propuesta
+              <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-primary text-primary-foreground hover:bg-primary/90">
+                <Plus className="w-4 h-4 mr-2" /> Nueva Propuesta
               </Button>
             )}
           </div>
         ) : view === "cards" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {paginated.map((p, i) => (
-              <ProposalCard key={p.id} proposal={p} index={i} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} companyData={company} />
+              <ProposalCard key={p.id} proposal={p} index={i} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} />
             ))}
           </div>
         ) : (
-          <ProposalsTableView proposals={paginated} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} companyData={company} />
+          <ProposalsTableView proposals={paginated} onEdit={canEdit ? openEdit : undefined} onDelete={canDelete ? handleDelete : undefined} onCreateOrder={canEdit ? handleCreateOrder : undefined} onRegisterPayment={canEdit ? openPayment : undefined} />
         )}
 
         <WorkOrdersPagination
