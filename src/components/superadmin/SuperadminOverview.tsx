@@ -64,15 +64,17 @@ const ACTION_LABELS: Record<string, { label: string; emoji: string }> = {
 const fmtCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(n);
 const fmtNumber = (n: number) => new Intl.NumberFormat("en-US").format(n);
+const safeFmt = (dateStr: string, fmt: string) => {
+  try { return format(parseISO(dateStr), fmt, { locale: es }); }
+  catch { return String(dateStr).slice(0, 10); }
+};
 
 /* ── Custom tooltip ── */
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-xl border border-white/[0.08] bg-zinc-900/95 backdrop-blur-xl px-4 py-3 shadow-2xl">
-      <p className="text-xs text-muted-foreground mb-1.5">
-        {format(parseISO(label), "d MMM", { locale: es })}
-      </p>
+      <p className="text-xs text-muted-foreground mb-1.5">{label}</p>
       {payload.map((p: any) => (
         <p key={p.dataKey} className="text-sm font-semibold" style={{ color: p.color }}>
           {p.dataKey === "leads" ? "Leads" : "Órdenes"}: {p.value}
@@ -149,9 +151,9 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
   }
 
   /* Chart data formatting */
-  const chartData = health.growth_data.map(d => ({
+  const chartData = (health.growth_data || []).map(d => ({
     ...d,
-    label: format(parseISO(d.date), "d MMM", { locale: es }),
+    label: safeFmt(d.date, "d MMM"),
   }));
 
   /* Top tenants sorted by revenue */
@@ -339,7 +341,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
                           <div>
                             <p className="font-medium text-sm">{t.name}</p>
                             <p className="text-[10px] text-muted-foreground">
-                              {format(parseISO(t.created_at), "MMM yyyy", { locale: es })}
+                              {safeFmt(t.created_at, "MMM yyyy")}
                             </p>
                           </div>
                         </div>
@@ -405,7 +407,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
                           )}
                         </p>
                         <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                          {format(parseISO(a.created_at), "d MMM, HH:mm", { locale: es })}
+                          {safeFmt(a.created_at, "d MMM, HH:mm")}
                         </p>
                       </div>
                     </div>
