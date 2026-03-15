@@ -112,7 +112,9 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (updates.logoUrl !== undefined) dbUpdates.logo_url = updates.logoUrl;
     const { error } = await (supabase as any).from('clients').update(dbUpdates).eq('id', id);
     if (error) throw error;
+    const client = clients.find(c => c.id === id);
     setClients(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+    logAudit({ action: 'editado', entityType: 'cliente', entityId: id, entityLabel: client?.clientName, details: dbUpdates });
   };
 
   const deleteClient = async (id: string) => {
