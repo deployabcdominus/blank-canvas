@@ -14,6 +14,10 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
+import WorkerTabletView from "@/components/production/WorkerTabletView";
+import WorkerLeaderboard from "@/components/production/WorkerLeaderboard";
+import ProductionStepsTimeline from "@/components/production/ProductionStepsTimeline";
 
 const Production = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
