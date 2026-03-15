@@ -506,7 +506,7 @@ const Index = () => {
             <Reveal>
               <div className="text-center mb-20">
                 <SectionBadge icon={Layers} label="Módulos" />
-                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3.2rem] font-extrabold tracking-[-0.03em] leading-[1.1]">
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.03em] leading-[1.1] lg:text-5xl">
                   Todo lo que tu negocio necesita
                 </h2>
                 <p className="mt-6 text-white/25 max-w-xl mx-auto text-[15px] sm:text-base leading-relaxed">
@@ -549,7 +549,7 @@ const Index = () => {
             <Reveal>
               <div className="text-center mb-20">
                 <SectionBadge icon={Activity} label="Ciclo de negocio" />
-                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3.2rem] font-extrabold tracking-[-0.03em] leading-[1.1]">
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.03em] leading-[1.1] lg:text-5xl">
                   Un flujo diseñado para la eficiencia
                 </h2>
                 <p className="mt-6 text-white/25 max-w-lg mx-auto text-[15px]">
@@ -674,7 +674,7 @@ const Index = () => {
             <Reveal>
               <div className="text-center mb-20">
                 <SectionBadge icon={Quote} label="Testimonios" />
-                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3rem] font-extrabold tracking-[-0.03em] leading-[1.1] max-w-3xl mx-auto">
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.03em] leading-[1.1] max-w-3xl mx-auto lg:text-5xl">
                   Lo que dicen los líderes que gestionan sus operaciones con nosotros
                 </h2>
               </div>
@@ -719,7 +719,7 @@ const Index = () => {
             <Reveal>
               <div className="text-center mb-12">
                 <SectionBadge icon={Zap} label="Precios transparentes" />
-                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3.2rem] font-extrabold tracking-[-0.03em] leading-[1.1]">
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.03em] leading-[1.1] lg:text-5xl">
                   Invierte en tu crecimiento<br className="hidden sm:block" /> y eficiencia
                 </h2>
                 <p className="mt-6 text-white/25 text-[15px]">Sin contratos. Sin sorpresas. Cancela cuando quieras.</p>
