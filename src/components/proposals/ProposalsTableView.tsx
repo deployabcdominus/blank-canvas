@@ -3,31 +3,29 @@ import { usePayments } from "@/contexts/PaymentsContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Edit2, Trash2, Factory, DollarSign, Download } from "lucide-react";
+import { MoreHorizontal, Edit2, Trash2, Factory, DollarSign } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
-import { pdf } from "@react-pdf/renderer";
-import { ProposalPDF } from "@/components/proposals/ProposalPDF";
 
 const STATUS_COLORS: Record<ProposalStatus, string> = {
   Borrador: "bg-muted/30 text-muted-foreground border-border/30",
-  "Enviada externamente": "bg-soft-blue/20 text-soft-blue border-soft-blue/30",
-  Aprobada: "bg-mint/20 text-mint border-mint/30",
-  Rechazada: "bg-destructive/20 text-destructive border-destructive/30",
+  "Enviada externamente": "bg-primary/10 text-primary border-primary/20",
+  Aprobada: "bg-mint/15 text-mint border-mint/25",
+  Rechazada: "bg-destructive/10 text-destructive border-destructive/20",
 };
 
 interface Props {
   proposals: Proposal[];
-  onEdit: (p: Proposal) => void;
-  onDelete: (id: string) => void;
-  onCreateOrder: (p: Proposal) => void;
+  onEdit?: (p: Proposal) => void;
+  onDelete?: (id: string) => void;
+  onCreateOrder?: (p: Proposal) => void;
   onRegisterPayment?: (p: Proposal) => void;
   companyData?: { name: string; logo_url?: string | null } | null;
 }
 
-export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder, onRegisterPayment, companyData }: Props) {
+export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder, onRegisterPayment }: Props) {
   const { getTotalPaidForProposal } = usePayments();
 
   return (
@@ -40,8 +38,7 @@ export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder,
               <TableHead className="text-xs font-medium text-muted-foreground">Proyecto</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground text-right">Monto</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground">Estado</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground">Enviada</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground">Actualizada</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">Creada</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground w-12"></TableHead>
             </TableRow>
           </TableHeader>
@@ -49,7 +46,7 @@ export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder,
             {proposals.map(p => {
               const isApproved = p.status === "Aprobada";
               return (
-                <TableRow key={p.id} className="group border-border/30 hover:bg-accent/30 transition-colors cursor-pointer" onClick={() => onEdit(p)}>
+                <TableRow key={p.id} className="group border-border/30 hover:bg-accent/30 transition-colors cursor-pointer" onClick={() => onEdit?.(p)}>
                   <TableCell className="text-sm font-medium">{p.client}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{p.project}</TableCell>
                   <TableCell className="text-sm font-bold text-right">${p.value.toLocaleString("en-US", { minimumFractionDigits: 2 })}</TableCell>
@@ -57,10 +54,7 @@ export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder,
                     <Badge variant="outline" className={`text-[10px] ${STATUS_COLORS[p.status] || ""}`}>{p.status}</Badge>
                   </TableCell>
                   <TableCell className="text-xs text-muted-foreground">
-                    {p.sentDate ? new Date(p.sentDate).toLocaleDateString("es-ES") : "—"}
-                  </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">
-                    {p.updatedAt ? new Date(p.updatedAt).toLocaleDateString("es-ES") : "—"}
+                    {new Date(p.createdAt).toLocaleDateString("es-ES")}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -70,38 +64,26 @@ export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder,
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={e => { e.stopPropagation(); onEdit(p); }}>
-                          <Edit2 className="w-3.5 h-3.5 mr-2" /> Editar
-                        </DropdownMenuItem>
-                        {isApproved && (
-                          <>
-                            <DropdownMenuItem onClick={e => { e.stopPropagation(); onCreateOrder(p); }}>
-                              <Factory className="w-3.5 h-3.5 mr-2" /> Crear Orden
-                            </DropdownMenuItem>
-                            {onRegisterPayment && (
-                              <DropdownMenuItem onClick={e => { e.stopPropagation(); onRegisterPayment(p); }}>
-                                <DollarSign className="w-3.5 h-3.5 mr-2" /> Registrar Pago
-                              </DropdownMenuItem>
-                            )}
-                          </>
-                        )}
-                        {companyData && (
-                          <DropdownMenuItem onClick={async (e) => {
-                            e.stopPropagation();
-                            const blob = await pdf(<ProposalPDF proposal={p} company={companyData} />).toBlob();
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = `propuesta-${p.client.replace(/\s+/g, '-')}-${p.id.slice(0, 8)}.pdf`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                          }}>
-                            <Download className="w-3.5 h-3.5 mr-2" /> Descargar PDF
+                        {onEdit && (
+                          <DropdownMenuItem onClick={e => { e.stopPropagation(); onEdit(p); }}>
+                            <Edit2 className="w-3.5 h-3.5 mr-2" /> Editar
                           </DropdownMenuItem>
                         )}
-                        <DropdownMenuItem className="text-destructive" onClick={e => { e.stopPropagation(); onDelete(p.id); }}>
-                          <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
-                        </DropdownMenuItem>
+                        {isApproved && onCreateOrder && (
+                          <DropdownMenuItem onClick={e => { e.stopPropagation(); onCreateOrder(p); }}>
+                            <Factory className="w-3.5 h-3.5 mr-2" /> Crear Orden
+                          </DropdownMenuItem>
+                        )}
+                        {isApproved && onRegisterPayment && (
+                          <DropdownMenuItem onClick={e => { e.stopPropagation(); onRegisterPayment(p); }}>
+                            <DollarSign className="w-3.5 h-3.5 mr-2" /> Registrar Pago
+                          </DropdownMenuItem>
+                        )}
+                        {onDelete && (
+                          <DropdownMenuItem className="text-destructive" onClick={e => { e.stopPropagation(); onDelete(p.id); }}>
+                            <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
