@@ -9,6 +9,7 @@ import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { WorkOrdersRadial } from "@/components/dashboard/WorkOrdersRadial";
 import { GeoHeatmap } from "@/components/dashboard/GeoHeatmap";
 import { AiBriefing } from "@/components/dashboard/AiBriefing";
+import { TeamActivityWidget } from "@/components/dashboard/TeamActivityWidget";
 import { KanbanColumn } from "@/components/PipelineKanban";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
