@@ -8,8 +8,9 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ProposalPDF } from "@/components/proposals/ProposalPDF";
 import {
   Clock, CheckCircle, XCircle, ExternalLink, Edit2, Trash2, Factory,
-  Calendar, Mail, Link2, User, RefreshCw, DollarSign, Download,
+  Calendar, Mail, Link2, User, RefreshCw, DollarSign, Download, Copy,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const STATUS_CONFIG: Record<ProposalStatus, { color: string; icon: React.ReactNode; label: string }> = {
   'Borrador': { color: 'bg-muted text-muted-foreground', icon: <Clock className="w-3 h-3" />, label: 'Borrador' },
@@ -223,6 +224,17 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
               </Button>
             )}
           </PDFDownloadLink>
+        )}
+        {proposal.approvalToken && proposal.status !== 'Aprobada' && (
+          <Button size="sm" variant="ghost" className="text-xs h-8 px-2 text-muted-foreground hover:text-primary"
+            title="Copiar enlace de aprobación"
+            onClick={() => {
+              const url = `${window.location.origin}/p/${proposal.approvalToken}`;
+              navigator.clipboard.writeText(url);
+              toast.success("Enlace de aprobación copiado");
+            }}>
+            <Copy className="w-3.5 h-3.5" />
+          </Button>
         )}
         <div className="flex-1" />
         <Button size="sm" variant="ghost" onClick={() => onDelete(proposal.id)} className="text-xs h-8 px-2 text-destructive hover:text-destructive">

@@ -36,6 +36,7 @@ import Payments from "./pages/Payments";
 import Production from "./pages/Production";
 import WorkerTabletView from "./components/production/WorkerTabletView";
 import AuditLog from "./pages/AuditLog";
+import ProposalApproval from "./pages/ProposalApproval";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,7 +66,7 @@ const App = () => (
                 <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
-
+                <Route path="/p/:proposalId" element={<ProposalApproval />} />
                 {/* Superadmin — no tenant providers needed */}
                 <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
 
