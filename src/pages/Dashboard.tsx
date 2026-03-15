@@ -20,6 +20,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { isThisMonth } from "date-fns";
 import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
+import { GracePeriodBanner } from "@/components/GracePeriodBanner";
 
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
@@ -64,6 +65,7 @@ const Dashboard = () => {
   return (
     <PageTransition>
       <ResponsiveLayout>
+        <GracePeriodBanner />
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6 flex items-end justify-between">
           <div>
             <h1 className="font-bold text-2xl text-foreground">Centro de Control</h1>
