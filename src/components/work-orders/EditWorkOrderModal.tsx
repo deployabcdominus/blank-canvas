@@ -428,7 +428,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
               />
             </div>
 
-
+            {editing && (
               <div className="flex gap-3 pt-4">
                 <Button variant="outline" onClick={() => setEditing(false)} className={fieldClass} disabled={saving}>
                   Cancelar
