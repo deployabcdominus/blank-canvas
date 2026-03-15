@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
   ChevronRight, ChevronLeft, Upload, Building, X, Plus,
-  Briefcase, Check, Sparkles, ArrowRight, Settings2
+  Briefcase, Check, Sparkles, ArrowRight, Palette, Users, Zap,
+  FileText, CheckCircle2
 } from "lucide-react";
 import { compressImage } from "@/lib/image";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,6 +71,7 @@ const Onboarding = () => {
 
   const [serviceTypes, setServiceTypes] = useState<string[]>([]);
   const [newServiceInput, setNewServiceInput] = useState("");
+  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   const preset = INDUSTRY_PRESETS[formData.industry] || null;
   const labels = getIndustryLabels(formData.industry || null);
@@ -274,88 +276,162 @@ const Onboarding = () => {
   /* ── Success Screen ── */
   if (showSuccess) {
     const industryLabel = INDUSTRIES.find(i => i.id === formData.industry)?.label || formData.industry;
+    const userName = user?.user_metadata?.full_name || formData.companyName || "Admin";
+
+    const quickStartTasks = [
+      {
+        id: "branding",
+        icon: Palette,
+        title: "Personaliza tu identidad",
+        description: `Sube tu logo y ajusta los colores de marca`,
+        link: "/settings?tab=apariencia",
+      },
+      {
+        id: "catalog",
+        icon: FileText,
+        title: "Revisa tu catálogo",
+        description: `Ajusta los precios y servicios de ${industryLabel}`,
+        link: "/settings?tab=catalogo",
+      },
+      {
+        id: "team",
+        icon: Users,
+        title: "Invita a tu equipo",
+        description: "Añade técnicos, vendedores o colaboradores",
+        link: "/team-management",
+      },
+      {
+        id: "first-lead",
+        icon: Zap,
+        title: "Crea tu primer Lead",
+        description: "Prueba el flujo completo con un lead de ejemplo",
+        link: "/leads",
+      },
+    ];
+
     return (
       <PageTransition>
-        <div className="min-h-screen flex items-center justify-center px-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-lg text-center"
-          >
-            {/* Success icon */}
+        <div className="min-h-screen flex items-center justify-center px-6 py-12">
+          <div className="w-full max-w-xl">
+            {/* Celebration header */}
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 20 }}
-              className="w-20 h-20 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-orange-500/20 to-amber-500/10 border border-orange-500/20 flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="text-center mb-10"
             >
-              <Check className="w-10 h-10 text-orange-400" strokeWidth={1.5} />
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              className="text-3xl font-bold mb-4"
-            >
-              ¡Tu espacio de trabajo está listo!
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 }}
-              className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-md mx-auto"
-            >
-              Hemos configurado lo básico para <span className="text-foreground font-medium">{industryLabel}</span>.
-              Ahora puedes pulir cada detalle en el Panel de Configuración.
-            </motion.p>
-
-            {/* Preset summary */}
-            {preset && (
               <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.15, type: "spring", stiffness: 300, damping: 20 }}
+                className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-orange-500/20 to-amber-500/10 border border-orange-500/20 flex items-center justify-center"
+              >
+                <Check className="w-10 h-10 text-orange-400" strokeWidth={1.5} />
+              </motion.div>
+
+              <motion.h1
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.55 }}
-                className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-xl mb-8"
+                transition={{ delay: 0.3 }}
+                className="text-2xl sm:text-3xl font-semibold mb-3"
               >
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {preset.highlightFields.map(field => (
-                    <Badge key={field} variant="secondary" className="border-primary/20 bg-primary/10 text-xs">
-                      {field}
-                    </Badge>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  Campos técnicos activados para tu industria
-                </p>
-              </motion.div>
-            )}
+                ¡Tu espacio de trabajo está listo, {userName}!
+              </motion.h1>
 
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto"
+              >
+                Hemos configurado los cimientos para tu negocio de{" "}
+                <span className="text-foreground font-medium">{industryLabel}</span>.
+                Solo faltan unos toques finales para empezar a operar.
+              </motion.p>
+            </motion.div>
+
+            {/* Quick-start checklist */}
+            <div className="space-y-3 mb-10">
+              {quickStartTasks.map((task, i) => {
+                const Icon = task.icon;
+                const isDone = completedTasks.includes(task.id);
+                return (
+                  <motion.div
+                    key={task.id}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className={`group relative flex items-center gap-4 p-4 rounded-2xl border backdrop-blur-xl transition-all duration-300 ${
+                      isDone
+                        ? "bg-white/[0.02] border-white/[0.04] opacity-60"
+                        : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.1]"
+                    }`}
+                  >
+                    {/* Icon */}
+                    <div className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                      isDone ? "bg-green-500/15" : "bg-orange-500/10"
+                    }`}>
+                      {isDone ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-400" strokeWidth={1.5} />
+                      ) : (
+                        <Icon className="w-5 h-5 text-orange-400" strokeWidth={1.5} />
+                      )}
+                    </div>
+
+                    {/* Text */}
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-medium leading-tight ${isDone ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                        {task.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{task.description}</p>
+                    </div>
+
+                    {/* Action */}
+                    {!isDone ? (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setCompletedTasks(prev => [...prev, task.id]);
+                          navigate(task.link);
+                        }}
+                        className="shrink-0 text-xs text-orange-400 hover:text-orange-300 hover:bg-orange-500/10"
+                      >
+                        Ir ahora
+                        <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      </Button>
+                    ) : (
+                      <span className="shrink-0 text-xs text-green-400 font-medium">Listo ✓</span>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Master CTA */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65 }}
-              className="flex flex-col sm:flex-row gap-3 justify-center"
+              transition={{ delay: 1.0 }}
+              className="text-center"
             >
               <Button
-                onClick={() => navigate("/settings")}
-                variant="outline"
-                className="border-white/[0.08] bg-white/[0.04] hover:bg-white/[0.08] backdrop-blur-xl"
-              >
-                <Settings2 className="w-4 h-4 mr-2" strokeWidth={1.5} />
-                Personalizar más
-              </Button>
-              <Button
                 onClick={() => navigate("/dashboard")}
-                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white border-0 shadow-[0_4px_16px_rgba(251,146,60,0.3)]"
+                size="lg"
+                className="relative bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white border-0 shadow-[0_4px_24px_rgba(251,146,60,0.35)] px-8 py-3 text-base font-medium overflow-hidden group"
               >
-                Ir al Dashboard
-                <ArrowRight className="w-4 h-4 ml-2" strokeWidth={1.5} />
+                {/* Glow effect */}
+                <span className="absolute inset-0 bg-gradient-to-r from-orange-400/0 via-white/20 to-orange-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative flex items-center gap-2">
+                  Ir al Dashboard Principal
+                  <ArrowRight className="w-5 h-5" strokeWidth={1.5} />
+                </span>
               </Button>
+              <p className="text-xs text-muted-foreground mt-3">
+                Puedes completar estas tareas en cualquier momento
+              </p>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </PageTransition>
     );
