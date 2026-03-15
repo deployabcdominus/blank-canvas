@@ -134,9 +134,15 @@ export default function Clients() {
 
       // Upload new logo if selected
       if (logoFile) {
-        const fileName = `${Date.now()}-${logoFile.name}`;
-        const { error: uploadError } = await supabase.storage.from('company-logos').upload(fileName, logoFile);
-        if (uploadError) throw uploadError;
+        const ext = logoFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const fileName = `clients/${Date.now()}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('company-logos')
+          .upload(fileName, logoFile, { upsert: true });
+        if (uploadError) {
+          console.error('Logo upload error:', uploadError);
+          throw new Error('Error al subir el logo: ' + uploadError.message);
+        }
         const { data: urlData } = supabase.storage.from('company-logos').getPublicUrl(fileName);
         logoUrl = urlData.publicUrl;
       }
@@ -164,6 +170,7 @@ export default function Clients() {
       resetLogoState();
       setModalOpen(false);
     } catch (err: any) {
+      console.error('Client save error:', err);
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally { setSaving(false); }
   };
