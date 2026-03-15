@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { DateField } from "@/components/ui/date-field";
 import { toast } from "sonner";
 import type { ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
+import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { useCatalog } from "@/hooks/useCatalog";
 
 const schema = z.object({
   client: z.string().min(1, "El cliente es obligatorio"),

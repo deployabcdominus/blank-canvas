@@ -5,7 +5,8 @@ import { PageTransition } from "@/components/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronRight, ChevronLeft, Upload, Palette, Building, Wrench, Printer, PaintBucket, HardHat, PartyPopper, ShoppingBag, Package } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ChevronRight, ChevronLeft, Upload, Palette, Building, Wrench, Printer, PaintBucket, HardHat, PartyPopper, ShoppingBag, Package, X, Plus, Briefcase } from "lucide-react";
 import { compressImage } from "@/lib/image";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,6 +22,16 @@ const INDUSTRIES = [
   { id: "Otro", icon: Package, label: "Otro", description: "Cualquier otro tipo de negocio de servicios" },
 ];
 
+const DEFAULT_SERVICES_BY_INDUSTRY: Record<string, string[]> = {
+  "Field Service / Instalaciones": ["Instalación", "Mantenimiento", "Reparación"],
+  "Impresión / Producción": ["Fabricación", "Instalación", "Mantenimiento", "Diseño"],
+  "Diseño / Creativos": ["Diseño Gráfico", "Branding", "Producción"],
+  "Construcción / Contratistas": ["Obra Civil", "Remodelación", "Mantenimiento"],
+  "Eventos / Hospitality": ["Producción", "Montaje", "Decoración"],
+  "Retail / Tiendas": ["Venta", "Instalación", "Servicio Postventa"],
+  "Otro": ["General"],
+};
+
 const Onboarding = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -33,6 +44,11 @@ const Onboarding = () => {
     logo: null as string | null,
     brandColor: "soft-blue",
   });
+
+  // Service types tag input
+  const [serviceTypes, setServiceTypes] = useState<string[]>([]);
+  const [newServiceInput, setNewServiceInput] = useState("");
+  const [servicesInitialized, setServicesInitialized] = useState(false);
 
   const colorOptions = [
     { name: "Azul Suave", value: "soft-blue" },
@@ -60,7 +76,22 @@ const Onboarding = () => {
     }
   };
 
-  const totalSteps = 4;
+  const addService = () => {
+    const trimmed = newServiceInput.trim();
+    if (!trimmed) return;
+    if (serviceTypes.includes(trimmed)) {
+      toast({ title: "Ya existe", description: "Este servicio ya está en la lista.", variant: "destructive" });
+      return;
+    }
+    setServiceTypes(prev => [...prev, trimmed]);
+    setNewServiceInput("");
+  };
+
+  const removeService = (service: string) => {
+    setServiceTypes(prev => prev.filter(s => s !== service));
+  };
+
+  const totalSteps = 5;
 
   const handleNext = async () => {
     if (currentStep === 1 && !formData.industry) return;
@@ -69,13 +100,22 @@ const Onboarding = () => {
       toast({ title: "Logo obligatorio", description: "Sube el logo de tu empresa para continuar. Es necesario para la marca de agua en mockups y propuestas.", variant: "destructive" });
       return;
     }
+    // Step 4 is brand color - no validation needed
+    // Step 5 is services - initialize defaults if empty, then allow to proceed
+
+    // When moving FROM step 1 to step 2, pre-populate services
+    if (currentStep === 1 && formData.industry && !servicesInitialized) {
+      const defaults = DEFAULT_SERVICES_BY_INDUSTRY[formData.industry] || ["General"];
+      setServiceTypes(defaults);
+      setServicesInitialized(true);
+    }
 
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
       return;
     }
 
-    // Step 4 - complete onboarding
+    // Step 5 - complete onboarding
     if (!user) {
       toast({ title: "Error", description: "Usuario no autenticado", variant: "destructive" });
       return;
@@ -117,8 +157,10 @@ const Onboarding = () => {
           if (import.meta.env.DEV) console.error("Logo processing error:", err);
         }
       } else if (formData.logo) {
-        logoUrl = formData.logo; // already a URL
+        logoUrl = formData.logo;
       }
+
+      const finalServiceTypes = serviceTypes.length > 0 ? serviceTypes : ["General"];
 
       const { data: existingCompany } = await supabase
         .from("companies")
@@ -132,7 +174,13 @@ const Onboarding = () => {
       if (existingCompany) {
         await (supabase as any)
           .from("companies")
-          .update({ name: formData.companyName, logo_url: logoUrl, brand_color: formData.brandColor, industry: formData.industry })
+          .update({
+            name: formData.companyName,
+            logo_url: logoUrl,
+            brand_color: formData.brandColor,
+            industry: formData.industry,
+            service_types: finalServiceTypes,
+          })
           .eq("id", existingCompany.id);
         companyId = existingCompany.id;
       } else {
@@ -172,6 +220,12 @@ const Onboarding = () => {
         }
         companyId = newCompany!.id;
 
+        // Save service_types after company creation
+        await (supabase as any)
+          .from("companies")
+          .update({ service_types: finalServiceTypes })
+          .eq("id", companyId);
+
         if (purchaseToken) {
           await supabase
             .from("purchases")
@@ -210,7 +264,7 @@ const Onboarding = () => {
     }
   };
 
-  const stepTitles = ["Selecciona tu Industria", "Información de la Empresa", "Sube Tu Logo", "Elige el Color de Marca"];
+  const stepTitles = ["Selecciona tu Industria", "Información de la Empresa", "Sube Tu Logo", "Elige el Color de Marca", "Tus Servicios"];
 
   return (
     <PageTransition>
@@ -225,7 +279,7 @@ const Onboarding = () => {
             {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
               <div key={step} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${step <= currentStep ? "bg-soft-blue text-soft-blue-foreground" : "bg-white/10 text-muted-foreground"}`}>{step}</div>
-                {step < totalSteps && <div className={`w-12 h-1 mx-2 rounded transition-colors ${step < currentStep ? "bg-soft-blue" : "bg-white/10"}`} />}
+                {step < totalSteps && <div className={`w-8 h-1 mx-1 rounded transition-colors ${step < currentStep ? "bg-soft-blue" : "bg-white/10"}`} />}
               </div>
             ))}
           </motion.div>
@@ -246,7 +300,13 @@ const Onboarding = () => {
                       return (
                         <button
                           key={industry.id}
-                          onClick={() => setFormData(prev => ({ ...prev, industry: industry.id }))}
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, industry: industry.id }));
+                            // Reset services when industry changes
+                            const defaults = DEFAULT_SERVICES_BY_INDUSTRY[industry.id] || ["General"];
+                            setServiceTypes(defaults);
+                            setServicesInitialized(true);
+                          }}
                           className={`flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200 border ${
                             isSelected
                               ? "bg-primary/10 border-primary/30 ring-2 ring-primary/20 scale-[1.02]"
@@ -326,6 +386,68 @@ const Onboarding = () => {
                       <div className="w-16 h-16 rounded-full mx-auto shadow-lg ring-2 ring-white/20" style={{ backgroundColor: formData.brandColor }} />
                     </div>
                   </div>
+                </motion.div>
+              )}
+
+              {currentStep === 5 && (
+                <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <div className="text-center mb-6">
+                    <Briefcase className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
+                    <h2 className="text-xl font-semibold">{stepTitles[4]}</h2>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Define los servicios que ofrece tu empresa. Aparecerán en leads, propuestas y órdenes.
+                    </p>
+                  </div>
+
+                  {/* Tags display */}
+                  <div className="flex flex-wrap gap-2 min-h-[40px]">
+                    {serviceTypes.map(service => (
+                      <Badge
+                        key={service}
+                        variant="secondary"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-primary/30 bg-primary/10 text-foreground"
+                      >
+                        {service}
+                        <button
+                          onClick={() => removeService(service)}
+                          className="ml-1 hover:text-destructive transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                    {serviceTypes.length === 0 && (
+                      <p className="text-xs text-muted-foreground italic">Agrega al menos un servicio</p>
+                    )}
+                  </div>
+
+                  {/* Add service input */}
+                  <div className="flex gap-2">
+                    <Input
+                      value={newServiceInput}
+                      onChange={e => setNewServiceInput(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addService();
+                        }
+                      }}
+                      placeholder="Escribe un servicio y presiona Enter..."
+                      className="flex-1 glass border-primary/20 focus:border-primary/50"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={addService}
+                      disabled={!newServiceInput.trim()}
+                      className="btn-glass border-primary/30"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground">
+                    Puedes editar esta lista después en Configuración → Organización.
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
