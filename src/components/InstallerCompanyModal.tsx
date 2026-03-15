@@ -12,6 +12,7 @@ import { Upload, X } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { compressImage } from "@/lib/image";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useCatalog } from "@/hooks/useCatalog";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 
 const formSchema = z.object({
