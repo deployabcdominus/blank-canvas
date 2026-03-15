@@ -27,6 +27,7 @@ export interface WorkOrder {
   installerCompanyId?: string | null;
   blueprintUrl?: string | null;
   annotations?: any[];
+  technicalDetails?: Record<string, any>;
 }
 
 // Backward-compatible alias
