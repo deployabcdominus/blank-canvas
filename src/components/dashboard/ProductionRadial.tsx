@@ -20,7 +20,7 @@ export const ProductionRadial = ({ orders }: ProductionRadialProps) => {
   const pct = Math.round((stats.completed / stats.total) * 100);
 
   const chartData = [
-    { name: "Completado", value: pct, fill: "#00D2FF" },
+    { name: "Completado", value: pct, fill: "hsl(25, 95%, 53%)" },
   ];
 
   return (
@@ -28,17 +28,13 @@ export const ProductionRadial = ({ orders }: ProductionRadialProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.5 }}
-      className="rounded-2xl border p-5 backdrop-blur-[24px]"
-      style={{
-        background: "rgba(15,18,30,0.55)",
-        borderColor: "rgba(255,255,255,0.08)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
-      }}
+      className="rounded-xl border border-white/[0.06] p-5 shimmer-hover"
+      style={{ background: "#0a0a0a" }}
     >
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold text-white/80">Producción Semanal</h3>
-        <div className="p-2 rounded-xl" style={{ background: "rgba(162,89,255,0.1)", border: "1px solid rgba(162,89,255,0.2)" }}>
-          <Target className="w-4 h-4" style={{ color: "#A259FF" }} />
+        <h3 className="text-[15px] font-bold text-foreground">Producción Semanal</h3>
+        <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
+          <Target className="w-5 h-5 text-primary" />
         </div>
       </div>
 
@@ -52,29 +48,28 @@ export const ProductionRadial = ({ orders }: ProductionRadialProps) => {
             <RadialBar
               dataKey="value"
               cornerRadius={6}
-              background={{ fill: "rgba(255,255,255,0.05)" }}
+              background={{ fill: "rgba(255,255,255,0.04)" }}
             />
           </RadialBarChart>
         </ResponsiveContainer>
-        {/* Center label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-bold text-white/90">{pct}%</span>
-          <span className="text-[10px] text-white/40">completado</span>
+          <span className="text-[28px] font-extrabold text-foreground">{pct}%</span>
+          <span className="text-xs text-zinc-500">completado</span>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mt-2">
         <div className="text-center">
-          <p className="text-lg font-bold" style={{ color: "#00D2FF" }}>{stats.completed}</p>
-          <p className="text-[10px] text-white/40">Producidos</p>
+          <p className="text-[22px] font-bold text-emerald-400">{stats.completed}</p>
+          <p className="text-[11px] text-zinc-500">Producidos</p>
+        </div>
+        <div className="text-center border-x border-white/[0.06]">
+          <p className="text-[22px] font-bold text-primary">{stats.inProgress}</p>
+          <p className="text-[11px] text-zinc-500">En curso</p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold" style={{ color: "#A259FF" }}>{stats.inProgress}</p>
-          <p className="text-[10px] text-white/40">En curso</p>
-        </div>
-        <div className="text-center">
-          <p className="text-lg font-bold text-white/60">{stats.pending}</p>
-          <p className="text-[10px] text-white/40">Pendientes</p>
+          <p className="text-[22px] font-bold text-red-400">{stats.pending}</p>
+          <p className="text-[11px] text-zinc-500">Pendientes</p>
         </div>
       </div>
     </motion.div>
