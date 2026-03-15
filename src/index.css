@@ -138,37 +138,25 @@
 /* ── Custom Utilities ── */
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.65);
+    background: rgba(22, 27, 52, 0.65);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-  }
-  .dark .glass {
-    background: rgba(22, 27, 52, 0.65);
     border: 1px solid rgba(148, 163, 220, 0.15);
   }
 
   .glass-card {
     @apply glass rounded-xl;
-    box-shadow: 0 1px 3px rgba(99, 115, 165, 0.06), 0 4px 20px rgba(99, 115, 165, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.90);
-  }
-  .dark .glass-card {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20), 0 4px 20px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   /* ── Dashboard card base — real glassmorphism ── */
   .dash-card {
-    background: rgba(255, 255, 255, 0.65);
+    background: rgba(22, 27, 52, 0.65);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    box-shadow: 0 1px 3px rgba(99, 115, 165, 0.06), 0 4px 20px rgba(99, 115, 165, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.90);
-    border-radius: 16px;
-  }
-  .dark .dash-card {
-    background: rgba(22, 27, 52, 0.65);
     border: 1px solid rgba(148, 163, 220, 0.15);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20), 0 4px 20px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
   }
 
   /* Card hover micro-interaction */
