@@ -25,6 +25,8 @@ export interface WorkOrder {
   estimatedDelivery?: string | null;
   assignedToUserId?: string | null;
   installerCompanyId?: string | null;
+  blueprintUrl?: string | null;
+  annotations?: any[];
 }
 
 // Backward-compatible alias
