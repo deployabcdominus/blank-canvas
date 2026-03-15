@@ -1,5 +1,7 @@
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 
+const BRAND_ORANGE = "#E8750A";
+
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Helvetica",
@@ -20,22 +22,24 @@ const styles = StyleSheet.create({
   companyInfo: { alignItems: "flex-end" },
   companyName: { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#0F1523", marginBottom: 4 },
   companyDetail: { fontSize: 9, color: "#6B7699", marginBottom: 2 },
-  proposalTitle: { fontSize: 22, fontFamily: "Helvetica-Bold", color: "#5B6AF2", marginBottom: 6 },
+  proposalTitle: { fontSize: 22, fontFamily: "Helvetica-Bold", color: BRAND_ORANGE, marginBottom: 6 },
   proposalNumber: { fontSize: 10, color: "#6B7699", marginBottom: 24 },
   section: { marginBottom: 20 },
   sectionTitle: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#0F1523", marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 },
   row: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 6, borderBottom: "0.5px solid #F3F4F6" },
   label: { color: "#6B7699", flex: 1 },
   value: { color: "#0F1523", fontFamily: "Helvetica-Bold", textAlign: "right" },
-  totalRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 12, paddingTop: 10, borderTop: "1.5px solid #5B6AF2" },
+  totalRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 12, paddingTop: 10, borderTop: `1.5px solid ${BRAND_ORANGE}` },
   totalLabel: { fontSize: 12, fontFamily: "Helvetica-Bold", color: "#0F1523", marginRight: 16 },
-  totalValue: { fontSize: 14, fontFamily: "Helvetica-Bold", color: "#5B6AF2" },
+  totalValue: { fontSize: 16, fontFamily: "Times-Bold", color: BRAND_ORANGE },
   footer: { position: "absolute", bottom: 30, left: 40, right: 40, flexDirection: "row", justifyContent: "space-between", borderTop: "0.5px solid #E5E7EB", paddingTop: 10 },
   footerText: { fontSize: 8, color: "#9BA8C5" },
-  badge: { backgroundColor: "#EEF0FF", borderRadius: 4, padding: "3 8", alignSelf: "flex-start", marginBottom: 16 },
-  badgeText: { fontSize: 9, color: "#5B6AF2", fontFamily: "Helvetica-Bold" },
-  notes: { backgroundColor: "#F8F9FF", borderRadius: 4, padding: 12, marginTop: 8 },
+  badge: { backgroundColor: "#FFF4EB", borderRadius: 4, padding: "3 8", alignSelf: "flex-start", marginBottom: 16 },
+  badgeText: { fontSize: 9, color: BRAND_ORANGE, fontFamily: "Helvetica-Bold" },
+  notes: { backgroundColor: "#FAFAFA", borderRadius: 4, padding: 12, marginTop: 8 },
   notesText: { fontSize: 9, color: "#3D4663", lineHeight: 1.5 },
+  /* Amounts use serif for elegance */
+  amountValue: { fontFamily: "Times-Bold", fontSize: 11, color: "#0F1523", textAlign: "right" },
 });
 
 interface ProposalPDFProps {
