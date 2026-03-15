@@ -183,6 +183,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         priority,
         blueprintUrl,
         annotations,
+        technicalDetails,
       });
 
       toast({ title: "Orden actualizada" });
