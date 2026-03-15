@@ -57,6 +57,9 @@ export default function SuperadminDashboard() {
 
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [newCompanyName, setNewCompanyName] = useState("");
+  const [newCompanyEmail, setNewCompanyEmail] = useState("");
+  const [newCompanyIndustry, setNewCompanyIndustry] = useState("");
+  const [newCompanyPlan, setNewCompanyPlan] = useState("start");
   const [creatingCompany, setCreatingCompany] = useState(false);
   const [companyToDelete, setCompanyToDelete] = useState<Company | null>(null);
   const [deletingCompany, setDeletingCompany] = useState(false);
