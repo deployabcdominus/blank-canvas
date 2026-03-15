@@ -139,8 +139,8 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     const { error } = await supabase.from('proposals').update(dbUpdates).eq('id', id);
     if (error) throw error;
     const prop = proposals.find(p => p.id === id);
-    const action = updates.status ? (updates.status === 'Aprobada' ? 'aprobado' : 'cambio_estado') : 'editado';
-    logAudit({ action, entityType: 'propuesta', entityId: id, entityLabel: prop?.client, details: updates.status ? { before: prop?.status, after: updates.status } : dbUpdates });
+    const auditAction = updates.status === 'Aprobada' ? 'aprobado' as const : updates.status ? 'cambio_estado' as const : 'editado' as const;
+    logAudit({ action: auditAction, entityType: 'propuesta', entityId: id, entityLabel: prop?.client, details: updates.status ? { before: prop?.status, after: updates.status } : dbUpdates });
     await fetchProposals();
   };
 
