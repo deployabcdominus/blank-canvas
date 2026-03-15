@@ -633,6 +633,33 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_audit_logs: {
+        Row: {
+          action_type: string
+          actor_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_name: string | null
+        }
+        Insert: {
+          action_type: string
+          actor_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_name?: string | null
+        }
+        Update: {
+          action_type?: string
+          actor_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_name?: string | null
+        }
+        Relationships: []
+      }
       production_orders: {
         Row: {
           annotations: Json | null

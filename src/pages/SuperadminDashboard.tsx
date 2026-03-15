@@ -13,11 +13,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import { Shield, Building, Users, Globe, ServerCog } from "lucide-react";
+import { Shield, Building, Users, Globe, ServerCog, ScrollText } from "lucide-react";
 import { SuperadminOverview } from "@/components/superadmin/SuperadminOverview";
 import { SuperadminCompanies } from "@/components/superadmin/SuperadminCompanies";
 import { SuperadminUsers } from "@/components/superadmin/SuperadminUsers";
 import { SuperadminProvisioning } from "@/components/superadmin/SuperadminProvisioning";
+import { SuperadminAuditLogs } from "@/components/superadmin/SuperadminAuditLogs";
 
 interface Company {
   id: string; name: string; user_id: string; plan_id: string | null;
@@ -110,6 +111,11 @@ export default function SuperadminDashboard() {
     setLoadingUsers(false);
   };
 
+  const logAudit = useCallback(async (action_type: string, target_name: string, details?: Record<string, any>) => {
+    if (!user) return;
+    await supabase.from("platform_audit_logs" as any).insert({ actor_id: user.id, action_type, target_name, details: details || {} } as any);
+  }, [user]);
+
   // ── Actions ──
   const handleCreateCompany = async () => {
     if (!newCompanyName.trim() || !user) return;
@@ -117,6 +123,7 @@ export default function SuperadminDashboard() {
     try {
       const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id } as any);
       if (error) throw error;
+      await logAudit("COMPANY_CREATED", newCompanyName.trim());
       toast({ title: "Empresa creada", description: `"${newCompanyName}" fue creada exitosamente.` });
       setNewCompanyName(""); setShowCreateCompany(false); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
@@ -130,6 +137,7 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "delete-company", companyId: companyToDelete.id } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("COMPANY_DELETED", companyToDelete.name);
       toast({ title: "Empresa eliminada", description: `"${companyToDelete.name}" fue eliminada.` });
       setCompanyToDelete(null); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
@@ -142,6 +150,7 @@ export default function SuperadminDashboard() {
     try {
       const { error } = await supabase.from("companies").update({ name: editCompanyName.trim() }).eq("id", companyToEdit.id);
       if (error) throw error;
+      await logAudit("COMPANY_UPDATED", editCompanyName.trim(), { previous_name: companyToEdit.name });
       toast({ title: "Empresa actualizada" }); setCompanyToEdit(null); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
     setSavingCompany(false);
@@ -157,6 +166,7 @@ export default function SuperadminDashboard() {
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("USER_CREATED", newUserData.email, { fullName: newUserData.fullName, role: newUserData.role });
       toast({ title: "Usuario creado", description: `${newUserData.email} fue agregado.` });
       setNewUserData({ email: "", password: "", fullName: "", role: "admin" });
       setShowCreateUser(false); setCreateUserCompanyId("");
@@ -171,6 +181,8 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "toggle-active", userId } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      const targetUser = allUsers.find(u => u.id === userId);
+      await logAudit("USER_TOGGLED", targetUser?.email || userId, { isActive: data.isActive });
       toast({ title: "Estado actualizado", description: `Usuario ${data.isActive ? "activado" : "desactivado"}.` });
       if (activeTab === "users") fetchAllUsers();
       if (selectedCompany) fetchCompanyUsers(selectedCompany.id);
@@ -182,6 +194,8 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "update-role", userId, role: newRole } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      const targetUser = allUsers.find(u => u.id === userId);
+      await logAudit("ROLE_CHANGED", targetUser?.email || userId, { newRole });
       toast({ title: "Rol actualizado" });
       if (activeTab === "users") fetchAllUsers();
       if (selectedCompany) fetchCompanyUsers(selectedCompany.id);
@@ -195,6 +209,7 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "delete-user", userId: userToDelete.id } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("USER_DELETED", userToDelete.full_name || userToDelete.email, { email: userToDelete.email });
       toast({ title: "Usuario eliminado", description: `${userToDelete.full_name || userToDelete.email} ha sido eliminado permanentemente.` });
       setUserToDelete(null);
       if (activeTab === "users") fetchAllUsers();
@@ -212,6 +227,7 @@ export default function SuperadminDashboard() {
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("PASSWORD_RESET", resetPasswordUser.email);
       toast({ title: "Contraseña reseteada", description: `Nueva contraseña asignada a ${resetPasswordUser.email}.` });
       setResetPasswordUser(null); setResetPasswordValue("");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
@@ -276,6 +292,7 @@ export default function SuperadminDashboard() {
           { key: "companies", label: "Companies", icon: Building },
           { key: "users", label: "Users", icon: Users },
           { key: "provisioning", label: "Provisioning", icon: ServerCog },
+          { key: "audit", label: "Auditoría", icon: ScrollText },
         ].map(t => (
           <Button key={t.key} variant={activeTab === t.key ? "default" : "outline"} size="sm" onClick={() => setTab(t.key)} className="gap-2">
             <t.icon className="w-4 h-4" />{t.label}
@@ -333,8 +350,8 @@ export default function SuperadminDashboard() {
           onCreateUser={handleCreateUser} creatingUser={creatingUser} setTab={setTab}
         />
       )}
+      {activeTab === "audit" && <SuperadminAuditLogs />}
 
-      {/* ── Modals ── */}
       <Dialog open={showCreateCompany} onOpenChange={setShowCreateCompany}>
         <DialogContent className="glass-card border-white/20">
           <DialogHeader><DialogTitle>Nueva Empresa</DialogTitle><DialogDescription>Crea una nueva empresa en la plataforma.</DialogDescription></DialogHeader>
