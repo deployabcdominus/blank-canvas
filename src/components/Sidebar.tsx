@@ -206,7 +206,7 @@ function SidebarCollapsibleGroup({ group, isOpen, onToggle, isTablet, location, 
 function SidebarPlatformNav({ items, isTablet, location, industryLabels }: {
   items: NavItem[]; isTablet: boolean;
   location: { pathname: string; search: string };
-  industryLabels: Record<string, string>;
+  industryLabels: IndustryLabels;
 }) {
   return (
     <nav className="flex-1 overflow-y-auto space-y-0.5 min-h-0 px-1">
