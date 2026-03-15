@@ -71,6 +71,12 @@ const Leads = () => {
     const lead = leads.find(l => l.id === leadId);
     if (!lead) return;
 
+    // Block if already converted
+    if (lead.status === 'Convertido' || lead.clientId) {
+      toast({ title: "Lead ya convertido", description: "Este lead ya fue procesado.", variant: "destructive" });
+      return;
+    }
+
     await addProposal({
       client: lead.name,
       project: lead.service,
@@ -89,6 +95,10 @@ const Leads = () => {
 
     toast({ title: "¡Propuesta creada!", description: "El lead fue avanzado a propuesta. Redirigiendo..." });
     setTimeout(() => navigate('/proposals'), 1000);
+  };
+
+  const handleViewProposal = (proposalId: string) => {
+    navigate('/proposals');
   };
 
   const handleAssignLead = (leadId: string) => {
