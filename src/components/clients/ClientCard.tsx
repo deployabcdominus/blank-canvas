@@ -25,8 +25,8 @@ interface ClientCardProps {
   stats: { total: number; byStatus: Record<string, number> } | undefined;
   index: number;
   isAdmin: boolean;
-  onEdit: (c: Client) => void;
-  onDelete: (id: string) => void;
+  onEdit?: (c: Client) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function ClientCard({ client: c, stats, index, isAdmin, onEdit, onDelete }: ClientCardProps) {
