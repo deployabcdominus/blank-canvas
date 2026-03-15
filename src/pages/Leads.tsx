@@ -84,6 +84,7 @@ const Leads = () => {
       lead: null,
       approvedTotal: null,
       approvedAt: null,
+      mockupUrl: null,
     });
 
     toast({ title: "¡Propuesta creada!", description: "El lead fue avanzado a propuesta. Redirigiendo..." });
