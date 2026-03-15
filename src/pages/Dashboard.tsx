@@ -94,6 +94,12 @@ const Dashboard = () => {
           <GeoHeatmap installations={installations} />
         </div>
 
+        {isAdmin && (
+          <div className="mb-8">
+            <TeamActivityWidget />
+          </div>
+        )}
+
         <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
       </ResponsiveLayout>
     </PageTransition>
