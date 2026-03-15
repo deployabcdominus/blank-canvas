@@ -111,12 +111,17 @@ export default function Clients() {
       toast({ title: "Formato inválido", description: "Seleccione una imagen.", variant: "destructive" });
       return;
     }
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "Archivo muy grande", description: "Máximo 2MB.", variant: "destructive" });
+      return;
+    }
     try {
       const compressed = await compressImage(file, 400, 400, 0.8);
       setLogoFile(compressed);
       if (logoPreview && !logoPreview.startsWith('http')) URL.revokeObjectURL(logoPreview);
       setLogoPreview(URL.createObjectURL(compressed));
-    } catch {
+    } catch (err) {
+      console.error('Logo compress error:', err);
       toast({ title: "Error al procesar imagen", variant: "destructive" });
     }
   };
