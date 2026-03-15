@@ -67,12 +67,12 @@ export function ClientCard({ client: c, stats, index, isAdmin, onEdit, onDelete 
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {onEdit && (
-                  <DropdownMenuItem onClick={() => onEdit(c)}>
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(c); }}>
                     <Pencil className="w-3.5 h-3.5 mr-2" /> Editar
                   </DropdownMenuItem>
                 )}
                 {isAdmin && onDelete && (
-                  <DropdownMenuItem className="text-destructive" onClick={() => onDelete(c.id)}>
+                  <DropdownMenuItem className="text-destructive" onClick={(e) => { e.stopPropagation(); onDelete(c.id); }}>
                     <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
                   </DropdownMenuItem>
                 )}
