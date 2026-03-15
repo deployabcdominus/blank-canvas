@@ -227,7 +227,7 @@ function SidebarPlatformNav({ items, isTablet, location, industryLabels }: {
 function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, role, industryLabels, isAdmin }: {
   groups: NavGroup[]; utilityItems: NavItem[]; isTablet: boolean;
   location: { pathname: string; search: string };
-  role: string | null; industryLabels: Record<string, string>; isAdmin: boolean;
+  role: string | null; industryLabels: IndustryLabels; isAdmin: boolean;
 }) {
   // Find which group contains the active route
   const activeGroupIdx = groups.findIndex(g =>
