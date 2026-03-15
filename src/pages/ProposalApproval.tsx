@@ -270,6 +270,25 @@ const ProposalApproval = () => {
         )}
       </div>
 
+      {/* Mockup image if available */}
+      {proposal?.mockup_url && (
+        <div className="rounded-xl overflow-hidden"
+          style={{ border: "1px solid hsl(0 0% 100% / 0.06)" }}>
+          <img
+            src={proposal.mockup_url}
+            alt="Visualización de propuesta"
+            className="w-full object-contain"
+            style={{ maxHeight: 400, background: "hsl(0 0% 5%)" }}
+          />
+          <div className="px-4 py-2 text-center"
+            style={{ background: "hsl(0 0% 7% / 0.8)" }}>
+            <p className="text-[11px]" style={{ color: "hsl(0 0% 45%)" }}>
+              Visualización del proyecto
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Signature Section */}
       <div className="rounded-xl p-6 space-y-4"
         style={{ background: "hsl(0 0% 7% / 0.8)", border: "1px solid hsl(0 0% 100% / 0.06)" }}>
