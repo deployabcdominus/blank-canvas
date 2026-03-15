@@ -12,7 +12,6 @@ interface HudCardProps {
   accentClass?: string;
 }
 
-/* All icons render in zinc-400 by default; active state uses orange primary */
 export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index }: HudCardProps) => {
   return (
     <motion.button
@@ -22,16 +21,17 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
       onClick={onClick}
       className={`
         stat-card relative overflow-hidden text-left group
-        rounded-xl border p-5 transition-all duration-200 shimmer-hover
+        rounded-2xl border p-5 transition-all duration-300 shimmer-hover
+        backdrop-blur-2xl
         ${isActive
-          ? "border-primary/30 bg-primary/[0.06] shadow-[0_0_20px_-6px_hsl(25_95%_53%/0.25)]"
-          : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
+          ? "border-primary/30 bg-zinc-950/50 shadow-[0_0_24px_-6px_hsl(25_95%_53%/0.2)]"
+          : "border-white/[0.06] bg-zinc-950/40 hover:border-white/[0.12] hover:bg-zinc-950/50"
         }
       `}
     >
       {/* Top glow line */}
       {isActive && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-50 bg-gradient-to-r from-transparent via-primary to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-40 bg-gradient-to-r from-transparent via-primary to-transparent" />
       )}
 
       <div className="relative z-10">
@@ -41,7 +41,11 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
               isActive ? "bg-primary/10" : "bg-white/[0.04]"
             }`}
           >
-            <Icon className={`w-5 h-5 transition-colors ${isActive ? "text-primary" : "text-zinc-400"}`} />
+            <Icon
+              className={`transition-colors ${isActive ? "text-primary" : "text-zinc-400"}`}
+              size={20}
+              strokeWidth={1.5}
+            />
           </div>
           {isActive && (
             <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
@@ -50,8 +54,8 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           )}
         </div>
 
-        <p className="font-extrabold text-[32px] leading-none tracking-tight text-foreground">{value}</p>
-        <p className="text-sm font-semibold mt-2 text-foreground">{label}</p>
+        <p className="font-semibold text-[32px] leading-none tracking-tight text-white">{value}</p>
+        <p className="text-sm font-medium mt-2 text-white">{label}</p>
         <p className="text-xs mt-0.5 text-zinc-500">{desc}</p>
       </div>
     </motion.button>

@@ -61,23 +61,22 @@ export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) =>
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, duration: 0.5 }}
-      className="rounded-xl border border-white/[0.06] p-5 shimmer-hover"
-      style={{ background: "#0a0a0a" }}
+      className="rounded-2xl border border-white/[0.06] bg-zinc-950/40 backdrop-blur-2xl p-5 transition-all duration-300 hover:border-white/[0.12] hover:bg-zinc-950/50 shimmer-hover"
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-[15px] font-bold text-foreground">Flujo de Ingresos</h3>
-          <p className="text-[28px] font-extrabold text-foreground mt-1">
+          <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">Flujo de Ingresos</h3>
+          <p className="text-[28px] font-semibold text-white mt-1">
             ${totalReceived.toLocaleString("es-MX")}
           </p>
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">Cobrado total</p>
+          <p className="text-xs font-medium text-zinc-500">Cobrado total</p>
         </div>
         <div className="text-right space-y-1">
           <div className="p-2 rounded-xl inline-flex bg-primary/10 border border-primary/20">
-            <TrendingUp className="w-5 h-5 text-primary" />
+            <TrendingUp className="w-5 h-5 text-primary" strokeWidth={1.5} />
           </div>
           {pendingBalance > 0 && (
-            <div className="flex items-center gap-1 text-[11px] text-amber-500">
+            <div className="flex items-center gap-1 text-[11px] text-primary">
               <AlertCircle className="w-3 h-3" />
               Pendiente: ${pendingBalance.toLocaleString("es-MX")}
             </div>
@@ -90,23 +89,24 @@ export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) =>
           <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="orangeGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(25, 95%, 53%)" stopOpacity={0.3} />
+                <stop offset="0%" stopColor="hsl(25, 95%, 53%)" stopOpacity={0.25} />
                 <stop offset="100%" stopColor="hsl(25, 95%, 53%)" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="amberGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(36, 91%, 44%)" stopOpacity={0.2} />
+                <stop offset="0%" stopColor="hsl(36, 91%, 44%)" stopOpacity={0.15} />
                 <stop offset="100%" stopColor="hsl(36, 91%, 44%)" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" />
-            <XAxis dataKey="name" tick={{ fill: "hsl(0, 0%, 45%)", fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: "hsl(0, 0%, 45%)", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+            <CartesianGrid stroke="rgba(255,255,255,0.03)" strokeDasharray="3 3" />
+            <XAxis dataKey="name" tick={{ fill: "rgb(113,113,122)", fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: "rgb(113,113,122)", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
             <Tooltip
               contentStyle={{
-                background: "#0a0a0a",
+                background: "rgba(9, 9, 11, 0.80)",
+                backdropFilter: "blur(20px)",
                 border: "1px solid rgba(255,255,255,0.08)",
                 borderRadius: "12px",
-                color: "#f2f2f2",
+                color: "#fff",
                 fontSize: 12,
               }}
               formatter={(value: number, name: string) => [
@@ -114,8 +114,8 @@ export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) =>
                 name === "cobrado" ? "Cobrado" : "Propuesto"
               ]}
             />
-            <Area type="monotone" dataKey="cobrado" stroke="hsl(25, 95%, 53%)" strokeWidth={2.5} fill="url(#orangeGrad)" dot={false} />
-            <Area type="monotone" dataKey="propuesto" stroke="hsl(36, 91%, 50%)" strokeWidth={2} fill="url(#amberGrad)" dot={false} strokeDasharray="4 2" />
+            <Area type="monotone" dataKey="cobrado" stroke="hsl(25, 95%, 53%)" strokeWidth={2} fill="url(#orangeGrad)" dot={false} />
+            <Area type="monotone" dataKey="propuesto" stroke="hsl(36, 91%, 50%)" strokeWidth={1.5} fill="url(#amberGrad)" dot={false} strokeDasharray="4 2" />
           </AreaChart>
         </ResponsiveContainer>
       </div>
