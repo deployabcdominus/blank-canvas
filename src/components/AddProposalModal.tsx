@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { DateField } from "@/components/ui/date-field";
 import { toast } from "sonner";
 import type { ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
+import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { useCatalog } from "@/hooks/useCatalog";
 
 const schema = z.object({
   client: z.string().min(1, "El cliente es obligatorio"),
@@ -19,6 +21,7 @@ const schema = z.object({
   description: z.string().min(1, "La descripción del alcance es obligatoria"),
   sentMethod: z.string().min(1, "El medio de envío es obligatorio"),
   status: z.string().min(1, "El estado es obligatorio"),
+  serviceType: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -33,6 +36,12 @@ const SENT_METHODS: SentMethod[] = ['Gmail', 'WhatsApp', 'PDF físico', 'Otro'];
 const STATUSES: ProposalStatus[] = ['Borrador', 'Enviada externamente', 'Aprobada', 'Rechazada'];
 
 export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onClose, onAddProposal }) => {
+  const serviceTypes = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const resolvedServices = catalogServices.length > 0
+    ? catalogServices.map(s => s.label)
+    : serviceTypes;
+
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { status: 'Borrador' },
@@ -92,6 +101,16 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
             <Label htmlFor="description">Descripción del Alcance *</Label>
             <Textarea {...register("description")} id="description" placeholder="Detalle el alcance de la propuesta..." className="min-h-[100px]" />
             {errors.description && <p className="text-sm text-destructive mt-1">{errors.description.message}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="serviceType">Tipo de Servicio</Label>
+            <Select onValueChange={(v) => setValue("serviceType", v)}>
+              <SelectTrigger><SelectValue placeholder="Seleccione tipo de servicio" /></SelectTrigger>
+              <SelectContent>
+                {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
