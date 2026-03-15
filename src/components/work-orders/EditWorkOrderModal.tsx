@@ -421,6 +421,15 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
               )}
             </div>
 
+            {/* Technical Sheet */}
+            <div className="pt-2 border-t border-border/20">
+              <TechnicalSheet
+                value={technicalDetails}
+                onChange={setTechnicalDetails}
+                readOnly={!editing}
+              />
+            </div>
+
             {/* Blueprint Annotator */}
             <div className="pt-2 border-t border-border/20">
               <BlueprintAnnotator
