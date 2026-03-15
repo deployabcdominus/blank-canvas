@@ -17,13 +17,14 @@ interface LeadCardProps {
   onCardClick?: (lead: Lead) => void;
 }
 
+/* Soft badge style: 10% opacity bg, full opacity text */
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "Nuevo": return "bg-mint text-mint-foreground";
-    case "Contactado": return "bg-soft-blue text-soft-blue-foreground";
-    case "Seguimiento": return "bg-lavender text-lavender-foreground";
-    case "Calificado": return "bg-pale-pink text-pale-pink-foreground";
-    default: return "bg-muted text-muted-foreground";
+    case "Nuevo": return "bg-primary/10 text-primary border-primary/20";
+    case "Contactado": return "bg-sky-500/10 text-sky-400 border-sky-500/20";
+    case "Seguimiento": return "bg-amber-500/10 text-amber-400 border-amber-500/20";
+    case "Calificado": return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+    default: return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20";
   }
 };
 
@@ -37,12 +38,12 @@ function getLeadProposal(leadId: string, proposals: Proposal[]): Proposal | null
 }
 
 function getProposalBadge(proposal: Proposal | null) {
-  if (!proposal) return { label: "Sin propuesta", className: "bg-muted text-muted-foreground" };
+  if (!proposal) return { label: "Sin propuesta", className: "bg-zinc-500/10 text-zinc-500 border-zinc-500/20" };
   switch (proposal.status) {
-    case "Enviada externamente": return { label: "Propuesta enviada", className: "bg-soft-blue/20 text-soft-blue-foreground" };
-    case "Aprobada": return { label: "Propuesta aprobada", className: "bg-mint/20 text-mint-foreground" };
-    case "Rechazada": return { label: "Propuesta rechazada", className: "bg-destructive/10 text-destructive" };
-    default: return { label: "Borrador", className: "bg-lavender/20 text-lavender-foreground" };
+    case "Enviada externamente": return { label: "Propuesta enviada", className: "bg-sky-500/10 text-sky-400 border-sky-500/20" };
+    case "Aprobada": return { label: "Propuesta aprobada", className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" };
+    case "Rechazada": return { label: "Propuesta rechazada", className: "bg-red-500/10 text-red-400 border-red-500/20" };
+    default: return { label: "Borrador", className: "bg-amber-500/10 text-amber-400 border-amber-500/20" };
   }
 }
 
@@ -55,7 +56,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className="glass-card hover:glow-mint transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer"
+      className="rounded-xl border border-white/[0.06] bg-[#0a0a0a] hover:border-primary/20 transition-all duration-300 p-6 md:p-7 flex flex-col justify-between group cursor-pointer shimmer-hover"
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}
       onClick={() => onCardClick?.(lead)}
@@ -65,30 +66,30 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
         <div className={`flex items-start justify-between mb-3 ${isMobile ? 'flex-col gap-2' : ''}`}>
           <div className="flex items-center gap-3 min-w-0">
             {lead.logoUrl ? (
-              <img src={lead.logoUrl} alt={`Logo ${lead.company}`} className="w-11 h-11 rounded-xl object-contain border border-border bg-muted flex-shrink-0" />
+              <img src={lead.logoUrl} alt={`Logo ${lead.company}`} className="w-11 h-11 rounded-xl object-contain border border-white/[0.06] bg-white/[0.03] flex-shrink-0" />
             ) : (
-              <div className="w-11 h-11 rounded-xl border border-border bg-muted flex items-center justify-center flex-shrink-0">
-                <span className="text-sm font-bold text-muted-foreground">{lead.company?.charAt(0)?.toUpperCase() || '?'}</span>
+              <div className="w-11 h-11 rounded-xl border border-white/[0.06] bg-white/[0.03] flex items-center justify-center flex-shrink-0">
+                <span className="text-sm font-bold text-zinc-500">{lead.company?.charAt(0)?.toUpperCase() || '?'}</span>
               </div>
             )}
             <div className="min-w-0">
               <h3
                 id={`lead-${lead.id}-company`}
-                className="text-base md:text-lg font-bold truncate"
+                className="text-base md:text-lg font-bold truncate text-white"
               >
                 {lead.company}
               </h3>
-              <p className="text-muted-foreground text-sm truncate">{lead.name}</p>
+              <p className="text-zinc-500 text-sm truncate">{lead.name}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge className={`${getStatusColor(lead.status)} ${isMobile ? 'self-end' : ''} flex-shrink-0`}>
+            <Badge variant="outline" className={`${getStatusColor(lead.status)} ${isMobile ? 'self-end' : ''} flex-shrink-0`}>
               {lead.status}
             </Badge>
             {onEdit && (
               <button
                 onClick={(e) => { e.stopPropagation(); onEdit(lead); }}
-                className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted text-muted-foreground hover:text-foreground"
+                className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/[0.05] text-zinc-500 hover:text-foreground"
                 aria-label="Editar lead"
               >
                 <Pencil size={13} />
@@ -98,16 +99,16 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
         </div>
 
         {/* Service type */}
-        <p className="text-sm font-medium text-soft-blue-foreground mb-3">{lead.service}</p>
+        <p className="text-sm font-medium text-zinc-400 mb-3">{lead.service}</p>
 
         {/* Price block */}
         <div className="mb-3">
           {linkedProposal ? (
-            <p className="text-2xl font-bold text-mint-foreground">
+            <p className="text-2xl font-bold text-white">
               ${linkedProposal.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </p>
           ) : (
-            <p className="text-lg font-semibold text-muted-foreground">Precio por definir</p>
+            <p className="text-lg font-semibold text-zinc-600">Precio por definir</p>
           )}
           <Badge variant="outline" className={`mt-1 text-xs ${proposalBadge.className}`}>
             {proposalBadge.label}
@@ -118,19 +119,19 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
         <div className="space-y-1.5 mb-4">
           <a
             href={`tel:${lead.contact.phone}`}
-            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-foreground transition-colors"
           >
             <Phone className="w-3.5 h-3.5" aria-hidden="true" />
             {lead.contact.phone}
           </a>
           <a
             href={`mailto:${lead.contact.email}`}
-            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-foreground transition-colors"
           >
             <Mail className="w-3.5 h-3.5" aria-hidden="true" />
             {lead.contact.email}
           </a>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs text-zinc-500">
             <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
             {lead.contact.location}
           </div>
@@ -138,8 +139,8 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       </div>
 
       {/* Footer */}
-      <div className={`flex items-center justify-between pt-3 border-t border-border/50 ${isMobile ? 'flex-col gap-3' : ''}`} onClick={e => e.stopPropagation()}>
-        <span className="text-xs text-muted-foreground">
+      <div className={`flex items-center justify-between pt-3 border-t border-white/[0.06] ${isMobile ? 'flex-col gap-3' : ''}`} onClick={e => e.stopPropagation()}>
+        <span className="text-xs text-zinc-600">
           hace {lead.daysAgo} día{lead.daysAgo !== 1 ? 's' : ''}
         </span>
         <div className="flex items-center gap-2">
@@ -170,7 +171,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
           <Button
             onClick={() => onAdvance(lead.id)}
             size="sm"
-            className={`bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover min-h-[40px] rounded-lg font-medium ${isMobile ? 'w-full' : 'px-4'}`}
+            className={`min-h-[40px] font-medium ${isMobile ? 'w-full' : 'px-4'}`}
             aria-label={`Avanzar lead de ${lead.name} a propuesta`}
           >
             Avanzar a Propuesta
