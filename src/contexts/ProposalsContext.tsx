@@ -28,6 +28,7 @@ export interface Proposal {
   approvedTotal: number | null;
   approvedAt: string | null;
   approvalToken: string | null;
+  mockupUrl: string | null;
 }
 
 interface ProposalsContextType {
