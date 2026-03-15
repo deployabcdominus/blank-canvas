@@ -225,6 +225,17 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
             )}
           </PDFDownloadLink>
         )}
+        {proposal.approvalToken && proposal.status !== 'Aprobada' && (
+          <Button size="sm" variant="ghost" className="text-xs h-8 px-2 text-muted-foreground hover:text-primary"
+            title="Copiar enlace de aprobación"
+            onClick={() => {
+              const url = `${window.location.origin}/p/${proposal.approvalToken}`;
+              navigator.clipboard.writeText(url);
+              toast.success("Enlace de aprobación copiado");
+            }}>
+            <Copy className="w-3.5 h-3.5" />
+          </Button>
+        )}
         <div className="flex-1" />
         <Button size="sm" variant="ghost" onClick={() => onDelete(proposal.id)} className="text-xs h-8 px-2 text-destructive hover:text-destructive">
           <Trash2 className="w-3.5 h-3.5" />

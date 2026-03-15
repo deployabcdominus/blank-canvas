@@ -68,6 +68,7 @@ const mapRow = (row: any): Proposal => ({
   } : null,
   approvedTotal: row.approved_total != null ? Number(row.approved_total) : null,
   approvedAt: row.approved_at || null,
+  approvalToken: row.approval_token || null,
 });
 
 export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
