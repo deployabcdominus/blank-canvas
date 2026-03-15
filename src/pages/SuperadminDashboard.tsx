@@ -189,7 +189,7 @@ export default function SuperadminDashboard() {
   };
 
   const handleDeleteUser = async () => {
-    if (!userToDelete) return;
+    if (!userToDelete || userToDelete.id === user?.id) return;
     setDeletingUser(true);
     try {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "delete-user", userId: userToDelete.id } });
