@@ -23,8 +23,8 @@ interface ClientTableViewProps {
   clients: Client[];
   clientStats: Record<string, { total: number; byStatus: Record<string, number>; latestDate: string | null }>;
   isAdmin: boolean;
-  onEdit: (c: Client) => void;
-  onDelete: (id: string) => void;
+  onEdit?: (c: Client) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function ClientTableView({ clients, clientStats, isAdmin, onEdit, onDelete }: ClientTableViewProps) {
@@ -53,7 +53,7 @@ export function ClientTableView({ clients, clientStats, isAdmin, onEdit, onDelet
                 <TableRow
                   key={c.id}
                   className="group border-border/30 hover:bg-accent/30 transition-colors cursor-pointer"
-                  onClick={() => onEdit(c)}
+                  onClick={() => onEdit?.(c)}
                 >
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -102,10 +102,12 @@ export function ClientTableView({ clients, clientStats, isAdmin, onEdit, onDelet
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(c); }}>
-                          <Pencil className="w-3.5 h-3.5 mr-2" /> Editar
-                        </DropdownMenuItem>
-                        {isAdmin && (
+                        {onEdit && (
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(c); }}>
+                            <Pencil className="w-3.5 h-3.5 mr-2" /> Editar
+                          </DropdownMenuItem>
+                        )}
+                        {isAdmin && onDelete && (
                           <DropdownMenuItem className="text-destructive" onClick={(e) => { e.stopPropagation(); onDelete(c.id); }}>
                             <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
                           </DropdownMenuItem>

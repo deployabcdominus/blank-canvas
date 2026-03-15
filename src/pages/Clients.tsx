@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { ListCardSkeleton } from "@/components/ui/skeleton-card";
 import { useClients, Client } from "@/contexts/ClientsContext";
 import { useProjects } from "@/contexts/ProjectsContext";
@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, X, Users, TrendingUp, FolderOpen, LayoutGrid, List } from "lucide-react";
+import { Plus, Search, X, Users, TrendingUp, FolderOpen, LayoutGrid, List, Upload, Camera } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -20,7 +20,10 @@ import {
 import { ClientCard } from "@/components/clients/ClientCard";
 import { ClientTableView } from "@/components/clients/ClientTableView";
 import { ClientsPagination } from "@/components/clients/ClientsPagination";
+import { ClientAvatar } from "@/components/clients/ClientAvatar";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { compressImage } from "@/lib/image";
 
 const emptyForm = { clientName: '', primaryEmail: '', primaryPhone: '', notes: '' };
 const PAGE_SIZE = 12;
@@ -38,6 +41,9 @@ export default function Clients() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [currentPage, setCurrentPage] = useState(1);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const clientStats = useMemo(() => {
     const stats: Record<string, { total: number; byStatus: Record<string, number>; latestDate: string | null }> = {};
@@ -71,37 +77,74 @@ export default function Clients() {
     [filtered, clientStats]
   );
 
-  // Reset page when search changes
   const totalItems = sorted.length;
   const paginatedClients = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
     return sorted.slice(start, start + PAGE_SIZE);
   }, [sorted, currentPage]);
 
-  // Reset to page 1 when filters change
   useMemo(() => { setCurrentPage(1); }, [search]);
 
   const totalProjects = projects.length;
   const activeClients = clients.filter(c => (clientStats[c.id]?.total || 0) > 0).length;
 
-  const openNew = () => { setEditingClient(null); setForm(emptyForm); setModalOpen(true); };
+  const resetLogoState = () => {
+    if (logoPreview && !logoPreview.startsWith('http')) URL.revokeObjectURL(logoPreview);
+    setLogoPreview(null);
+    setLogoFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const openNew = () => { setEditingClient(null); setForm(emptyForm); resetLogoState(); setModalOpen(true); };
   const openEdit = (c: Client) => {
     setEditingClient(c);
     setForm({ clientName: c.clientName, primaryEmail: c.primaryEmail || '', primaryPhone: c.primaryPhone || '', notes: c.notes || '' });
+    setLogoPreview(c.logoUrl || null);
+    setLogoFile(null);
     setModalOpen(true);
+  };
+
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast({ title: "Formato inválido", description: "Seleccione una imagen.", variant: "destructive" });
+      return;
+    }
+    try {
+      const compressed = await compressImage(file, 400, 400, 0.8);
+      setLogoFile(compressed);
+      if (logoPreview && !logoPreview.startsWith('http')) URL.revokeObjectURL(logoPreview);
+      setLogoPreview(URL.createObjectURL(compressed));
+    } catch {
+      toast({ title: "Error al procesar imagen", variant: "destructive" });
+    }
   };
 
   const handleSave = async () => {
     if (!form.clientName.trim()) return;
     setSaving(true);
     try {
+      let logoUrl: string | null | undefined = undefined;
+
+      // Upload new logo if selected
+      if (logoFile) {
+        const fileName = `${Date.now()}-${logoFile.name}`;
+        const { error: uploadError } = await supabase.storage.from('company-logos').upload(fileName, logoFile);
+        if (uploadError) throw uploadError;
+        const { data: urlData } = supabase.storage.from('company-logos').getPublicUrl(fileName);
+        logoUrl = urlData.publicUrl;
+      }
+
       if (editingClient) {
-        await updateClient(editingClient.id, {
+        const updates: Partial<Omit<Client, 'id' | 'companyId'>> = {
           clientName: form.clientName.trim(),
           primaryEmail: form.primaryEmail.trim() || null,
           primaryPhone: form.primaryPhone.trim() || null,
           notes: form.notes.trim() || null,
-        });
+        };
+        if (logoUrl !== undefined) updates.logoUrl = logoUrl;
+        await updateClient(editingClient.id, updates);
         toast({ title: "Cliente actualizado" });
       } else {
         await addClient({
@@ -109,10 +152,11 @@ export default function Clients() {
           primaryEmail: form.primaryEmail.trim() || null,
           primaryPhone: form.primaryPhone.trim() || null,
           notes: form.notes.trim() || null,
-          logoUrl: null,
+          logoUrl: logoUrl || null,
         });
         toast({ title: "Cliente creado" });
       }
+      resetLogoState();
       setModalOpen(false);
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -156,7 +200,7 @@ export default function Clients() {
         ))}
       </div>
 
-      {/* Toolbar: Search + View Switcher + Add */}
+      {/* Toolbar */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -172,7 +216,7 @@ export default function Clients() {
           <Button
             variant="ghost"
             size="sm"
-            className={cn('h-8 w-8 p-0', viewMode === 'grid' && 'bg-soft-blue/20 text-soft-blue')}
+            className={cn('h-8 w-8 p-0', viewMode === 'grid' && 'bg-primary/20 text-primary')}
             onClick={() => setViewMode('grid')}
           >
             <LayoutGrid className="w-4 h-4" />
@@ -180,7 +224,7 @@ export default function Clients() {
           <Button
             variant="ghost"
             size="sm"
-            className={cn('h-8 w-8 p-0', viewMode === 'table' && 'bg-soft-blue/20 text-soft-blue')}
+            className={cn('h-8 w-8 p-0', viewMode === 'table' && 'bg-primary/20 text-primary')}
             onClick={() => setViewMode('table')}
           >
             <List className="w-4 h-4" />
@@ -252,11 +296,42 @@ export default function Clients() {
         />
       )}
 
-      {/* Add/Edit Modal */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent>
+      {/* Add/Edit Modal with Logo Upload */}
+      <Dialog open={modalOpen} onOpenChange={(open) => { if (!open) { resetLogoState(); } setModalOpen(open); }}>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader><DialogTitle>{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</DialogTitle></DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-5">
+            {/* Avatar/Logo Upload */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative group">
+                {logoPreview ? (
+                  <div className="relative w-20 h-20 rounded-full overflow-hidden ring-2 ring-white/[0.06] shadow-lg">
+                    <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => { resetLogoState(); }}
+                      className="absolute top-0 right-0 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center">
+                    <ClientAvatar name={form.clientName || 'C'} size="lg" className="w-20 h-20 text-xl" />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
+              <p className="text-[11px] text-muted-foreground">JPG, PNG. Máx 2MB</p>
+            </div>
+
             <div className="space-y-2">
               <Label>Nombre del cliente *</Label>
               <Input value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} placeholder="Ej: Acme Corp" />
@@ -277,7 +352,7 @@ export default function Clients() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setModalOpen(false)}>Cancelar</Button>
+            <Button variant="outline" onClick={() => { resetLogoState(); setModalOpen(false); }}>Cancelar</Button>
             <Button onClick={handleSave} disabled={saving || !form.clientName.trim()}>{saving ? 'Guardando...' : 'Guardar'}</Button>
           </DialogFooter>
         </DialogContent>

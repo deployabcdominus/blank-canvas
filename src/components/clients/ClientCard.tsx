@@ -25,8 +25,8 @@ interface ClientCardProps {
   stats: { total: number; byStatus: Record<string, number> } | undefined;
   index: number;
   isAdmin: boolean;
-  onEdit: (c: Client) => void;
-  onDelete: (id: string) => void;
+  onEdit?: (c: Client) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function ClientCard({ client: c, stats, index, isAdmin, onEdit, onDelete }: ClientCardProps) {
@@ -66,10 +66,12 @@ export function ClientCard({ client: c, stats, index, isAdmin, onEdit, onDelete 
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onEdit(c)}>
-                  <Pencil className="w-3.5 h-3.5 mr-2" /> Editar
-                </DropdownMenuItem>
-                {isAdmin && (
+                {onEdit && (
+                  <DropdownMenuItem onClick={() => onEdit(c)}>
+                    <Pencil className="w-3.5 h-3.5 mr-2" /> Editar
+                  </DropdownMenuItem>
+                )}
+                {isAdmin && onDelete && (
                   <DropdownMenuItem className="text-destructive" onClick={() => onDelete(c.id)}>
                     <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
                   </DropdownMenuItem>
