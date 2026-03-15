@@ -28,6 +28,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { BlueprintAnnotator, type Annotation } from "./BlueprintAnnotator";
+import { TechnicalSheet, type TechnicalDetails } from "./TechnicalSheet";
 
 interface EditWorkOrderModalProps {
   order: WorkOrder | null;
