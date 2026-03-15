@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -432,10 +433,27 @@ export default function Settings() {
                 <CardHeader>
                   <CardTitle>Apariencia</CardTitle>
                 <CardDescription>
-                  Configure los efectos visuales
+                  Configure el tema y efectos visuales
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <Label>Tema</Label>
+                  <RadioGroup
+                    value={formData.theme}
+                    onValueChange={(value: 'light' | 'dark') => setFormData(prev => ({ ...prev, theme: value }))}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="light" id="light" />
+                      <Label htmlFor="light">Claro</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="dark" id="dark" />
+                      <Label htmlFor="dark">Oscuro</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label>Efecto Cristal (Glass)</Label>

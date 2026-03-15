@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
 
 export interface AppSettings {
+  theme: 'light' | 'dark';
   glassEffect: boolean;
 }
 
@@ -19,7 +20,16 @@ interface SettingsContextType {
   resetToDefaults: () => void;
 }
 
+const getInitialTheme = (): 'light' | 'dark' => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('sf-theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+  }
+  return 'light';
+};
+
 const defaultSettings: AppSettings = {
+  theme: getInitialTheme(),
   glassEffect: true,
 };
 
@@ -58,9 +68,11 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         if (data) {
           setSettings({
+            theme: (data.theme as 'light' | 'dark') || defaultSettings.theme,
             glassEffect: data.glass_effect ?? defaultSettings.glassEffect,
           });
         } else {
+          // If no data exists, use default settings
           setSettings(defaultSettings);
         }
       } catch (error) {
@@ -72,6 +84,17 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     loadSettings();
   }, [user]);
+
+  // Apply theme changes
+  useEffect(() => {
+    const root = document.documentElement;
+    if (settings.theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('sf-theme', settings.theme);
+  }, [settings.theme]);
 
   // Apply glass effect changes
   useEffect(() => {
@@ -92,6 +115,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         await supabase
           .from('user_settings')
           .update({
+            theme: newSettings.theme,
             glass_effect: newSettings.glassEffect,
           })
           .eq('user_id', user.id);
@@ -109,6 +133,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         await supabase
           .from('user_settings')
           .update({
+            theme: defaultSettings.theme,
             glass_effect: defaultSettings.glassEffect,
           })
           .eq('user_id', user.id);

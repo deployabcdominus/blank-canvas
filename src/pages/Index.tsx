@@ -1,398 +1,771 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Check, Zap, BarChart2, FileText, Users, Shield, Clock, TrendingUp } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { PageTransition } from "@/components/PageTransition";
+import { BrandLogo } from "@/components/BrandLogo";
+import brandLogoSrc from "@/assets/brand-logo.png";
+import { pricingPlans, benefitsData, stepsData } from "@/constants/landingPageData";
+import {
+  ArrowRight,
+  Check,
+  ChevronRight,
+  LogIn,
+  Link2,
+  Zap,
+  Clock,
+  Users,
+  Instagram,
+  Twitter,
+  Linkedin } from
+"lucide-react";
+import { Button } from "@/components/ui/button";
 
-const O = "#FF5722";
-const O2 = "#FF7043";
-const O3 = "rgba(255,87,34,0.15)";
-const O4 = "rgba(255,87,34,0.08)";
-const BG = "#111318";
-const BG2 = "#16181F";
-const BG3 = "#1E2028";
-const CARD = "#1A1D26";
-const BORDER = "rgba(255,87,34,0.18)";
-const BORDER2 = "rgba(255,255,255,0.06)";
-const WHITE = "#F5F5F7";
-const MUTED = "#9A9DB0";
-const DIM = "#5A5D70";
+/* ─── Scroll-reveal wrapper ─── */
+const Reveal = ({
+  children,
+  className = "",
+  delay = 0
 
-const glow = `0 0 32px rgba(255,87,34,0.35), 0 4px 16px rgba(255,87,34,0.20)`;
-const glowSm = `0 0 18px rgba(255,87,34,0.25)`;
-const cardShadow = `0 4px 24px rgba(0,0,0,0.40)`;
 
-const s: Record<string, React.CSSProperties> = {
-  page: { background: BG, color: WHITE, fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif", WebkitFontSmoothing: "antialiased", overflowX: "hidden" },
-  nav: { position: "sticky" as const, top: 0, zIndex: 100, height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 56px", background: "rgba(17,19,24,0.92)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${BORDER2}` },
-  logo: { display: "flex", alignItems: "center", gap: 10, fontSize: 18, fontWeight: 800, color: WHITE, letterSpacing: "-0.02em" },
-  logoIcon: { width: 32, height: 32, background: O, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: glowSm },
-  navLinks: { display: "flex", gap: 32 },
-  navLink: { fontSize: 13, color: MUTED, textDecoration: "none", letterSpacing: "0.01em", transition: "color 150ms" },
-  btnPrimary: { display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 22px", borderRadius: 6, background: O, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: glow, border: "none", cursor: "pointer", transition: "all 180ms ease" },
-  btnGhost: { display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 22px", borderRadius: 6, border: `1px solid rgba(255,255,255,0.15)`, color: WHITE, fontWeight: 600, fontSize: 14, textDecoration: "none", background: "transparent", cursor: "pointer" },
-  btnLg: { padding: "14px 32px", fontSize: 16, borderRadius: 8 },
+
+
+}: {children: React.ReactNode;className?: string;delay?: number;}) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 48 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}>
+
+      {children}
+    </motion.div>);
+
 };
 
-function HexGrid() {
-  return (
-    <svg width="480" height="360" viewBox="0 0 480 360" style={{ position: "absolute", right: -40, top: -20, opacity: 0.9 }}>
-      <defs>
-        <radialGradient id="og" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#FF5722" stopOpacity="0.8"/>
-          <stop offset="100%" stopColor="#FF5722" stopOpacity="0"/>
-        </radialGradient>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="4" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <g transform="translate(240,180)" filter="url(#glow)">
-        {[-120,-80,-40,0,40,80,120].map(x => (
-          <line key={`h${x}`} x1={x} y1="-80" x2={x-60} y2="40" stroke="rgba(255,87,34,0.15)" strokeWidth="0.5"/>
-        ))}
-        {[-120,-80,-40,0,40,80,120].map(x => (
-          <line key={`v${x}`} x1={x} y1="-80" x2={x+60} y2="40" stroke="rgba(255,87,34,0.15)" strokeWidth="0.5"/>
-        ))}
-        <ellipse cx="0" cy="40" rx="140" ry="24" fill="rgba(255,87,34,0.06)" stroke="rgba(255,87,34,0.20)" strokeWidth="1"/>
-        <rect x="-18" y="-60" width="36" height="100" rx="4" fill={BG3} stroke={O} strokeWidth="1"/>
-        <rect x="-18" y="-60" width="36" height="20" rx="4" fill={O}/>
-        <ellipse cx="0" cy="-60" rx="30" ry="8" fill="url(#og)" opacity="0.8"/>
-        {[[-100,-20],[-80,10],[80,-30],[100,5],[-60,-50],[60,-45]].map(([nx,ny],i) => (
-          <g key={i} transform={`translate(${nx},${ny})`}>
-            <ellipse rx="18" ry="6" cy="12" fill="rgba(255,87,34,0.08)" stroke="rgba(255,87,34,0.15)" strokeWidth="0.5"/>
-            <rect x="-10" y="-12" width="20" height="24" rx="3" fill={BG3} stroke="rgba(255,87,34,0.30)" strokeWidth="0.8"/>
-            <rect x="-10" y="-12" width="20" height="7" rx="3" fill="rgba(255,87,34,0.20)"/>
-            <circle cy="-6" r="2" fill={O} opacity="0.8"/>
-          </g>
-        ))}
-        {[[-100,-20],[-80,10],[80,-30],[100,5]].map(([nx,ny],i) => (
-          <line key={`c${i}`} x1={nx*0.4} y1={ny*0.4} x2={nx*0.9} y2={ny*0.9} stroke={O} strokeWidth="0.6" strokeDasharray="3 3" opacity="0.4"/>
-        ))}
-      </g>
-    </svg>
-  );
-}
+/* ─── Mouse-tracking parallax container ─── */
+const useMouseParallax = (strength = 15) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 50, damping: 20 });
+  const springY = useSpring(y, { stiffness: 50, damping: 20 });
 
-function StatCard({ icon, val, label, color = O }: { icon: React.ReactNode; val: string; label: string; color?: string }) {
-  return (
-    <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16, boxShadow: cardShadow }}>
-      <div style={{ width: 44, height: 44, borderRadius: 10, background: O4, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", color, flexShrink: 0 }}>
-        {icon}
-      </div>
-      <div>
-        <div style={{ fontSize: 24, fontWeight: 800, color: WHITE, lineHeight: 1 }}>{val}</div>
-        <div style={{ fontSize: 12, color: MUTED, marginTop: 3 }}>{label}</div>
-      </div>
-    </div>
-  );
-}
+  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set((e.clientX - centerX) / rect.width * strength);
+    y.set((e.clientY - centerY) / rect.height * strength);
+  };
 
-function FeatureCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
-  return (
-    <div style={{ background: CARD, border: `1px solid ${BORDER2}`, borderRadius: 14, padding: "28px 24px", textAlign: "center", transition: "all 200ms ease", cursor: "default" }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 24px rgba(255,87,34,0.12)`; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}>
-      <div style={{ width: 52, height: 52, borderRadius: 14, background: O4, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", color: O, margin: "0 auto 16px", fontSize: 22 }}>
-        {icon}
-      </div>
-      <h3 style={{ fontSize: 16, fontWeight: 700, color: WHITE, margin: "0 0 10px" }}>{title}</h3>
-      <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.7, margin: 0 }}>{desc}</p>
-    </div>
-  );
-}
+  const handleLeave = () => {x.set(0);y.set(0);};
 
-export default function Landing() {
+  return { springX, springY, handleMouse, handleLeave };
+};
+
+/* ─── Hero image with scroll parallax + hover ─── */
+const HeroImage = ({ src, alt }: {src: string;alt: string;}) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
+  return (
+    <motion.div
+      ref={ref}
+      className="overflow-hidden rounded-3xl bg-[hsl(228,18%,14%)] group relative ring-1 ring-[hsl(228,14%,24%)] shadow-[inset_0_2px_8px_hsl(0,0%,0%,0.3)]"
+      whileHover={{ scale: 1.03, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}>
+
+      <motion.img
+        src={src}
+        alt={alt}
+        style={{ y }}
+        className="w-full h-full object-cover scale-110 transition-all duration-[350ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-110 group-hover:contrast-[1.05]"
+        loading="lazy" />
+
+      {/* Dark unifying overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[hsl(228,20%,5%)]/40 via-transparent to-[hsl(228,20%,5%)]/15 pointer-events-none" />
+
+      {/* Hover glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[350ms] pointer-events-none"
+      style={{ boxShadow: "inset 0 0 40px hsl(225 80% 56% / 0.15)" }} />
+    </motion.div>);
+
+};
+
+/* ─── Animated step line ─── */
+const StepLine = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  return (
+    <div ref={ref} className="hidden md:block absolute top-14 -right-6 w-12">
+      <motion.div
+        className="h-[2px] bg-gradient-to-r from-[hsl(225,80%,56%)]/40 to-transparent origin-left"
+        initial={{ scaleX: 0 }}
+        animate={inView ? { scaleX: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} />
+
+      <ChevronRight className="w-4 h-4 text-[hsl(225,80%,56%)]/30 absolute -right-1 -top-[7px]" />
+    </div>);
+
+};
+
+/* ─── Animated price display ─── */
+const AnimatedPrice = ({ value }: {value: number;}) =>
+<AnimatePresence mode="wait">
+    <motion.span
+    key={value}
+    initial={{ opacity: 0, y: 12 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -12 }}
+    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    className="text-4xl font-bold inline-block">
+
+      ${value}
+    </motion.span>
+  </AnimatePresence>;
+
+
+const Index = () => {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(false);
+  const { springX, springY, handleMouse, handleLeave } = useMouseParallax(12);
+
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", fn);
-    return () => window.removeEventListener("scroll", fn);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const handlePlanSelect = (plan: string) => {
+    localStorage.setItem("selectedPlan", plan);
+    localStorage.setItem("selectedBilling", isAnnual ? "annual" : "monthly");
+    navigate("/checkout");
+  };
+
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const heroImages = [
+  { src: "https://images.unsplash.com/photo-1563520239648-a24e51d4b570?w=600&h=450&fit=crop&auto=format&q=85", alt: "CNC router precision cutting" },
+  { src: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&h=450&fit=crop&auto=format&q=85", alt: "Vinyl wrap application close-up" },
+  { src: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&h=450&fit=crop&auto=format&q=85", alt: "Channel letter fabrication with sparks" },
+  { src: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&h=450&fit=crop&auto=format&q=85", alt: "Professional signage installation at height" }];
+
+
   return (
-    <div style={s.page}>
+    <PageTransition>
+      <div className="min-h-screen bg-[hsl(228,20%,7%)] text-[hsl(0,0%,96%)] overflow-x-hidden scroll-smooth landing-dark">
 
-      {/* NAV */}
-      <nav style={{ ...s.nav, background: scrolled ? "rgba(17,19,24,0.96)" : "rgba(17,19,24,0.60)", borderBottomColor: scrolled ? BORDER2 : "transparent" }}>
-        <div style={s.logo}>
-          <div style={s.logoIcon}>⚡</div>
-          Sign Flow
-        </div>
-        <div style={s.navLinks}>
-          {["Características","Precios","Demo","Blog"].map(l => (
-            <a key={l} href={`#${l.toLowerCase()}`} style={s.navLink}
-              onMouseEnter={e => (e.target as HTMLElement).style.color = WHITE}
-              onMouseLeave={e => (e.target as HTMLElement).style.color = MUTED}>{l}</a>
-          ))}
-        </div>
-        <div style={{ display: "flex", gap: 10 }}>
-          <Link to="/login" style={s.btnGhost}>Iniciar sesión</Link>
-          <Link to="/access" style={s.btnPrimary}>Empezar gratis →</Link>
-        </div>
-      </nav>
+        {/* ═══════════ HEADER ═══════════ */}
+        <header
+          className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+          scrolled ?
+          "bg-[hsl(228,20%,7%)]/85 backdrop-blur-2xl shadow-[0_1px_0_hsl(228,14%,18%/0.6)]" :
+          "bg-transparent"}`
+          }>
 
-      {/* HERO */}
-      <section style={{ padding: "100px 56px 80px", position: "relative", overflow: "hidden", minHeight: 600, background: `linear-gradient(135deg, ${BG} 0%, #141620 100%)` }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,87,34,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,87,34,0.03) 1px, transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: -100, right: 200, width: 400, height: 400, background: "radial-gradient(circle, rgba(255,87,34,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center", gap: 60, position: "relative" }}>
-          <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 4, background: O4, border: `1px solid ${BORDER}`, fontSize: 12, color: O, fontWeight: 600, marginBottom: 24, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>
-              ⚡ Plataforma operacional para PYMEs
-            </div>
-            <h1 style={{ fontSize: "clamp(36px,4.5vw,58px)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 20px", color: WHITE }}>
-              Gestiona tu negocio<br />
-              <span style={{ color: O, textShadow: `0 0 40px rgba(255,87,34,0.50)` }}>de punta a punta.</span>
-            </h1>
-            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 36px", maxWidth: 460 }}>
-              Desde el primer lead hasta el cobro final. Sign Flow conecta ventas, producción e instalaciones en un solo flujo para cualquier PYME.
-            </p>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" as const, marginBottom: 40 }}>
-              <Link to="/access" style={{ ...s.btnPrimary, ...s.btnLg }}>
-                Empezar gratis — 14 días <ArrowRight size={16} />
-              </Link>
-              <a href="#demo" style={{ ...s.btnGhost, ...s.btnLg }}>Ver demo</a>
-            </div>
-            <div style={{ display: "flex", gap: 24, flexWrap: "wrap" as const }}>
-              {["Sin tarjeta de crédito","Cancela cuando quieras","Setup en 5 minutos"].map(t => (
-                <div key={t} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: MUTED }}>
-                  <Check size={13} style={{ color: O }} />{t}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ position: "relative", height: 360 }}>
-            <HexGrid />
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section style={{ background: BG2, borderTop: `1px solid ${BORDER2}`, borderBottom: `1px solid ${BORDER2}`, padding: "40px 56px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 }}>
-          <StatCard icon={<Users size={20}/>} val="500+" label="Negocios activos" />
-          <StatCard icon={<TrendingUp size={20}/>} val="$2.4M" label="Procesado este mes" />
-          <StatCard icon={<Zap size={20}/>} val="98%" label="Uptime garantizado" />
-          <StatCard icon={<Clock size={20}/>} val="3 min" label="Setup promedio" />
-        </div>
-      </section>
-
-      {/* PROBLEMA / SOLUCIÓN */}
-      <section style={{ padding: "100px 56px", background: BG }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
-            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>¿Por qué Sign Flow?</div>
-            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: "0 0 14px" }}>
-              Tu negocio merece más que<br /><span style={{ color: O }}>WhatsApps y Excel.</span>
-            </h2>
-            <p style={{ fontSize: 16, color: MUTED, maxWidth: 500, margin: "0 auto" }}>Cada día que operas sin sistema pierdes tiempo, dinero y clientes.</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 0 }}>
-            <div style={{ background: CARD, border: `1px solid ${BORDER2}`, borderRadius: "14px 0 0 14px", padding: "28px 32px" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: DIM, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 16 }}>Sin Sign Flow</div>
-              {["Leads perdidos en el chat","Cotizaciones en Word","Órdenes por voz","Fotos en el celular","Sin control financiero"].map((t,i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: i < 4 ? `1px solid ${BORDER2}` : "none" }}>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#FF453A", flexShrink: 0 }} />
-                  <span style={{ fontSize: 14, color: MUTED, textDecoration: "line-through" }}>{t}</span>
-                </div>
-              ))}
-            </div>
-            <div style={{ background: O, width: 48, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <span style={{ fontSize: 22, color: "#fff", fontWeight: 700 }}>→</span>
-            </div>
-            <div style={{ background: `linear-gradient(135deg, ${CARD}, #1F2235)`, border: `1px solid ${BORDER}`, borderRadius: "0 14px 14px 0", padding: "28px 32px", boxShadow: `0 0 40px rgba(255,87,34,0.08)` }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: O, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 16 }}>Con Sign Flow</div>
-              {["Pipeline visual en tiempo real","PDF profesional con un clic","Órdenes asignadas con estado","Evidencias en la nube","Dashboard financiero en vivo"].map((t,i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: i < 4 ? `1px solid ${BORDER}` : "none" }}>
-                  <Check size={14} style={{ color: O, flexShrink: 0 }} />
-                  <span style={{ fontSize: 14, color: WHITE, fontWeight: 600 }}>{t}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section id="demo" style={{ padding: "100px 56px", background: BG2 }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Características</div>
-            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: 0 }}>
-              Todo en uno. <span style={{ color: O }}>Sin complicaciones.</span>
-            </h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
-            <FeatureCard icon={<BarChart2 size={22}/>} title="Dashboard ejecutivo" desc="KPIs en tiempo real + briefing de IA cada mañana. Sabes exactamente qué atender antes de abrir el primer mensaje." />
-            <FeatureCard icon={<FileText size={22}/>} title="Leads y propuestas" desc="Captura leads, genera propuestas en PDF con tu logo y cierra más rápido con seguimiento automático." />
-            <FeatureCard icon={<Zap size={22}/>} title="Producción e instalación" desc="Órdenes automáticas al aprobar propuestas. Tu equipo sabe qué hacer y cuándo. Sin llamadas." />
-            <FeatureCard icon={<TrendingUp size={22}/>} title="Control financiero" desc="Ve exactamente cuánto entra, cuánto está pendiente y cuál es tu pipeline de ingresos para el mes." />
-            <FeatureCard icon={<Users size={22}/>} title="Gestión de equipo" desc="5 roles con permisos granulares. Cada miembro ve exactamente lo que necesita para su trabajo." />
-            <FeatureCard icon={<Shield size={22}/>} title="Seguro y confiable" desc="RLS en Supabase, datos aislados por empresa y acceso protegido por roles. Tu información solo la ves tú." />
-          </div>
-        </div>
-      </section>
-
-      {/* 3 PASOS */}
-      <section style={{ padding: "100px 56px", background: BG, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,87,34,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,87,34,0.025) 1px, transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative" }}>
-          <div style={{ textAlign: "center", marginBottom: 64 }}>
-            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Cómo funciona</div>
-            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: 0 }}>
-              Del contacto al cobro<br /><span style={{ color: O }}>en 3 pasos.</span>
-            </h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 0, position: "relative" }}>
-            <div style={{ position: "absolute", top: 36, left: "16.5%", right: "16.5%", height: 2, background: `linear-gradient(90deg, ${O}, ${O2}, ${O})`, opacity: 0.4, zIndex: 0 }} />
-            {[
-              { n: "01", t: "Captura y convierte", d: "Registra cada lead con su info y servicio. Genera propuestas PDF con tu logo. Cierra más con seguimiento automático." },
-              { n: "02", t: "Produce y coordina", d: "Al aprobar la propuesta se crea la orden automáticamente. Tu equipo recibe asignación en su app al instante." },
-              { n: "03", t: "Entrega y cobra", d: "El equipo sube evidencias desde campo. El cliente recibe notificación. Tú ves el ingreso en el dashboard." },
-            ].map((step, i) => (
-              <div key={i} style={{ padding: "0 32px", textAlign: "center", position: "relative", zIndex: 1 }}>
-                <div style={{ width: 72, height: 72, borderRadius: "50%", background: i === 1 ? O : CARD, border: `2px solid ${O}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", boxShadow: i === 1 ? glow : "none", fontSize: 22, fontWeight: 900, color: i === 1 ? "#fff" : O }}>
-                  {step.n}
-                </div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: WHITE, margin: "0 0 12px" }}>{step.t}</h3>
-                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.7, margin: 0 }}>{step.d}</p>
+          <div className="max-w-6xl mx-auto flex items-center justify-between px-5 py-4">
+            <a href="/" className="flex items-center gap-[3px] sm:gap-[4px] md:gap-[4px] py-2 min-h-[44px]" aria-label="Sign Flow - Inicio">
+              <div className="flex-shrink-0 w-[34px] h-[34px] sm:w-[40px] sm:h-[40px] md:w-[44px] md:h-[44px] overflow-hidden m-0 p-0">
+                <img
+                  src={brandLogoSrc}
+                  alt="Sign Flow"
+                  className="block w-full h-full object-contain scale-[1.14] sm:scale-[1.16] md:scale-[1.18]"
+                  draggable={false} />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIOS */}
-      <section style={{ padding: "100px 56px", background: BG2 }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Testimonios</div>
-            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: 0 }}>
-              Negocios que ya <span style={{ color: O }}>ordenaron su operación.</span>
-            </h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
-            {[
-              { i: "CM", n: "Carlos M.", r: "Director · Taller de señalética, Miami", t: "Antes perdíamos leads por no dar seguimiento a tiempo. Ahora el dashboard me avisa qué está caliente cada mañana." },
-              { i: "ER", n: "Elena R.", r: "Gerente · Empresa de instalaciones, CDMX", t: "Mandamos propuestas en PDF con nuestro logo desde el celular. Los clientes lo perciben diferente y cerramos 30% más." },
-              { i: "DL", n: "David L.", r: "Operaciones · Servicios de campo, Bogotá", t: "Coordinamos 8 técnicos sin un solo WhatsApp de confusión. Cada uno sabe su orden del día al entrar a la app." },
-            ].map((p, i) => (
-              <div key={i} style={{ background: CARD, border: `1px solid ${BORDER2}`, borderRadius: 14, padding: 28, transition: "all 200ms" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 24px rgba(255,87,34,0.10)`; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}>
-                <div style={{ display: "flex", gap: 2, marginBottom: 16 }}>
-                  {[...Array(5)].map((_,j) => <span key={j} style={{ color: O, fontSize: 14 }}>★</span>)}
-                </div>
-                <p style={{ fontSize: 14, color: MUTED, fontStyle: "italic", lineHeight: 1.75, margin: "0 0 20px" }}>"{p.t}"</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: O4, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: O, flexShrink: 0 }}>{p.i}</div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: WHITE }}>{p.n}</div>
-                    <div style={{ fontSize: 11, color: DIM }}>{p.r}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRECIOS */}
-      <section id="precios" style={{ padding: "100px 56px", background: BG }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Precios</div>
-            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: "0 0 12px" }}>Elige tu plan.</h2>
-            <p style={{ fontSize: 16, color: MUTED }}>Sin contratos. Sin sorpresas. Cancela cuando quieras.</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
-            {[
-              { name: "Starter", price: 49, features: ["Hasta 3 usuarios","Leads y propuestas","Órdenes de servicio","Soporte por email"], hi: false },
-              { name: "Professional", price: 99, features: ["Hasta 10 usuarios","Todo de Starter","AI Briefing diario","PDF de propuestas","Reportes avanzados"], hi: true },
-              { name: "Enterprise", price: 199, features: ["Usuarios ilimitados","Todo de Professional","Onboarding dedicado","SLA garantizado"], hi: false },
-            ].map((plan, i) => (
-              <div key={i} style={{ background: plan.hi ? `linear-gradient(135deg, #1F2035, #252840)` : CARD, border: `1px solid ${plan.hi ? O : BORDER2}`, borderRadius: 16, padding: 32, position: "relative", boxShadow: plan.hi ? `0 0 60px rgba(255,87,34,0.15)` : cardShadow }}>
-                {plan.hi && (
-                  <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: O, borderRadius: 4, padding: "4px 16px", fontSize: 11, fontWeight: 800, color: "#fff", whiteSpace: "nowrap", boxShadow: glowSm }}>
-                    MÁS POPULAR
-                  </div>
-                )}
-                <div style={{ fontSize: 13, fontWeight: 700, color: plan.hi ? O : MUTED, marginBottom: 10, textTransform: "uppercase" as const, letterSpacing: "0.06em" }}>{plan.name}</div>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 24 }}>
-                  <span style={{ fontSize: 52, fontWeight: 900, color: WHITE, lineHeight: 1, letterSpacing: "-0.03em" }}>${plan.price}</span>
-                  <span style={{ fontSize: 15, color: DIM }}>/mes</span>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 28 }}>
-                  {plan.features.map((f, j) => (
-                    <div key={j} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: MUTED }}>
-                      <Check size={14} style={{ color: O, flexShrink: 0 }} />{f}
-                    </div>
-                  ))}
-                </div>
-                <Link to="/access" style={{ display: "block", textAlign: "center", padding: "12px", borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: "none", background: plan.hi ? O : "transparent", color: plan.hi ? "#fff" : WHITE, border: plan.hi ? "none" : `1px solid rgba(255,255,255,0.15)`, boxShadow: plan.hi ? glow : "none" }}>
-                  {plan.hi ? "Elegir Professional →" : plan.name === "Enterprise" ? "Contactar ventas" : "Elegir Starter"}
-                </Link>
-              </div>
-            ))}
-          </div>
-          <p style={{ textAlign: "center", fontSize: 13, color: DIM, marginTop: 24 }}>
-            ✓ 14 días gratis &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Cancela cuando quieras
-          </p>
-        </div>
-      </section>
-
-      {/* CTA FINAL */}
-      <section style={{ padding: "120px 56px", textAlign: "center", background: `linear-gradient(135deg, ${BG} 0%, #16111A 100%)`, borderTop: `1px solid ${BORDER}`, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 80% at 50% 100%, rgba(255,87,34,0.12), transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,87,34,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,87,34,0.03) 1px, transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
-        <div style={{ position: "relative" }}>
-          <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 20 }}>⚡ Empieza hoy</div>
-          <h2 style={{ fontSize: "clamp(36px,5vw,64px)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.05, margin: "0 0 16px", color: WHITE }}>
-            ¿Listo para ordenar<br /><span style={{ color: O, textShadow: `0 0 40px rgba(255,87,34,0.50)` }}>tu negocio?</span>
-          </h2>
-          <p style={{ fontSize: 18, color: MUTED, margin: "0 0 40px" }}>Empieza gratis hoy. Tu equipo lo notará mañana.</p>
-          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" as const }}>
-            <Link to="/access" style={{ ...s.btnPrimary, ...s.btnLg, fontSize: 16 }}>
-              Empezar gratis — 14 días <ArrowRight size={16} />
-            </Link>
-            <a href="mailto:hello@mail.signflowapp.com" style={{ ...s.btnGhost, ...s.btnLg, fontSize: 16 }}>
-              Hablar con ventas
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer style={{ background: "#0D0F14", borderTop: `1px solid ${BORDER2}`, padding: "48px 56px 28px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
-            <div>
-              <div style={{ ...s.logo, marginBottom: 12, fontSize: 16 }}>
-                <div style={{ ...s.logoIcon, width: 28, height: 28, fontSize: 14 }}>⚡</div>
+              <span className="font-semibold tracking-[-0.01em] leading-none text-[16px] sm:text-[18px] md:text-[20px] text-[#EDEFF5] translate-y-[0.5px] m-0 p-0">
                 Sign Flow
-              </div>
-              <div style={{ fontSize: 13, color: DIM, lineHeight: 1.7 }}>La plataforma operacional para negocios que venden y entregan productos o servicios.</div>
-            </div>
-            {[
-              { title: "Producto", links: ["Características","Precios","Demo","Changelog"] },
-              { title: "Empresa", links: ["Sobre nosotros","Blog","Contacto"] },
-              { title: "Legal", links: ["Privacidad","Términos","Cookies"] },
-            ].map(col => (
-              <div key={col.title}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: O, textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 14 }}>{col.title}</div>
-                {col.links.map(l => <a key={l} href="#" style={{ display: "block", fontSize: 13, color: DIM, textDecoration: "none", marginBottom: 9, transition: "color 150ms" }}
-                  onMouseEnter={e => (e.target as HTMLElement).style.color = WHITE}
-                  onMouseLeave={e => (e.target as HTMLElement).style.color = DIM}>{l}</a>)}
-              </div>
-            ))}
-          </div>
-          <div style={{ borderTop: `1px solid ${BORDER2}`, paddingTop: 20, display: "flex", justifyContent: "space-between", fontSize: 12, color: DIM }}>
-            <span>© 2026 Sign Flow · signflowapp.com</span>
-            <span>Todos los derechos reservados</span>
-          </div>
-        </div>
-      </footer>
+              </span>
+            </a>
+            <nav className="hidden md:flex items-center gap-10 text-sm font-medium text-[hsl(228,10%,55%)]">
+              {[
+              { label: "Funciones", id: "benefits" },
+              { label: "Cómo funciona", id: "how" },
+              { label: "Precios", id: "pricing" }].
+              map((item) =>
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className="relative hover:text-white transition-colors duration-300 after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-[hsl(225,80%,56%)] hover:after:w-full after:transition-all after:duration-300">
 
-    </div>
-  );
-}
+                  {item.label}
+                </button>
+              )}
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/login")}
+                className="text-[hsl(228,10%,55%)] hover:text-white hover:bg-white/5">
+
+                <LogIn className="w-4 h-4 mr-1.5" />
+                Ingresar
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => scrollTo("pricing")}
+                className="bg-[hsl(225,80%,56%)] text-white hover:bg-[hsl(225,80%,50%)] rounded-full px-5 text-sm font-medium shadow-lg shadow-[hsl(225,80%,56%)]/20 transition-all duration-300 hover:shadow-[hsl(225,80%,56%)]/40 hover:scale-[1.03]">
+
+                Elegir Plan
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        {/* ═══════════ HERO ═══════════ */}
+        <section className="relative pt-28 pb-20 sm:pt-32 sm:pb-28 md:pt-40 md:pb-36 px-5">
+          {/* Multi-layer background */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 opacity-[0.03]" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+              backgroundSize: "128px 128px"
+            }} />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,hsl(225,80%,56%,0.15),transparent_70%)]" />
+          </div>
+
+          {/* Animated gradient orbs */}
+          <motion.div
+            className="absolute top-16 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, hsl(225 80% 56% / 0.14) 0%, hsl(260 70% 58% / 0.07) 50%, transparent 70%)" }}
+            animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} />
+
+          <motion.div
+            className="absolute top-40 left-[30%] w-[400px] h-[400px] rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, hsl(260 70% 58% / 0.08) 0%, transparent 70%)" }}
+            animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }} />
+
+
+          <div className="relative max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
+            {/* Left */}
+            <div className="order-2 md:order-1 text-center md:text-left">
+              <motion.div
+                initial={{ opacity: 0, y: 36 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+
+                {/* Badge — glass effect */}
+                <motion.span
+                  className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-[hsl(225,80%,70%)] mb-5 px-4 py-2 rounded-full border border-[hsl(225,80%,56%)]/25 bg-[hsl(225,80%,56%)]/[0.08] backdrop-blur-md shadow-[0_4px_24px_hsl(225,80%,56%,0.1)]"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.6 }}>
+
+                  <Zap className="w-3.5 h-3.5" />
+                  Plataforma de gestión de operaciones
+                </motion.span>
+
+                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3rem] lg:text-[3.6rem] font-bold leading-[1.08] tracking-[-0.025em] mb-6 max-w-[520px] mx-auto md:mx-0">
+                  Controla tu operación,{" "}
+                  <span className="block mt-1 bg-gradient-to-r from-[#00D2FF] via-[#7C6BFF] to-[#A259FF] bg-clip-text text-transparent">
+                    de lead a entrega.
+                  </span>
+                </h1>
+
+                <p className="text-[15px] sm:text-lg md:text-[19px] font-medium text-[hsl(228,12%,72%)] leading-[1.65] max-w-lg mx-auto md:mx-0 mb-8">
+                  Leads, propuestas, producción y ejecución en un solo flujo.
+                  Hecho para negocios de servicios que quieren crecer.
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                  <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                    <Button
+                      size="lg"
+                      onClick={() => scrollTo("pricing")}
+                      className="relative bg-[hsl(225,80%,56%)] text-white hover:bg-[hsl(225,80%,52%)] rounded-full px-9 text-base font-semibold shadow-[0_8px_32px_hsl(225,80%,56%,0.35)] transition-all duration-300 hover:shadow-[0_16px_48px_hsl(225,80%,56%,0.5)]">
+
+                      Elegir Plan
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => scrollTo("how")}
+                      className="rounded-full px-9 text-base font-medium border-[hsl(228,14%,20%)] text-[hsl(228,10%,60%)] hover:text-white hover:border-[hsl(225,80%,56%)]/30 hover:bg-[hsl(225,80%,56%)]/[0.06] bg-transparent transition-all duration-400">
+
+                      Ver Demo
+                    </Button>
+                  </motion.div>
+                </div>
+
+                <motion.button
+                  onClick={() => navigate("/invite")}
+                  className="mt-5 flex items-center justify-center md:justify-start gap-1.5 text-sm text-[hsl(228,10%,38%)] hover:text-[hsl(225,80%,70%)] transition-colors duration-300"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 }}>
+
+                  <Link2 className="w-3.5 h-3.5" />
+                  ¿Te invitaron a un equipo? Unirse con link
+                </motion.button>
+              </motion.div>
+            </div>
+
+            {/* Right — hero visual with mouse parallax */}
+            <motion.div
+              className="order-1 md:order-2 relative"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              onMouseMove={handleMouse}
+              onMouseLeave={handleLeave}>
+
+              {/* Cobalt glow behind grid */}
+              <div className="absolute -inset-16 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,hsl(225,80%,50%,0.1),transparent_70%)] pointer-events-none blur-2xl" />
+
+              <motion.div
+                style={{ x: springX, y: springY }}
+                className="relative aspect-[4/3] md:scale-[1.08] rounded-3xl overflow-hidden border border-[hsl(228,14%,22%)]/60 bg-[hsl(228,18%,10%)]/60 backdrop-blur-sm shadow-[0_32px_80px_-12px_hsl(225,80%,56%,0.18),0_0_0_1px_hsl(228,14%,20%,0.4),inset_0_1px_0_hsl(0,0%,100%,0.03)]">
+
+                <div className="absolute inset-2.5 sm:inset-3 grid grid-cols-2 grid-rows-2 gap-2.5 sm:gap-3">
+                  {heroImages.map((img, i) =>
+                  <HeroImage key={i} src={img.src} alt={img.alt} />
+                  )}
+                </div>
+
+                {/* Bottom gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[hsl(228,20%,7%)]/70 via-transparent to-[hsl(228,20%,7%)]/20 pointer-events-none" />
+                {/* Inner glow */}
+                <div className="absolute inset-0 shadow-[inset_0_0_60px_hsl(225,80%,56%,0.04)] pointer-events-none rounded-2xl" />
+              </motion.div>
+
+              {/* Floating badge */}
+              <motion.div
+                className="absolute -bottom-6 left-6 rounded-2xl shadow-[0_20px_60px_-8px_hsl(0,0%,0%,0.6)] border border-[hsl(228,14%,22%)]/40 ring-1 ring-white/[0.06] bg-[hsl(228,18%,9%)]/80 backdrop-blur-[16px] px-6 py-4 flex items-center gap-4"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
+
+                <div className="w-10 h-10 rounded-full bg-[hsl(225,80%,56%)]/15 flex items-center justify-center shadow-[0_0_12px_hsl(225,80%,56%,0.15)]">
+                  <Check className="w-4.5 h-4.5 text-[hsl(225,80%,65%)]" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-semibold leading-tight text-[hsl(0,0%,94%)]">Listo para producción</p>
+                  <p className="text-[11px] text-[hsl(228,10%,48%)] mt-0.5">Orden #1247 completada</p>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ═══════════ TRUST BAR ═══════════ */}
+        <Reveal>
+          <section className="py-10 border-y border-[hsl(228,14%,12%)]">
+            <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-x-14 gap-y-2">
+              {[
+              { label: "Setup en minutos", icon: Clock },
+              { label: "Workflow completo", icon: Zap },
+              { label: "Multi-equipo", icon: Users }].
+              map(({ label, icon: Icon }) =>
+              <div key={label} className="flex flex-col items-center gap-2.5 p-6 group">
+                  <Icon className="w-5 h-5 text-[hsl(225,80%,60%)] group-hover:text-[hsl(225,80%,70%)] transition-colors duration-300" />
+                  <span className="text-sm font-medium text-[hsl(228,10%,48%)] group-hover:text-[hsl(228,10%,65%)] transition-colors duration-300">{label}</span>
+                </div>
+              )}
+            </div>
+          </section>
+        </Reveal>
+
+        {/* ═══════════ BENEFITS — slightly lighter depth ═══════════ */}
+        <section id="benefits" className="py-24 md:py-32 lg:py-40 px-5 relative">
+          <div className="absolute inset-0 bg-[hsl(228,20%,9%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,hsl(225,80%,56%,0.04),transparent)] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[hsl(225,80%,56%)]/10 to-transparent" />
+
+          <div className="max-w-6xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-16 lg:mb-20">
+                <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-[hsl(225,80%,65%)] mb-4 px-3 py-1 rounded-full border border-[hsl(225,80%,56%)]/15 bg-[hsl(225,80%,56%)]/[0.05]">
+                  ¿Por qué Sign Flow?
+                </span>
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3rem] font-bold tracking-tight leading-[1.2]">
+                   Todo lo que tu taller necesita
+                 </h2>
+                <p className="mt-4 text-[hsl(228,10%,52%)] max-w-xl mx-auto text-sm sm:text-base">
+                  Diseñado específicamente para el flujo de trabajo de fabricación e instalación de señalética.
+                </p>
+              </div>
+            </Reveal>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {benefitsData.map((b, i) => {
+                const Icon = b.icon;
+                return (
+                  <Reveal key={b.title} delay={i * 0.08}>
+                    <motion.div
+                      whileHover={{ y: -6, transition: { duration: 0.5, ease: "easeOut" } }}
+                      className="group relative p-6 sm:p-8 rounded-2xl border border-[hsl(228,14%,18%)]/50 bg-gradient-to-b from-[hsl(228,18%,13%)] to-[hsl(228,20%,8%)] backdrop-blur-sm hover:border-[hsl(225,80%,56%)]/20 hover:shadow-[0_16px_48px_-12px_hsl(225,80%,56%,0.12)] transition-all duration-500">
+
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[hsl(225,80%,56%)]/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                      <div className="relative">
+                        <div className="w-11 h-11 rounded-xl bg-[hsl(225,80%,56%)]/[0.08] border border-[hsl(225,80%,56%)]/10 flex items-center justify-center mb-5 group-hover:bg-[hsl(225,80%,56%)]/[0.12] group-hover:border-[hsl(225,80%,56%)]/20 group-hover:shadow-[0_0_20px_hsl(225,80%,56%,0.2)] transition-all duration-500">
+                          <Icon className="w-5 h-5 text-[hsl(225,80%,62%)] group-hover:text-[hsl(225,80%,72%)] drop-shadow-[0_0_6px_hsl(225,80%,56%,0.4)] transition-all duration-500" />
+                        </div>
+                        <h3 className="text-[15px] font-semibold mb-2 text-[hsl(0,0%,93%)]">{b.title}</h3>
+                        <p className="text-sm leading-relaxed text-[hsl(228,10%,55%)]">{b.description}</p>
+                      </div>
+                    </motion.div>
+                  </Reveal>);
+
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ HOW IT WORKS — darkest section ═══════════ */}
+        <section id="how" className="py-24 md:py-32 lg:py-40 px-5 relative">
+          <div className="absolute inset-0 bg-[hsl(228,24%,4%)] pointer-events-none" />
+          <div className="absolute inset-0 blueprint-pattern opacity-40 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[hsl(228,20%,7%)]/80 via-transparent to-[hsl(228,20%,7%)]/80 pointer-events-none" />
+          {/* Top separator */}
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[hsl(225,80%,56%)]/8 to-transparent" />
+
+          <div className="max-w-5xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-14 lg:mb-20">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[hsl(225,80%,65%)] mb-3 block">
+                  Cómo funciona
+                </span>
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3rem] font-bold tracking-tight leading-[1.2]">
+                   3 pasos. Cero complicaciones.
+                 </h2>
+              </div>
+            </Reveal>
+
+            {/* Horizontal connecting line (desktop) */}
+            <div className="hidden md:block absolute top-[calc(50%+40px)] left-[16%] right-[16%] h-px">
+              <motion.div
+                className="h-full bg-gradient-to-r from-transparent via-[hsl(225,80%,56%)]/20 to-transparent"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }} />
+
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {stepsData.map((s, i) =>
+              <Reveal key={s.step} delay={i * 0.15}>
+                  <motion.div
+                  whileHover={{
+                    scale: 1.03,
+                    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+                  }}
+                  className="group relative text-center md:text-left p-6 sm:p-8 rounded-2xl border border-transparent hover:border-[hsl(225,80%,56%)]/15 hover:bg-[hsl(228,18%,8%)]/70 transition-all duration-500">
+
+                    <span className="text-[5rem] sm:text-[6rem] md:text-[7rem] font-black leading-none block mb-3 bg-gradient-to-b from-[hsl(225,80%,56%)]/[0.2] to-transparent bg-clip-text text-transparent group-hover:from-[hsl(225,80%,56%)]/[0.35] group-hover:to-transparent transition-all duration-500 select-none"
+                      style={{ maskImage: "linear-gradient(to bottom, white 40%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, white 40%, transparent 100%)" }}>
+                      {s.step}
+                    </span>
+
+                    {/* Animated underline */}
+                    <motion.div
+                    className="h-[2px] w-16 mx-auto md:mx-0 mb-5 bg-gradient-to-r from-[hsl(225,80%,56%)]/50 to-transparent origin-left"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.3 + i * 0.15 }} />
+
+
+                    <h3 className="text-base sm:text-lg font-semibold mb-2 text-[hsl(0,0%,93%)]">{s.title}</h3>
+                    <p className="text-sm text-[hsl(228,10%,52%)] leading-relaxed">{s.description}</p>
+
+                    {i < 2 && <StepLine />}
+                  </motion.div>
+                </Reveal>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ SOCIAL PROOF — mid depth ═══════════ */}
+        <section className="py-24 md:py-32 lg:py-40 px-5 relative">
+          <div className="absolute inset-0 bg-[hsl(228,20%,8%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_50%,hsl(260,70%,58%,0.03),transparent)] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[hsl(228,14%,18%)]/40 to-transparent" />
+
+          <div className="max-w-5xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-14">
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3rem] font-bold tracking-tight leading-[1.2]">
+                   Hecho para equipos reales
+                 </h2>
+                <p className="mt-4 text-[hsl(228,10%,50%)]">
+                  Diseñado en colaboración con equipos de operaciones.
+                </p>
+              </div>
+            </Reveal>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+              { quote: "Por fin un sistema que entiende nuestro flujo de trabajo. No es otro CRM genérico.", name: "Carlos M.", role: "Owner — Studio" },
+              { quote: "Pasamos de hojas de cálculo a tener todo organizado en una semana. El onboarding es inmediato.", name: "María R.", role: "Operations Manager" },
+              { quote: "Mi equipo reporta desde el campo. Las fotos de evidencia me ahorran llamadas.", name: "David L.", role: "Project Manager" }].
+              map((t, i) =>
+              <Reveal key={t.name} delay={i * 0.1}>
+                  <motion.div
+                  whileHover={{ y: -4, transition: { duration: 0.5 } }}
+                  className="p-6 sm:p-8 rounded-2xl border border-[hsl(228,14%,16%)]/50 bg-gradient-to-b from-[hsl(228,18%,12%)] to-[hsl(228,20%,7%)] backdrop-blur-sm hover:border-[hsl(225,80%,56%)]/12 hover:shadow-[0_8px_32px_-8px_hsl(225,80%,56%,0.06)] transition-all duration-500">
+
+                    <div className="flex gap-1 mb-5">
+                      {[...Array(5)].map((_, j) =>
+                    <div key={j} className="w-1.5 h-1.5 rounded-full bg-[hsl(225,80%,56%)]/40" />
+                    )}
+                    </div>
+                    <p className="text-sm text-[hsl(228,10%,62%)] leading-relaxed mb-7 italic">"{t.quote}"</p>
+                    <div className="border-t border-[hsl(228,14%,14%)] pt-4">
+                      <p className="text-sm font-semibold text-[hsl(0,0%,90%)]">{t.name}</p>
+                      <p className="text-xs text-[hsl(228,10%,42%)] mt-0.5">{t.role}</p>
+                    </div>
+                  </motion.div>
+                </Reveal>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ PRICING — dark with vertical gradient ═══════════ */}
+        <section id="pricing" className="py-24 md:py-32 lg:py-40 px-5 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-[hsl(228,22%,5%)] via-[hsl(228,22%,6%)] to-[hsl(228,24%,4%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_30%,hsl(225,80%,56%,0.05),transparent)] pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[hsl(225,80%,56%)]/10 to-transparent" />
+
+          <div className="max-w-5xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-10">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[hsl(225,80%,65%)] mb-3 block">
+                  Precios simples
+                </span>
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3rem] font-bold tracking-tight leading-[1.2]">
+                   Elige tu plan y empieza hoy
+                 </h2>
+                <p className="mt-4 text-[hsl(228,10%,48%)]">Sin contratos. Cancela cuando quieras.</p>
+              </div>
+            </Reveal>
+
+            {/* Monthly/Annual Toggle */}
+            <Reveal delay={0.1}>
+              <div className="flex items-center justify-center gap-4 mb-14">
+                <span className={`text-sm font-medium transition-colors duration-300 ${!isAnnual ? "text-white" : "text-[hsl(228,10%,40%)]"}`}>
+                  Mensual
+                </span>
+                <button
+                  onClick={() => setIsAnnual(!isAnnual)}
+                  className={`relative w-14 h-[30px] rounded-full transition-all duration-400 ${
+                  isAnnual ?
+                  "bg-[hsl(225,80%,56%)] shadow-[0_0_20px_hsl(225,80%,56%,0.3)]" :
+                  "bg-[hsl(228,14%,20%)]"}`
+                  }
+                  aria-label="Toggle annual billing">
+
+                  <motion.div
+                    className="absolute top-[3px] w-6 h-6 rounded-full bg-white shadow-md"
+                    animate={{ left: isAnnual ? "calc(100% - 27px)" : "3px" }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }} />
+
+                </button>
+                <span className={`text-sm font-medium transition-colors duration-300 ${isAnnual ? "text-white" : "text-[hsl(228,10%,40%)]"}`}>
+                  Anual
+                </span>
+                <AnimatePresence>
+                  {isAnnual &&
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8, x: -8 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, x: -8 }}
+                    className="text-xs font-semibold text-[hsl(160,70%,55%)] bg-[hsl(160,70%,55%)]/10 border border-[hsl(160,70%,55%)]/20 px-2.5 py-1 rounded-full">
+
+                      -20%
+                    </motion.span>
+                  }
+                </AnimatePresence>
+              </div>
+            </Reveal>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+              {pricingPlans.map((plan, i) => {
+                const price = isAnnual ? plan.priceAnnual : plan.priceMonthly;
+                return (
+                  <Reveal key={plan.plan} delay={i * 0.12}>
+                    <motion.div
+                      whileHover={{ y: -8, transition: { duration: 0.5, ease: "easeOut" } }}
+                      className={`relative flex flex-col p-6 sm:p-8 rounded-2xl transition-all duration-500 ${
+                      plan.recommended ?
+                      "border border-[hsl(225,80%,56%)]/30 bg-gradient-to-b from-[hsl(228,18%,13%)] to-[hsl(228,20%,7%)] backdrop-blur-sm shadow-[0_24px_64px_-16px_hsl(225,80%,56%,0.25),0_0_0_1px_hsl(225,80%,56%,0.1),0_0_80px_-20px_hsl(225,80%,56%,0.12)] md:scale-[1.06]" :
+                      "border border-[hsl(228,14%,16%)]/40 bg-gradient-to-b from-[hsl(228,18%,11%)] to-[hsl(228,20%,7%)] backdrop-blur-sm opacity-90 hover:opacity-100 hover:border-[hsl(228,14%,22%)] hover:shadow-[0_16px_48px_-12px_hsl(0,0%,0%,0.3)]"}`
+                      }>
+
+                      {/* Animated glow ring for recommended */}
+                      {plan.recommended &&
+                      <motion.div
+                        className="absolute -inset-[1px] rounded-2xl pointer-events-none"
+                        style={{
+                          background: "linear-gradient(135deg, hsl(225 80% 56% / 0.25), hsl(260 70% 58% / 0.12), hsl(225 80% 56% / 0.25))",
+                          backgroundSize: "200% 200%"
+                        }}
+                        animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
+                        transition={{ duration: 6, repeat: Infinity, ease: "linear" }} />
+
+                      }
+
+                      {plan.recommended &&
+                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(225,80%,56%)] to-[hsl(260,70%,58%)] text-white text-[11px] font-semibold px-5 py-1.5 rounded-full shadow-[0_8px_24px_hsl(225,80%,56%,0.35)]">
+                          Recomendado
+                        </span>
+                      }
+
+                      <div className="relative">
+                        <h3 className="text-lg font-semibold mb-1">{plan.plan}</h3>
+                        {plan.recommended &&
+                        <p className="text-[11px] text-[hsl(225,80%,65%)] mb-2">Más elegido por talleres en crecimiento</p>
+                        }
+                        <div className="flex items-baseline gap-1 mb-1">
+                          <AnimatedPrice value={price} />
+                          <span className="text-sm text-[hsl(228,10%,40%)]">/mes</span>
+                        </div>
+                        {isAnnual &&
+                        <motion.p
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          className="text-xs text-[hsl(228,10%,42%)] mb-5">
+
+                            Facturado anualmente · <span className="line-through text-[hsl(228,10%,30%)]">${plan.priceMonthly}/mes</span>
+                          </motion.p>
+                        }
+                        {!isAnnual && <div className="mb-5" />}
+
+                        <ul className="space-y-3.5 mb-9 flex-1">
+                          {plan.features.map((f, fi) =>
+                          <motion.li
+                            key={f}
+                            className="flex items-start gap-2.5 text-sm text-[hsl(228,10%,54%)]"
+                            initial={{ opacity: 0, x: -8 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 + fi * 0.05 }}>
+
+                              <Check className="w-4 h-4 text-[hsl(225,80%,60%)] mt-0.5 flex-shrink-0" />
+                              {f}
+                            </motion.li>
+                          )}
+                        </ul>
+
+                        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                          <Button
+                            onClick={() => handlePlanSelect(plan.plan)}
+                            className={`w-full rounded-2xl font-medium transition-all duration-500 ${
+                            plan.recommended ?
+                            "bg-[hsl(225,80%,56%)] text-white hover:bg-[hsl(225,80%,52%)] shadow-[0_8px_32px_hsl(225,80%,56%,0.3)] hover:shadow-[0_16px_48px_hsl(225,80%,56%,0.5)]" :
+                            "bg-white/[0.04] text-white hover:bg-white/[0.08] border border-[hsl(228,14%,20%)] hover:border-[hsl(228,14%,28%)]"}`
+                            }>
+
+                            Elegir {plan.plan}
+                            <ArrowRight className="w-4 h-4 ml-1.5" />
+                          </Button>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  </Reveal>);
+
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ FINAL CTA — deepest section ═══════════ */}
+        <section className="py-28 md:py-36 lg:py-44 px-5 relative overflow-hidden">
+          <div className="absolute inset-0 blueprint-pattern opacity-30 pointer-events-none" />
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: "linear-gradient(135deg, hsl(228 24% 4%), hsl(225 30% 8%), hsl(260 20% 6%), hsl(228 24% 4%))", backgroundSize: "400% 400%" }}
+            animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }} />
+
+          {/* Bright glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[hsl(225,80%,56%)]/[0.1] rounded-full blur-[140px] pointer-events-none" />
+          {/* Top separator with glow */}
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[hsl(225,80%,56%)]/15 to-transparent" />
+
+          <Reveal>
+            <div className="relative max-w-3xl mx-auto text-center">
+              <h2 className="text-[1.75rem] sm:text-[2.25rem] lg:text-[3.25rem] font-bold leading-[1.25] tracking-[-0.01em] mb-5">
+                ¿Listo para ordenar{" "}
+                <span className="block sm:inline">tu producción?</span>
+              </h2>
+              <p className="text-base sm:text-lg text-[hsl(228,10%,52%)] mb-10 max-w-xl mx-auto leading-relaxed">
+                Deja de perder tiempo con hojas de cálculo. Sign Flow organiza tu taller desde el primer día.
+              </p>
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4">
+                <motion.div
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  animate={{ boxShadow: ["0 0 0 0 hsl(225 80% 56% / 0)", "0 0 0 10px hsl(225 80% 56% / 0.06)", "0 0 0 0 hsl(225 80% 56% / 0)"] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="rounded-full">
+
+                  <Button
+                    size="lg"
+                    onClick={() => scrollTo("pricing")}
+                    className="bg-[hsl(225,80%,56%)] text-white hover:bg-[hsl(225,80%,52%)] rounded-full px-10 text-base font-semibold shadow-[0_12px_40px_hsl(225,80%,56%,0.35)] hover:shadow-[0_16px_48px_hsl(225,80%,56%,0.55)] transition-all duration-300">
+
+                    Elegir Plan
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => scrollTo("how")}
+                    className="rounded-full px-10 text-base font-medium border-[hsl(228,14%,20%)] text-[hsl(228,10%,60%)] hover:text-white hover:border-[hsl(225,80%,56%)]/30 hover:bg-[hsl(225,80%,56%)]/[0.06] bg-transparent transition-all duration-300">
+
+                    Ver Demo
+                  </Button>
+                </motion.div>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* ═══════════ FOOTER ═══════════ */}
+        <footer className="border-t border-[hsl(228,14%,10%)] py-10 sm:py-12 px-5 relative" role="contentinfo">
+          <div className="absolute inset-0 bg-[hsl(228,24%,3%)] pointer-events-none" />
+          <div className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2.5">
+              <BrandLogo size={24} showText variant="iconWithText" textClassName="text-sm text-[hsl(228,10%,40%)]" />
+            </div>
+            <p className="text-xs text-[hsl(228,10%,32%)]">© {new Date().getFullYear()} Sign Flow. Todos los derechos reservados.</p>
+            <nav className="flex items-center gap-6 text-xs text-[hsl(228,10%,35%)]">
+              <a href="#" className="hover:text-[hsl(228,10%,65%)] transition-colors duration-500">Privacidad</a>
+              <a href="#" className="hover:text-[hsl(228,10%,65%)] transition-colors duration-500">Términos</a>
+              <a href="#" className="hover:text-[hsl(228,10%,65%)] transition-colors duration-500">Soporte</a>
+            </nav>
+
+            <div className="flex items-center gap-3">
+              {[Twitter, Instagram, Linkedin].map((Icon, i) =>
+              <a
+                key={i}
+                href="#"
+                className="w-8 h-8 rounded-full border border-[hsl(228,14%,14%)] flex items-center justify-center text-[hsl(228,10%,30%)] hover:text-[hsl(228,10%,65%)] hover:border-[hsl(228,14%,22%)] transition-all duration-500">
+
+                  <Icon className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </div>
+          </div>
+        </footer>
+      </div>
+    </PageTransition>);
+
+};
+
+export default Index;
