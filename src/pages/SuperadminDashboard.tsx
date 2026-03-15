@@ -137,6 +137,7 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "delete-company", companyId: companyToDelete.id } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("COMPANY_DELETED", companyToDelete.name);
       toast({ title: "Empresa eliminada", description: `"${companyToDelete.name}" fue eliminada.` });
       setCompanyToDelete(null); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
