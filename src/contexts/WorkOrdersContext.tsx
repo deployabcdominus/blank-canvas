@@ -90,6 +90,8 @@ const mapRow = (row: any): WorkOrder => ({
   estimatedDelivery: row.estimated_delivery || null,
   assignedToUserId: row.assigned_to_user_id || null,
   installerCompanyId: row.installer_company_id || null,
+  blueprintUrl: row.blueprint_url || null,
+  annotations: Array.isArray(row.annotations) ? row.annotations : [],
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
