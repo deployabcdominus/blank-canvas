@@ -350,8 +350,8 @@ export default function SuperadminDashboard() {
           onCreateUser={handleCreateUser} creatingUser={creatingUser} setTab={setTab}
         />
       )}
+      {activeTab === "audit" && <SuperadminAuditLogs />}
 
-      {/* ── Modals ── */}
       <Dialog open={showCreateCompany} onOpenChange={setShowCreateCompany}>
         <DialogContent className="glass-card border-white/20">
           <DialogHeader><DialogTitle>Nueva Empresa</DialogTitle><DialogDescription>Crea una nueva empresa en la plataforma.</DialogDescription></DialogHeader>
