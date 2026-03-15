@@ -166,6 +166,7 @@ export default function SuperadminDashboard() {
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      await logAudit("USER_CREATED", newUserData.email, { fullName: newUserData.fullName, role: newUserData.role });
       toast({ title: "Usuario creado", description: `${newUserData.email} fue agregado.` });
       setNewUserData({ email: "", password: "", fullName: "", role: "admin" });
       setShowCreateUser(false); setCreateUserCompanyId("");
