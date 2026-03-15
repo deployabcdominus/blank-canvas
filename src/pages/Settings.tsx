@@ -159,10 +159,16 @@ export default function Settings() {
               Catálogos
             </TabsTrigger>
           )}
-          {isAdmin && !isSuperadmin && (
+           {isAdmin && !isSuperadmin && (
             <TabsTrigger value="integraciones">
               <Plug className="w-4 h-4 mr-2" />
               Integraciones
+            </TabsTrigger>
+          )}
+          {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="suscripcion">
+              <CreditCard className="w-4 h-4 mr-2" />
+              Suscripción
             </TabsTrigger>
           )}
         </TabsList>
