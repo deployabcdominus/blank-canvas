@@ -79,6 +79,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const [priority, setPriority] = useState("media");
   const [blueprintUrl, setBlueprintUrl] = useState<string | null>(null);
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
+  const [technicalDetails, setTechnicalDetails] = useState<TechnicalDetails>({});
 
   const [operators, setOperators] = useState<OperatorOption[]>([]);
   const [installers, setInstallers] = useState<InstallerOption[]>([]);
