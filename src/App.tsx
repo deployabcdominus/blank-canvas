@@ -84,6 +84,7 @@ const App = () => (
                 <Route path="/team-management" element={<ProtectedRoute><TenantProviders><TenantTeamManagement /></TenantProviders></ProtectedRoute>} />
                 <Route path="/production" element={<ProtectedRoute><TenantProviders><Production /></TenantProviders></ProtectedRoute>} />
                 <Route path="/taller" element={<ProtectedRoute><TenantProviders><div className="min-h-screen bg-background p-4"><WorkerTabletView /></div></TenantProviders></ProtectedRoute>} />
+                <Route path="/audit-log" element={<ProtectedRoute><TenantProviders><AuditLog /></TenantProviders></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><TenantProviders><Settings /></TenantProviders></ProtectedRoute>} />
 
                 <Route path="*" element={<NotFound />} />
