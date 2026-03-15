@@ -341,7 +341,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
                           <div>
                             <p className="font-medium text-sm">{t.name}</p>
                             <p className="text-[10px] text-muted-foreground">
-                              {format(parseISO(t.created_at), "MMM yyyy", { locale: es })}
+                              {safeFmt(t.created_at, "MMM yyyy")}
                             </p>
                           </div>
                         </div>
