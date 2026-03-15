@@ -113,7 +113,7 @@ export default function SuperadminDashboard() {
 
   const logAudit = useCallback(async (action_type: string, target_name: string, details?: Record<string, any>) => {
     if (!user) return;
-    await supabase.from("platform_audit_logs" as any).insert({ actor_id: user.id, action_type, target_name, details: details || {} } as any);
+    await supabase.from("platform_audit_logs").insert({ actor_id: user.id, action_type, target_name, details: details || {} });
   }, [user]);
 
   // ── Actions ──
@@ -121,7 +121,7 @@ export default function SuperadminDashboard() {
     if (!newCompanyName.trim() || !user) return;
     setCreatingCompany(true);
     try {
-      const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id } as any);
+      const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id });
       if (error) throw error;
       await logAudit("COMPANY_CREATED", newCompanyName.trim());
       toast({ title: "Empresa creada", description: `"${newCompanyName}" fue creada exitosamente.` });
@@ -253,7 +253,7 @@ export default function SuperadminDashboard() {
     if (ids.length === 0) return;
     setBulkProcessing(true);
     try {
-      const { error } = await supabase.from("companies").update({ is_active: action === "activate" } as any).in("id", ids);
+      const { error } = await supabase.from("companies").update({ is_active: action === "activate" }).in("id", ids);
       if (error) throw error;
       toast({ title: "Empresas actualizadas", description: `${ids.length} empresas ${action === "activate" ? "activadas" : "desactivadas"}.` });
       setSelectedCompanyIds(new Set()); fetchCompanies();
