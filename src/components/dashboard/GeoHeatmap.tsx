@@ -34,7 +34,6 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
     return () => { cancelled = true; };
   }, [installations]);
 
-  // Convert real coords to relative positions within the card
   const dots = useMemo(() => {
     const points = Array.from(geoMap.entries()).map(([id, coords]) => {
       const inst = installations.find(i => i.id === id);
@@ -43,7 +42,6 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
 
     if (points.length === 0) return [];
 
-    // Calculate bounds
     const lats = points.map(p => p.lat);
     const lngs = points.map(p => p.lng);
     const minLat = Math.min(...lats);
@@ -68,40 +66,38 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.45, duration: 0.5 }}
-      className="dash-card p-5 relative overflow-hidden"
+      className="rounded-2xl border border-white/[0.06] bg-zinc-950/40 backdrop-blur-2xl p-5 transition-all duration-300 hover:border-white/[0.12] hover:bg-zinc-950/50 shimmer-hover relative overflow-hidden"
     >
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h3 className="text-[15px] font-bold text-foreground">Mapa de Instalaciones</h3>
-          <p className="text-xs text-muted-foreground">{activeCount} activas · {completedCount} completadas</p>
+          <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">Mapa de Instalaciones</h3>
+          <p className="text-xs text-zinc-500 mt-0.5">{activeCount} activas · {completedCount} completadas</p>
         </div>
         <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
-          <MapPin className="w-5 h-5 text-primary" />
+          <MapPin className="w-5 h-5 text-primary" strokeWidth={1.5} />
         </div>
       </div>
 
-      <div className="relative w-full h-[200px] rounded-xl overflow-hidden bg-secondary/50 dark:bg-card/50">
+      <div className="relative w-full h-[200px] rounded-xl overflow-hidden bg-white/[0.02]">
         {/* Grid pattern */}
-        <div className="absolute inset-0 empty-state-pattern opacity-50" />
+        <div className="absolute inset-0 empty-state-pattern opacity-30" />
 
         {/* Radar circles */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-40 h-40 rounded-full border border-primary/10" />
-          <div className="absolute w-24 h-24 rounded-full border border-primary/5" />
-          <div className="absolute w-56 h-56 rounded-full border border-primary/5" />
+          <div className="w-40 h-40 rounded-full border border-white/[0.04]" />
+          <div className="absolute w-24 h-24 rounded-full border border-white/[0.03]" />
+          <div className="absolute w-56 h-56 rounded-full border border-white/[0.03]" />
         </div>
 
-        {/* Loading state */}
         {geocoding && (
           <div className="absolute inset-0 flex items-center justify-center z-10">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-muted-foreground">Cargando ubicaciones...</p>
+              <p className="text-sm text-zinc-500">Cargando ubicaciones...</p>
             </div>
           </div>
         )}
 
-        {/* Dots */}
         {!geocoding && dots.map(dot => (
           <motion.div
             key={dot.id}
@@ -114,19 +110,19 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
               top: `${dot.y}%`,
               width: dot.size * 2,
               height: dot.size * 2,
-              background: dot.isActive ? "hsl(var(--primary))" : "hsl(var(--lavender) / 0.6)",
+              background: dot.isActive ? "hsl(var(--primary))" : "rgba(161,161,170,0.4)",
               boxShadow: dot.isActive
                 ? "0 0 12px 2px hsl(var(--primary) / 0.4)"
-                : "0 0 8px 1px hsl(var(--lavender) / 0.3)",
+                : "0 0 8px 1px rgba(161,161,170,0.2)",
             }}
           />
         ))}
 
         {!geocoding && dots.length === 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center p-4">
-            <MapPin size={24} className="text-muted-foreground/40" />
-            <p className="text-sm font-medium text-muted-foreground">Sin ubicaciones registradas</p>
-            <p className="text-xs text-muted-foreground/60">
+            <MapPin size={24} className="text-zinc-600" strokeWidth={1.5} />
+            <p className="text-sm font-medium text-zinc-400">Sin ubicaciones registradas</p>
+            <p className="text-xs text-zinc-600">
               Agrega direcciones a tus instalaciones para verlas en el mapa
             </p>
           </div>

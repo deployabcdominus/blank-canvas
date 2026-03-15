@@ -73,16 +73,14 @@ export function TeamActivityWidget() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15 }}
-      className="rounded-xl border border-white/[0.06] bg-[hsl(var(--card))]/50 backdrop-blur-md p-5"
+      className="rounded-2xl border border-white/[0.06] bg-zinc-950/40 backdrop-blur-2xl p-5 transition-all duration-300 hover:border-white/[0.12] hover:bg-zinc-950/50"
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Activity className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-semibold text-foreground">
+          <Activity className="w-4 h-4 text-primary" strokeWidth={1.5} />
+          <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">
             Actividad del Equipo
           </h3>
-          {/* Live pulse dot */}
           <span className="relative flex h-1.5 w-1.5 ml-1">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
@@ -90,13 +88,12 @@ export function TeamActivityWidget() {
         </div>
         <Link
           to="/audit-log"
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
         >
           Ver todo
         </Link>
       </div>
 
-      {/* Content */}
       <div className="space-y-0">
         {loading ? (
           Array.from({ length: 5 }).map((_, i) => (
@@ -109,7 +106,7 @@ export function TeamActivityWidget() {
             </div>
           ))
         ) : entries.length === 0 ? (
-          <p className="text-xs text-muted-foreground text-center py-6">
+          <p className="text-xs text-zinc-500 text-center py-6">
             Sin actividad reciente
           </p>
         ) : (
@@ -124,17 +121,14 @@ export function TeamActivityWidget() {
                   <div className="border-t border-white/[0.04]" />
                 )}
                 <div className="flex items-start gap-3 py-3">
-                  {/* Avatar */}
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
                     <span className="text-[10px] font-bold text-primary">
                       {getInitials(entry.user_name || "?")}
                     </span>
                   </div>
-
-                  {/* Description */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      <span className="font-semibold text-foreground">
+                    <p className="text-xs text-zinc-400 leading-relaxed">
+                      <span className="font-medium text-white">
                         {entry.user_name}
                       </span>{" "}
                       {verb}{" "}
@@ -142,13 +136,13 @@ export function TeamActivityWidget() {
                       {entry.entity_label && (
                         <>
                           :{" "}
-                          <span className="font-medium text-foreground">
+                          <span className="font-medium text-white">
                             {entry.entity_label}
                           </span>
                         </>
                       )}
                     </p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                    <p className="text-[10px] text-zinc-600 mt-0.5">
                       {timeAgo(entry.created_at)}
                     </p>
                   </div>
