@@ -15,6 +15,7 @@ import {
   ArrowLeft, Mail, Phone, StickyNote, FolderOpen, FileText, BarChart3,
   Calendar, MapPin, TrendingUp, DollarSign, CheckCircle, Clock,
 } from "lucide-react";
+import { VisualStatusTracker } from "@/components/VisualStatusTracker";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -211,6 +212,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         <Badge variant="outline" className={`text-[10px] ml-2 ${STATUS_COLORS[project.status] || ""}`}>
           {project.status}
         </Badge>
+      </div>
+      <div className="mb-2">
+        <VisualStatusTracker currentStatus={project.status} compact />
       </div>
       {project.installAddress && (
         <p className="text-xs text-muted-foreground flex items-center gap-1 mb-1">

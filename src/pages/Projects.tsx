@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, X, FolderKanban, Copy, FolderOpen, Pencil, Trash2, Globe } from "lucide-react";
+import { VisualStatusTracker } from "@/components/VisualStatusTracker";
 import { motion } from "framer-motion";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -208,6 +209,9 @@ export default function Projects() {
                   <Badge className={statusColors[detailProject.status]}>{detailProject.status}</Badge>
                 </DialogTitle>
               </DialogHeader>
+              <div className="mb-4">
+                <VisualStatusTracker currentStatus={detailProject.status} showHints />
+              </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><span className="text-muted-foreground">Cliente:</span> <span className="font-medium">{detailProject.clientName}</span></div>
