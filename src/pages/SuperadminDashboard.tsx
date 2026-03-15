@@ -181,6 +181,8 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "toggle-active", userId } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      const targetUser = allUsers.find(u => u.id === userId);
+      await logAudit("USER_TOGGLED", targetUser?.email || userId, { isActive: data.isActive });
       toast({ title: "Estado actualizado", description: `Usuario ${data.isActive ? "activado" : "desactivado"}.` });
       if (activeTab === "users") fetchAllUsers();
       if (selectedCompany) fetchCompanyUsers(selectedCompany.id);
