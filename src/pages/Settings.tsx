@@ -28,6 +28,7 @@ import IntegrationsCards from "@/components/settings/IntegrationsCards";
 import { CatalogManager } from "@/components/settings/CatalogManager";
 import { useSeedCatalogs } from "@/hooks/useSeedCatalogs";
 import { supabase } from "@/integrations/supabase/client";
+import { PricingSection } from "@/components/settings/PricingSection";
 
 
 export default function Settings() {
