@@ -150,6 +150,9 @@ export const Sidebar = () => {
       {isSuperadmin ? renderPlatformNav() : renderTenantNav()}
 
       <div className="flex-shrink-0 mt-auto sidebar-footer-block space-y-1">
+        <div className={`flex ${isTablet ? 'justify-center' : 'px-3'} py-1`}>
+          <NotificationBell />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
