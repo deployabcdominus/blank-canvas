@@ -97,11 +97,11 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         <div className="grid grid-cols-3 gap-2 mb-3 text-center">
           <div className="p-2 rounded-lg bg-muted/20 border border-border/10">
             <p className="text-[10px] text-muted-foreground">Pagado</p>
-            <p className="text-xs font-bold text-green-400">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-mint">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
           <div className="p-2 rounded-lg bg-muted/20 border border-border/10">
             <p className="text-[10px] text-muted-foreground">Saldo</p>
-            <p className="text-xs font-bold text-amber-400">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-primary">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
           <div className="p-2 rounded-lg bg-muted/20 border border-border/10">
             <p className="text-[10px] text-muted-foreground">Total</p>
