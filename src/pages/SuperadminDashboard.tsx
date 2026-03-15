@@ -194,6 +194,8 @@ export default function SuperadminDashboard() {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "update-role", userId, role: newRole } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
+      const targetUser = allUsers.find(u => u.id === userId);
+      await logAudit("ROLE_CHANGED", targetUser?.email || userId, { newRole });
       toast({ title: "Rol actualizado" });
       if (activeTab === "users") fetchAllUsers();
       if (selectedCompany) fetchCompanyUsers(selectedCompany.id);
