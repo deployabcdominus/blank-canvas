@@ -14,3 +14,7 @@ verify_jwt = false
 
 [functions.accept-invitation]
 verify_jwt = false
+
+[functions.approve-proposal]
+verify_jwt = false
+
