@@ -24,6 +24,19 @@ const Production = () => {
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { orders, clearOrders, updateOrder } = useProductionOrders();
   const { toast } = useToast();
+  const { isAdmin, role } = useUserRole();
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+
+  // Workers see tablet view
+  if (role === "operations" || role === "member") {
+    return (
+      <PageTransition>
+        <div className="min-h-screen bg-background">
+          <WorkerTabletView />
+        </div>
+      </PageTransition>
+    );
+  }
 
   // Control bar state
   const [search, setSearch] = useState("");
