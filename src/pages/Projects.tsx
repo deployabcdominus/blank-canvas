@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, X, FolderKanban, Copy, FolderOpen, Pencil, Trash2, Globe } from "lucide-react";
+import { VisualStatusTracker } from "@/components/VisualStatusTracker";
 import { motion } from "framer-motion";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
