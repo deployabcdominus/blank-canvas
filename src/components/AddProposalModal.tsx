@@ -21,6 +21,7 @@ const schema = z.object({
   description: z.string().min(1, "La descripción del alcance es obligatoria"),
   sentMethod: z.string().min(1, "El medio de envío es obligatorio"),
   status: z.string().min(1, "El estado es obligatorio"),
+  serviceType: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
