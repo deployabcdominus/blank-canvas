@@ -36,6 +36,12 @@ const SENT_METHODS: SentMethod[] = ['Gmail', 'WhatsApp', 'PDF físico', 'Otro'];
 const STATUSES: ProposalStatus[] = ['Borrador', 'Enviada externamente', 'Aprobada', 'Rechazada'];
 
 export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onClose, onAddProposal }) => {
+  const serviceTypes = useServiceTypes();
+  const { items: catalogServices } = useCatalog("lead_service");
+  const resolvedServices = catalogServices.length > 0
+    ? catalogServices.map(s => s.label)
+    : serviceTypes;
+
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { status: 'Borrador' },
