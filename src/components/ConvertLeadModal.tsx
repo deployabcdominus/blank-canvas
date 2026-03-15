@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useClients, Client } from "@/contexts/ClientsContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
+import { useClients } from "@/contexts/ClientsContext";
 import { useProjects } from "@/contexts/ProjectsContext";
 import { useLeads, Lead } from "@/contexts/LeadsContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,6 +31,8 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   const [projectName, setProjectName] = useState('');
   const [saving, setSaving] = useState(false);
 
+  const isAlreadyConverted = lead ? (lead.status === 'Convertido' || !!lead.clientId) : false;
+
   const handleOpenChange = (open: boolean) => {
     if (!open) onClose();
   };
@@ -44,7 +48,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   }
 
   const handleConvert = async () => {
-    if (!lead || !user) return;
+    if (!lead || !user || isAlreadyConverted) return;
     setSaving(true);
     try {
       let clientId: string;
@@ -98,50 +102,63 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         <DialogHeader>
           <DialogTitle>Convertir Lead a Cliente/Proyecto</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Cliente</Label>
-            <div className="flex gap-2">
-              <Button variant={mode === 'existing' ? 'default' : 'outline'} size="sm" onClick={() => setMode('existing')}>Existente</Button>
-              <Button variant={mode === 'new' ? 'default' : 'outline'} size="sm" onClick={() => setMode('new')}>Nuevo</Button>
-            </div>
-          </div>
 
-          {mode === 'existing' ? (
+        {isAlreadyConverted ? (
+          <Alert variant="destructive" className="border-amber-500/30 bg-amber-500/10">
+            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <AlertDescription className="text-amber-300">
+              Este Lead ya ha sido procesado. No es posible convertirlo nuevamente.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Seleccionar cliente</Label>
-              <Select value={selectedClientId} onValueChange={setSelectedClientId}>
-                <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
-                <SelectContent>
-                  {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.clientName}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Label>Cliente</Label>
+              <div className="flex gap-2">
+                <Button variant={mode === 'existing' ? 'default' : 'outline'} size="sm" onClick={() => setMode('existing')}>Existente</Button>
+                <Button variant={mode === 'new' ? 'default' : 'outline'} size="sm" onClick={() => setMode('new')}>Nuevo</Button>
+              </div>
             </div>
-          ) : (
+
+            {mode === 'existing' ? (
+              <div className="space-y-2">
+                <Label>Seleccionar cliente</Label>
+                <Select value={selectedClientId} onValueChange={setSelectedClientId}>
+                  <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
+                  <SelectContent>
+                    {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.clientName}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label>Nombre del nuevo cliente</Label>
+                <Input value={newClientName} onChange={e => setNewClientName(e.target.value)} placeholder="Ej: Acme Corp" />
+              </div>
+            )}
+
             <div className="space-y-2">
-              <Label>Nombre del nuevo cliente</Label>
-              <Input value={newClientName} onChange={e => setNewClientName(e.target.value)} placeholder="Ej: Acme Corp" />
+              <Label>Nombre del proyecto</Label>
+              <Input value={projectName} onChange={e => setProjectName(e.target.value)} />
             </div>
-          )}
 
-          <div className="space-y-2">
-            <Label>Nombre del proyecto</Label>
-            <Input value={projectName} onChange={e => setProjectName(e.target.value)} />
+            {lead && (
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>Dirección: {lead.contact.location || '—'}</p>
+                <p>Servicio: {lead.service || '—'}</p>
+                {lead.logoUrl && <p>✓ Logo del lead será transferido al cliente</p>}
+              </div>
+            )}
           </div>
+        )}
 
-          {lead && (
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p>Dirección: {lead.contact.location || '—'}</p>
-              <p>Servicio: {lead.service || '—'}</p>
-              {lead.logoUrl && <p>✓ Logo del lead será transferido al cliente</p>}
-            </div>
-          )}
-        </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancelar</Button>
-          <Button onClick={handleConvert} disabled={saving || (mode === 'existing' ? !selectedClientId : !newClientName.trim())}>
-            {saving ? 'Convirtiendo...' : 'Convertir'}
-          </Button>
+          {!isAlreadyConverted && (
+            <Button onClick={handleConvert} disabled={saving || (mode === 'existing' ? !selectedClientId : !newClientName.trim())}>
+              {saving ? 'Convirtiendo...' : 'Convertir'}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
