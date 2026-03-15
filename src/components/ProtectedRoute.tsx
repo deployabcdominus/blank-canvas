@@ -19,6 +19,7 @@ const ROUTE_ROLE_MAP: Record<string, string[]> = {
   '/installation': ['admin', 'operations', 'viewer'],
   '/installer-companies': ['admin', 'operations'],
   '/team-management': ['admin'],
+  '/audit-log': ['admin'],
   '/payments': ['admin', 'sales'],
   '/leads': ['admin', 'sales', 'member'],
   '/proposals': ['admin', 'sales', 'member'],
