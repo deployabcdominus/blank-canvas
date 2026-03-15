@@ -52,6 +52,8 @@ interface ProposalCardProps {
 export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder, onRegisterPayment, companyData }: ProposalCardProps) => {
   const navigate = useNavigate();
   const { getTotalPaidForProposal } = usePayments();
+  const [mockupOpen, setMockupOpen] = useState(false);
+  const [mockupUrl, setMockupUrl] = useState<string | null>((proposal as any).mockupUrl || null);
   const cfg = STATUS_CONFIG[proposal.status] || STATUS_CONFIG['Borrador'];
   const currentStep = getStepIndex(proposal.status);
 
