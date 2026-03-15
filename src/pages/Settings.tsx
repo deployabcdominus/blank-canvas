@@ -559,6 +559,11 @@ export default function Settings() {
             <IntegrationsCards />
           </TabsContent>
         )}
+        {isAdmin && !isSuperadmin && (
+          <TabsContent value="suscripcion">
+            <PricingSection />
+          </TabsContent>
+        )}
       </Tabs>
     </ResponsiveLayout>
   );
