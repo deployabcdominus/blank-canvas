@@ -57,6 +57,9 @@ export default function SuperadminDashboard() {
 
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [newCompanyName, setNewCompanyName] = useState("");
+  const [newCompanyEmail, setNewCompanyEmail] = useState("");
+  const [newCompanyIndustry, setNewCompanyIndustry] = useState("");
+  const [newCompanyPlan, setNewCompanyPlan] = useState("start");
   const [creatingCompany, setCreatingCompany] = useState(false);
   const [companyToDelete, setCompanyToDelete] = useState<Company | null>(null);
   const [deletingCompany, setDeletingCompany] = useState(false);
@@ -121,11 +124,41 @@ export default function SuperadminDashboard() {
     if (!newCompanyName.trim() || !user) return;
     setCreatingCompany(true);
     try {
-      const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id });
+      const { error } = await supabase.from("companies").insert({
+        name: newCompanyName.trim(),
+        user_id: user.id,
+        industry: newCompanyIndustry || null,
+        plan_id: newCompanyPlan || "start",
+      });
       if (error) throw error;
-      await logAudit("COMPANY_CREATED", newCompanyName.trim());
-      toast({ title: "Empresa creada", description: `"${newCompanyName}" fue creada exitosamente.` });
-      setNewCompanyName(""); setShowCreateCompany(false); fetchCompanies();
+
+      // If admin email provided, create user for this company
+      if (newCompanyEmail.trim()) {
+        // We'll handle this via the existing manage-user edge function after company is created
+        const { data: newCompanies } = await supabase.from("companies").select("id").eq("name", newCompanyName.trim()).order("created_at", { ascending: false }).limit(1);
+        if (newCompanies?.[0]) {
+          // Generate a temp password
+          const tempPassword = crypto.randomUUID().slice(0, 12);
+          await supabase.functions.invoke("manage-user", {
+            body: {
+              action: "create",
+              email: newCompanyEmail.trim(),
+              password: tempPassword,
+              fullName: "Admin",
+              companyId: newCompanies[0].id,
+              role: "admin",
+            },
+          });
+        }
+      }
+
+      await logAudit("COMPANY_CREATED", newCompanyName.trim(), { industry: newCompanyIndustry, plan: newCompanyPlan, adminEmail: newCompanyEmail });
+      toast({
+        title: "🏢 Empresa creada exitosamente",
+        description: `Empresa "${newCompanyName}" creada con Plan ${newCompanyPlan.charAt(0).toUpperCase() + newCompanyPlan.slice(1)}`,
+      });
+      setNewCompanyName(""); setNewCompanyEmail(""); setNewCompanyIndustry(""); setNewCompanyPlan("start");
+      setShowCreateCompany(false); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
     setCreatingCompany(false);
   };
@@ -353,12 +386,50 @@ export default function SuperadminDashboard() {
       {activeTab === "audit" && <SuperadminAuditLogs />}
 
       <Dialog open={showCreateCompany} onOpenChange={setShowCreateCompany}>
-        <DialogContent className="glass-card border-white/20">
-          <DialogHeader><DialogTitle>Nueva Empresa</DialogTitle><DialogDescription>Crea una nueva empresa en la plataforma.</DialogDescription></DialogHeader>
-          <div className="space-y-4"><div><Label>Nombre de la empresa</Label><Input value={newCompanyName} onChange={e => setNewCompanyName(e.target.value)} placeholder="Ej: Acme Corp" className="glass mt-1" /></div></div>
+        <DialogContent className="glass-card border-white/20 sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Building className="w-5 h-5" /> Crear Tenant Manual</DialogTitle>
+            <DialogDescription>Crea una empresa con plan asignado manualmente (bypass de Stripe).</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Nombre de la Empresa</Label>
+              <Input value={newCompanyName} onChange={e => setNewCompanyName(e.target.value)} placeholder="Ej: Acme Corp" className="glass mt-1" />
+            </div>
+            <div>
+              <Label>Email del Admin <span className="text-muted-foreground text-xs">(opcional)</span></Label>
+              <Input type="email" value={newCompanyEmail} onChange={e => setNewCompanyEmail(e.target.value)} placeholder="admin@empresa.com" className="glass mt-1" />
+              <p className="text-xs text-muted-foreground mt-1">Se creará un usuario admin con contraseña temporal.</p>
+            </div>
+            <div>
+              <Label>Industria</Label>
+              <Select value={newCompanyIndustry} onValueChange={setNewCompanyIndustry}>
+                <SelectTrigger className="glass mt-1"><SelectValue placeholder="Selecciona industria" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="signage">Señalética / Rotulación</SelectItem>
+                  <SelectItem value="it_services">IT / Servicios Técnicos</SelectItem>
+                  <SelectItem value="maintenance">Mantenimiento</SelectItem>
+                  <SelectItem value="construction">Construcción</SelectItem>
+                  <SelectItem value="hvac">HVAC / Climatización</SelectItem>
+                  <SelectItem value="other">Otra</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Plan a Asignar</Label>
+              <Select value={newCompanyPlan} onValueChange={setNewCompanyPlan}>
+                <SelectTrigger className="glass mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="start">Start ($29/mes)</SelectItem>
+                  <SelectItem value="pro">Pro ($79/mes)</SelectItem>
+                  <SelectItem value="elite">Elite ($149/mes)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateCompany(false)}>Cancelar</Button>
-            <Button onClick={handleCreateCompany} disabled={creatingCompany || !newCompanyName.trim()}>{creatingCompany ? "Creando..." : "Crear Empresa"}</Button>
+            <Button onClick={handleCreateCompany} disabled={creatingCompany || !newCompanyName.trim()}>{creatingCompany ? "Creando..." : "Crear Tenant"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

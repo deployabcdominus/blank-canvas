@@ -73,7 +73,7 @@ export function SuperadminCompanies({
           <Input placeholder="Buscar empresas..." value={search} onChange={e => setSearch(e.target.value)} className="glass pl-10 w-80" />
         </div>
         <Button onClick={() => setShowCreateCompany(true)} className="btn-glass bg-soft-blue text-soft-blue-foreground gap-2">
-          <Plus className="w-4 h-4" /> Nueva Empresa
+          <Plus className="w-4 h-4" /> + Crear Tenant Manual
         </Button>
       </div>
 

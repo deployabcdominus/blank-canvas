@@ -189,7 +189,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
       {/* ── Quick Actions ── */}
       <div className="flex flex-wrap gap-2">
         <Button onClick={() => { setTab("companies"); setTimeout(() => setShowCreateCompany(true), 100); }} variant="outline" size="sm" className="gap-1.5 glass">
-          <Plus className="w-3.5 h-3.5" /> Nueva empresa
+          <Plus className="w-3.5 h-3.5" /> Crear Tenant Manual
         </Button>
         <Button onClick={() => setTab("provisioning")} variant="outline" size="sm" className="gap-1.5 glass">
           <UserPlus className="w-3.5 h-3.5" /> Provisionar usuario
