@@ -124,11 +124,41 @@ export default function SuperadminDashboard() {
     if (!newCompanyName.trim() || !user) return;
     setCreatingCompany(true);
     try {
-      const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id });
+      const { error } = await supabase.from("companies").insert({
+        name: newCompanyName.trim(),
+        user_id: user.id,
+        industry: newCompanyIndustry || null,
+        plan_id: newCompanyPlan || "start",
+      });
       if (error) throw error;
-      await logAudit("COMPANY_CREATED", newCompanyName.trim());
-      toast({ title: "Empresa creada", description: `"${newCompanyName}" fue creada exitosamente.` });
-      setNewCompanyName(""); setShowCreateCompany(false); fetchCompanies();
+
+      // If admin email provided, create user for this company
+      if (newCompanyEmail.trim()) {
+        // We'll handle this via the existing manage-user edge function after company is created
+        const { data: newCompanies } = await supabase.from("companies").select("id").eq("name", newCompanyName.trim()).order("created_at", { ascending: false }).limit(1);
+        if (newCompanies?.[0]) {
+          // Generate a temp password
+          const tempPassword = crypto.randomUUID().slice(0, 12);
+          await supabase.functions.invoke("manage-user", {
+            body: {
+              action: "create",
+              email: newCompanyEmail.trim(),
+              password: tempPassword,
+              fullName: "Admin",
+              companyId: newCompanies[0].id,
+              role: "admin",
+            },
+          });
+        }
+      }
+
+      await logAudit("COMPANY_CREATED", newCompanyName.trim(), { industry: newCompanyIndustry, plan: newCompanyPlan, adminEmail: newCompanyEmail });
+      toast({
+        title: "🏢 Empresa creada exitosamente",
+        description: `Empresa "${newCompanyName}" creada con Plan ${newCompanyPlan.charAt(0).toUpperCase() + newCompanyPlan.slice(1)}`,
+      });
+      setNewCompanyName(""); setNewCompanyEmail(""); setNewCompanyIndustry(""); setNewCompanyPlan("start");
+      setShowCreateCompany(false); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
     setCreatingCompany(false);
   };
