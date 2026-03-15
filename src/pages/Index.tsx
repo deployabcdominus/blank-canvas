@@ -1,132 +1,261 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight, Check, Zap, BarChart2, FileText, Users, Shield, Clock, TrendingUp } from "lucide-react";
+
+const O = "#FF5722";
+const O2 = "#FF7043";
+const O3 = "rgba(255,87,34,0.15)";
+const O4 = "rgba(255,87,34,0.08)";
+const BG = "#111318";
+const BG2 = "#16181F";
+const BG3 = "#1E2028";
+const CARD = "#1A1D26";
+const BORDER = "rgba(255,87,34,0.18)";
+const BORDER2 = "rgba(255,255,255,0.06)";
+const WHITE = "#F5F5F7";
+const MUTED = "#9A9DB0";
+const DIM = "#5A5D70";
+
+const glow = `0 0 32px rgba(255,87,34,0.35), 0 4px 16px rgba(255,87,34,0.20)`;
+const glowSm = `0 0 18px rgba(255,87,34,0.25)`;
+const cardShadow = `0 4px 24px rgba(0,0,0,0.40)`;
+
+const s: Record<string, React.CSSProperties> = {
+  page: { background: BG, color: WHITE, fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif", WebkitFontSmoothing: "antialiased", overflowX: "hidden" },
+  nav: { position: "sticky" as const, top: 0, zIndex: 100, height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 56px", background: "rgba(17,19,24,0.92)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${BORDER2}` },
+  logo: { display: "flex", alignItems: "center", gap: 10, fontSize: 18, fontWeight: 800, color: WHITE, letterSpacing: "-0.02em" },
+  logoIcon: { width: 32, height: 32, background: O, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, boxShadow: glowSm },
+  navLinks: { display: "flex", gap: 32 },
+  navLink: { fontSize: 13, color: MUTED, textDecoration: "none", letterSpacing: "0.01em", transition: "color 150ms" },
+  btnPrimary: { display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 22px", borderRadius: 6, background: O, color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", boxShadow: glow, border: "none", cursor: "pointer", transition: "all 180ms ease" },
+  btnGhost: { display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 22px", borderRadius: 6, border: `1px solid rgba(255,255,255,0.15)`, color: WHITE, fontWeight: 600, fontSize: 14, textDecoration: "none", background: "transparent", cursor: "pointer" },
+  btnLg: { padding: "14px 32px", fontSize: 16, borderRadius: 8 },
+};
+
+function HexGrid() {
+  return (
+    <svg width="480" height="360" viewBox="0 0 480 360" style={{ position: "absolute", right: -40, top: -20, opacity: 0.9 }}>
+      <defs>
+        <radialGradient id="og" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#FF5722" stopOpacity="0.8"/>
+          <stop offset="100%" stopColor="#FF5722" stopOpacity="0"/>
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g transform="translate(240,180)" filter="url(#glow)">
+        {[-120,-80,-40,0,40,80,120].map(x => (
+          <line key={`h${x}`} x1={x} y1="-80" x2={x-60} y2="40" stroke="rgba(255,87,34,0.15)" strokeWidth="0.5"/>
+        ))}
+        {[-120,-80,-40,0,40,80,120].map(x => (
+          <line key={`v${x}`} x1={x} y1="-80" x2={x+60} y2="40" stroke="rgba(255,87,34,0.15)" strokeWidth="0.5"/>
+        ))}
+        <ellipse cx="0" cy="40" rx="140" ry="24" fill="rgba(255,87,34,0.06)" stroke="rgba(255,87,34,0.20)" strokeWidth="1"/>
+        <rect x="-18" y="-60" width="36" height="100" rx="4" fill={BG3} stroke={O} strokeWidth="1"/>
+        <rect x="-18" y="-60" width="36" height="20" rx="4" fill={O}/>
+        <ellipse cx="0" cy="-60" rx="30" ry="8" fill="url(#og)" opacity="0.8"/>
+        {[[-100,-20],[-80,10],[80,-30],[100,5],[-60,-50],[60,-45]].map(([nx,ny],i) => (
+          <g key={i} transform={`translate(${nx},${ny})`}>
+            <ellipse rx="18" ry="6" cy="12" fill="rgba(255,87,34,0.08)" stroke="rgba(255,87,34,0.15)" strokeWidth="0.5"/>
+            <rect x="-10" y="-12" width="20" height="24" rx="3" fill={BG3} stroke="rgba(255,87,34,0.30)" strokeWidth="0.8"/>
+            <rect x="-10" y="-12" width="20" height="7" rx="3" fill="rgba(255,87,34,0.20)"/>
+            <circle cy="-6" r="2" fill={O} opacity="0.8"/>
+          </g>
+        ))}
+        {[[-100,-20],[-80,10],[80,-30],[100,5]].map(([nx,ny],i) => (
+          <line key={`c${i}`} x1={nx*0.4} y1={ny*0.4} x2={nx*0.9} y2={ny*0.9} stroke={O} strokeWidth="0.6" strokeDasharray="3 3" opacity="0.4"/>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+function StatCard({ icon, val, label, color = O }: { icon: React.ReactNode; val: string; label: string; color?: string }) {
+  return (
+    <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16, boxShadow: cardShadow }}>
+      <div style={{ width: 44, height: 44, borderRadius: 10, background: O4, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", color, flexShrink: 0 }}>
+        {icon}
+      </div>
+      <div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: WHITE, lineHeight: 1 }}>{val}</div>
+        <div style={{ fontSize: 12, color: MUTED, marginTop: 3 }}>{label}</div>
+      </div>
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div style={{ background: CARD, border: `1px solid ${BORDER2}`, borderRadius: 14, padding: "28px 24px", textAlign: "center", transition: "all 200ms ease", cursor: "default" }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 24px rgba(255,87,34,0.12)`; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}>
+      <div style={{ width: 52, height: 52, borderRadius: 14, background: O4, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", color: O, margin: "0 auto 16px", fontSize: 22 }}>
+        {icon}
+      </div>
+      <h3 style={{ fontSize: 16, fontWeight: 700, color: WHITE, margin: "0 0 10px" }}>{title}</h3>
+      <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.7, margin: 0 }}>{desc}</p>
+    </div>
+  );
+}
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
+    const fn = () => setScrolled(window.scrollY > 30);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
   return (
-    <div style={{ background: "#000", color: "#F5F5F7", fontFamily: "-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif", WebkitFontSmoothing: "antialiased", overflowX: "hidden" }}>
+    <div style={s.page}>
 
-      {/* NAVBAR */}
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", background: scrolled ? "rgba(0,0,0,0.90)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none", transition: "all 300ms ease" }}>
-        <span style={{ fontSize: 16, fontWeight: 700, color: "#F5F5F7", letterSpacing: "-0.01em" }}>Sign Flow</span>
-        <div style={{ display: "flex", gap: 28 }}>
-          {["Características","Precios","Demo"].map(l => <a key={l} href={`#${l.toLowerCase()}`} style={{ fontSize: 13, color: "#6E6E73", textDecoration: "none", letterSpacing: "0.01em" }}>{l}</a>)}
+      {/* NAV */}
+      <nav style={{ ...s.nav, background: scrolled ? "rgba(17,19,24,0.96)" : "rgba(17,19,24,0.60)", borderBottomColor: scrolled ? BORDER2 : "transparent" }}>
+        <div style={s.logo}>
+          <div style={s.logoIcon}>⚡</div>
+          Sign Flow
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Link to="/login" style={{ fontSize: 13, color: "#6E6E73", textDecoration: "none" }}>Iniciar sesión</Link>
-          <Link to="/access" style={{ fontSize: 13, fontWeight: 600, color: "#fff", background: "#5B6AF2", padding: "7px 18px", borderRadius: 980, textDecoration: "none" }}>Elegir Plan →</Link>
+        <div style={s.navLinks}>
+          {["Características","Precios","Demo","Blog"].map(l => (
+            <a key={l} href={`#${l.toLowerCase()}`} style={s.navLink}
+              onMouseEnter={e => (e.target as HTMLElement).style.color = WHITE}
+              onMouseLeave={e => (e.target as HTMLElement).style.color = MUTED}>{l}</a>
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <Link to="/login" style={s.btnGhost}>Iniciar sesión</Link>
+          <Link to="/access" style={s.btnPrimary}>Empezar gratis →</Link>
         </div>
       </nav>
 
       {/* HERO */}
-      <section style={{ padding: "120px 48px 80px", textAlign: "center", background: "radial-gradient(ellipse 90% 50% at 50% -5%,rgba(91,106,242,0.20),transparent 65%)" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 980, background: "rgba(91,106,242,0.10)", border: "1px solid rgba(91,106,242,0.30)", fontSize: 12, color: "#8B9CF8", marginBottom: 28 }}>
-          <span style={{ color: "#5B6AF2" }}>✦</span> Diseñado para agencias de señalética
-        </div>
-        <h1 style={{ fontSize: "clamp(52px,8vw,80px)", fontWeight: 800, lineHeight: 1.0, letterSpacing: "-0.04em", margin: "0 0 20px", color: "#F5F5F7" }}>
-          Gestiona tu agencia<br />de señalética<br />
-          <span style={{ background: "linear-gradient(135deg,#818CF8,#A78BFA,#C084FC)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>sin caos.</span>
-        </h1>
-        <p style={{ fontSize: 19, color: "#A1A1A6", lineHeight: 1.6, maxWidth: 480, margin: "0 auto 36px" }}>
-          Leads, propuestas, producción e instalaciones en un solo flujo.<br />Tu equipo alineado. Tus clientes informados.
-        </p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginBottom: 24 }}>
-          <Link to="/access" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 980, background: "#5B6AF2", color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none", boxShadow: "0 4px 24px rgba(91,106,242,0.40)" }}>Empezar gratis →</Link>
-          <a href="#demo" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 28px", borderRadius: 980, border: "1px solid rgba(255,255,255,0.14)", color: "#F5F5F7", fontSize: 15, textDecoration: "none" }}>Ver demo</a>
-        </div>
-        <p style={{ fontSize: 13, color: "#6E6E73", marginBottom: 60 }}>
-          <span style={{ color: "#FF9F0A" }}>★★★★★</span> Usado por agencias en Miami · CDMX · Bogotá · Madrid
-        </p>
+      <section style={{ padding: "100px 56px 80px", position: "relative", overflow: "hidden", minHeight: 600, background: `linear-gradient(135deg, ${BG} 0%, #141620 100%)` }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,87,34,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,87,34,0.03) 1px, transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -100, right: 200, width: 400, height: 400, background: "radial-gradient(circle, rgba(255,87,34,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-        {/* BROWSER MOCKUP */}
-        <div style={{ maxWidth: 860, margin: "0 auto", border: "1px solid rgba(255,255,255,0.10)", borderRadius: 16, overflow: "hidden", boxShadow: "0 0 0 1px rgba(255,255,255,0.05),0 40px 120px rgba(0,0,0,0.80),0 0 80px rgba(91,106,242,0.12)", transform: "perspective(1400px) rotateX(5deg)", transformOrigin: "top center" }}>
-          <div style={{ background: "#111", padding: "10px 16px", display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ display: "flex", gap: 5 }}>
-              {["#FF453A","#FF9F0A","#32D74B"].map(c => <div key={c} style={{ width: 11, height: 11, borderRadius: "50%", background: c }} />)}
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center", gap: 60, position: "relative" }}>
+          <div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 4, background: O4, border: `1px solid ${BORDER}`, fontSize: 12, color: O, fontWeight: 600, marginBottom: 24, textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>
+              ⚡ Plataforma operacional para PYMEs
             </div>
-            <div style={{ flex: 1, background: "rgba(255,255,255,0.06)", borderRadius: 6, padding: "4px 12px", fontSize: 11, color: "#6E6E73", textAlign: "center" }}>signflowapp.com/dashboard</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#32D74B" }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#32D74B" }} />En vivo
+            <h1 style={{ fontSize: "clamp(36px,4.5vw,58px)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 20px", color: WHITE }}>
+              Gestiona tu negocio<br />
+              <span style={{ color: O, textShadow: `0 0 40px rgba(255,87,34,0.50)` }}>de punta a punta.</span>
+            </h1>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.7, margin: "0 0 36px", maxWidth: 460 }}>
+              Desde el primer lead hasta el cobro final. Sign Flow conecta ventas, producción e instalaciones en un solo flujo para cualquier PYME.
+            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" as const, marginBottom: 40 }}>
+              <Link to="/access" style={{ ...s.btnPrimary, ...s.btnLg }}>
+                Empezar gratis — 14 días <ArrowRight size={16} />
+              </Link>
+              <a href="#demo" style={{ ...s.btnGhost, ...s.btnLg }}>Ver demo</a>
+            </div>
+            <div style={{ display: "flex", gap: 24, flexWrap: "wrap" as const }}>
+              {["Sin tarjeta de crédito","Cancela cuando quieras","Setup en 5 minutos"].map(t => (
+                <div key={t} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: MUTED }}>
+                  <Check size={13} style={{ color: O }} />{t}
+                </div>
+              ))}
             </div>
           </div>
-          <img src="/screenshots/dashboard.png" alt="Sign Flow Dashboard" style={{ width: "100%", display: "block" }}
-            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          <div style={{ position: "relative", height: 360 }}>
+            <HexGrid />
+          </div>
         </div>
       </section>
 
-      {/* SOCIAL PROOF */}
-      <div style={{ padding: "24px 48px", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
-        <p style={{ fontSize: 11, color: "#3A3A3C", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 12 }}>Confiado por agencias en</p>
-        <div style={{ display: "flex", justifyContent: "center", gap: 32, fontSize: 13, color: "#4A4A4A" }}>
-          {["Miami","Ciudad de México","Bogotá","Buenos Aires","Madrid"].map(c => <span key={c}>{c}</span>)}
+      {/* STATS */}
+      <section style={{ background: BG2, borderTop: `1px solid ${BORDER2}`, borderBottom: `1px solid ${BORDER2}`, padding: "40px 56px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 }}>
+          <StatCard icon={<Users size={20}/>} val="500+" label="Negocios activos" />
+          <StatCard icon={<TrendingUp size={20}/>} val="$2.4M" label="Procesado este mes" />
+          <StatCard icon={<Zap size={20}/>} val="98%" label="Uptime garantizado" />
+          <StatCard icon={<Clock size={20}/>} val="3 min" label="Setup promedio" />
         </div>
-      </div>
+      </section>
 
       {/* PROBLEMA / SOLUCIÓN */}
-      <section style={{ padding: "120px 48px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", lineHeight: 1.05, marginBottom: 60 }}>
-            Tu agencia merece más que<br /><span style={{ color: "#6E6E73" }}>hojas de cálculo y WhatsApps.</span>
-          </h2>
-          {[
-            ["Leads perdidos en el chat","Pipeline visual con seguimiento"],
-            ["Propuestas en Word sin control","PDF profesional con un clic"],
-            ["Órdenes por WhatsApp","Órdenes con estado en tiempo real"],
-            ["Fotos en el teléfono","Evidencias en la nube por proyecto"],
-            ["Sin idea del estado financiero","Dashboard con ingresos en vivo"],
-          ].map(([before, after], i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 40px 1fr", alignItems: "center", padding: "22px 0", borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
-              <span style={{ fontSize: 15, color: "#FF453A", textDecoration: "line-through" }}>{before}</span>
-              <span style={{ color: "#5B6AF2", fontSize: 20, textAlign: "center" }}>→</span>
-              <span style={{ fontSize: 15, color: "#F5F5F7", fontWeight: 600 }}>{after}</span>
+      <section style={{ padding: "100px 56px", background: BG }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 60 }}>
+            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>¿Por qué Sign Flow?</div>
+            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: "0 0 14px" }}>
+              Tu negocio merece más que<br /><span style={{ color: O }}>WhatsApps y Excel.</span>
+            </h2>
+            <p style={{ fontSize: 16, color: MUTED, maxWidth: 500, margin: "0 auto" }}>Cada día que operas sin sistema pierdes tiempo, dinero y clientes.</p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 0 }}>
+            <div style={{ background: CARD, border: `1px solid ${BORDER2}`, borderRadius: "14px 0 0 14px", padding: "28px 32px" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: DIM, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 16 }}>Sin Sign Flow</div>
+              {["Leads perdidos en el chat","Cotizaciones en Word","Órdenes por voz","Fotos en el celular","Sin control financiero"].map((t,i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: i < 4 ? `1px solid ${BORDER2}` : "none" }}>
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#FF453A", flexShrink: 0 }} />
+                  <span style={{ fontSize: 14, color: MUTED, textDecoration: "line-through" }}>{t}</span>
+                </div>
+              ))}
             </div>
-          ))}
+            <div style={{ background: O, width: 48, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <span style={{ fontSize: 22, color: "#fff", fontWeight: 700 }}>→</span>
+            </div>
+            <div style={{ background: `linear-gradient(135deg, ${CARD}, #1F2235)`, border: `1px solid ${BORDER}`, borderRadius: "0 14px 14px 0", padding: "28px 32px", boxShadow: `0 0 40px rgba(255,87,34,0.08)` }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: O, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 16 }}>Con Sign Flow</div>
+              {["Pipeline visual en tiempo real","PDF profesional con un clic","Órdenes asignadas con estado","Evidencias en la nube","Dashboard financiero en vivo"].map((t,i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: i < 4 ? `1px solid ${BORDER}` : "none" }}>
+                  <Check size={14} style={{ color: O, flexShrink: 0 }} />
+                  <span style={{ fontSize: 14, color: WHITE, fontWeight: 600 }}>{t}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* FEATURES */}
-      <section id="demo" style={{ padding: "120px 48px", background: "rgba(255,255,255,0.015)" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>Todo lo que necesitas,</h2>
-          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 40 }}>nada que no usarás.</p>
-          <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
-            {["Dashboard ejecutivo","Leads y propuestas","Producción e instalación","Gestión de equipo"].map((tab, i) => (
-              <div key={tab} style={{ padding: "8px 18px", borderRadius: 980, fontSize: 13, fontWeight: 500, cursor: "pointer", border: i === 0 ? "1px solid rgba(91,106,242,0.40)" : "1px solid rgba(255,255,255,0.10)", background: i === 0 ? "rgba(91,106,242,0.15)" : "transparent", color: i === 0 ? "#8B9CF8" : "#6E6E73" }}>{tab}</div>
-            ))}
+      <section id="demo" style={{ padding: "100px 56px", background: BG2 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Características</div>
+            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: 0 }}>
+              Todo en uno. <span style={{ color: O }}>Sin complicaciones.</span>
+            </h2>
           </div>
-          <div style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20, overflow: "hidden" }}>
-            <div style={{ padding: "28px 36px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-              <h3 style={{ fontSize: 22, fontWeight: 700, color: "#F5F5F7", marginBottom: 8 }}>Todo tu negocio en una pantalla.</h3>
-              <p style={{ fontSize: 15, color: "#A1A1A6", lineHeight: 1.6, margin: 0 }}>KPIs en tiempo real, briefing de IA cada mañana y pipeline visual. Sabes exactamente qué atender antes de abrir el primer WhatsApp.</p>
-            </div>
-            <img src="/screenshots/dashboard.png" alt="Dashboard Sign Flow" style={{ width: "100%", display: "block" }}
-              onError={(e) => { (e.target as HTMLImageElement).style.height = "240px"; (e.target as HTMLImageElement).style.background = "#050505"; }} />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+            <FeatureCard icon={<BarChart2 size={22}/>} title="Dashboard ejecutivo" desc="KPIs en tiempo real + briefing de IA cada mañana. Sabes exactamente qué atender antes de abrir el primer mensaje." />
+            <FeatureCard icon={<FileText size={22}/>} title="Leads y propuestas" desc="Captura leads, genera propuestas en PDF con tu logo y cierra más rápido con seguimiento automático." />
+            <FeatureCard icon={<Zap size={22}/>} title="Producción e instalación" desc="Órdenes automáticas al aprobar propuestas. Tu equipo sabe qué hacer y cuándo. Sin llamadas." />
+            <FeatureCard icon={<TrendingUp size={22}/>} title="Control financiero" desc="Ve exactamente cuánto entra, cuánto está pendiente y cuál es tu pipeline de ingresos para el mes." />
+            <FeatureCard icon={<Users size={22}/>} title="Gestión de equipo" desc="5 roles con permisos granulares. Cada miembro ve exactamente lo que necesita para su trabajo." />
+            <FeatureCard icon={<Shield size={22}/>} title="Seguro y confiable" desc="RLS en Supabase, datos aislados por empresa y acceso protegido por roles. Tu información solo la ves tú." />
           </div>
         </div>
       </section>
 
       {/* 3 PASOS */}
-      <section style={{ padding: "120px 48px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>De lead a entrega</h2>
-          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 72 }}>en 3 pasos.</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)" }}>
+      <section style={{ padding: "100px 56px", background: BG, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,87,34,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,87,34,0.025) 1px, transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
+        <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative" }}>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Cómo funciona</div>
+            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: 0 }}>
+              Del contacto al cobro<br /><span style={{ color: O }}>en 3 pasos.</span>
+            </h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 0, position: "relative" }}>
+            <div style={{ position: "absolute", top: 36, left: "16.5%", right: "16.5%", height: 2, background: `linear-gradient(90deg, ${O}, ${O2}, ${O})`, opacity: 0.4, zIndex: 0 }} />
             {[
-              { n: "01", t: "Captura el lead", d: "El cliente llega por referido, Instagram o tu web. Lo registras en segundos con toda su info y el servicio que necesita." },
-              { n: "02", t: "Cotiza y produce", d: "Genera propuesta con PDF profesional. Al aprobarla se crea la orden de producción automáticamente." },
-              { n: "03", t: "Instala y cobra", d: "Tu equipo recibe la orden. Suben evidencias. El cliente recibe notificación. Tú cobras." },
-            ].map((s, i) => (
-              <div key={i} style={{ padding: "0 40px", borderRight: i < 2 ? "1px dashed rgba(255,255,255,0.08)" : "none" }}>
-                <div style={{ fontSize: 80, fontWeight: 900, lineHeight: 1, background: "linear-gradient(135deg,#5B6AF2,#A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", opacity: 0.45, marginBottom: 16 }}>{s.n}</div>
-                <h3 style={{ fontSize: 19, fontWeight: 700, color: "#F5F5F7", marginBottom: 10 }}>{s.t}</h3>
-                <p style={{ fontSize: 14, color: "#6E6E73", lineHeight: 1.7, margin: 0 }}>{s.d}</p>
+              { n: "01", t: "Captura y convierte", d: "Registra cada lead con su info y servicio. Genera propuestas PDF con tu logo. Cierra más con seguimiento automático." },
+              { n: "02", t: "Produce y coordina", d: "Al aprobar la propuesta se crea la orden automáticamente. Tu equipo recibe asignación en su app al instante." },
+              { n: "03", t: "Entrega y cobra", d: "El equipo sube evidencias desde campo. El cliente recibe notificación. Tú ves el ingreso en el dashboard." },
+            ].map((step, i) => (
+              <div key={i} style={{ padding: "0 32px", textAlign: "center", position: "relative", zIndex: 1 }}>
+                <div style={{ width: 72, height: 72, borderRadius: "50%", background: i === 1 ? O : CARD, border: `2px solid ${O}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", boxShadow: i === 1 ? glow : "none", fontSize: 22, fontWeight: 900, color: i === 1 ? "#fff" : O }}>
+                  {step.n}
+                </div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: WHITE, margin: "0 0 12px" }}>{step.t}</h3>
+                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.7, margin: 0 }}>{step.d}</p>
               </div>
             ))}
           </div>
@@ -134,26 +263,32 @@ export default function Landing() {
       </section>
 
       {/* TESTIMONIOS */}
-      <section style={{ padding: "120px 48px", background: "rgba(255,255,255,0.015)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>Agencias que ya ordenaron</h2>
-          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 56 }}>su operación.</p>
+      <section style={{ padding: "100px 56px", background: BG2 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Testimonios</div>
+            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: 0 }}>
+              Negocios que ya <span style={{ color: O }}>ordenaron su operación.</span>
+            </h2>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
             {[
-              { i: "CM", n: "Carlos M.", r: "Director · SignMakers Miami", t: "\"Antes perdíamos leads por no dar seguimiento. Ahora el dashboard nos avisa qué está caliente y qué atender hoy.\"" },
-              { i: "ER", n: "Elena R.", r: "Gerente · VisualCorp CDMX", t: "\"Las propuestas en PDF con nuestro logo cambiaron cómo nos perciben. Cerramos 30% más en el primer mes.\"" },
-              { i: "DL", n: "David L.", r: "Operaciones · BrandSpace Bogotá", t: "\"Por fin sé dónde está cada instalación sin llamar a nadie. El mapa en tiempo real vale solo el precio del plan.\"" },
+              { i: "CM", n: "Carlos M.", r: "Director · Taller de señalética, Miami", t: "Antes perdíamos leads por no dar seguimiento a tiempo. Ahora el dashboard me avisa qué está caliente cada mañana." },
+              { i: "ER", n: "Elena R.", r: "Gerente · Empresa de instalaciones, CDMX", t: "Mandamos propuestas en PDF con nuestro logo desde el celular. Los clientes lo perciben diferente y cerramos 30% más." },
+              { i: "DL", n: "David L.", r: "Operaciones · Servicios de campo, Bogotá", t: "Coordinamos 8 técnicos sin un solo WhatsApp de confusión. Cada uno sabe su orden del día al entrar a la app." },
             ].map((p, i) => (
-              <div key={i} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: 28 }}>
+              <div key={i} style={{ background: CARD, border: `1px solid ${BORDER2}`, borderRadius: 14, padding: 28, transition: "all 200ms" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 24px rgba(255,87,34,0.10)`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}>
                 <div style={{ display: "flex", gap: 2, marginBottom: 16 }}>
-                  {[...Array(5)].map((_,j) => <span key={j} style={{ color: "#FF9F0A", fontSize: 13 }}>★</span>)}
+                  {[...Array(5)].map((_,j) => <span key={j} style={{ color: O, fontSize: 14 }}>★</span>)}
                 </div>
-                <p style={{ fontSize: 14, color: "#A1A1A6", fontStyle: "italic", lineHeight: 1.75, margin: "0 0 20px" }}>{p.t}</p>
+                <p style={{ fontSize: 14, color: MUTED, fontStyle: "italic", lineHeight: 1.75, margin: "0 0 20px" }}>"{p.t}"</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 34, height: 34, borderRadius: "50%", background: "rgba(91,106,242,0.20)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#8B9CF8", flexShrink: 0 }}>{p.i}</div>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: O4, border: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: O, flexShrink: 0 }}>{p.i}</div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#F5F5F7" }}>{p.n}</div>
-                    <div style={{ fontSize: 11, color: "#6E6E73" }}>{p.r}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: WHITE }}>{p.n}</div>
+                    <div style={{ fontSize: 11, color: DIM }}>{p.r}</div>
                   </div>
                 </div>
               </div>
@@ -163,69 +298,95 @@ export default function Landing() {
       </section>
 
       {/* PRECIOS */}
-      <section id="precios" style={{ padding: "120px 48px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <h2 style={{ fontSize: "clamp(32px,5vw,48px)", fontWeight: 800, letterSpacing: "-0.03em", textAlign: "center", marginBottom: 8 }}>Elige tu plan.</h2>
-          <p style={{ fontSize: 18, color: "#6E6E73", textAlign: "center", marginBottom: 48 }}>Sin contratos. Cancela cuando quieras.</p>
+      <section id="precios" style={{ padding: "100px 56px", background: BG }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 12 }}>Precios</div>
+            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, letterSpacing: "-0.03em", color: WHITE, margin: "0 0 12px" }}>Elige tu plan.</h2>
+            <p style={{ fontSize: 16, color: MUTED }}>Sin contratos. Sin sorpresas. Cancela cuando quieras.</p>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
             {[
-              { name: "Starter", price: 49, features: ["Hasta 3 usuarios","Leads y propuestas","Órdenes de servicio","Soporte por email"], cta: "Elegir Starter", h: false },
-              { name: "Professional", price: 99, features: ["Hasta 10 usuarios","Todo de Starter","AI Briefing diario","PDF de propuestas","Reportes avanzados"], cta: "Elegir Professional →", h: true },
-              { name: "Enterprise", price: 199, features: ["Usuarios ilimitados","Todo de Professional","Onboarding dedicado","SLA garantizado"], cta: "Contactar ventas", h: false },
+              { name: "Starter", price: 49, features: ["Hasta 3 usuarios","Leads y propuestas","Órdenes de servicio","Soporte por email"], hi: false },
+              { name: "Professional", price: 99, features: ["Hasta 10 usuarios","Todo de Starter","AI Briefing diario","PDF de propuestas","Reportes avanzados"], hi: true },
+              { name: "Enterprise", price: 199, features: ["Usuarios ilimitados","Todo de Professional","Onboarding dedicado","SLA garantizado"], hi: false },
             ].map((plan, i) => (
-              <div key={i} style={{ background: plan.h ? "rgba(91,106,242,0.07)" : "rgba(255,255,255,0.03)", border: plan.h ? "1px solid rgba(91,106,242,0.40)" : "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: 32, position: "relative", boxShadow: plan.h ? "0 0 80px rgba(91,106,242,0.10)" : "none" }}>
-                {plan.h && <div style={{ position: "absolute", top: -11, left: "50%", transform: "translateX(-50%)", background: "rgba(91,106,242,0.25)", border: "1px solid rgba(91,106,242,0.45)", borderRadius: 980, padding: "3px 14px", fontSize: 11, fontWeight: 700, color: "#8B9CF8", whiteSpace: "nowrap" }}>Más popular</div>}
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#A1A1A6", marginBottom: 10 }}>{plan.name}</div>
+              <div key={i} style={{ background: plan.hi ? `linear-gradient(135deg, #1F2035, #252840)` : CARD, border: `1px solid ${plan.hi ? O : BORDER2}`, borderRadius: 16, padding: 32, position: "relative", boxShadow: plan.hi ? `0 0 60px rgba(255,87,34,0.15)` : cardShadow }}>
+                {plan.hi && (
+                  <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: O, borderRadius: 4, padding: "4px 16px", fontSize: 11, fontWeight: 800, color: "#fff", whiteSpace: "nowrap", boxShadow: glowSm }}>
+                    MÁS POPULAR
+                  </div>
+                )}
+                <div style={{ fontSize: 13, fontWeight: 700, color: plan.hi ? O : MUTED, marginBottom: 10, textTransform: "uppercase" as const, letterSpacing: "0.06em" }}>{plan.name}</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 24 }}>
-                  <span style={{ fontSize: 48, fontWeight: 800, color: "#F5F5F7", lineHeight: 1, letterSpacing: "-0.02em" }}>${plan.price}</span>
-                  <span style={{ fontSize: 14, color: "#6E6E73" }}>/mes</span>
+                  <span style={{ fontSize: 52, fontWeight: 900, color: WHITE, lineHeight: 1, letterSpacing: "-0.03em" }}>${plan.price}</span>
+                  <span style={{ fontSize: 15, color: DIM }}>/mes</span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+                <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 28 }}>
                   {plan.features.map((f, j) => (
-                    <div key={j} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#A1A1A6" }}>
-                      <span style={{ color: "#32D74B", fontSize: 12, flexShrink: 0 }}>✓</span>{f}
+                    <div key={j} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: MUTED }}>
+                      <Check size={14} style={{ color: O, flexShrink: 0 }} />{f}
                     </div>
                   ))}
                 </div>
-                <Link to="/access" style={{ display: "block", textAlign: "center", padding: 11, borderRadius: 10, fontWeight: 600, fontSize: 13, textDecoration: "none", background: plan.h ? "#5B6AF2" : "transparent", color: plan.h ? "#fff" : "#F5F5F7", border: plan.h ? "none" : "1px solid rgba(255,255,255,0.14)", boxShadow: plan.h ? "0 4px 20px rgba(91,106,242,0.35)" : "none" }}>{plan.cta}</Link>
+                <Link to="/access" style={{ display: "block", textAlign: "center", padding: "12px", borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: "none", background: plan.hi ? O : "transparent", color: plan.hi ? "#fff" : WHITE, border: plan.hi ? "none" : `1px solid rgba(255,255,255,0.15)`, boxShadow: plan.hi ? glow : "none" }}>
+                  {plan.hi ? "Elegir Professional →" : plan.name === "Enterprise" ? "Contactar ventas" : "Elegir Starter"}
+                </Link>
               </div>
             ))}
           </div>
-          <p style={{ textAlign: "center", fontSize: 12, color: "#6E6E73", marginTop: 20 }}>✓ 14 días gratis &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Cancela cuando quieras</p>
+          <p style={{ textAlign: "center", fontSize: 13, color: DIM, marginTop: 24 }}>
+            ✓ 14 días gratis &nbsp;·&nbsp; ✓ Sin tarjeta de crédito &nbsp;·&nbsp; ✓ Cancela cuando quieras
+          </p>
         </div>
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: "140px 48px", textAlign: "center", background: "linear-gradient(180deg,#000 0%,#080810 100%)", borderTop: "1px solid rgba(91,106,242,0.12)", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 90% at 50% 110%,rgba(91,106,242,0.14),transparent 70%)", pointerEvents: "none" }} />
-        <h2 style={{ fontSize: "clamp(40px,6vw,68px)", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: 16, position: "relative" }}>¿Listo para ordenar<br />tu agencia?</h2>
-        <p style={{ color: "#6E6E73", fontSize: 18, marginBottom: 40, position: "relative" }}>Empieza gratis hoy. Tu equipo lo agradecerá.</p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", position: "relative" }}>
-          <Link to="/access" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", borderRadius: 980, textDecoration: "none", background: "#5B6AF2", color: "#fff", fontWeight: 600, fontSize: 16, boxShadow: "0 4px 32px rgba(91,106,242,0.45)" }}>Empezar gratis →</Link>
-          <a href="mailto:hello@mail.signflowapp.com" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", borderRadius: 980, textDecoration: "none", background: "transparent", color: "#F5F5F7", fontWeight: 500, fontSize: 16, border: "1px solid rgba(255,255,255,0.15)" }}>Hablar con ventas</a>
+      <section style={{ padding: "120px 56px", textAlign: "center", background: `linear-gradient(135deg, ${BG} 0%, #16111A 100%)`, borderTop: `1px solid ${BORDER}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 80% at 50% 100%, rgba(255,87,34,0.12), transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(rgba(255,87,34,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,87,34,0.03) 1px, transparent 1px)`, backgroundSize: "60px 60px", pointerEvents: "none" }} />
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: 12, color: O, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 20 }}>⚡ Empieza hoy</div>
+          <h2 style={{ fontSize: "clamp(36px,5vw,64px)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.05, margin: "0 0 16px", color: WHITE }}>
+            ¿Listo para ordenar<br /><span style={{ color: O, textShadow: `0 0 40px rgba(255,87,34,0.50)` }}>tu negocio?</span>
+          </h2>
+          <p style={{ fontSize: 18, color: MUTED, margin: "0 0 40px" }}>Empieza gratis hoy. Tu equipo lo notará mañana.</p>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" as const }}>
+            <Link to="/access" style={{ ...s.btnPrimary, ...s.btnLg, fontSize: 16 }}>
+              Empezar gratis — 14 días <ArrowRight size={16} />
+            </Link>
+            <a href="mailto:hello@mail.signflowapp.com" style={{ ...s.btnGhost, ...s.btnLg, fontSize: 16 }}>
+              Hablar con ventas
+            </a>
+          </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: "#000", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "48px 48px 28px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <footer style={{ background: "#0D0F14", borderTop: `1px solid ${BORDER2}`, padding: "48px 56px 28px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#F5F5F7", marginBottom: 8 }}>Sign Flow</div>
-              <div style={{ fontSize: 13, color: "#6E6E73", lineHeight: 1.6 }}>La plataforma de gestión operacional para agencias de señalética.</div>
+              <div style={{ ...s.logo, marginBottom: 12, fontSize: 16 }}>
+                <div style={{ ...s.logoIcon, width: 28, height: 28, fontSize: 14 }}>⚡</div>
+                Sign Flow
+              </div>
+              <div style={{ fontSize: 13, color: DIM, lineHeight: 1.7 }}>La plataforma operacional para negocios que venden y entregan productos o servicios.</div>
             </div>
             {[
-              { title: "Producto", links: ["Características","Precios","Demo"] },
+              { title: "Producto", links: ["Características","Precios","Demo","Changelog"] },
               { title: "Empresa", links: ["Sobre nosotros","Blog","Contacto"] },
               { title: "Legal", links: ["Privacidad","Términos","Cookies"] },
             ].map(col => (
               <div key={col.title}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#6E6E73", textTransform: "uppercase" as const, letterSpacing: "0.10em", marginBottom: 14 }}>{col.title}</div>
-                {col.links.map(l => <a key={l} href="#" style={{ display: "block", fontSize: 13, color: "#6E6E73", textDecoration: "none", marginBottom: 10 }}>{l}</a>)}
+                <div style={{ fontSize: 11, fontWeight: 700, color: O, textTransform: "uppercase" as const, letterSpacing: "0.12em", marginBottom: 14 }}>{col.title}</div>
+                {col.links.map(l => <a key={l} href="#" style={{ display: "block", fontSize: 13, color: DIM, textDecoration: "none", marginBottom: 9, transition: "color 150ms" }}
+                  onMouseEnter={e => (e.target as HTMLElement).style.color = WHITE}
+                  onMouseLeave={e => (e.target as HTMLElement).style.color = DIM}>{l}</a>)}
               </div>
             ))}
           </div>
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 20, display: "flex", justifyContent: "space-between", fontSize: 12, color: "#3A3A3C" }}>
+          <div style={{ borderTop: `1px solid ${BORDER2}`, paddingTop: 20, display: "flex", justifyContent: "space-between", fontSize: 12, color: DIM }}>
             <span>© 2026 Sign Flow · signflowapp.com</span>
             <span>Todos los derechos reservados</span>
           </div>
