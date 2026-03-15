@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,13 @@ import { useCatalog } from "@/hooks/useCatalog";
 import { useLeads, Lead } from "@/contexts/LeadsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Pencil, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Trash2, Upload, X } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
+import { compressImage } from "@/lib/image";
 
 interface EditLeadModalProps {
   lead: Lead | null;
@@ -45,6 +46,11 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const [value, setValue] = useState("");
   const [notes, setNotes] = useState("");
 
+  // Logo state
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (lead) {
       setName(lead.name);
@@ -57,15 +63,51 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       setStatus(lead.status);
       setValue(lead.value);
       setNotes(lead.notes || "");
+      setLogoPreview(lead.logoUrl || null);
+      setLogoFile(null);
       setEditing(startInEditMode);
     }
   }, [lead, startInEditMode]);
+
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast({ title: "Formato inválido", description: "Seleccione una imagen." });
+      return;
+    }
+    try {
+      const compressed = await compressImage(file, 400, 400, 0.8);
+      setLogoFile(compressed);
+      if (logoPreview && !logoPreview.startsWith('http')) URL.revokeObjectURL(logoPreview);
+      setLogoPreview(URL.createObjectURL(compressed));
+    } catch {
+      toast({ title: "Error al procesar imagen" });
+    }
+  };
+
+  const removeLogo = () => {
+    if (logoPreview && !logoPreview.startsWith('http')) URL.revokeObjectURL(logoPreview);
+    setLogoPreview(null);
+    setLogoFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
 
   const handleSave = async () => {
     if (!lead) return;
     setSaving(true);
     try {
-      await updateLead(lead.id, {
+      let logoUrl: string | undefined = undefined;
+
+      if (logoFile) {
+        const fileName = `${Date.now()}-${logoFile.name}`;
+        const { error: uploadError } = await supabase.storage.from('lead-logos').upload(fileName, logoFile);
+        if (uploadError) throw uploadError;
+        const { data: urlData } = supabase.storage.from('lead-logos').getPublicUrl(fileName);
+        logoUrl = urlData.publicUrl;
+      }
+
+      const updates: Partial<Lead> = {
         name,
         company,
         service,
@@ -74,7 +116,10 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
         value,
         notes,
         contact: { phone, email, location },
-      });
+      };
+      if (logoUrl !== undefined) updates.logoUrl = logoUrl;
+
+      await updateLead(lead.id, updates);
       toast({ title: "Lead actualizado" });
       setEditing(false);
       onClose();
@@ -106,6 +151,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   if (!lead) return null;
 
   const fieldClass = "min-h-[44px]";
+  const initials = (lead.company || lead.name || "?").slice(0, 2).toUpperCase();
 
   return (
     <>
@@ -125,6 +171,30 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
           </SheetHeader>
 
           <div className="space-y-4">
+            {/* Logo / Avatar */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-border bg-muted flex items-center justify-center">
+                {logoPreview ? (
+                  <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xl font-bold text-primary">{initials}</span>
+                )}
+              </div>
+              {editing && (
+                <div className="flex items-center gap-2">
+                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
+                  <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                    <Upload className="w-3.5 h-3.5 mr-1.5" /> Cambiar logo
+                  </Button>
+                  {logoPreview && (
+                    <Button type="button" variant="ghost" size="sm" onClick={removeLogo}>
+                      <X className="w-3.5 h-3.5" />
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div>
               <Label>Empresa</Label>
               {editing ? (
@@ -242,7 +312,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                 <Button variant="outline" onClick={() => setEditing(false)} className={fieldClass} disabled={saving}>
                   Cancelar
                 </Button>
-                <Button onClick={handleSave} className={`bg-mint text-mint-foreground hover:bg-mint-hover flex-1 ${fieldClass}`} disabled={saving}>
+                <Button onClick={handleSave} className={`flex-1 ${fieldClass}`} disabled={saving}>
                   {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Guardando...</> : "Guardar cambios"}
                 </Button>
               </div>
