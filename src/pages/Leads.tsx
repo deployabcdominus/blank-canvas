@@ -264,6 +264,7 @@ const Leads = () => {
                   onConvert={(leadId) => setConvertLeadId(leadId)}
                   onEdit={(l) => { setEditLead(l); setEditLeadMode(true); }}
                   onCardClick={(l) => { setEditLead(l); setEditLeadMode(false); }}
+                  onViewProposal={handleViewProposal}
                 />
               ))}
             </div>
