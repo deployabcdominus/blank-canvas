@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -6,9 +7,11 @@ import { Proposal, ProposalStatus } from "@/contexts/ProposalsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ProposalPDF } from "@/components/proposals/ProposalPDF";
+import { MockupEditorModal } from "@/components/proposals/MockupEditorModal";
 import {
   Clock, CheckCircle, XCircle, ExternalLink, Edit2, Trash2, Factory,
   Calendar, Mail, Link2, User, RefreshCw, DollarSign, Download, Copy,
+  Layers,
 } from "lucide-react";
 import { toast } from "sonner";
 
