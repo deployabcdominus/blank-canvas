@@ -7,8 +7,12 @@ export interface Client {
   id: string;
   companyId: string;
   clientName: string;
+  contactName: string | null;
   primaryEmail: string | null;
   primaryPhone: string | null;
+  address: string | null;
+  website: string | null;
+  serviceType: string | null;
   notes: string | null;
   logoUrl: string | null;
   createdAt: string;
@@ -42,8 +46,12 @@ const mapRow = (row: any): Client => ({
   id: row.id,
   companyId: row.company_id,
   clientName: row.client_name,
+  contactName: row.contact_name || null,
   primaryEmail: row.primary_email,
   primaryPhone: row.primary_phone,
+  address: row.address || null,
+  website: row.website || null,
+  serviceType: row.service_type || null,
   notes: row.notes,
   logoUrl: row.logo_url ?? null,
   createdAt: row.created_at,
@@ -59,10 +67,8 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (!user) return null;
     const { data } = await supabase.from('profiles').select('company_id').eq('id', user.id).maybeSingle();
     if (data?.company_id) return data.company_id;
-    // Fallback: check if user owns a company directly
     const { data: comp } = await supabase.from('companies').select('id').eq('user_id', user.id).maybeSingle();
     if (comp?.id) {
-      // Auto-fix the profile link
       await supabase.from('profiles').update({ company_id: comp.id }).eq('id', user.id);
       return comp.id;
     }
@@ -90,9 +96,14 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
       .insert({
         company_id: companyId,
         client_name: client.clientName,
+        contact_name: client.contactName || '',
         primary_email: client.primaryEmail,
         primary_phone: client.primaryPhone,
+        address: client.address || '',
+        website: client.website || '',
+        service_type: client.serviceType || '',
         notes: client.notes,
+        logo_url: client.logoUrl,
       })
       .select()
       .single();
@@ -106,8 +117,12 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
   const updateClient = async (id: string, updates: Partial<Omit<Client, 'id' | 'companyId'>>) => {
     const dbUpdates: any = {};
     if (updates.clientName !== undefined) dbUpdates.client_name = updates.clientName;
+    if (updates.contactName !== undefined) dbUpdates.contact_name = updates.contactName;
     if (updates.primaryEmail !== undefined) dbUpdates.primary_email = updates.primaryEmail;
     if (updates.primaryPhone !== undefined) dbUpdates.primary_phone = updates.primaryPhone;
+    if (updates.address !== undefined) dbUpdates.address = updates.address;
+    if (updates.website !== undefined) dbUpdates.website = updates.website;
+    if (updates.serviceType !== undefined) dbUpdates.service_type = updates.serviceType;
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.logoUrl !== undefined) dbUpdates.logo_url = updates.logoUrl;
     const { error } = await (supabase as any).from('clients').update(dbUpdates).eq('id', id);

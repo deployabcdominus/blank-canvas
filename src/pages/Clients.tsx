@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { ListCardSkeleton } from "@/components/ui/skeleton-card";
+import { useCatalog } from "@/hooks/useCatalog";
 import { useClients, Client } from "@/contexts/ClientsContext";
 import { useProjects } from "@/contexts/ProjectsContext";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +27,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 
-const emptyForm = { clientName: '', primaryEmail: '', primaryPhone: '', notes: '' };
+const emptyForm = { clientName: '', contactName: '', primaryEmail: '', primaryPhone: '', address: '', website: '', serviceType: '', notes: '' };
 const PAGE_SIZE = 12;
 
 export default function Clients() {
@@ -33,6 +35,7 @@ export default function Clients() {
   const { projects } = useProjects();
   const { canDelete, canEdit } = useUserRole();
   const { toast } = useToast();
+  const { items: catalogServices } = useCatalog("lead_service");
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -98,7 +101,11 @@ export default function Clients() {
   const openNew = () => { setEditingClient(null); setForm(emptyForm); resetLogoState(); setModalOpen(true); };
   const openEdit = (c: Client) => {
     setEditingClient(c);
-    setForm({ clientName: c.clientName, primaryEmail: c.primaryEmail || '', primaryPhone: c.primaryPhone || '', notes: c.notes || '' });
+    setForm({
+      clientName: c.clientName, contactName: c.contactName || '', primaryEmail: c.primaryEmail || '',
+      primaryPhone: c.primaryPhone || '', address: c.address || '', website: c.website || '',
+      serviceType: c.serviceType || '', notes: c.notes || ''
+    });
     setLogoPreview(c.logoUrl || null);
     setLogoFile(null);
     setModalOpen(true);
@@ -150,8 +157,12 @@ export default function Clients() {
       if (editingClient) {
         const updates: Partial<Omit<Client, 'id' | 'companyId'>> = {
           clientName: form.clientName.trim(),
+          contactName: form.contactName.trim() || null,
           primaryEmail: form.primaryEmail.trim() || null,
           primaryPhone: form.primaryPhone.trim() || null,
+          address: form.address.trim() || null,
+          website: form.website.trim() || null,
+          serviceType: form.serviceType || null,
           notes: form.notes.trim() || null,
         };
         if (logoUrl !== undefined) updates.logoUrl = logoUrl;
@@ -160,8 +171,12 @@ export default function Clients() {
       } else {
         await addClient({
           clientName: form.clientName.trim(),
+          contactName: form.contactName.trim() || null,
           primaryEmail: form.primaryEmail.trim() || null,
           primaryPhone: form.primaryPhone.trim() || null,
+          address: form.address.trim() || null,
+          website: form.website.trim() || null,
+          serviceType: form.serviceType || null,
           notes: form.notes.trim() || null,
           logoUrl: logoUrl || null,
         });
@@ -310,8 +325,8 @@ export default function Clients() {
 
       {/* Add/Edit Modal with Logo Upload */}
       <Dialog open={modalOpen} onOpenChange={(open) => { if (!open) { resetLogoState(); } setModalOpen(open); }}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader><DialogTitle>{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</DialogTitle></DialogHeader>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader><DialogTitle className="text-lg font-semibold">{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</DialogTitle></DialogHeader>
           <div className="space-y-5">
             {/* Avatar/Logo Upload */}
             <div className="flex flex-col items-center gap-3">
@@ -319,11 +334,8 @@ export default function Clients() {
                 {logoPreview ? (
                   <div className="relative w-20 h-20 rounded-full overflow-hidden ring-2 ring-white/[0.06] shadow-lg">
                     <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => { resetLogoState(); }}
-                      className="absolute top-0 right-0 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
+                    <button type="button" onClick={() => { resetLogoState(); }}
+                      className="absolute top-0 right-0 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -332,11 +344,8 @@ export default function Clients() {
                     <ClientAvatar name={form.clientName || 'C'} size="lg" className="w-20 h-20 text-xl" />
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
-                >
+                <button type="button" onClick={() => fileInputRef.current?.click()}
+                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors">
                   <Camera className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -344,19 +353,42 @@ export default function Clients() {
               <p className="text-[11px] text-muted-foreground">JPG, PNG. Máx 2MB</p>
             </div>
 
-            <div className="space-y-2">
-              <Label>Nombre del cliente *</Label>
-              <Input value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} placeholder="Ej: Acme Corp" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Email</Label>
-                <Input type="email" value={form.primaryEmail} onChange={e => setForm(f => ({ ...f, primaryEmail: e.target.value }))} />
+                <Label>Empresa (Razón Social) *</Label>
+                <Input value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} placeholder="Nombre de la empresa" className="min-h-[44px]" />
               </div>
+              <div className="space-y-2">
+                <Label>Persona de contacto</Label>
+                <Input value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} placeholder="Nombre completo" className="min-h-[44px]" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Teléfono</Label>
-                <Input value={form.primaryPhone} onChange={e => setForm(f => ({ ...f, primaryPhone: e.target.value }))} />
+                <Input value={form.primaryPhone} onChange={e => setForm(f => ({ ...f, primaryPhone: e.target.value }))} placeholder="(11) 99999-9999" className="min-h-[44px]" />
               </div>
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input type="email" value={form.primaryEmail} onChange={e => setForm(f => ({ ...f, primaryEmail: e.target.value }))} placeholder="email@ejemplo.com" className="min-h-[44px]" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Tipo de Servicio</Label>
+              <Select value={form.serviceType} onValueChange={v => setForm(f => ({ ...f, serviceType: v }))}>
+                <SelectTrigger className="min-h-[44px]"><SelectValue placeholder="Seleccione un servicio" /></SelectTrigger>
+                <SelectContent>
+                  {catalogServices.map(s => <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Dirección</Label>
+              <Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Calle, número, ciudad" className="min-h-[44px]" />
+            </div>
+            <div className="space-y-2">
+              <Label>Sitio Web</Label>
+              <Input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://www.ejemplo.com" className="min-h-[44px]" />
             </div>
             <div className="space-y-2">
               <Label>Notas</Label>

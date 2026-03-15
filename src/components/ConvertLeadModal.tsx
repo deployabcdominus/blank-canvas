@@ -29,11 +29,8 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   const [projectName, setProjectName] = useState('');
   const [saving, setSaving] = useState(false);
 
-  // Reset form when modal opens with a new lead
   const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      onClose();
-    }
+    if (!open) onClose();
   };
 
   // Pre-fill when lead changes  
@@ -56,10 +53,14 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         if (!newClientName.trim()) throw new Error('Nombre del cliente requerido');
         const newClient = await addClient({
           clientName: newClientName.trim(),
+          contactName: lead.name || null,
           primaryEmail: lead.contact.email || null,
           primaryPhone: lead.contact.phone || null,
-          notes: null,
-          logoUrl: null,
+          address: lead.contact.location || null,
+          website: lead.website || null,
+          serviceType: lead.service || null,
+          notes: lead.notes || null,
+          logoUrl: lead.logoUrl || null,
         });
         clientId = newClient.id;
       } else {
@@ -78,7 +79,6 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         folderFullPath: null,
       });
 
-      // Update lead with client_id and project_id
       await updateLead(lead.id, {
         clientId: clientId,
         projectId: project.id,
@@ -132,6 +132,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
             <div className="text-xs text-muted-foreground space-y-1">
               <p>Dirección: {lead.contact.location || '—'}</p>
               <p>Servicio: {lead.service || '—'}</p>
+              {lead.logoUrl && <p>✓ Logo del lead será transferido al cliente</p>}
             </div>
           )}
         </div>
