@@ -150,6 +150,7 @@ export default function SuperadminDashboard() {
     try {
       const { error } = await supabase.from("companies").update({ name: editCompanyName.trim() }).eq("id", companyToEdit.id);
       if (error) throw error;
+      await logAudit("COMPANY_UPDATED", editCompanyName.trim(), { previous_name: companyToEdit.name });
       toast({ title: "Empresa actualizada" }); setCompanyToEdit(null); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
     setSavingCompany(false);
