@@ -103,6 +103,16 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
             {errors.description && <p className="text-sm text-destructive mt-1">{errors.description.message}</p>}
           </div>
 
+          <div>
+            <Label htmlFor="serviceType">Tipo de Servicio</Label>
+            <Select onValueChange={(v) => setValue("serviceType", v)}>
+              <SelectTrigger><SelectValue placeholder="Seleccione tipo de servicio" /></SelectTrigger>
+              <SelectContent>
+                {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="status">Estado *</Label>
