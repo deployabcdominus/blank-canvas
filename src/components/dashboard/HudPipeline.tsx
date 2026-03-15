@@ -32,9 +32,9 @@ interface PipelineItem {
 
 const COLS = [
   { key: "leads" as KanbanColumn, label: "Leads", icon: Users, accentVar: "--primary" },
-  { key: "propuesta" as KanbanColumn, label: "Propuesta", icon: FileText, accentVar: "--color-info" },
-  { key: "work-orders" as KanbanColumn, label: "Órdenes", icon: ClipboardList, accentVar: "--lavender" },
-  { key: "entrega" as KanbanColumn, label: "Entrega", icon: MapPin, accentVar: "--color-warning" },
+  { key: "propuesta" as KanbanColumn, label: "Propuesta", icon: FileText, accentVar: "--color-warning" },
+  { key: "work-orders" as KanbanColumn, label: "Órdenes", icon: ClipboardList, accentVar: "--color-info" },
+  { key: "entrega" as KanbanColumn, label: "Entrega", icon: MapPin, accentVar: "--primary" },
   { key: "completado" as KanbanColumn, label: "Completado", icon: CheckCircle2, accentVar: "--color-success" },
 ];
 

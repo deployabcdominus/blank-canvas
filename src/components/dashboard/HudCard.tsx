@@ -12,18 +12,8 @@ interface HudCardProps {
   accentClass?: string;
 }
 
-const ACCENT_MAP: Record<string, { bg: string; color: string }> = {
-  "hud-indigo":  { bg: "rgba(91, 106, 242, 0.12)",  color: "#5B6AF2" },
-  "hud-amber":   { bg: "rgba(217, 119, 6, 0.12)",   color: "#D97706" },
-  "hud-cyan":    { bg: "rgba(14, 165, 233, 0.12)",   color: "#0EA5E9" },
-  "hud-green":   { bg: "rgba(22, 163, 74, 0.12)",    color: "#16A34A" },
-  // Legacy fallbacks
-  "hud-violet":  { bg: "rgba(91, 106, 242, 0.12)",   color: "#5B6AF2" },
-};
-
-export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, accentClass = "hud-indigo" }: HudCardProps) => {
-  const accent = ACCENT_MAP[accentClass] || ACCENT_MAP["hud-indigo"];
-
+/* All icons render in zinc-400 by default; active state uses orange primary */
+export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index }: HudCardProps) => {
   return (
     <motion.button
       initial={{ opacity: 0, y: 24 }}
@@ -32,31 +22,29 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
       onClick={onClick}
       className={`
         stat-card relative overflow-hidden text-left group
-        dash-card card-interactive p-5
-        ${isActive ? "ring-2 ring-primary/40 shadow-lg" : ""}
+        rounded-xl border p-5 transition-all duration-200 shimmer-hover
+        ${isActive
+          ? "border-primary/30 bg-primary/[0.06] shadow-[0_0_20px_-6px_hsl(25_95%_53%/0.25)]"
+          : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
+        }
       `}
     >
-      {/* Top glow accent */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-40"
-        style={{ background: `linear-gradient(90deg, transparent, ${accent.color}, transparent)` }}
-      />
+      {/* Top glow line */}
+      {isActive && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px opacity-50 bg-gradient-to-r from-transparent via-primary to-transparent" />
+      )}
 
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3">
           <div
-            className="w-10 h-10 flex items-center justify-center rounded-[10px]"
-            style={{
-              background: accent.bg,
-            }}
+            className={`w-10 h-10 flex items-center justify-center rounded-xl transition-colors ${
+              isActive ? "bg-primary/10" : "bg-white/[0.04]"
+            }`}
           >
-            <Icon className="w-5 h-5" style={{ color: accent.color }} />
+            <Icon className={`w-5 h-5 transition-colors ${isActive ? "text-primary" : "text-zinc-400"}`} />
           </div>
           {isActive && (
-            <span
-              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: accent.bg, color: accent.color }}
-            >
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
               Filtrado
             </span>
           )}
@@ -64,7 +52,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
 
         <p className="font-extrabold text-[32px] leading-none tracking-tight text-foreground">{value}</p>
         <p className="text-sm font-semibold mt-2 text-foreground">{label}</p>
-        <p className="text-xs mt-0.5 text-muted-foreground">{desc}</p>
+        <p className="text-xs mt-0.5 text-zinc-500">{desc}</p>
       </div>
     </motion.button>
   );

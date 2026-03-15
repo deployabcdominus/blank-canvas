@@ -135,10 +135,10 @@ export default function Clients() {
       {/* KPI Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Total Clientes', value: clients.length, icon: Users, iconBg: 'rgba(91,106,242,0.12)', iconColor: '#5B6AF2' },
-          { label: 'Clientes Activos', value: activeClients, icon: TrendingUp, iconBg: 'rgba(22,163,74,0.12)', iconColor: '#16A34A' },
-          { label: 'Total Proyectos', value: totalProjects, icon: FolderOpen, iconBg: 'rgba(14,165,233,0.12)', iconColor: '#0EA5E9' },
-          { label: 'Prom. Proy/Cliente', value: clients.length ? (totalProjects / clients.length).toFixed(1) : '0', icon: TrendingUp, iconBg: 'rgba(217,119,6,0.12)', iconColor: '#D97706' },
+          { label: 'Total Clientes', value: clients.length, icon: Users, iconBg: 'rgba(255,255,255,0.04)', iconColor: 'hsl(25,95%,53%)' },
+          { label: 'Clientes Activos', value: activeClients, icon: TrendingUp, iconBg: 'rgba(22,163,74,0.10)', iconColor: '#16A34A' },
+          { label: 'Total Proyectos', value: totalProjects, icon: FolderOpen, iconBg: 'rgba(255,255,255,0.04)', iconColor: 'hsl(0,0%,55%)' },
+          { label: 'Prom. Proy/Cliente', value: clients.length ? (totalProjects / clients.length).toFixed(1) : '0', icon: TrendingUp, iconBg: 'rgba(217,119,6,0.10)', iconColor: '#D97706' },
          ].map((kpi, i) => (
           <motion.div key={kpi.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
             <Card className="kpi-card card-interactive glass-card">

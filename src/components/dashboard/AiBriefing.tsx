@@ -189,125 +189,105 @@ export function AiBriefing() {
         transition={{ duration: 0.6 }}
         className="mb-8"
       >
-        {/* AI Panel — always dark for contrast */}
+        {/* AI Panel — Zinc-950 with subtle orange border */}
         <div
-          className="rounded-[20px] p-[1px] overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, hsl(234 86% 65%), hsl(260 60% 58%), hsl(234 86% 65%))",
-            backgroundSize: "200% 200%",
-            animation: "shimmer 4s linear infinite",
-          }}
+          className="rounded-2xl border border-white/[0.06] overflow-hidden"
+          style={{ background: "#0a0a0a" }}
         >
-          <div
-            className="rounded-[19px]"
-            style={{
-              background: "linear-gradient(135deg, #1E2340 0%, #141830 50%, #1A2048 100%)",
-            }}
-          >
-            <div className="p-5 sm:p-6">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <motion.div
-                    animate={{ rotate: [0, 15, -15, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  >
-                    <Sparkles className="h-6 w-6 text-[#5B6AF2]" />
-                  </motion.div>
-                  <div>
-                    <h2 className="font-semibold text-lg" style={{ color: "#E8EAFF" }}>{greeting}, {firstName}</h2>
-                    <p className="text-xs" style={{ color: "rgba(200, 206, 255, 0.75)" }}>
-                      Tu resumen inteligente de hoy · {dateStr}
-                    </p>
-                  </div>
-                  <Badge className="ml-2 text-[10px] px-2 py-0.5 border-0 font-bold bg-[#5B6AF2] text-white">
-                    AI
-                  </Badge>
-                </div>
-                <span className="text-[10px] hidden sm:block" style={{ color: "rgba(160, 170, 230, 0.85)" }}>
-                  Actualizado hace 1 min
-                </span>
-              </div>
-
-              {!hasEnoughData ? (
-                <div className="space-y-4">
-                  <p className="text-sm" style={{ color: "rgba(200, 206, 255, 0.75)" }}>
-                    Tu asistente de inteligencia está listo. Necesita conocer tu negocio primero.
+          <div className="p-5 sm:p-6">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <motion.div
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                >
+                  <Sparkles className="h-6 w-6 text-primary" />
+                </motion.div>
+                <div>
+                  <h2 className="font-semibold text-lg text-foreground">{greeting}, {firstName}</h2>
+                  <p className="text-xs text-zinc-500">
+                    Tu resumen inteligente de hoy · {dateStr}
                   </p>
-                  <div className="w-full rounded-full h-2" style={{ background: "rgba(255,255,255,0.08)" }}>
-                    <div
-                      className="h-2 rounded-full transition-all"
-                      style={{
-                        width: `${(completedSteps / steps.length) * 100}%`,
-                        background: "linear-gradient(90deg, #5B6AF2, #7C6FEE)",
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    {steps.map((step, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm">
-                        {step.done ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                        ) : (
-                          <Circle className="h-4 w-4" style={{ color: "rgba(160, 170, 230, 0.5)" }} />
-                        )}
-                        <span style={{ color: step.done ? "rgba(160, 170, 230, 0.5)" : "#E8EAFF", textDecoration: step.done ? "line-through" : "none" }}>
-                          {step.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <Button
-                    size="sm"
-                    className="mt-2 bg-[#5B6AF2] hover:bg-[#4757E8] text-white font-semibold"
-                    onClick={() => navigate("/clients")}
-                  >
-                    Completar configuración <ArrowRight className="ml-1 h-4 w-4" />
-                  </Button>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {insightCards.map((card, i) => {
-                      const IconComp = card.icon;
-                      return (
-                        <div
-                          key={i}
-                          className="rounded-xl p-4 space-y-1 transition-all duration-200 hover:bg-white/[0.10]"
-                          style={{
-                            background: "rgba(255, 255, 255, 0.06)",
-                            border: "1px solid rgba(255, 255, 255, 0.12)",
-                          }}
-                        >
-                          <div className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(180, 190, 240, 0.85)" }}>
-                            <IconComp className="h-3.5 w-3.5" /> {card.label}
-                          </div>
-                          {card.value && (
-                            <p className="font-bold text-[28px] leading-none text-white">{card.value}</p>
-                          )}
-                          <p className={`text-xs leading-tight ${card.value ? "" : "font-medium"}`} style={{ color: "rgba(160, 170, 220, 0.75)" }}>
-                            {card.sub}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <Button
-                    onClick={generateBriefing}
-                    disabled={briefingLoading}
-                    className="w-full border-0 font-semibold text-white btn-spring"
-                    style={{
-                      background: "linear-gradient(135deg, #5B6AF2, #7C6FEE)",
-                      boxShadow: "0 4px 20px rgba(91, 106, 242, 0.35)",
-                    }}
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Generar briefing completo con IA
-                  </Button>
-                </div>
-              )}
+                <Badge className="ml-2 text-[10px] px-2 py-0.5 border-0 font-bold bg-primary/15 text-primary">
+                  AI
+                </Badge>
+              </div>
+              <span className="text-[10px] hidden sm:block text-zinc-600">
+                Actualizado hace 1 min
+              </span>
             </div>
+
+            {!hasEnoughData ? (
+              <div className="space-y-4">
+                <p className="text-sm text-zinc-400">
+                  Tu asistente de inteligencia está listo. Necesita conocer tu negocio primero.
+                </p>
+                <div className="w-full rounded-full h-2 bg-white/[0.06]">
+                  <div
+                    className="h-2 rounded-full transition-all bg-primary"
+                    style={{ width: `${(completedSteps / steps.length) * 100}%` }}
+                  />
+                </div>
+                <div className="space-y-2">
+                  {steps.map((step, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      {step.done ? (
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                      ) : (
+                        <Circle className="h-4 w-4 text-zinc-600" />
+                      )}
+                      <span className={step.done ? "text-zinc-600 line-through" : "text-foreground"}>
+                        {step.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => navigate("/clients")}
+                >
+                  Completar configuración <ArrowRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {insightCards.map((card, i) => {
+                    const IconComp = card.icon;
+                    return (
+                      <div
+                        key={i}
+                        className="rounded-xl p-4 space-y-1 transition-all duration-200 hover:border-primary/20 border border-white/[0.06]"
+                        style={{ background: "rgba(255, 255, 255, 0.03)" }}
+                      >
+                        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+                          <IconComp className="h-3.5 w-3.5" /> {card.label}
+                        </div>
+                        {card.value && (
+                          <p className="font-bold text-[28px] leading-none text-white">{card.value}</p>
+                        )}
+                        <p className={`text-xs leading-tight text-zinc-500 ${card.value ? "" : "font-medium"}`}>
+                          {card.sub}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <Button
+                  onClick={generateBriefing}
+                  disabled={briefingLoading}
+                  variant="ghost"
+                  className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-semibold btn-spring"
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Generar briefing completo con IA
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
@@ -327,7 +307,7 @@ export function AiBriefing() {
                     navigator.clipboard.writeText(briefingText);
                     toast({ title: "Copiado", description: "Briefing copiado al portapapeles" });
                   }}
-                  className="p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                  className="p-1.5 rounded-lg hover:bg-white/[0.05] transition-colors text-muted-foreground hover:text-foreground"
                   title="Copiar briefing"
                 >
                   <Copy size={14} />
@@ -348,12 +328,12 @@ export function AiBriefing() {
                 >
                   Analizando tu negocio...
                 </motion.p>
-                <div className="h-4 bg-muted/60 rounded animate-pulse w-1/3" />
-                <div className="h-3 bg-muted/30 rounded animate-pulse w-full" />
-                <div className="h-3 bg-muted/30 rounded animate-pulse w-5/6" />
-                <div className="h-4 bg-muted/60 rounded animate-pulse w-2/5 mt-4" />
-                <div className="h-3 bg-muted/30 rounded animate-pulse w-full" />
-                <div className="h-3 bg-muted/30 rounded animate-pulse w-4/6" />
+                <div className="h-4 bg-white/[0.06] rounded animate-pulse w-1/3" />
+                <div className="h-3 bg-white/[0.03] rounded animate-pulse w-full" />
+                <div className="h-3 bg-white/[0.03] rounded animate-pulse w-5/6" />
+                <div className="h-4 bg-white/[0.06] rounded animate-pulse w-2/5 mt-4" />
+                <div className="h-3 bg-white/[0.03] rounded animate-pulse w-full" />
+                <div className="h-3 bg-white/[0.03] rounded animate-pulse w-4/6" />
               </div>
             ) : (
               <BriefingContent text={briefingText} />
