@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Users, FileText, ClipboardList, MapPin,
   Building, UserCog, Settings, Contact, FolderKanban,
-  DollarSign, Globe, ServerCog
+  DollarSign, Globe, ServerCog, Activity
 } from "lucide-react";
 import type { AppRole } from "@/hooks/useUserRole";
 import type { LucideIcon } from "lucide-react";
