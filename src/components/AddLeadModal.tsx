@@ -232,7 +232,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
               <Button type="button" variant="outline" onClick={handleClose} className="min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
                 Cancelar
               </Button>
-              <Button type="submit" className="bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
+              <Button type="submit" className="min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
                 {isLoading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Guardando...</>) : "Guardar Lead"}
               </Button>
             </div>
