@@ -8,15 +8,16 @@ import { useIndustryLabels } from "@/hooks/useIndustryLabels";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, X, ChevronDown, Shield, Settings } from "lucide-react";
+import { LogOut, User, X, Shield, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { platformItems, mainItems, operationGroup, adminItems, type NavItem } from "@/constants/navigation";
+import {
+  platformItems, tenantGroups, utilityItems,
+  type NavItem, type NavGroup,
+} from "@/constants/navigation";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -32,12 +33,9 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const { fullName, email, initials } = useUserProfile();
   const industryLabels = useIndustryLabels();
 
-  const isOperationActive = operationGroup.items.some(i => location.pathname === i.path);
-  const [operationOpen, setOperationOpen] = useState(isOperationActive);
-
   const handleLogout = async () => {
     await signOut();
-    navigate('/login');
+    navigate("/login");
     onClose();
   };
 
@@ -54,28 +52,53 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
     return item.label;
   };
 
+  const isActive = (path: string) =>
+    location.pathname + location.search === path || location.pathname === path;
+
   const renderNavItem = (item: NavItem, index: number) => {
-    const isActive = location.pathname + location.search === item.path || location.pathname === item.path;
+    const active = isActive(item.path);
     const label = getLabel(item);
     return (
       <motion.div
         key={item.path}
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.05 * index, duration: 0.25, ease: "easeOut" }}
+        transition={{ delay: 0.03 * index, duration: 0.2 }}
       >
         <NavLink
           to={item.path}
           onClick={onClose}
-          className={`sidebar-nav-item gap-3 px-4 py-4 min-h-[44px] ${isActive ? 'sidebar-nav-active' : ''}`}
-          aria-current={isActive ? "page" : undefined}
+          className={`relative flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-lg transition-colors ${
+            active
+              ? "text-foreground font-semibold bg-primary/[0.06]"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+          }`}
+          aria-current={active ? "page" : undefined}
         >
-          <item.icon className="w-5 h-5" aria-hidden="true" />
-          <span className="font-medium text-sm">{label}</span>
+          {active && (
+            <div className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-full bg-primary" />
+          )}
+          <item.icon className="w-4 h-4" aria-hidden="true" />
+          <span className="text-[13px]">{label}</span>
         </NavLink>
       </motion.div>
     );
   };
+
+  const renderGroup = (group: NavGroup, startIndex: number) => {
+    const visibleItems = group.items.filter(canSee);
+    if (visibleItems.length === 0) return null;
+    return (
+      <div key={group.groupLabel} className="space-y-0.5">
+        <p className="px-4 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/60 select-none">
+          {group.groupLabel}
+        </p>
+        {visibleItems.map((item, i) => renderNavItem(item, startIndex + i))}
+      </div>
+    );
+  };
+
+  let idx = 0;
 
   return (
     <AnimatePresence>
@@ -90,64 +113,60 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
             className="fixed left-0 top-0 w-80 h-full sidebar-premium z-50 p-5 flex flex-col"
           >
-            <div className="flex items-center justify-between mb-8 flex-shrink-0">
-              <BrandLogo size={40} showText variant="iconWithText" textClassName="text-2xl" />
-              <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-white/10 rounded-xl" aria-label="Cerrar menú">
+            <div className="flex items-center justify-between mb-6 flex-shrink-0">
+              <BrandLogo size={36} showText variant="iconWithText" textClassName="text-xl" />
+              <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-muted/30 rounded-xl" aria-label="Cerrar menú">
                 <X className="w-5 h-5" />
               </Button>
             </div>
 
-            <nav className="space-y-1 flex-1 overflow-y-auto min-h-0 px-1" role="navigation" aria-label="Menú principal">
+            <nav className="flex-1 overflow-y-auto min-h-0 px-1 space-y-5" role="navigation" aria-label="Menú principal">
               {isSuperadmin ? (
                 <>
-                  <div className="px-3 py-2 mb-1"><span className="sidebar-section-label">Plataforma</span></div>
+                  <p className="px-4 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/60">
+                    Plataforma
+                  </p>
                   {platformItems.map((item, i) => renderNavItem(item, i))}
                 </>
               ) : (
                 <>
-                  {mainItems.filter(canSee).map((item, i) => renderNavItem(item, i))}
-                  {operationGroup.items.filter(canSee).length > 0 && (
-                    <>
-                      <div className="my-3 mx-2 border-t sidebar-divider" />
-                      <Collapsible open={operationOpen} onOpenChange={setOperationOpen}>
-                        <CollapsibleTrigger className="sidebar-nav-item gap-3 px-4 py-4 min-h-[44px] w-full">
-                          <operationGroup.icon className="w-5 h-5" aria-hidden="true" />
-                          <span className="font-medium text-sm flex-1 text-left">{operationGroup.groupLabel}</span>
-                          <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${operationOpen ? 'rotate-180' : ''}`} />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pl-4 space-y-1 mt-0.5">
-                          {operationGroup.items.filter(canSee).map((item, i) => renderNavItem(item, i))}
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </>
-                  )}
-                  {adminItems.filter(canSee).length > 0 && (
-                    <>
-                      <div className="my-3 mx-2 border-t sidebar-divider" />
-                      {adminItems.filter(canSee).map((item, i) => renderNavItem(item, i))}
-                    </>
-                  )}
+                  {tenantGroups.map((group) => {
+                    const el = renderGroup(group, idx);
+                    idx += group.items.length;
+                    return el;
+                  })}
                 </>
               )}
             </nav>
 
-            <div className="flex-shrink-0 mt-auto sidebar-footer-block rounded-xl p-2 space-y-1">
+            {/* Utilities */}
+            {!isSuperadmin && utilityItems.filter(canSee).length > 0 && (
+              <div className="px-1 pt-3 mt-2 border-t border-border/10 space-y-0.5">
+                <p className="px-4 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/40 select-none">
+                  Utilidades
+                </p>
+                {utilityItems.filter(canSee).map((item, i) => renderNavItem(item, 20 + i))}
+              </div>
+            )}
+
+            {/* User footer */}
+            <div className="flex-shrink-0 mt-3 rounded-xl p-1">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="sidebar-nav-item gap-3 px-3 py-3 min-h-[44px] w-full" aria-label="Menú del usuario">
-                    <Avatar className="w-8 h-8 sidebar-avatar-ring">
+                  <button className="flex items-center gap-3 px-3 py-2.5 min-h-[44px] w-full rounded-lg hover:bg-muted/30 transition-colors" aria-label="Menú del usuario">
+                    <Avatar className="w-8 h-8 ring-1 ring-primary/20">
                       {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
-                      <AvatarFallback className="bg-primary/20 text-primary font-semibold text-xs">{initials}</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold text-[11px]">{initials}</AvatarFallback>
                     </Avatar>
                     <div className="text-left">
-                      <span className="font-medium text-sm block leading-tight text-foreground">{fullName.split(' ')[0]}</span>
-                      <span className="text-xs text-muted-foreground leading-tight">{isSuperadmin ? 'Superadmin' : email}</span>
+                      <span className="font-semibold text-[13px] block leading-tight text-foreground">{fullName.split(" ")[0]}</span>
+                      <span className="text-[10px] text-muted-foreground/60 leading-tight">{isSuperadmin ? "Superadmin" : email}</span>
                     </div>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" side="top" className="glass-card border-white/20 w-56 z-[60]" sideOffset={8}>
+                <DropdownMenuContent align="start" side="top" className="glass-card w-56 z-[60]" sideOffset={8}>
                   <div className="p-2">
-                    <p className="font-medium">{fullName}</p>
+                    <p className="font-semibold">{fullName}</p>
                     <p className="text-sm text-muted-foreground">{email}</p>
                     {isSuperadmin && (
                       <Badge variant="outline" className="mt-1 text-xs border-primary/30 text-primary">
@@ -155,17 +174,17 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                       </Badge>
                     )}
                   </div>
-                  <DropdownMenuSeparator className="bg-white/20" />
-                  <DropdownMenuItem onClick={() => { navigate('/settings?tab=perfil'); onClose(); }} className="hover:bg-white/10 min-h-[44px]">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => { navigate("/settings?tab=perfil"); onClose(); }} className="min-h-[44px]">
                     <User className="w-4 h-4 mr-2" /> Perfil
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem onClick={() => { navigate('/settings'); onClose(); }} className="hover:bg-white/10 min-h-[44px]">
+                    <DropdownMenuItem onClick={() => { navigate("/settings"); onClose(); }} className="min-h-[44px]">
                       <Settings className="w-4 h-4 mr-2" /> Configuración
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuSeparator className="bg-white/20" />
-                  <DropdownMenuItem onClick={handleLogout} className="hover:bg-white/10 text-destructive min-h-[44px]">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive min-h-[44px]">
                     <LogOut className="w-4 h-4 mr-2" /> Salir
                   </DropdownMenuItem>
                 </DropdownMenuContent>
