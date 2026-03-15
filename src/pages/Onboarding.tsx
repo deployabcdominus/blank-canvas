@@ -6,31 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight, ChevronLeft, Upload, Palette, Building, Wrench, Printer, PaintBucket, HardHat, PartyPopper, ShoppingBag, Package, X, Plus, Briefcase } from "lucide-react";
+import { ChevronRight, ChevronLeft, Upload, Palette, Building, X, Plus, Briefcase } from "lucide-react";
 import { compressImage } from "@/lib/image";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
-
-const INDUSTRIES = [
-  { id: "Field Service / Instalaciones", icon: Wrench, label: "Field Service / Instalaciones", description: "Servicios en campo, instalación y mantenimiento" },
-  { id: "Impresión / Producción", icon: Printer, label: "Impresión / Producción", description: "Señalética, rotulación, impresión gran formato" },
-  { id: "Diseño / Creativos", icon: PaintBucket, label: "Diseño / Creativos", description: "Agencias, estudios de diseño, freelancers" },
-  { id: "Construcción / Contratistas", icon: HardHat, label: "Construcción / Contratistas", description: "Obras, remodelaciones, contratistas generales" },
-  { id: "Eventos / Hospitality", icon: PartyPopper, label: "Eventos / Hospitality", description: "Producción de eventos, banquetes, venues" },
-  { id: "Retail / Tiendas", icon: ShoppingBag, label: "Retail / Tiendas", description: "Tiendas, franquicias, puntos de venta" },
-  { id: "Otro", icon: Package, label: "Otro", description: "Cualquier otro tipo de negocio de servicios" },
-];
-
-const DEFAULT_SERVICES_BY_INDUSTRY: Record<string, string[]> = {
-  "Field Service / Instalaciones": ["Instalación", "Mantenimiento", "Reparación"],
-  "Impresión / Producción": ["Fabricación", "Instalación", "Mantenimiento", "Diseño"],
-  "Diseño / Creativos": ["Diseño Gráfico", "Branding", "Producción"],
-  "Construcción / Contratistas": ["Obra Civil", "Remodelación", "Mantenimiento"],
-  "Eventos / Hospitality": ["Producción", "Montaje", "Decoración"],
-  "Retail / Tiendas": ["Venta", "Instalación", "Servicio Postventa"],
-  "Otro": ["General"],
-};
+import { INDUSTRIES, DEFAULT_SERVICES_BY_INDUSTRY } from "@/lib/industry_config";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -45,7 +26,6 @@ const Onboarding = () => {
     brandColor: "soft-blue",
   });
 
-  // Service types tag input
   const [serviceTypes, setServiceTypes] = useState<string[]>([]);
   const [newServiceInput, setNewServiceInput] = useState("");
   const [servicesInitialized, setServicesInitialized] = useState(false);
@@ -97,13 +77,10 @@ const Onboarding = () => {
     if (currentStep === 1 && !formData.industry) return;
     if (currentStep === 2 && !formData.companyName.trim()) return;
     if (currentStep === 3 && !formData.logo) {
-      toast({ title: "Logo obligatorio", description: "Sube el logo de tu empresa para continuar. Es necesario para la marca de agua en mockups y propuestas.", variant: "destructive" });
+      toast({ title: "Logo obligatorio", description: "Sube el logo de tu empresa para continuar.", variant: "destructive" });
       return;
     }
-    // Step 4 is brand color - no validation needed
-    // Step 5 is services - initialize defaults if empty, then allow to proceed
 
-    // When moving FROM step 1 to step 2, pre-populate services
     if (currentStep === 1 && formData.industry && !servicesInitialized) {
       const defaults = DEFAULT_SERVICES_BY_INDUSTRY[formData.industry] || ["General"];
       setServiceTypes(defaults);
@@ -115,7 +92,7 @@ const Onboarding = () => {
       return;
     }
 
-    // Step 5 - complete onboarding
+    // Final step — complete onboarding
     if (!user) {
       toast({ title: "Error", description: "Usuario no autenticado", variant: "destructive" });
       return;
@@ -131,7 +108,6 @@ const Onboarding = () => {
         return;
       }
 
-      // Upload logo to Storage if it's base64
       let logoUrl: string | null = null;
       if (formData.logo && formData.logo.startsWith("data:image")) {
         try {
@@ -140,17 +116,11 @@ const Onboarding = () => {
           const ext = mimeMatch ? mimeMatch[1].split("/")[1] : "png";
           const byteArray = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
           const filePath = `${user.id}/logo.${ext}`;
-
           const { error: uploadError } = await supabase.storage
             .from("company-logos")
             .upload(filePath, byteArray, { contentType: mimeMatch?.[1] || "image/png", upsert: true });
-
-          if (uploadError) {
-            if (import.meta.env.DEV) console.error("Logo upload error:", uploadError);
-          } else {
-            const { data: publicUrlData } = supabase.storage
-              .from("company-logos")
-              .getPublicUrl(filePath);
+          if (!uploadError) {
+            const { data: publicUrlData } = supabase.storage.from("company-logos").getPublicUrl(filePath);
             logoUrl = publicUrlData.publicUrl;
           }
         } catch (err) {
@@ -186,17 +156,13 @@ const Onboarding = () => {
       } else {
         const purchaseToken = localStorage.getItem("purchase_token");
         let planId: string | undefined;
-
         if (purchaseToken) {
           const { data: purchase } = await supabase
             .from("purchases")
             .select("id, plan_id")
             .eq("access_token", purchaseToken)
             .maybeSingle();
-
-          if (purchase) {
-            planId = (purchase as any).plan_id;
-          }
+          if (purchase) planId = (purchase as any).plan_id;
         }
 
         const { data: newCompany, error: insertError } = await supabase
@@ -220,17 +186,13 @@ const Onboarding = () => {
         }
         companyId = newCompany!.id;
 
-        // Save service_types after company creation
         await (supabase as any)
           .from("companies")
           .update({ service_types: finalServiceTypes })
           .eq("id", companyId);
 
         if (purchaseToken) {
-          await supabase
-            .from("purchases")
-            .update({ company_id: companyId })
-            .eq("access_token", purchaseToken);
+          await supabase.from("purchases").update({ company_id: companyId }).eq("access_token", purchaseToken);
           localStorage.removeItem("purchase_token");
           localStorage.removeItem("purchase_email");
         }
@@ -244,7 +206,6 @@ const Onboarding = () => {
         .eq("user_id", user.id)
         .limit(1)
         .maybeSingle();
-
       if (!existingRole) {
         await supabase.from("user_roles").insert({ user_id: user.id, role: "admin" } as any);
       }
@@ -264,7 +225,7 @@ const Onboarding = () => {
     }
   };
 
-  const stepTitles = ["Selecciona tu Industria", "Información de la Empresa", "Sube Tu Logo", "Elige el Color de Marca", "Tus Servicios"];
+  const stepTitles = ["Personaliza tu Experiencia", "Información de la Empresa", "Sube Tu Logo", "Elige el Color de Marca", "Tus Servicios"];
 
   return (
     <PageTransition>
@@ -275,6 +236,7 @@ const Onboarding = () => {
             <p className="text-muted-foreground">Vamos a configurar tu espacio de trabajo en {totalSteps} pasos</p>
           </motion.div>
 
+          {/* Step indicator */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="flex items-center justify-center mb-8">
             {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
               <div key={step} className="flex items-center">
@@ -286,51 +248,67 @@ const Onboarding = () => {
 
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }} className="glass-card p-8">
             <AnimatePresence mode="wait">
+              {/* Step 1 — Industry Selection (Apple Glassmorphism) */}
               {currentStep === 1 && (
                 <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div className="text-center mb-6">
-                    <Building className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
+                    <Building className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" strokeWidth={1.5} />
                     <h2 className="text-xl font-semibold">{stepTitles[0]}</h2>
                     <p className="text-sm text-muted-foreground mt-2">¿A qué se dedica tu negocio?</p>
                   </div>
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {INDUSTRIES.map((industry) => {
                       const Icon = industry.icon;
                       const isSelected = formData.industry === industry.id;
                       return (
-                        <button
+                        <motion.button
                           key={industry.id}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
                           onClick={() => {
                             setFormData(prev => ({ ...prev, industry: industry.id }));
-                            // Reset services when industry changes
                             const defaults = DEFAULT_SERVICES_BY_INDUSTRY[industry.id] || ["General"];
                             setServiceTypes(defaults);
                             setServicesInitialized(true);
                           }}
-                          className={`flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-200 border ${
+                          className={`relative flex flex-col items-center gap-3 p-6 rounded-2xl text-center transition-all duration-300 border backdrop-blur-3xl ${
                             isSelected
-                              ? "bg-primary/10 border-primary/30 ring-2 ring-primary/20 scale-[1.02]"
-                              : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
+                              ? "bg-white/[0.12] border-white/[0.25] ring-2 ring-primary/30 shadow-[0_8px_32px_rgba(251,146,60,0.15)]"
+                              : "bg-white/[0.04] border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.15]"
                           }`}
                         >
-                          <div className={`p-2.5 rounded-xl ${isSelected ? "bg-primary/20" : "bg-white/10"}`}>
-                            <Icon className={`w-5 h-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                          <div className={`p-3 rounded-2xl transition-colors ${isSelected ? "bg-primary/20" : "bg-white/[0.06]"}`}>
+                            <Icon className={`w-6 h-6 ${isSelected ? "text-primary" : "text-muted-foreground"}`} strokeWidth={1.5} />
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <p className={`font-medium text-sm ${isSelected ? "text-foreground" : "text-foreground/80"}`}>{industry.label}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{industry.description}</p>
+                          <div>
+                            <p className={`font-medium text-sm leading-tight ${isSelected ? "text-foreground" : "text-foreground/80"}`}>{industry.label}</p>
+                            <p className="text-[11px] text-muted-foreground mt-1 leading-tight">{industry.description}</p>
                           </div>
-                        </button>
+                          {isSelected && (
+                            <motion.div
+                              layoutId="industry-check"
+                              className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                            >
+                              <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </motion.div>
+                          )}
+                        </motion.button>
                       );
                     })}
                   </div>
                 </motion.div>
               )}
 
+              {/* Step 2 — Company Name */}
               {currentStep === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div className="text-center mb-6">
-                    <Building className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
+                    <Building className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" strokeWidth={1.5} />
                     <h2 className="text-xl font-semibold">{stepTitles[1]}</h2>
                   </div>
                   <div className="space-y-2">
@@ -341,10 +319,11 @@ const Onboarding = () => {
                 </motion.div>
               )}
 
+              {/* Step 3 — Logo */}
               {currentStep === 3 && (
                 <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div className="text-center mb-6">
-                    <Upload className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
+                    <Upload className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" strokeWidth={1.5} />
                     <h2 className="text-xl font-semibold">{stepTitles[2]}</h2>
                   </div>
                   <div className="space-y-4">
@@ -356,20 +335,21 @@ const Onboarding = () => {
                       </div>
                     ) : (
                       <label htmlFor="logo-upload" className="border-2 border-dashed border-white/20 rounded-xl p-8 text-center cursor-pointer hover:border-white/40 transition-colors block">
-                        <Upload className="w-8 h-8 mx-auto mb-4 text-muted-foreground" />
-                        <p className="text-muted-foreground mb-2">Arrastra y suelta tu logo aquí, o haz clic para elegir</p>
+                        <Upload className="w-8 h-8 mx-auto mb-4 text-muted-foreground" strokeWidth={1.5} />
+                        <p className="text-muted-foreground mb-2">Arrastra y suelta tu logo aquí</p>
                         <span className="text-sm text-soft-blue-foreground font-medium">Haz Clic para Elegir Archivo</span>
-                        <p className="text-xs text-orange-400 mt-2 font-medium">* Obligatorio — Se usa como marca de agua en mockups y propuestas</p>
+                        <p className="text-xs text-orange-400 mt-2 font-medium">* Obligatorio</p>
                       </label>
                     )}
                   </div>
                 </motion.div>
               )}
 
+              {/* Step 4 — Brand Color */}
               {currentStep === 4 && (
                 <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div className="text-center mb-6">
-                    <Palette className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
+                    <Palette className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" strokeWidth={1.5} />
                     <h2 className="text-xl font-semibold">{stepTitles[3]}</h2>
                   </div>
                   <div className="space-y-6">
@@ -389,69 +369,45 @@ const Onboarding = () => {
                 </motion.div>
               )}
 
+              {/* Step 5 — Services */}
               {currentStep === 5 && (
                 <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <div className="text-center mb-6">
-                    <Briefcase className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" />
+                    <Briefcase className="w-12 h-12 mx-auto mb-4 text-soft-blue-foreground" strokeWidth={1.5} />
                     <h2 className="text-xl font-semibold">{stepTitles[4]}</h2>
                     <p className="text-sm text-muted-foreground mt-2">
-                      Define los servicios que ofrece tu empresa. Aparecerán en leads, propuestas y órdenes.
+                      Define los servicios que ofrece tu empresa.
                     </p>
                   </div>
-
-                  {/* Tags display */}
                   <div className="flex flex-wrap gap-2 min-h-[40px]">
                     {serviceTypes.map(service => (
-                      <Badge
-                        key={service}
-                        variant="secondary"
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-primary/30 bg-primary/10 text-foreground"
-                      >
+                      <Badge key={service} variant="secondary" className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-primary/30 bg-primary/10 text-foreground">
                         {service}
-                        <button
-                          onClick={() => removeService(service)}
-                          className="ml-1 hover:text-destructive transition-colors"
-                        >
+                        <button onClick={() => removeService(service)} className="ml-1 hover:text-destructive transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </Badge>
                     ))}
-                    {serviceTypes.length === 0 && (
-                      <p className="text-xs text-muted-foreground italic">Agrega al menos un servicio</p>
-                    )}
+                    {serviceTypes.length === 0 && <p className="text-xs text-muted-foreground italic">Agrega al menos un servicio</p>}
                   </div>
-
-                  {/* Add service input */}
                   <div className="flex gap-2">
                     <Input
                       value={newServiceInput}
                       onChange={e => setNewServiceInput(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          addService();
-                        }
-                      }}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addService(); } }}
                       placeholder="Escribe un servicio y presiona Enter..."
                       className="flex-1 glass border-primary/20 focus:border-primary/50"
                     />
-                    <Button
-                      variant="outline"
-                      onClick={addService}
-                      disabled={!newServiceInput.trim()}
-                      className="btn-glass border-primary/30"
-                    >
+                    <Button variant="outline" onClick={addService} disabled={!newServiceInput.trim()} className="btn-glass border-primary/30">
                       <Plus className="w-4 h-4" />
                     </Button>
                   </div>
-
-                  <p className="text-xs text-muted-foreground">
-                    Puedes editar esta lista después en Configuración → Organización.
-                  </p>
+                  <p className="text-xs text-muted-foreground">Puedes editar esta lista después en Configuración → Organización.</p>
                 </motion.div>
               )}
             </AnimatePresence>
 
+            {/* Navigation */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-8 flex justify-between">
               <Button variant="ghost" onClick={() => setCurrentStep(Math.max(1, currentStep - 1))} disabled={currentStep === 1} className="btn-glass">
                 <ChevronLeft className="w-4 h-4 mr-2" />

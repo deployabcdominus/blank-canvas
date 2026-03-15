@@ -11,6 +11,7 @@ interface CompanyData {
   network_base_path: string | null;
   service_types: string[] | null;
   industry: string | null;
+  plan_id: string | null;
 }
 
 export function useCompany() {
@@ -35,7 +36,7 @@ export function useCompany() {
       if (profile?.company_id) {
         const { data: companyData } = await (supabase as any)
           .from('companies')
-          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types, industry')
+          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types, industry, plan_id')
           .eq('id', profile.company_id)
           .maybeSingle();
 
