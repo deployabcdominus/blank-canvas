@@ -88,16 +88,17 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white border shadow-lg max-h-[90vh] overflow-y-auto max-w-2xl">
+      <DialogContent className="bg-background border-border/40 shadow-2xl max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-foreground">
             {company ? "Editar" : "Registrar"} Subcontratista
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Avatar / Logo upload */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
-              <Avatar className="w-24 h-24">
+              <Avatar className="w-24 h-24 border-2 border-border">
                 {logoPreview && <AvatarImage src={logoPreview} alt="Logo de la empresa" />}
                 <AvatarFallback className="bg-primary text-primary-foreground text-lg">{company?.name ? getInitials(company.name) : "?"}</AvatarFallback>
               </Avatar>
@@ -105,9 +106,9 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
                 <Button type="button" variant="destructive" size="sm" className="absolute -top-2 -right-2 w-6 h-6 p-0 rounded-full" onClick={handleRemoveLogo}><X className="w-3 h-3" /></Button>
               )}
             </div>
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1">
               <Label htmlFor="logo" className="cursor-pointer">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><Upload className="w-4 h-4" />Cargar Logotipo</div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Upload className="w-4 h-4" />Cargar Logotipo</div>
               </Label>
               <Input id="logo" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
               <p className="text-xs text-muted-foreground">PNG, JPG hasta 5MB</p>
@@ -117,12 +118,12 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium text-foreground">Nombre de la Empresa *</Label>
-              <Input id="name" placeholder="Nombre del subcontratista" className="bg-white border-input" {...register("name")} />
+              <Input id="name" placeholder="Nombre del subcontratista" {...register("name")} />
               {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-foreground">Email Principal *</Label>
-              <Input id="email" type="email" placeholder="contacto@empresa.com" className="bg-white border-input" {...register("email")} />
+              <Input id="email" type="email" placeholder="contacto@empresa.com" {...register("email")} />
               {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
           </div>
@@ -130,18 +131,18 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="phone" className="text-sm font-medium text-foreground">Teléfono Principal *</Label>
-              <Input id="phone" placeholder="(11) 99999-9999" className="bg-white border-input" {...register("phone", { onChange: (e) => { e.target.value = formatPhone(e.target.value); } })} />
+              <Input id="phone" placeholder="(11) 99999-9999" {...register("phone", { onChange: (e) => { e.target.value = formatPhone(e.target.value); } })} />
               {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="contact" className="text-sm font-medium text-foreground">Persona de Contacto</Label>
-              <Input id="contact" placeholder="Nombre del responsable" className="bg-white border-input" {...register("contact")} />
+              <Input id="contact" placeholder="Nombre del responsable" {...register("contact")} />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label className="text-sm font-medium text-foreground">Servicios Ofrecidos *</Label>
-            <div className="grid grid-cols-2 gap-2 border border-input rounded-md p-3 bg-white">
+            <div className="grid grid-cols-2 gap-2 border border-border rounded-xl p-3 bg-muted/30">
               {serviceTypes.map((service) => (
                 <div key={service} className="flex items-center space-x-2">
                   <Checkbox id={service} checked={selectedServices.includes(service)}
@@ -149,7 +150,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
                       const newServices = checked ? [...selectedServices, service] : selectedServices.filter(s => s !== service);
                       setSelectedServices(newServices); setValue("services", newServices);
                     }} />
-                  <Label htmlFor={service} className="text-sm font-normal cursor-pointer">{service}</Label>
+                  <Label htmlFor={service} className="text-sm font-normal cursor-pointer text-foreground">{service}</Label>
                 </div>
               ))}
             </div>
@@ -157,8 +158,8 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
           </div>
 
           <DialogFooter className="flex gap-2">
-            <Button type="button" variant="outline" onClick={onClose} className="bg-white border-input hover:bg-gray-50">Cancelar</Button>
-            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">{company ? "Actualizar" : "Registrar"} Empresa</Button>
+            <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
+            <Button type="submit">{company ? "Actualizar" : "Registrar"} Empresa</Button>
           </DialogFooter>
         </form>
       </DialogContent>
