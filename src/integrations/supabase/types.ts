@@ -841,6 +841,7 @@ export type Database = {
       }
       proposals: {
         Row: {
+          approval_token: string | null
           approved_at: string | null
           approved_total: number | null
           client: string
@@ -853,12 +854,17 @@ export type Database = {
           project: string | null
           sent_date: string | null
           sent_method: string | null
+          signature_data: string | null
+          signer_ip: string | null
+          signer_name: string | null
+          signer_user_agent: string | null
           status: string | null
           updated_at: string
           user_id: string
           value: number | null
         }
         Insert: {
+          approval_token?: string | null
           approved_at?: string | null
           approved_total?: number | null
           client: string
@@ -871,12 +877,17 @@ export type Database = {
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null
+          signature_data?: string | null
+          signer_ip?: string | null
+          signer_name?: string | null
+          signer_user_agent?: string | null
           status?: string | null
           updated_at?: string
           user_id: string
           value?: number | null
         }
         Update: {
+          approval_token?: string | null
           approved_at?: string | null
           approved_total?: number | null
           client?: string
@@ -889,6 +900,10 @@ export type Database = {
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null
+          signature_data?: string | null
+          signer_ip?: string | null
+          signer_name?: string | null
+          signer_user_agent?: string | null
           status?: string | null
           updated_at?: string
           user_id?: string
