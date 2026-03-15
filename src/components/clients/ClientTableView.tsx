@@ -53,7 +53,7 @@ export function ClientTableView({ clients, clientStats, isAdmin, onEdit, onDelet
                 <TableRow
                   key={c.id}
                   className="group border-border/30 hover:bg-accent/30 transition-colors cursor-pointer"
-                  onClick={() => onEdit(c)}
+                  onClick={() => onEdit?.(c)}
                 >
                   <TableCell>
                     <div className="flex items-center gap-3">
