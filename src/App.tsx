@@ -33,6 +33,8 @@ import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 import MapHub from "./pages/MapHub";
 import Payments from "./pages/Payments";
+import Production from "./pages/Production";
+import WorkerTabletView from "./components/production/WorkerTabletView";
 
 const queryClient = new QueryClient({
   defaultOptions: {
