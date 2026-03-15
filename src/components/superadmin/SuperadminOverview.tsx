@@ -147,10 +147,15 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
   }
 
   /* Chart data formatting */
-  const chartData = health.growth_data.map(d => ({
-    ...d,
-    label: format(parseISO(d.date), "d MMM", { locale: es }),
-  }));
+  const chartData = (health.growth_data || []).map(d => {
+    let label: string;
+    try {
+      label = format(parseISO(d.date), "d MMM", { locale: es });
+    } catch {
+      label = String(d.date).slice(5);
+    }
+    return { ...d, label };
+  });
 
   /* Top tenants sorted by revenue */
   const topTenants = health.top_tenants;
