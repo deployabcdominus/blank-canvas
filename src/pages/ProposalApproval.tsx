@@ -45,7 +45,7 @@ const ProposalApproval = () => {
     (async () => {
       const { data, error } = await (supabase as any)
         .from("proposals")
-        .select("id, client, project, value, description, status, approved_at, approval_token, company_id")
+        .select("id, client, project, value, description, status, approved_at, approval_token, company_id, mockup_url")
         .eq("approval_token", proposalId)
         .maybeSingle();
 
