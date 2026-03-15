@@ -8,8 +8,9 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ProposalPDF } from "@/components/proposals/ProposalPDF";
 import {
   Clock, CheckCircle, XCircle, ExternalLink, Edit2, Trash2, Factory,
-  Calendar, Mail, Link2, User, RefreshCw, DollarSign, Download,
+  Calendar, Mail, Link2, User, RefreshCw, DollarSign, Download, Copy,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const STATUS_CONFIG: Record<ProposalStatus, { color: string; icon: React.ReactNode; label: string }> = {
   'Borrador': { color: 'bg-muted text-muted-foreground', icon: <Clock className="w-3 h-3" />, label: 'Borrador' },
