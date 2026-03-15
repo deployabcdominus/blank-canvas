@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Users, FileText, ClipboardList, MapPin,
   Building, UserCog, Settings, Contact, FolderKanban,
-  DollarSign, Globe, ServerCog
+  DollarSign, Globe, ServerCog, Activity
 } from "lucide-react";
 import type { AppRole } from "@/hooks/useUserRole";
 import type { LucideIcon } from "lucide-react";
@@ -52,6 +52,7 @@ export const operationGroup: NavGroup = {
 
 export const adminItems: NavItem[] = [
   { icon: Building, label: "Subcontratistas", labelKey: "installerCompanies", path: "/installer-companies", roles: ['admin', 'operations'] },
+  { icon: Activity, label: "Auditoría", path: "/audit-log", roles: ['admin'] },
   { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
   { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin'] },
 ];

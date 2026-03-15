@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logAudit } from '@/lib/audit';
 
 export interface Client {
   id: string;
@@ -98,6 +99,7 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (error) throw error;
     const newClient = mapRow(data);
     setClients(prev => [...prev, newClient].sort((a, b) => a.clientName.localeCompare(b.clientName)));
+    logAudit({ action: 'creado', entityType: 'cliente', entityId: newClient.id, entityLabel: newClient.clientName });
     return newClient;
   };
 
@@ -110,13 +112,17 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (updates.logoUrl !== undefined) dbUpdates.logo_url = updates.logoUrl;
     const { error } = await (supabase as any).from('clients').update(dbUpdates).eq('id', id);
     if (error) throw error;
+    const client = clients.find(c => c.id === id);
     setClients(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+    logAudit({ action: 'editado', entityType: 'cliente', entityId: id, entityLabel: client?.clientName, details: dbUpdates });
   };
 
   const deleteClient = async (id: string) => {
     const { error } = await (supabase as any).from('clients').delete().eq('id', id);
     if (error) throw error;
+    const client = clients.find(c => c.id === id);
     setClients(prev => prev.filter(c => c.id !== id));
+    logAudit({ action: 'eliminado', entityType: 'cliente', entityId: id, entityLabel: client?.clientName });
   };
 
   return (

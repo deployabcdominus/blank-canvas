@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logAudit } from '@/lib/audit';
 
 export interface Lead {
   id: string;
@@ -167,6 +168,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
         assignedToUserId: (data as any).assigned_to_user_id || undefined,
       };
       setLeads(prev => [newLead, ...prev]);
+      logAudit({ action: 'creado', entityType: 'lead', entityId: newLead.id, entityLabel: newLead.name });
     }
   };
 
@@ -190,7 +192,10 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
     const { error } = await supabase.from('leads').update(dbUpdates).eq('id', id);
     if (error) throw error;
+    const lead = leads.find(l => l.id === id);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, ...updates } : l));
+    const action = updates.status ? 'cambio_estado' : 'editado';
+    logAudit({ action, entityType: 'lead', entityId: id, entityLabel: lead?.name, details: updates.status ? { before: lead?.status, after: updates.status } : dbUpdates });
   };
 
   const assignLead = async (leadId: string, assignedToUserId: string | null) => {

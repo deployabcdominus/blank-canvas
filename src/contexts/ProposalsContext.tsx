@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logAudit } from '@/lib/audit';
 
 export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
 export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
@@ -121,6 +122,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     } as any);
     if (error) throw error;
     await fetchProposals();
+    logAudit({ action: 'creado', entityType: 'propuesta', entityLabel: proposal.client });
   };
 
   const updateProposal = async (id: string, updates: Partial<Proposal>) => {
@@ -136,13 +138,18 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     const { error } = await supabase.from('proposals').update(dbUpdates).eq('id', id);
     if (error) throw error;
+    const prop = proposals.find(p => p.id === id);
+    const action = updates.status ? (updates.status === 'Aprobada' ? 'aprobado' : 'cambio_estado') : 'editado';
+    logAudit({ action, entityType: 'propuesta', entityId: id, entityLabel: prop?.client, details: updates.status ? { before: prop?.status, after: updates.status } : dbUpdates });
     await fetchProposals();
   };
 
   const deleteProposal = async (id: string) => {
     if (!user) return;
+    const prop = proposals.find(p => p.id === id);
     const { error } = await supabase.from('proposals').delete().eq('id', id);
     if (error) throw error;
+    logAudit({ action: 'eliminado', entityType: 'propuesta', entityId: id, entityLabel: prop?.client });
     await fetchProposals();
   };
 
