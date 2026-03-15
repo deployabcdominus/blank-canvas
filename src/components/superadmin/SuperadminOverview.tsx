@@ -70,9 +70,7 @@ const ChartTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-xl border border-white/[0.08] bg-zinc-900/95 backdrop-blur-xl px-4 py-3 shadow-2xl">
-      <p className="text-xs text-muted-foreground mb-1.5">
-        {format(parseISO(label), "d MMM", { locale: es })}
-      </p>
+      <p className="text-xs text-muted-foreground mb-1.5">{label}</p>
       {payload.map((p: any) => (
         <p key={p.dataKey} className="text-sm font-semibold" style={{ color: p.color }}>
           {p.dataKey === "leads" ? "Leads" : "Órdenes"}: {p.value}
