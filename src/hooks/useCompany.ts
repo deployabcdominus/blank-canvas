@@ -39,7 +39,7 @@ export function useCompany() {
       if (profile?.company_id) {
         const { data: companyData } = await (supabase as any)
           .from('companies')
-          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types, industry, plan_id')
+          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types, industry, plan_id, subscription_status, stripe_customer_id, subscription_end_date')
           .eq('id', profile.company_id)
           .maybeSingle();
 
