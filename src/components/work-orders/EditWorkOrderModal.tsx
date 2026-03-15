@@ -94,6 +94,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     setInstallerCompanyId(order.installerCompanyId || "none");
     setNotes(order.notes || "");
     setPriority(order.priority || "media");
+    setBlueprintUrl(order.blueprintUrl || null);
+    setAnnotations(Array.isArray(order.annotations) ? order.annotations : []);
     setEditing(startInEditMode);
   }, [order, startInEditMode]);
 
