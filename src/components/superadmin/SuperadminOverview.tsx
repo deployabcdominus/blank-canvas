@@ -64,6 +64,10 @@ const ACTION_LABELS: Record<string, { label: string; emoji: string }> = {
 const fmtCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(n);
 const fmtNumber = (n: number) => new Intl.NumberFormat("en-US").format(n);
+const safeFmt = (dateStr: string, fmt: string) => {
+  try { return format(parseISO(dateStr), fmt, { locale: es }); }
+  catch { return String(dateStr).slice(0, 10); }
+};
 
 /* ── Custom tooltip ── */
 const ChartTooltip = ({ active, payload, label }: any) => {
