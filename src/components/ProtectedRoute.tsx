@@ -11,6 +11,7 @@ const TENANT_ONLY_ROUTES = [
   "/dashboard", "/clients", "/projects", "/leads", "/proposals",
   "/payments", "/work-orders", "/production", "/installation",
   "/map-hub", "/installer-companies", "/team-management", "/taller",
+  "/audit-log",
 ];
 
 const ROUTE_ROLE_MAP: Record<string, string[]> = {
