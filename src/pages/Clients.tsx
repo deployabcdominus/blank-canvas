@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 
-const emptyForm = { clientName: '', primaryEmail: '', primaryPhone: '', notes: '' };
+const emptyForm = { clientName: '', contactName: '', primaryEmail: '', primaryPhone: '', address: '', website: '', serviceType: '', notes: '' };
 const PAGE_SIZE = 12;
 
 export default function Clients() {
