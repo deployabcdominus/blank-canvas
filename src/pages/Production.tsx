@@ -26,6 +26,15 @@ const Production = () => {
   const { toast } = useToast();
   const { isAdmin, role } = useUserRole();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortKey>("newest");
+  const [view, setView] = useState<ViewMode>("cards");
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
+  const [builtConfirmId, setBuiltConfirmId] = useState<string | null>(null);
 
   // Workers see tablet view
   if (role === "operations" || role === "member") {
@@ -37,17 +46,6 @@ const Production = () => {
       </PageTransition>
     );
   }
-
-  // Control bar state
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SortKey>("newest");
-  const [view, setView] = useState<ViewMode>("cards");
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
-  const [builtConfirmId, setBuiltConfirmId] = useState<string | null>(null);
 
   const handleMarkAsBuilt = (id: string) => {
     setBuiltConfirmId(id);
