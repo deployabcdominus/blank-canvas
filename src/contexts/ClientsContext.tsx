@@ -99,6 +99,7 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (error) throw error;
     const newClient = mapRow(data);
     setClients(prev => [...prev, newClient].sort((a, b) => a.clientName.localeCompare(b.clientName)));
+    logAudit({ action: 'creado', entityType: 'cliente', entityId: newClient.id, entityLabel: newClient.clientName });
     return newClient;
   };
 
