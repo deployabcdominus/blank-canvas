@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil } from "lucide-react";
+import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil, Eye, CheckCircle2 } from "lucide-react";
 import { Lead } from "@/contexts/LeadsContext";
 import { Proposal } from "@/contexts/ProposalsContext";
 
@@ -15,6 +15,7 @@ interface LeadCardProps {
   onConvert?: (leadId: string) => void;
   onEdit?: (lead: Lead) => void;
   onCardClick?: (lead: Lead) => void;
+  onViewProposal?: (proposalId: string) => void;
 }
 
 /* Soft badge style: 10% opacity bg, full opacity text */
@@ -24,6 +25,7 @@ const getStatusColor = (status: string) => {
     case "Contactado": return "bg-sky-500/10 text-sky-400 border-sky-500/20";
     case "Seguimiento": return "bg-amber-500/10 text-amber-400 border-amber-500/20";
     case "Calificado": return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+    case "Convertido": return "bg-violet-500/10 text-violet-400 border-violet-500/20";
     default: return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20";
   }
 };
@@ -47,9 +49,10 @@ function getProposalBadge(proposal: Proposal | null) {
   }
 }
 
-export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign, onConvert, onEdit, onCardClick }: LeadCardProps) => {
+export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign, onConvert, onEdit, onCardClick, onViewProposal }: LeadCardProps) => {
   const linkedProposal = getLeadProposal(lead.id, proposals);
   const proposalBadge = getProposalBadge(linkedProposal);
+  const isConverted = lead.status === 'Convertido' || !!lead.clientId;
 
   return (
     <motion.div
@@ -84,6 +87,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className={`${getStatusColor(lead.status)} ${isMobile ? 'self-end' : ''} flex-shrink-0`}>
+              {isConverted && <CheckCircle2 className="w-3 h-3 mr-1" />}
               {lead.status}
             </Badge>
             {onEdit && (
@@ -144,39 +148,58 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
           hace {lead.daysAgo} día{lead.daysAgo !== 1 ? 's' : ''}
         </span>
         <div className="flex items-center gap-2">
-          {onConvert && !lead.companyId && (
-            <Button
-              onClick={() => onConvert(lead.id)}
-              size="sm"
-              variant="outline"
-              className="h-9 px-3 text-xs"
-              aria-label="Convertir a Cliente/Proyecto"
-            >
-              <FolderKanban className="w-3.5 h-3.5 mr-1" />
-              Convertir
-            </Button>
+          {isConverted ? (
+            /* Lead already converted — show "View Proposal" if one exists */
+            linkedProposal && onViewProposal ? (
+              <Button
+                onClick={() => onViewProposal(linkedProposal.id)}
+                size="sm"
+                variant="outline"
+                className="h-9 px-3 text-xs border-violet-500/20 text-violet-400 hover:bg-violet-500/10"
+                aria-label="Ver propuesta de este lead"
+              >
+                <Eye className="w-3.5 h-3.5 mr-1" />
+                Ver Propuesta
+              </Button>
+            ) : null
+          ) : (
+            /* Lead not converted — show normal actions */
+            <>
+              {onConvert && (
+                <Button
+                  onClick={() => onConvert(lead.id)}
+                  size="sm"
+                  variant="outline"
+                  className="h-9 px-3 text-xs"
+                  aria-label="Convertir a Cliente/Proyecto"
+                >
+                  <FolderKanban className="w-3.5 h-3.5 mr-1" />
+                  Convertir
+                </Button>
+              )}
+              {onAssign && (
+                <Button
+                  onClick={() => onAssign(lead.id)}
+                  size="sm"
+                  variant="outline"
+                  className="h-9 px-3 text-xs"
+                  aria-label="Asignar lead"
+                >
+                  <UserPlus className="w-3.5 h-3.5 mr-1" />
+                  Asignar
+                </Button>
+              )}
+              <Button
+                onClick={() => onAdvance(lead.id)}
+                size="sm"
+                className={`min-h-[40px] font-medium ${isMobile ? 'w-full' : 'px-4'}`}
+                aria-label={`Avanzar lead de ${lead.name} a propuesta`}
+              >
+                Avanzar a Propuesta
+                <ArrowRight className="w-4 h-4 ml-1.5" aria-hidden="true" />
+              </Button>
+            </>
           )}
-          {onAssign && (
-            <Button
-              onClick={() => onAssign(lead.id)}
-              size="sm"
-              variant="outline"
-              className="h-9 px-3 text-xs"
-              aria-label="Asignar lead"
-            >
-              <UserPlus className="w-3.5 h-3.5 mr-1" />
-              Asignar
-            </Button>
-          )}
-          <Button
-            onClick={() => onAdvance(lead.id)}
-            size="sm"
-            className={`min-h-[40px] font-medium ${isMobile ? 'w-full' : 'px-4'}`}
-            aria-label={`Avanzar lead de ${lead.name} a propuesta`}
-          >
-            Avanzar a Propuesta
-            <ArrowRight className="w-4 h-4 ml-1.5" aria-hidden="true" />
-          </Button>
         </div>
       </div>
     </motion.div>
