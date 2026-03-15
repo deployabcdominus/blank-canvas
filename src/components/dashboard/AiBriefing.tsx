@@ -191,8 +191,7 @@ export function AiBriefing() {
       >
         {/* AI Panel — Zinc-950 with subtle orange border */}
         <div
-          className="rounded-2xl border border-white/[0.06] overflow-hidden"
-          style={{ background: "#0a0a0a" }}
+          className="rounded-2xl border border-white/[0.06] bg-zinc-950/40 backdrop-blur-2xl overflow-hidden transition-all duration-300 hover:border-white/[0.12]"
         >
           <div className="p-5 sm:p-6">
             {/* Header */}
@@ -202,10 +201,10 @@ export function AiBriefing() {
                   animate={{ rotate: [0, 15, -15, 0] }}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                 >
-                  <Sparkles className="h-6 w-6 text-primary" />
+                  <Sparkles className="h-6 w-6 text-primary" strokeWidth={1.5} />
                 </motion.div>
                 <div>
-                  <h2 className="font-semibold text-lg text-foreground">{greeting}, {firstName}</h2>
+                  <h2 className="font-medium text-lg text-white">{greeting}, {firstName}</h2>
                   <p className="text-xs text-zinc-500">
                     Tu resumen inteligente de hoy · {dateStr}
                   </p>
@@ -224,21 +223,26 @@ export function AiBriefing() {
                 <p className="text-sm text-zinc-400">
                   Tu asistente de inteligencia está listo. Necesita conocer tu negocio primero.
                 </p>
-                <div className="w-full rounded-full h-2 bg-white/[0.06]">
+                {/* Glass capsule progress bar */}
+                <div className="w-full rounded-full h-2.5 bg-white/[0.04] border border-white/[0.06] overflow-hidden">
                   <div
-                    className="h-2 rounded-full transition-all bg-primary"
-                    style={{ width: `${(completedSteps / steps.length) * 100}%` }}
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${(completedSteps / steps.length) * 100}%`,
+                      background: 'linear-gradient(90deg, hsl(25, 95%, 53%), hsl(30, 100%, 60%))',
+                      boxShadow: '0 0 12px hsl(25, 95%, 53% / 0.4), 0 0 24px hsl(25, 95%, 53% / 0.2)',
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
                   {steps.map((step, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
                       {step.done ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400" strokeWidth={1.5} />
                       ) : (
-                        <Circle className="h-4 w-4 text-zinc-600" />
+                        <Circle className="h-4 w-4 text-zinc-600" strokeWidth={1.5} />
                       )}
-                      <span className={step.done ? "text-zinc-600 line-through" : "text-foreground"}>
+                      <span className={step.done ? "text-zinc-600 line-through" : "text-white"}>
                         {step.label}
                       </span>
                     </div>
@@ -260,14 +264,13 @@ export function AiBriefing() {
                     return (
                       <div
                         key={i}
-                        className="rounded-xl p-4 space-y-1 transition-all duration-200 hover:border-primary/20 border border-white/[0.06]"
-                        style={{ background: "rgba(255, 255, 255, 0.03)" }}
+                        className="rounded-xl p-4 space-y-1 transition-all duration-300 hover:border-white/[0.12] hover:bg-zinc-950/50 border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl"
                       >
                         <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
-                          <IconComp className="h-3.5 w-3.5" /> {card.label}
+                          <IconComp className="h-3.5 w-3.5" strokeWidth={1.5} /> {card.label}
                         </div>
                         {card.value && (
-                          <p className="font-bold text-[28px] leading-none text-white">{card.value}</p>
+                          <p className="font-semibold text-[28px] leading-none text-white">{card.value}</p>
                         )}
                         <p className={`text-xs leading-tight text-zinc-500 ${card.value ? "" : "font-medium"}`}>
                           {card.sub}
@@ -281,9 +284,9 @@ export function AiBriefing() {
                   onClick={generateBriefing}
                   disabled={briefingLoading}
                   variant="ghost"
-                  className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-semibold btn-spring"
+                  className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-medium btn-spring"
                 >
-                  <Sparkles className="mr-2 h-4 w-4" />
+                  <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
                   Generar briefing completo con IA
                 </Button>
               </div>
