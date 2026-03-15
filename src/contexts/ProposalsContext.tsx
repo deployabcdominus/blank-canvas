@@ -146,8 +146,10 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const deleteProposal = async (id: string) => {
     if (!user) return;
+    const prop = proposals.find(p => p.id === id);
     const { error } = await supabase.from('proposals').delete().eq('id', id);
     if (error) throw error;
+    logAudit({ action: 'eliminado', entityType: 'propuesta', entityId: id, entityLabel: prop?.client });
     await fetchProposals();
   };
 
