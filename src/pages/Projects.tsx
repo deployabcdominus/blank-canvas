@@ -209,6 +209,9 @@ export default function Projects() {
                   <Badge className={statusColors[detailProject.status]}>{detailProject.status}</Badge>
                 </DialogTitle>
               </DialogHeader>
+              <div className="mb-4">
+                <VisualStatusTracker currentStatus={detailProject.status} showHints />
+              </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><span className="text-muted-foreground">Cliente:</span> <span className="font-medium">{detailProject.clientName}</span></div>
