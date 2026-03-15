@@ -98,7 +98,11 @@ export default function Clients() {
   const openNew = () => { setEditingClient(null); setForm(emptyForm); resetLogoState(); setModalOpen(true); };
   const openEdit = (c: Client) => {
     setEditingClient(c);
-    setForm({ clientName: c.clientName, primaryEmail: c.primaryEmail || '', primaryPhone: c.primaryPhone || '', notes: c.notes || '' });
+    setForm({
+      clientName: c.clientName, contactName: c.contactName || '', primaryEmail: c.primaryEmail || '',
+      primaryPhone: c.primaryPhone || '', address: c.address || '', website: c.website || '',
+      serviceType: c.serviceType || '', notes: c.notes || ''
+    });
     setLogoPreview(c.logoUrl || null);
     setLogoFile(null);
     setModalOpen(true);
