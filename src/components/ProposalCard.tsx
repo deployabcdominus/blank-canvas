@@ -186,12 +186,28 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         <p className="text-xs text-muted-foreground/50 mb-3">Lead: No disponible</p>
       )}
 
+      {/* Mockup preview */}
+      {mockupUrl && (
+        <div className="mb-3 rounded-lg overflow-hidden border border-border/20">
+          <img src={mockupUrl} alt="Mockup de propuesta" className="w-full h-32 object-cover" />
+        </div>
+      )}
+
       <div className="flex-1" />
 
       {/* Actions */}
       <div className="flex items-center gap-2 pt-3 border-t border-border/30 flex-wrap">
         <Button size="sm" variant="outline" onClick={() => onEdit(proposal)} className="text-xs h-8 px-2.5">
           <Edit2 className="w-3.5 h-3.5 mr-1" /> Editar
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setMockupOpen(true)}
+          className="text-xs h-8 px-2.5 border-orange-500/15 text-orange-400/70 hover:text-orange-400 hover:border-orange-500/25 hover:bg-orange-500/[0.04]"
+          title="Generar mockup visual"
+        >
+          <Layers className="w-3.5 h-3.5 mr-1" /> Mockup
         </Button>
         {isApproved && (
           <>
@@ -246,6 +262,15 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
           <Trash2 className="w-3.5 h-3.5" />
         </Button>
       </div>
+
+      {/* Mockup Editor Modal */}
+      <MockupEditorModal
+        isOpen={mockupOpen}
+        onClose={() => setMockupOpen(false)}
+        proposalId={proposal.id}
+        clientName={proposal.client}
+        onSaved={(url) => setMockupUrl(url)}
+      />
     </motion.div>
   );
 };
