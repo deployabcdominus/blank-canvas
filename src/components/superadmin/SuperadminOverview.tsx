@@ -407,7 +407,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
                           )}
                         </p>
                         <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                          {format(parseISO(a.created_at), "d MMM, HH:mm", { locale: es })}
+                          {safeFmt(a.created_at, "d MMM, HH:mm")}
                         </p>
                       </div>
                     </div>
