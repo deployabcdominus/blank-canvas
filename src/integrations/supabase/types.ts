@@ -635,7 +635,9 @@ export type Database = {
       }
       production_orders: {
         Row: {
+          annotations: Json | null
           assigned_to_user_id: string | null
+          blueprint_url: string | null
           client: string
           company_id: string | null
           created_at: string
@@ -655,7 +657,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          annotations?: Json | null
           assigned_to_user_id?: string | null
+          blueprint_url?: string | null
           client: string
           company_id?: string | null
           created_at?: string
@@ -675,7 +679,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          annotations?: Json | null
           assigned_to_user_id?: string | null
+          blueprint_url?: string | null
           client?: string
           company_id?: string | null
           created_at?: string
