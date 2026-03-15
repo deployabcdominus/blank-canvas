@@ -189,7 +189,7 @@ export default function SuperadminDashboard() {
   };
 
   const handleDeleteUser = async () => {
-    if (!userToDelete) return;
+    if (!userToDelete || userToDelete.id === user?.id) return;
     setDeletingUser(true);
     try {
       const { data, error } = await supabase.functions.invoke("manage-user", { body: { action: "delete-user", userId: userToDelete.id } });
@@ -315,6 +315,7 @@ export default function SuperadminDashboard() {
           toggleAllUsers={toggleAllUsers} bulkProcessing={bulkProcessing}
           clearSelection={() => setSelectedUserIds(new Set())}
           loadingAllUsers={loadingAllUsers}
+          currentUserId={user?.id}
           onToggleUserActive={handleToggleActive} onDeleteUser={setUserToDelete}
           onBulkActivate={() => setBulkConfirm({ title: "Activar usuarios", description: `¿Activar ${selectedUserIds.size} usuario(s)?`, onConfirm: () => { runBulkUserAction("bulk-activate-users"); setBulkConfirm(null); } })}
           onBulkDeactivate={() => setBulkConfirm({ title: "Desactivar usuarios", description: `¿Desactivar ${selectedUserIds.size} usuario(s)?`, onConfirm: () => { runBulkUserAction("bulk-deactivate-users"); setBulkConfirm(null); } })}
