@@ -23,8 +23,8 @@ interface ClientTableViewProps {
   clients: Client[];
   clientStats: Record<string, { total: number; byStatus: Record<string, number>; latestDate: string | null }>;
   isAdmin: boolean;
-  onEdit: (c: Client) => void;
-  onDelete: (id: string) => void;
+  onEdit?: (c: Client) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function ClientTableView({ clients, clientStats, isAdmin, onEdit, onDelete }: ClientTableViewProps) {
