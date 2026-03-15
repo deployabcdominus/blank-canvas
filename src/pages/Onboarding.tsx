@@ -65,6 +65,10 @@ const Onboarding = () => {
   const handleNext = async () => {
     if (currentStep === 1 && !formData.industry) return;
     if (currentStep === 2 && !formData.companyName.trim()) return;
+    if (currentStep === 3 && !formData.logo) {
+      toast({ title: "Logo obligatorio", description: "Sube el logo de tu empresa para continuar. Es necesario para la marca de agua en mockups y propuestas.", variant: "destructive" });
+      return;
+    }
 
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
