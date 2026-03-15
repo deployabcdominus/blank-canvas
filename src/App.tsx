@@ -36,6 +36,7 @@ import Payments from "./pages/Payments";
 import Production from "./pages/Production";
 import WorkerTabletView from "./components/production/WorkerTabletView";
 import MobileTechnicianView from "./components/work-orders/MobileTechnicianView";
+import AuditLog from "./pages/AuditLog";
 import ProposalApproval from "./pages/ProposalApproval";
 
 const queryClient = new QueryClient({
