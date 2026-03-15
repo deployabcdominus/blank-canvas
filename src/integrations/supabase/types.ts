@@ -113,37 +113,49 @@ export type Database = {
       }
       clients: {
         Row: {
+          address: string | null
           client_name: string
           company_id: string
+          contact_name: string | null
           created_at: string
           id: string
           logo_url: string | null
           notes: string | null
           primary_email: string | null
           primary_phone: string | null
+          service_type: string | null
           updated_at: string
+          website: string | null
         }
         Insert: {
+          address?: string | null
           client_name: string
           company_id: string
+          contact_name?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
           notes?: string | null
           primary_email?: string | null
           primary_phone?: string | null
+          service_type?: string | null
           updated_at?: string
+          website?: string | null
         }
         Update: {
+          address?: string | null
           client_name?: string
           company_id?: string
+          contact_name?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
           notes?: string | null
           primary_email?: string | null
           primary_phone?: string | null
+          service_type?: string | null
           updated_at?: string
+          website?: string | null
         }
         Relationships: [
           {
