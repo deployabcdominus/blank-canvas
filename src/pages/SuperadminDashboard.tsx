@@ -113,7 +113,7 @@ export default function SuperadminDashboard() {
 
   const logAudit = useCallback(async (action_type: string, target_name: string, details?: Record<string, any>) => {
     if (!user) return;
-    await supabase.from("platform_audit_logs" as any).insert({ actor_id: user.id, action_type, target_name, details: details || {} } as any);
+    await supabase.from("platform_audit_logs").insert({ actor_id: user.id, action_type, target_name, details: details || {} });
   }, [user]);
 
   // ── Actions ──

@@ -39,11 +39,11 @@ export function SuperadminAuditLogs() {
   const fetchLogs = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("platform_audit_logs" as any)
+      .from("platform_audit_logs")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(200);
-    if (!error && data) setLogs(data as unknown as AuditEntry[]);
+    if (!error && data) setLogs(data as AuditEntry[]);
     setLoading(false);
   }, []);
 
