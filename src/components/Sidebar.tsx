@@ -122,7 +122,7 @@ const canSee = (item: NavItem, role: string | null) => {
 function SidebarNavItem({ item, isTablet, location, industryLabels }: {
   item: NavItem; isTablet: boolean;
   location: { pathname: string; search: string };
-  industryLabels: Record<string, string>;
+  industryLabels: IndustryLabels;
 }) {
   const active = isActive(location, item.path);
   const label = getLabel(item, industryLabels);
