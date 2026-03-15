@@ -122,6 +122,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     } as any);
     if (error) throw error;
     await fetchProposals();
+    logAudit({ action: 'creado', entityType: 'propuesta', entityLabel: proposal.client });
   };
 
   const updateProposal = async (id: string, updates: Partial<Proposal>) => {
