@@ -121,7 +121,7 @@ export default function SuperadminDashboard() {
     if (!newCompanyName.trim() || !user) return;
     setCreatingCompany(true);
     try {
-      const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id } as any);
+      const { error } = await supabase.from("companies").insert({ name: newCompanyName.trim(), user_id: user.id });
       if (error) throw error;
       await logAudit("COMPANY_CREATED", newCompanyName.trim());
       toast({ title: "Empresa creada", description: `"${newCompanyName}" fue creada exitosamente.` });
