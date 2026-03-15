@@ -168,7 +168,8 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
     if (updates.blueprintUrl !== undefined) dbUpdates.blueprint_url = updates.blueprintUrl;
     if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations;
-    const { error } = await supabase.from('production_orders').update(dbUpdates).eq('id', id);
+    if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails;
+    const { error } = await supabase.from('production_orders').update(dbUpdates as any).eq('id', id);
     if (error) throw error;
     const order = orders.find(o => o.id === id);
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
