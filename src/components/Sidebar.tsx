@@ -157,7 +157,7 @@ function SidebarNavItem({ item, isTablet, location, industryLabels }: {
 function SidebarCollapsibleGroup({ group, isOpen, onToggle, isTablet, location, role, industryLabels }: {
   group: NavGroup; isOpen: boolean; onToggle: () => void;
   isTablet: boolean; location: { pathname: string; search: string };
-  role: string | null; industryLabels: Record<string, string>;
+  role: string | null; industryLabels: IndustryLabels;
 }) {
   const visibleItems = group.items.filter(i => canSee(i, role));
   if (visibleItems.length === 0) return null;
