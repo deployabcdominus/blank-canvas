@@ -131,8 +131,8 @@ export const en = {
           a: "Yes. Sign Flow is optimized to work like a native app on any device. Your field operators can use it from their phone or tablet without installing anything.",
         },
         {
-          q: "Do you offer a free trial?",
-          a: "Yes. All plans include a free trial period. You can start without a credit card and explore all features before committing.",
+          q: "How do I get access to SignFlow?",
+          a: "You can activate your account by selecting a plan and completing the payment process, or by receiving an invitation from your organization's administrator.",
         },
         {
           q: "What if I need more than the Elite plan offers?",
