@@ -277,6 +277,7 @@ const Leads = () => {
             isOpen={!!editLead}
             onClose={() => setEditLead(null)}
             startInEditMode={editLeadMode}
+            onAdvanceToProposal={handleAdvanceToProposal}
           />
 
           <AssignLeadModal
