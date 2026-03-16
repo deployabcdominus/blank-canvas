@@ -422,6 +422,7 @@ const faqItems = [
 /* ═══════════════════════════════════════════════════════ */
 const Index = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [isAnnual, setIsAnnual] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
