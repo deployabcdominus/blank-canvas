@@ -178,17 +178,17 @@ const MacBookMockup = () => (
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { label: "Órdenes activas", value: "42", trend: "+12%", color: "text-violet-400" },
-                  { label: "Técnicos en campo", value: "18", trend: "En servicio", color: "text-emerald-400" },
-                  { label: "Tasa cierre", value: "87%", trend: "+5.2%", color: "text-fuchsia-400" },
-                  { label: "Ingresos mes", value: "$184K", trend: "+23%", color: "text-cyan-400" },
+                  { label: "Órdenes activas", value: "42", trend: "+12%", color: "text-violet-400", badge: null },
+                  { label: "Técnicos en campo", value: "18", trend: "En servicio", color: "text-emerald-400", badge: null },
+                  { label: "SLA Crítico", value: "3", trend: "Urgente", color: "text-orange-400", badge: "bg-orange-500/15 border-orange-500/20 text-orange-400" },
+                  { label: "Ingresos mes", value: "$184K", trend: "+23%", color: "text-cyan-400", badge: null },
                 ].map((kpi, i) => (
                   <motion.div
                     key={kpi.label}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.9 + i * 0.08, duration: 0.4 }}
-                    className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-2.5 hover:border-violet-500/12 transition-colors"
+                    className={`rounded-lg border p-2.5 transition-colors ${kpi.badge ? `${kpi.badge}` : "border-white/[0.04] bg-white/[0.015] hover:border-violet-500/12"}`}
                   >
                     <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
                     <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">{kpi.value}</p>
