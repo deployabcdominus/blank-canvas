@@ -77,14 +77,14 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
               </div>
               <DropdownMenuSeparator className="bg-white/20" />
               <DropdownMenuItem onClick={() => navigate('/settings?tab=perfil')} className="hover:bg-white/10 min-h-[44px]">
-                <User className="w-4 h-4 mr-2" /> Perfil
+                <User className="w-4 h-4 mr-2" /> {t.nav.profile}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/settings')} className="hover:bg-white/10 min-h-[44px]">
-                <Settings className="w-4 h-4 mr-2" /> Configuración
+                <Settings className="w-4 h-4 mr-2" /> {t.nav.settings}
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-white/20" />
               <DropdownMenuItem onClick={handleLogout} className="hover:bg-white/10 text-destructive min-h-[44px]">
-                <LogOut className="w-4 h-4 mr-2" /> Salir
+                <LogOut className="w-4 h-4 mr-2" /> {t.nav.logout}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
