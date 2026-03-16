@@ -83,12 +83,22 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
   const fetchProposals = async () => {
     if (!user) { setProposals([]); setLoading(false); return; }
     try {
-      const { data, error } = await (supabase
-        .from('proposals')
-        .select('*, leads(name, company, logo_url)')
-        .order('created_at', { ascending: false }) as any);
-      if (error) throw error;
-      setProposals((data || []).map(mapRow));
+      // Fetch proposals and existing order links in parallel
+      const [proposalsRes, ordersRes] = await Promise.all([
+        supabase
+          .from('proposals')
+          .select('*, leads(name, company, logo_url)')
+          .order('created_at', { ascending: false }) as any,
+        supabase
+          .from('production_orders')
+          .select('proposal_id')
+          .not('proposal_id', 'is', null),
+      ]);
+      if (proposalsRes.error) throw proposalsRes.error;
+      const orderProposalIds = new Set<string>(
+        (ordersRes.data || []).map((o: any) => o.proposal_id)
+      );
+      setProposals((proposalsRes.data || []).map((r: any) => mapRow(r, orderProposalIds)));
     } catch (e) {
       console.error('Error fetching proposals:', e);
     } finally {
