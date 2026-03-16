@@ -221,35 +221,28 @@ const MacBookMockup = () => (
                   </div>
                 </div>
 
-                {/* Map placeholder */}
+                {/* Technician list */}
                 <div className="rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
-                  <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">Servicios en mapa</span>
-                  <div className="flex-1 rounded-md bg-zinc-900/60 relative overflow-hidden">
-                    {/* Fake map dots */}
+                  <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">Técnicos activos</span>
+                  <div className="flex-1 flex flex-col gap-1.5 overflow-hidden">
                     {[
-                      { top: "20%", left: "30%", delay: 1.5 },
-                      { top: "45%", left: "60%", delay: 1.7 },
-                      { top: "65%", left: "25%", delay: 1.9 },
-                      { top: "35%", left: "75%", delay: 2.1 },
-                      { top: "75%", left: "55%", delay: 2.3 },
-                    ].map((dot, i) => (
+                      { name: "C. López", status: "En ruta", color: "bg-emerald-400" },
+                      { name: "M. García", status: "En sitio", color: "bg-violet-400" },
+                      { name: "R. Torres", status: "SLA ⚠", color: "bg-orange-400" },
+                      { name: "A. Méndez", status: "Libre", color: "bg-zinc-500" },
+                    ].map((tech, i) => (
                       <motion.div
-                        key={i}
-                        className="absolute"
-                        style={{ top: dot.top, left: dot.left }}
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: dot.delay, duration: 0.3, type: "spring" }}
+                        key={tech.name}
+                        initial={{ opacity: 0, x: 6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.5 + i * 0.08 }}
+                        className="flex items-center gap-2 px-2 py-1 rounded-md bg-white/[0.02] border border-white/[0.03]"
                       >
-                        <div className="w-2 h-2 rounded-full bg-violet-500/60 shadow-[0_0_8px_rgba(124,58,237,0.4)]" />
-                        <div className="absolute inset-0 w-2 h-2 rounded-full bg-violet-400/30 animate-ping" />
+                        <div className={`w-1.5 h-1.5 rounded-full ${tech.color} flex-shrink-0`} />
+                        <span className="text-[7px] text-zinc-400 font-medium truncate">{tech.name}</span>
+                        <span className="text-[6px] text-zinc-600 ml-auto flex-shrink-0">{tech.status}</span>
                       </motion.div>
                     ))}
-                    {/* Grid lines */}
-                    <div className="absolute inset-0 opacity-[0.04]" style={{
-                      backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-                      backgroundSize: "20px 20px",
-                    }} />
                   </div>
                 </div>
               </div>
