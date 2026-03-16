@@ -133,8 +133,8 @@ export const es: TranslationKeys = {
           a: "Sí. Sign Flow está optimizado para funcionar como una app nativa en cualquier dispositivo. Tu equipo de campo puede usarlo desde su celular o tablet sin instalar nada.",
         },
         {
-          q: "¿Ofrecen periodo de prueba?",
-          a: "Sí. Todos los planes incluyen un periodo de prueba gratuito. Puedes comenzar sin tarjeta de crédito y explorar todas las funciones antes de comprometerte.",
+          q: "¿Cómo obtengo acceso a SignFlow?",
+          a: "Puedes activar tu cuenta seleccionando un plan y completando el proceso de pago, o recibiendo una invitación del administrador de tu organización.",
         },
         {
           q: "¿Qué pasa si necesito más de lo que ofrece el plan Elite?",
