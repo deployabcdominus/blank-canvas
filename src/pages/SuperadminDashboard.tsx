@@ -73,6 +73,7 @@ export default function SuperadminDashboard() {
   const [companyToEdit, setCompanyToEdit] = useState<Company | null>(null);
   const [editCompanyName, setEditCompanyName] = useState("");
   const [savingCompany, setSavingCompany] = useState(false);
+  const [changePlanCompany, setChangePlanCompany] = useState<Company | null>(null);
 
   const [showCreateUser, setShowCreateUser] = useState(false);
   const [createUserCompanyId, setCreateUserCompanyId] = useState("");
