@@ -450,19 +450,14 @@ const Index = () => {
   const handleCheckout = async (tierKey: "start" | "pro" | "elite") => {
     setLoadingPlan(tierKey);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate(`/register?plan=${tierKey}`);
-        return;
-      }
-
+      // Call create-checkout directly — works for both authenticated and guest users
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { priceId: STRIPE_TIERS[tierKey].price_id },
       });
 
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        window.location.href = data.url;
       }
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
