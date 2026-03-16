@@ -146,6 +146,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       project_id: order.projectId || null,
       notes: order.notes || null,
       priority: order.priority || 'media',
+      proposal_id: order.proposalId || null,
       assigned_to_user_id: order.assignedToUserId || null,
       installer_company_id: order.installerCompanyId || null,
     }).select().single();
