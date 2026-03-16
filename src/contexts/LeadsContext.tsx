@@ -256,7 +256,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   }, [fetchPage]);
 
   return (
-    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, clearLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
+    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, deleteLead, deleteLeads, clearLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
       {children}
     </LeadsContext.Provider>
   );
