@@ -205,6 +205,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       setEditing(startInEditMode);
       setCreatedProposalId(null);
       setAdvancing(false);
+      setIsDictated(false);
+      speechToText.stop();
       fetchActivity(lead.id);
     }
   }, [lead, startInEditMode, fetchActivity]);
