@@ -36,6 +36,7 @@ export const Sidebar = () => {
   const { avatarUrl } = useAvatarUrl();
   const { fullName, email, initials } = useUserProfile();
   const industryLabels = useIndustryLabels();
+  const { t } = useLanguage();
 
   if (breakpoint === "mobile") return null;
   if (roleLoading) return null;
