@@ -116,180 +116,180 @@ const SectionBadge = ({ icon: Icon, label }: { icon: any; label: string }) => (
 );
 
 /* ═══════════════════════════════════════════════════════ */
-/*     FLOATING DASHBOARD (HERO MOCKUP)                    */
+/*     MACBOOK PRO MOCKUP (HERO)                           */
 /* ═══════════════════════════════════════════════════════ */
-const FloatingDashboard = () => (
-  <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "1400px" }}>
+const MacBookMockup = () => (
+  <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "1600px" }}>
     {/* Deep violet glow behind mockup */}
-    <div className="absolute -inset-32 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(139,92,246,0.10),transparent_60%)] pointer-events-none" />
+    <div className="absolute -inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(124,58,237,0.12),transparent_60%)] pointer-events-none" />
 
     <motion.div
-      initial={{ opacity: 0, y: 60, rotateX: 10 }}
-      animate={{ opacity: 1, y: 0, rotateX: 3 }}
-      transition={{ duration: 1.3, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="relative rounded-3xl border border-purple-500/[0.10] bg-white/[0.03] backdrop-blur-2xl overflow-hidden"
-      style={{
-        boxShadow:
-          "0 4px 8px rgba(0,0,0,0.3), 0 16px 40px rgba(0,0,0,0.5), 0 48px 120px -20px rgba(0,0,0,0.7), 0 0 80px -20px rgba(139,92,246,0.10), inset 0 1px 0 rgba(255,255,255,0.04)",
-      }}
+      initial={{ opacity: 0, y: 70, rotateX: 12 }}
+      animate={{ opacity: 1, y: 0, rotateX: 4 }}
+      transition={{ duration: 1.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className="relative"
     >
-      {/* Title bar */}
-      <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.06]">
-        <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]/50" />
-        </div>
-        <div className="ml-4 flex-1 h-5 rounded-md bg-white/[0.025] max-w-[220px]" />
-      </div>
-
-      {/* Content */}
-      <div className="p-5 grid grid-cols-4 gap-3 min-h-[260px] sm:min-h-[320px]">
-        {[
-          { label: "Leads activos", value: "127", trend: "+18%", accent: "text-purple-400/60" },
-          { label: "Propuestas enviadas", value: "43", trend: "+24%", accent: "text-cyan-400/50" },
-          { label: "En producción", value: "18", trend: "—", accent: "text-fuchsia-400/50" },
-          { label: "Completados", value: "89", trend: "+12%", accent: "text-emerald-400/50" },
-        ].map((kpi, i) => (
-          <motion.div
-            key={kpi.label}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 + i * 0.1, duration: 0.5 }}
-            className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 hover:border-purple-500/15 transition-colors duration-500"
-          >
-            <p className="text-[9px] text-zinc-500 uppercase tracking-wider font-medium">{kpi.label}</p>
-            <p className="text-xl font-bold text-white/80 mt-1">{kpi.value}</p>
-            <p className={`text-[9px] font-semibold mt-0.5 ${kpi.accent}`}>{kpi.trend}</p>
-          </motion.div>
-        ))}
-
-        {/* Chart */}
-        <div className="col-span-3 rounded-xl border border-white/[0.06] bg-white/[0.01] p-4 mt-1">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Flujo de conversión</span>
-            <span className="text-[9px] text-emerald-400/50 bg-emerald-500/[0.06] px-2 py-0.5 rounded-full font-bold">+34%</span>
-          </div>
-          <div className="flex items-end gap-[3px] h-[80px]">
-            {[30, 45, 38, 62, 55, 78, 65, 85, 72, 92, 80, 95].map((h, i) => (
-              <motion.div
-                key={i}
-                className="flex-1 rounded-sm"
-                style={{ background: `linear-gradient(to top, rgba(139,92,246,0.6), rgba(168,85,247,${0.05 + i * 0.03}))` }}
-                initial={{ height: 0 }}
-                animate={{ height: `${h}%` }}
-                transition={{ delay: 1.2 + i * 0.06, duration: 0.5, ease: "easeOut" }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Activity */}
-        <div className="col-span-1 rounded-xl border border-white/[0.06] bg-white/[0.01] p-3 mt-1 space-y-2">
-          <span className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider block mb-1">Actividad</span>
-          {[
-            { icon: Target, text: "Nuevo lead", time: "2m" },
-            { icon: FileText, text: "Propuesta aprobada", time: "8m" },
-            { icon: Factory, text: "Orden en progreso", time: "15m" },
-            { icon: CheckCircle2, text: "Entrega completada", time: "1h" },
-          ].map((a, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: 8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.4 + i * 0.1 }}
-              className="flex items-center gap-2"
-            >
-              <a.icon className="w-3 h-3 text-zinc-600 flex-shrink-0" />
-              <span className="text-[8px] text-zinc-500 truncate">{a.text}</span>
-              <span className="text-[7px] text-zinc-700 ml-auto flex-shrink-0">{a.time}</span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Reflection */}
+      {/* MacBook Lid / Screen */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+        className="relative rounded-t-[16px] border border-white/[0.08] bg-zinc-900/80 overflow-hidden"
         style={{
-          background: "linear-gradient(to top, rgba(9,9,11,0.95), transparent)",
+          boxShadow:
+            "0 4px 8px rgba(0,0,0,0.4), 0 20px 50px rgba(0,0,0,0.6), 0 60px 140px -20px rgba(0,0,0,0.8), 0 0 100px -30px rgba(124,58,237,0.12), inset 0 1px 0 rgba(255,255,255,0.05)",
+          aspectRatio: "16/9",
         }}
-      />
+      >
+        {/* Screen bezel */}
+        <div className="absolute inset-[6px] sm:inset-[10px] rounded-[8px] overflow-hidden bg-zinc-950">
+          {/* Browser chrome */}
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900/90 border-b border-white/[0.04]">
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]/60" />
+            </div>
+            <div className="ml-3 flex-1 h-5 rounded-md bg-white/[0.03] max-w-[200px] flex items-center px-3">
+              <span className="text-[8px] text-zinc-600 font-medium">app.signflow.io/dashboard</span>
+            </div>
+          </div>
+
+          {/* Dashboard Content */}
+          <div className="p-3 sm:p-4 flex gap-3 h-[calc(100%-36px)]">
+            {/* Sidebar mini */}
+            <div className="hidden sm:flex flex-col w-[120px] flex-shrink-0 bg-white/[0.015] rounded-lg border border-white/[0.04] p-2.5 gap-1.5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-5 h-5 rounded-md bg-violet-500/20 flex items-center justify-center">
+                  <Zap className="w-3 h-3 text-violet-400" />
+                </div>
+                <span className="text-[8px] font-bold text-zinc-300">SignFlow</span>
+              </div>
+              {["Dashboard", "Órdenes", "Técnicos", "Clientes", "Mapa"].map((item, i) => (
+                <div key={item} className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-[7px] font-medium ${i === 0 ? "bg-violet-500/10 text-violet-300 border border-violet-500/15" : "text-zinc-600"}`}>
+                  {[BarChart3, ClipboardCheck, Users, Building, MapPin][i] && (() => {
+                    const Icon = [BarChart3, ClipboardCheck, Users, Building, MapPin][i];
+                    return <Icon className="w-2.5 h-2.5 flex-shrink-0" />;
+                  })()}
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            {/* Main content */}
+            <div className="flex-1 flex flex-col gap-2.5 overflow-hidden">
+              {/* KPI row */}
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { label: "Órdenes activas", value: "42", trend: "+12%", color: "text-violet-400" },
+                  { label: "Técnicos en campo", value: "18", trend: "En servicio", color: "text-emerald-400" },
+                  { label: "Tasa cierre", value: "87%", trend: "+5.2%", color: "text-fuchsia-400" },
+                  { label: "Ingresos mes", value: "$184K", trend: "+23%", color: "text-cyan-400" },
+                ].map((kpi, i) => (
+                  <motion.div
+                    key={kpi.label}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 + i * 0.08, duration: 0.4 }}
+                    className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-2.5 hover:border-violet-500/12 transition-colors"
+                  >
+                    <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
+                    <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">{kpi.value}</p>
+                    <p className={`text-[7px] font-semibold mt-0.5 ${kpi.color} opacity-60`}>{kpi.trend}</p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Charts row */}
+              <div className="flex-1 grid grid-cols-3 gap-2 min-h-0">
+                {/* Bar chart — Órdenes de trabajo */}
+                <div className="col-span-2 rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider">Órdenes de trabajo</span>
+                    <span className="text-[7px] text-emerald-400/60 bg-emerald-500/[0.06] px-1.5 py-0.5 rounded font-bold">+34%</span>
+                  </div>
+                  <div className="flex-1 flex items-end gap-[3px]">
+                    {[28, 45, 35, 62, 50, 78, 60, 88, 70, 95, 82, 100].map((h, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex-1 rounded-sm"
+                        style={{
+                          background: `linear-gradient(to top, rgba(124,58,237,0.7), rgba(168,85,247,${0.08 + i * 0.025}))`,
+                        }}
+                        initial={{ height: 0 }}
+                        animate={{ height: `${h}%` }}
+                        transition={{ delay: 1.2 + i * 0.05, duration: 0.5, ease: "easeOut" }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Map placeholder */}
+                <div className="rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
+                  <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">Servicios en mapa</span>
+                  <div className="flex-1 rounded-md bg-zinc-900/60 relative overflow-hidden">
+                    {/* Fake map dots */}
+                    {[
+                      { top: "20%", left: "30%", delay: 1.5 },
+                      { top: "45%", left: "60%", delay: 1.7 },
+                      { top: "65%", left: "25%", delay: 1.9 },
+                      { top: "35%", left: "75%", delay: 2.1 },
+                      { top: "75%", left: "55%", delay: 2.3 },
+                    ].map((dot, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute"
+                        style={{ top: dot.top, left: dot.left }}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: dot.delay, duration: 0.3, type: "spring" }}
+                      >
+                        <div className="w-2 h-2 rounded-full bg-violet-500/60 shadow-[0_0_8px_rgba(124,58,237,0.4)]" />
+                        <div className="absolute inset-0 w-2 h-2 rounded-full bg-violet-400/30 animate-ping" />
+                      </motion.div>
+                    ))}
+                    {/* Grid lines */}
+                    <div className="absolute inset-0 opacity-[0.04]" style={{
+                      backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+                      backgroundSize: "20px 20px",
+                    }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Camera notch */}
+        <div className="absolute top-[1px] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-zinc-800 border border-zinc-700/30 z-10" />
+      </div>
+
+      {/* MacBook Base / Hinge */}
+      <div className="relative">
+        <div className="w-[103%] -ml-[1.5%] h-[10px] bg-gradient-to-b from-zinc-700/40 to-zinc-800/60 rounded-b-[4px]" />
+        <div className="w-[70%] mx-auto h-[4px] bg-zinc-700/20 rounded-b-xl" />
+      </div>
     </motion.div>
 
-    {/* Reflection below mockup */}
+    {/* Reflection below MacBook */}
     <div
-      className="w-[90%] mx-auto h-16 mt-1 rounded-b-3xl opacity-30 blur-sm"
+      className="w-[85%] mx-auto h-20 mt-2 opacity-20"
       style={{
-        background: "linear-gradient(to bottom, rgba(139,92,246,0.06), transparent)",
-        transform: "scaleY(-1)",
+        background: "linear-gradient(to bottom, rgba(124,58,237,0.08), transparent 80%)",
+        filter: "blur(12px)",
+        transform: "scaleY(-0.5)",
       }}
     />
-
-    {/* Floating proposal card */}
-    <motion.div
-      initial={{ opacity: 0, x: -50, y: 30 }}
-      animate={{ opacity: 1, x: 0, y: 0 }}
-      transition={{ delay: 1.6, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute -left-4 sm:-left-10 bottom-6 sm:bottom-10 w-[200px] sm:w-[240px] rounded-3xl border border-white/[0.10] bg-white/[0.05] backdrop-blur-2xl p-4 z-20"
-      style={{
-        boxShadow: "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(139,92,246,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
-      }}
-    >
-      <div className="flex items-center gap-2 mb-2">
-        <div className="w-5 h-5 rounded-md bg-white/[0.04] flex items-center justify-center">
-          <FileText className="w-3 h-3 text-zinc-500" />
-        </div>
-        <span className="text-[10px] font-semibold text-zinc-500">Propuesta #2847</span>
-      </div>
-      <p className="text-lg font-bold text-white/85 mb-2">$28,500</p>
-      <div className="flex gap-1.5">
-        <button className="flex-1 flex items-center justify-center gap-1 text-[9px] font-semibold py-1.5 rounded-lg bg-emerald-500/8 text-emerald-400/60 border border-emerald-500/10">
-          <ThumbsUp className="w-2.5 h-2.5" /> Aprobar
-        </button>
-        <button className="flex-1 flex items-center justify-center gap-1 text-[9px] font-semibold py-1.5 rounded-lg bg-red-500/[0.04] text-red-400/50 border border-red-500/8">
-          <ThumbsDown className="w-2.5 h-2.5" /> Rechazar
-        </button>
-      </div>
-    </motion.div>
-
-    {/* Floating status card */}
-    <motion.div
-      initial={{ opacity: 0, x: 50, y: 30 }}
-      animate={{ opacity: 1, x: 0, y: 0 }}
-      transition={{ delay: 1.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute -right-4 sm:-right-10 bottom-14 sm:bottom-18 w-[180px] sm:w-[220px] rounded-3xl border border-white/[0.10] bg-white/[0.05] backdrop-blur-2xl p-4 z-20"
-      style={{
-        boxShadow: "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(139,92,246,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
-      }}
-    >
-      <div className="flex items-center gap-2 mb-2">
-        <div className="w-2 h-2 rounded-full bg-emerald-400/50 animate-pulse" />
-        <span className="text-[10px] font-semibold text-zinc-500">Ejecución en vivo</span>
-      </div>
-      {[
-        { label: "Corte", pct: 100 },
-        { label: "Armado", pct: 75 },
-        { label: "QA", pct: 30 },
-      ].map((s) => (
-        <div key={s.label} className="mb-1.5">
-          <div className="flex justify-between text-[8px] text-zinc-500 mb-0.5">
-            <span>{s.label}</span>
-            <span>{s.pct}%</span>
-          </div>
-          <div className="h-1 rounded-full bg-white/[0.04] overflow-hidden">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-purple-600/60 to-fuchsia-400/30"
-              initial={{ width: 0 }}
-              animate={{ width: `${s.pct}%` }}
-              transition={{ delay: 2 + Math.random() * 0.3, duration: 0.8 }}
-            />
-          </div>
-        </div>
-      ))}
-    </motion.div>
   </div>
 );
+
+/* ═══════════════════════════════════════════════════════ */
+/*     TRUSTED BY LOGOS                                    */
+/* ═══════════════════════════════════════════════════════ */
+const trustedLogos = [
+  { name: "TechServ IT", icon: Monitor },
+  { name: "AirControl HVAC", icon: Thermometer },
+  { name: "VisualSign Co.", icon: Signpost },
+  { name: "BuildPro", icon: Building },
+  { name: "MaintainX", icon: Wrench },
+];
 
 /* ═══════════════════════════════════════════════════════ */
 /*              INDUSTRIES DATA                            */
