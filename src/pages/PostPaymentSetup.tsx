@@ -177,11 +177,36 @@ const PostPaymentSetup = () => {
   if (loading) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="w-10 h-10 animate-spin text-orange-500 mx-auto mb-4" />
-            <p className="text-zinc-400 text-sm">Verificando tu pago con Stripe...</p>
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+          {/* Violet ambient blobs */}
+          <div className="fixed inset-0 pointer-events-none -z-10">
+            <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-purple-600/15 blur-[180px]" />
+            <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/10 blur-[180px]" />
           </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-center"
+          >
+            {/* Pulsing violet ring */}
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-purple-500/30"
+                animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <div className="w-20 h-20 rounded-full bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+              </div>
+            </div>
+            <h2 className="text-xl font-bold text-white tracking-tight mb-2">
+              Finalizing your secure activation...
+            </h2>
+            <p className="text-zinc-500 text-sm">
+              Connecting with Stripe to verify your payment
+            </p>
+          </motion.div>
         </div>
       </PageTransition>
     );
@@ -190,7 +215,11 @@ const PostPaymentSetup = () => {
   if (completed) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center px-5">
+        <div className="min-h-screen flex items-center justify-center px-5 relative overflow-hidden">
+          <div className="fixed inset-0 pointer-events-none -z-10">
+            <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-purple-600/15 blur-[180px]" />
+            <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/10 blur-[180px]" />
+          </div>
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -201,13 +230,13 @@ const PostPaymentSetup = () => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
-              className="w-20 h-20 mx-auto mb-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center"
+              className="w-20 h-20 mx-auto mb-8 rounded-full bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl flex items-center justify-center"
             >
-              <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+              <CheckCircle2 className="w-10 h-10 text-purple-400" />
             </motion.div>
-            <h1 className="text-3xl font-extrabold text-white mb-3">¡Todo listo!</h1>
-            <p className="text-zinc-400 mb-2">Tu empresa está activa con el plan <span className="text-orange-400 font-semibold">{planName}</span>.</p>
-            <p className="text-zinc-600 text-sm">Redirigiendo al dashboard...</p>
+            <h1 className="text-3xl font-extrabold text-white mb-3 tracking-tight">¡Todo listo!</h1>
+            <p className="text-zinc-400 mb-2">Tu empresa está activa con el plan <span className="text-purple-400 font-semibold">{planName}</span>.</p>
+            <p className="text-zinc-500 text-sm">Redirigiendo al dashboard...</p>
           </motion.div>
         </div>
       </PageTransition>
@@ -216,16 +245,17 @@ const PostPaymentSetup = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-[#050505] text-zinc-200 overflow-x-hidden">
-        {/* Background */}
+      <div className="min-h-screen text-zinc-200 overflow-x-hidden relative">
+        {/* Violet ambient background */}
         <div className="fixed inset-0 pointer-events-none -z-10">
-          <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.04),transparent_50%)]" />
+          <div className="absolute top-[-10%] left-[15%] w-[600px] h-[500px] rounded-full bg-purple-600/10 blur-[180px]" />
+          <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/8 blur-[180px]" />
         </div>
 
         {/* Progress bar */}
         <div className="fixed top-0 inset-x-0 z-50 h-1 bg-zinc-900">
           <motion.div
-            className="h-full bg-gradient-to-r from-orange-500 to-orange-600"
+            className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
             initial={{ width: "0%" }}
             animate={{ width: step === 1 ? "50%" : "100%" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -251,15 +281,15 @@ const PostPaymentSetup = () => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
-                className="w-14 h-14 mx-auto mb-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center"
+                className="w-14 h-14 mx-auto mb-6 rounded-full bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl flex items-center justify-center"
               >
-                <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+                <CheckCircle2 className="w-7 h-7 text-purple-400" />
               </motion.div>
 
               <h1 className="text-2xl font-extrabold text-white mb-2">¡Pago Confirmado!</h1>
               <p className="text-zinc-400 text-[15px]">
                 Estás a un paso de activar tu plan{" "}
-                <span className="text-orange-400 font-semibold">{planName}</span>
+                <span className="text-purple-400 font-semibold">{planName}</span>
               </p>
             </motion.div>
 
@@ -268,19 +298,19 @@ const PostPaymentSetup = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="rounded-2xl border border-orange-500/[0.08] bg-[#0a0a0a]/90 backdrop-blur-xl p-8 relative overflow-hidden"
+              className="rounded-2xl border border-purple-500/10 bg-zinc-900/40 backdrop-blur-xl p-8 relative overflow-hidden"
               style={{
-                boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 0 60px -20px rgba(249,115,22,0.06), inset 0 1px 0 rgba(255,255,255,0.03)",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 0 60px -20px rgba(168,85,247,0.08), inset 0 1px 0 rgba(255,255,255,0.03)",
               }}
             >
               {/* Step indicator */}
               <div className="flex items-center gap-3 mb-8">
-                <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 1 ? "text-orange-400" : "text-zinc-600"}`}>
+              <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 1 ? "text-purple-400" : "text-zinc-600"}`}>
                   <User className="w-3.5 h-3.5" />
                   Tu Cuenta
                 </div>
                 <div className="flex-1 h-px bg-zinc-800" />
-                <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 2 ? "text-orange-400" : "text-zinc-600"}`}>
+                <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 2 ? "text-purple-400" : "text-zinc-600"}`}>
                   <Building className="w-3.5 h-3.5" />
                   Tu Empresa
                 </div>
@@ -310,7 +340,7 @@ const PostPaymentSetup = () => {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Nombre y apellido"
-                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-orange-500/20"
+                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-purple-500/30"
                       />
                     </div>
 
@@ -321,13 +351,13 @@ const PostPaymentSetup = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Mínimo 6 caracteres"
-                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-orange-500/20"
+                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-purple-500/30"
                       />
                     </div>
 
                     <Button
                       onClick={handleCreateAccount}
-                      className="w-full h-12 bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-xl font-semibold"
+                      className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-xl font-semibold shadow-[0_0_20px_rgba(168,85,247,0.3)]"
                     >
                       Continuar
                       <ArrowRight className="w-4 h-4 ml-2" />
@@ -349,7 +379,7 @@ const PostPaymentSetup = () => {
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
                         placeholder="Ej: Mi Empresa LLC"
-                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-orange-500/20"
+                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-purple-500/30"
                       />
                     </div>
 
@@ -361,7 +391,7 @@ const PostPaymentSetup = () => {
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-900 border-white/[0.06]">
                           {INDUSTRIES.map((ind) => (
-                            <SelectItem key={ind.value} value={ind.value} className="text-zinc-200 focus:bg-orange-500/10">
+                            <SelectItem key={ind.value} value={ind.value} className="text-zinc-200 focus:bg-purple-500/10">
                               {ind.label}
                             </SelectItem>
                           ))}
@@ -380,7 +410,7 @@ const PostPaymentSetup = () => {
                       <Button
                         onClick={handleFinalize}
                         disabled={submitting}
-                        className="flex-1 h-12 bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-xl font-semibold"
+                        className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-xl font-semibold shadow-[0_0_20px_rgba(168,85,247,0.3)]"
                       >
                         {submitting ? (
                           <>
