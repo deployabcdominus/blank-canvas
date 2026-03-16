@@ -110,7 +110,16 @@ export function SuperadminCompanies({
               <TableRow key={company.id} className={`border-border/10 hover:bg-muted/20 ${selectedCompanyIds.has(company.id) ? "bg-primary/5" : ""}`}>
                 <TableCell><Checkbox checked={selectedCompanyIds.has(company.id)} onCheckedChange={() => toggleCompanySelection(company.id)} /></TableCell>
                 <TableCell className="font-medium">{company.name}</TableCell>
-                <TableCell className="text-xs text-muted-foreground font-mono">{company.id.slice(0, 8)}...</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="text-xs border-purple-500/20 text-purple-300">
+                    {(company.plan_id || "—").charAt(0).toUpperCase() + (company.plan_id || "—").slice(1)}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <span className="text-xs text-muted-foreground">
+                    {company.billing_type === "manual_admin" ? "Manual" : "Stripe"}
+                  </span>
+                </TableCell>
                 <TableCell>
                   <Badge variant="outline" className={company.is_active ? "bg-green-500/20 text-green-400 border-green-500/30" : "bg-muted/30 text-muted-foreground border-muted"}>
                     {company.is_active ? "Activa" : "Inactiva"}
@@ -118,6 +127,7 @@ export function SuperadminCompanies({
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">{new Date(company.created_at).toLocaleDateString("es")}</TableCell>
                 <TableCell className="text-right space-x-1">
+                  <Button variant="ghost" size="sm" onClick={() => onChangePlan(company)} title="Cambiar Plan"><Sparkles className="w-4 h-4 mr-1 text-purple-400" /> Plan</Button>
                   <Button variant="ghost" size="sm" onClick={() => onSelectCompany(company)}><Eye className="w-4 h-4 mr-1" /> Usuarios</Button>
                   <Button variant="ghost" size="sm" onClick={() => onEditCompany(company)}><Edit className="w-4 h-4" /></Button>
                   <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => onDeleteCompany(company)}><Trash2 className="w-4 h-4" /></Button>
