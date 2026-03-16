@@ -69,9 +69,14 @@ export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder,
                             <Edit2 className="w-3.5 h-3.5 mr-2" /> Editar
                           </DropdownMenuItem>
                         )}
-                        {isApproved && onCreateOrder && (
+                        {isApproved && onCreateOrder && !p.hasOrder && (
                           <DropdownMenuItem onClick={e => { e.stopPropagation(); onCreateOrder(p); }}>
                             <Factory className="w-3.5 h-3.5 mr-2" /> Crear Orden
+                          </DropdownMenuItem>
+                        )}
+                        {isApproved && p.hasOrder && (
+                          <DropdownMenuItem disabled className="text-zinc-600 opacity-60">
+                            <Factory className="w-3.5 h-3.5 mr-2" /> Orden Generada
                           </DropdownMenuItem>
                         )}
                         {isApproved && onRegisterPayment && (
