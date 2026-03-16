@@ -359,6 +359,7 @@ export default function SuperadminDashboard() {
           onCreateUserForCompany={(id) => { setCreateUserCompanyId(id); setShowCreateUser(true); }}
           onToggleUserActive={handleToggleActive} onChangeUserRole={handleChangeRole} onDeleteUser={setUserToDelete}
           onResetPassword={setResetPasswordUser}
+          onChangePlan={setChangePlanCompany}
         />
       )}
       {activeTab === "users" && (
