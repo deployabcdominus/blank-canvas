@@ -198,11 +198,11 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               <Button
                 onClick={() => onAdvance(lead.id)}
                 size="sm"
-                className={`min-h-[40px] font-medium ${isMobile ? 'w-full' : 'px-4'}`}
+                className={`min-h-[36px] font-medium text-xs ${isMobile ? 'w-full' : 'px-3'}`}
                 aria-label={`Avanzar lead de ${lead.name} a propuesta`}
               >
                 Avanzar a Propuesta
-                <ArrowRight className="w-4 h-4 ml-1.5" aria-hidden="true" />
+                <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
               </Button>
             </>
           )}

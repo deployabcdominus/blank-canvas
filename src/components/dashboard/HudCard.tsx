@@ -54,9 +54,9 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           )}
         </div>
 
-        <p className="font-semibold text-[32px] leading-none tracking-tight text-white">{value}</p>
-        <p className="text-sm font-medium mt-2 text-white">{label}</p>
-        <p className="text-xs mt-0.5 text-zinc-500">{desc}</p>
+        <p className="font-semibold text-[32px] leading-none tracking-tight text-zinc-100">{value}</p>
+        <p className="text-sm font-medium mt-2 text-zinc-100">{label}</p>
+        <p className="text-xs mt-0.5 text-zinc-400">{desc}</p>
       </div>
     </motion.button>
   );
