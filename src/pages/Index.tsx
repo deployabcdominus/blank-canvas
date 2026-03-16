@@ -529,28 +529,27 @@ const Index = () => {
           />
         </div>
 
-        {/* ═══════════ HEADER — Ultra-thin floating ═══════════ */}
+        {/* ═══════════ HEADER — Floating Glass Navbar ═══════════ */}
         <header
           className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
             scrolled
-              ? "bg-zinc-950/70 backdrop-blur-lg border-b border-white/[0.04]"
+              ? "bg-zinc-900/40 backdrop-blur-2xl border-b border-white/[0.05]"
               : "bg-transparent"
           }`}
         >
           <div className="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 py-3">
-            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[44px]" aria-label="Sign Flow - Inicio">
+            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[44px]" aria-label="SignFlow - Inicio">
               <div className="flex-shrink-0 w-[34px] h-[34px] sm:w-[40px] sm:h-[40px] md:w-[44px] md:h-[44px] overflow-hidden">
-                <img src={brandLogoSrc} alt="Sign Flow" className="block w-full h-full object-contain scale-[1.15]" draggable={false} />
+                <img src={brandLogoSrc} alt="SignFlow" className="block w-full h-full object-contain scale-[1.15]" draggable={false} />
               </div>
-              <span className="font-bold tracking-[-0.03em] text-[17px] sm:text-[19px] md:text-[21px] text-zinc-100">Sign Flow</span>
+              <span className="font-bold tracking-[-0.03em] text-[17px] sm:text-[19px] md:text-[21px] text-zinc-100">SignFlow</span>
             </a>
 
             <nav className="hidden md:flex items-center gap-10 text-[13px] font-medium text-zinc-500">
               {[
                 { label: "Industrias", id: "industries" },
-                { label: "Funciones", id: "features" },
                 { label: "Precios", id: "pricing" },
-                { label: "FAQ", id: "faq" },
+                { label: "Demo", id: "features" },
               ].map((item) => (
                 <button key={item.id} onClick={() => scrollTo(item.id)} className="relative hover:text-zinc-200 transition-colors duration-300">
                   {item.label}
@@ -563,7 +562,7 @@ const Index = () => {
                 <Button
                   size="sm"
                   onClick={() => navigate("/dashboard")}
-                  className="bg-gradient-to-b from-violet-500 to-violet-600 text-white hover:from-violet-500 hover:to-violet-700 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_12px_rgba(139,92,246,0.2)] transition-all duration-300 hover:shadow-[0_4px_20px_rgba(139,92,246,0.3)]"
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_4px_24px_rgba(139,92,246,0.4)]"
                 >
                   Ir al Dashboard
                 </Button>
@@ -573,17 +572,16 @@ const Index = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => navigate("/login")}
-                    className="text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px] border border-white/[0.08] rounded-full px-5"
+                    className="text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px] border border-white/[0.06] rounded-full px-5"
                   >
-                    <LogIn className="w-4 h-4 mr-1.5" />
-                    Iniciar Sesión
+                    Login
                   </Button>
                   <Button
                     size="sm"
                     onClick={() => scrollTo("pricing")}
-                    className="bg-gradient-to-b from-violet-500 to-violet-600 text-white hover:from-violet-500 hover:to-violet-700 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_12px_rgba(139,92,246,0.2)] transition-all duration-300 hover:shadow-[0_4px_20px_rgba(139,92,246,0.3)]"
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_4px_24px_rgba(139,92,246,0.4)]"
                   >
-                    Comienza ahora
+                    Prueba Gratis
                   </Button>
                 </>
               )}
@@ -594,7 +592,7 @@ const Index = () => {
         {/* ═══════════ HERO ═══════════ */}
         <section className="relative pt-36 pb-8 sm:pt-44 sm:pb-12 md:pt-52 md:pb-16 lg:pt-56 lg:pb-20 px-5">
           <div className="relative max-w-7xl mx-auto">
-            <div className="text-center max-w-4xl mx-auto mb-24 lg:mb-28">
+            <div className="text-center max-w-4xl mx-auto mb-20 lg:mb-24">
               <motion.div
                 initial={{ opacity: 0, y: 36 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -607,22 +605,25 @@ const Index = () => {
                   transition={{ delay: 0.4, duration: 0.6 }}
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  Plataforma de gestión operativa
+                  Gestión multi-industria
                 </motion.span>
 
-                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.2rem] lg:text-[4.2rem] font-extrabold leading-[1.04] tracking-[-0.045em] mb-8">
-                  <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">
-                    La plataforma que entiende
+                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.4rem] lg:text-[4rem] xl:text-6xl font-extrabold leading-[1.04] tracking-tighter mb-8">
+                  <span className="bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">
+                    SignFlow — Tu plataforma
                   </span>
-                  <br className="hidden sm:block" />
+                  <br />
+                  <span className="bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">
+                    camaleón para la gestión
+                  </span>
+                  <br />
                   <span className="bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
-                    {" "}tu lenguaje.
+                    multi-industria.
                   </span>
                 </h1>
 
-                <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
-                  Ya seas una empresa de IT, HVAC o Señalética, configuramos tu
-                  flujo de trabajo en 3 minutos. Sin código, sin complicaciones.
+                <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-3xl mx-auto mb-14">
+                  De IT y HVAC a Señalética y Reformas. Adapta flujos, técnicos y fichas técnicas en segundos. Una herramienta, múltiples negocios.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center gap-4">
@@ -630,17 +631,16 @@ const Index = () => {
                     <Button
                       size="lg"
                       onClick={() => scrollTo("pricing")}
-                      className="relative overflow-hidden bg-violet-600 text-white hover:bg-violet-700 rounded-full px-10 text-base font-semibold transition-all duration-300 group"
-                      style={{ animation: "neon-pulse 3s ease-in-out infinite" }}
+                      className="relative overflow-hidden bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.4)] hover:shadow-[0_6px_40px_rgba(139,92,246,0.6)]"
                     >
                       <span className="relative z-10 flex items-center">
-                        Empieza Gratis Ahora
+                        Empieza tu Prueba Elite (14 días)
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </span>
                       <div
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                         style={{
-                          background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%)",
+                          background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
                           backgroundSize: "200% 100%",
                           animation: "shimmer-sweep 1.8s ease-in-out infinite",
                         }}
@@ -652,7 +652,7 @@ const Index = () => {
                       variant="outline"
                       size="lg"
                       onClick={() => scrollTo("industries")}
-                      className="rounded-full px-10 text-base font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
+                      className="rounded-full px-10 h-14 text-base font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
                     >
                       Ver cómo funciona
                     </Button>
@@ -661,32 +661,31 @@ const Index = () => {
               </motion.div>
             </div>
 
-            <FloatingDashboard />
+            <MacBookMockup />
+
+            {/* ── Trusted By ── */}
+            <Reveal delay={0.2}>
+              <div className="mt-20 sm:mt-28">
+                <p className="text-center text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 mb-8">
+                  Empresas que confían en SignFlow
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-40">
+                  {trustedLogos.map((logo) => {
+                    const Icon = logo.icon;
+                    return (
+                      <div key={logo.name} className="flex items-center gap-2 text-zinc-500">
+                        <Icon className="w-4 h-4" />
+                        <span className="text-[13px] font-semibold tracking-tight">{logo.name}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
 
-        <div className="h-20 sm:h-28" />
-
-        {/* ═══════════ TRUST BAR ═══════════ */}
-        <Reveal>
-          <section className="pt-28 pb-16">
-            <div className="max-w-5xl mx-auto rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] px-8 py-10">
-              <div className="flex flex-wrap justify-center gap-x-20 gap-y-6">
-                {[
-                  { value: "500+", label: "Negocios activos" },
-                  { value: "2M+", label: "Órdenes procesadas" },
-                  { value: "99.9%", label: "Uptime garantizado" },
-                  { value: "4.9★", label: "Satisfacción cliente" },
-                ].map(({ value, label }) => (
-                  <div key={label} className="flex flex-col items-center gap-1.5 p-4">
-                    <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-200">{value}</span>
-                    <span className="text-[11px] font-medium text-zinc-600 uppercase tracking-wider">{label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </Reveal>
+        <div className="h-12 sm:h-20" />
 
         {/* ═══════════ INDUSTRIES GRID ═══════════ */}
         <section id="industries" className="py-36 md:py-44 lg:py-52 px-5 relative">
