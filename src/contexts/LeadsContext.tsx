@@ -210,6 +210,25 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, assignedToUserId: assignedToUserId || undefined } : l));
   };
 
+  const deleteLead = async (id: string) => {
+    if (!user) return;
+    const lead = leads.find(l => l.id === id);
+    const { error } = await supabase.from('leads').delete().eq('id', id);
+    if (error) throw error;
+    setLeads(prev => prev.filter(l => l.id !== id));
+    setTotalCount(prev => prev - 1);
+    logAudit({ action: 'eliminado', entityType: 'lead', entityId: id, entityLabel: lead?.name });
+  };
+
+  const deleteLeads = async (ids: string[]) => {
+    if (!user || ids.length === 0) return;
+    const { error } = await supabase.from('leads').delete().in('id', ids);
+    if (error) throw error;
+    setLeads(prev => prev.filter(l => !ids.includes(l.id)));
+    setTotalCount(prev => prev - ids.length);
+    logAudit({ action: 'eliminado_masivo', entityType: 'lead', entityId: ids[0], entityLabel: `${ids.length} leads`, details: { count: ids.length } });
+  };
+
   const clearLeads = async () => {
     if (!user) return;
 
