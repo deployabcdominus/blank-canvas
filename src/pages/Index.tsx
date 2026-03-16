@@ -521,17 +521,34 @@ const Index = () => {
             </nav>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px]">
-                <LogIn className="w-4 h-4 mr-1.5" />
-                Ingresar
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => scrollTo("pricing")}
-                className="bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_8px_rgba(249,115,22,0.15)] transition-all duration-300 hover:shadow-[0_4px_16px_rgba(249,115,22,0.25)]"
-              >
-                Comienza ahora
-              </Button>
+              {user ? (
+                <Button
+                  size="sm"
+                  onClick={() => navigate("/dashboard")}
+                  className="bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_8px_rgba(249,115,22,0.15)] transition-all duration-300 hover:shadow-[0_4px_16px_rgba(249,115,22,0.25)]"
+                >
+                  Ir al Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate("/login")}
+                    className="text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px] border border-white/[0.06] rounded-full px-5"
+                  >
+                    <LogIn className="w-4 h-4 mr-1.5" />
+                    Iniciar Sesión
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => scrollTo("pricing")}
+                    className="bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_8px_rgba(249,115,22,0.15)] transition-all duration-300 hover:shadow-[0_4px_16px_rgba(249,115,22,0.25)]"
+                  >
+                    Comienza ahora
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </header>
