@@ -289,7 +289,7 @@ const PostPaymentSetup = () => {
               <h1 className="text-2xl font-extrabold text-white mb-2">¡Pago Confirmado!</h1>
               <p className="text-zinc-400 text-[15px]">
                 Estás a un paso de activar tu plan{" "}
-                <span className="text-orange-400 font-semibold">{planName}</span>
+                <span className="text-purple-400 font-semibold">{planName}</span>
               </p>
             </motion.div>
 
