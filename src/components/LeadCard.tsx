@@ -109,7 +109,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
         {/* Price block */}
         <div className="mb-3">
           {linkedProposal ? (
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-zinc-100">
               ${linkedProposal.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </p>
           ) : (
