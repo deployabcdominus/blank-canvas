@@ -47,6 +47,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
   const logoUrl = proposal.lead?.logoUrl;
 
   const isApproved = proposal.status === 'Aprobada';
+  const hasOrder = proposal.hasOrder;
   const totalApproved = proposal.approvedTotal ?? proposal.value;
   const totalPaid = getTotalPaidForProposal(proposal.id);
   const balance = totalApproved - totalPaid;
