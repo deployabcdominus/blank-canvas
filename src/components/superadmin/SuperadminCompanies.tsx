@@ -65,6 +65,7 @@ export function SuperadminCompanies({
   clearSelection, setShowCreateCompany, selectedCompany, onSelectCompany,
   companyUsers, loadingUsers, loadingCompanies, onEditCompany, onDeleteCompany,
   onCreateUserForCompany, onToggleUserActive, onChangeUserRole, onDeleteUser, onResetPassword,
+  onChangePlan,
 }: Props) {
   const filtered = companies.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
