@@ -178,17 +178,17 @@ const MacBookMockup = () => (
               {/* KPI row */}
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { label: "Órdenes activas", value: "42", trend: "+12%", color: "text-violet-400" },
-                  { label: "Técnicos en campo", value: "18", trend: "En servicio", color: "text-emerald-400" },
-                  { label: "Tasa cierre", value: "87%", trend: "+5.2%", color: "text-fuchsia-400" },
-                  { label: "Ingresos mes", value: "$184K", trend: "+23%", color: "text-cyan-400" },
+                  { label: "Órdenes activas", value: "42", trend: "+12%", color: "text-violet-400", badge: null },
+                  { label: "Técnicos en campo", value: "18", trend: "En servicio", color: "text-emerald-400", badge: null },
+                  { label: "SLA Crítico", value: "3", trend: "Urgente", color: "text-orange-400", badge: "bg-orange-500/15 border-orange-500/20 text-orange-400" },
+                  { label: "Ingresos mes", value: "$184K", trend: "+23%", color: "text-cyan-400", badge: null },
                 ].map((kpi, i) => (
                   <motion.div
                     key={kpi.label}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.9 + i * 0.08, duration: 0.4 }}
-                    className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-2.5 hover:border-violet-500/12 transition-colors"
+                    className={`rounded-lg border p-2.5 transition-colors ${kpi.badge ? `${kpi.badge}` : "border-white/[0.04] bg-white/[0.015] hover:border-violet-500/12"}`}
                   >
                     <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
                     <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">{kpi.value}</p>
@@ -221,35 +221,28 @@ const MacBookMockup = () => (
                   </div>
                 </div>
 
-                {/* Map placeholder */}
+                {/* Technician list */}
                 <div className="rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
-                  <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">Servicios en mapa</span>
-                  <div className="flex-1 rounded-md bg-zinc-900/60 relative overflow-hidden">
-                    {/* Fake map dots */}
+                  <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">Técnicos activos</span>
+                  <div className="flex-1 flex flex-col gap-1.5 overflow-hidden">
                     {[
-                      { top: "20%", left: "30%", delay: 1.5 },
-                      { top: "45%", left: "60%", delay: 1.7 },
-                      { top: "65%", left: "25%", delay: 1.9 },
-                      { top: "35%", left: "75%", delay: 2.1 },
-                      { top: "75%", left: "55%", delay: 2.3 },
-                    ].map((dot, i) => (
+                      { name: "C. López", status: "En ruta", color: "bg-emerald-400" },
+                      { name: "M. García", status: "En sitio", color: "bg-violet-400" },
+                      { name: "R. Torres", status: "SLA ⚠", color: "bg-orange-400" },
+                      { name: "A. Méndez", status: "Libre", color: "bg-zinc-500" },
+                    ].map((tech, i) => (
                       <motion.div
-                        key={i}
-                        className="absolute"
-                        style={{ top: dot.top, left: dot.left }}
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: dot.delay, duration: 0.3, type: "spring" }}
+                        key={tech.name}
+                        initial={{ opacity: 0, x: 6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.5 + i * 0.08 }}
+                        className="flex items-center gap-2 px-2 py-1 rounded-md bg-white/[0.02] border border-white/[0.03]"
                       >
-                        <div className="w-2 h-2 rounded-full bg-violet-500/60 shadow-[0_0_8px_rgba(124,58,237,0.4)]" />
-                        <div className="absolute inset-0 w-2 h-2 rounded-full bg-violet-400/30 animate-ping" />
+                        <div className={`w-1.5 h-1.5 rounded-full ${tech.color} flex-shrink-0`} />
+                        <span className="text-[7px] text-zinc-400 font-medium truncate">{tech.name}</span>
+                        <span className="text-[6px] text-zinc-600 ml-auto flex-shrink-0">{tech.status}</span>
                       </motion.div>
                     ))}
-                    {/* Grid lines */}
-                    <div className="absolute inset-0 opacity-[0.04]" style={{
-                      backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-                      backgroundSize: "20px 20px",
-                    }} />
                   </div>
                 </div>
               </div>
@@ -500,7 +493,7 @@ const Index = () => {
           }
         `}</style>
 
-        {/* ── Background layers — Violet & Fuchsia radials ── */}
+        {/* ── Background layers — 3-blob lighting system ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
           {/* Subtle grid texture for depth */}
           <div
@@ -511,20 +504,28 @@ const Index = () => {
               backgroundSize: "64px 64px",
             }}
           />
-          {/* Electric Violet blob — top-left */}
+          {/* Blob 1 — Electric Violet — top-left */}
           <div
             className="absolute -top-[25%] -left-[15%] w-[1000px] h-[1000px] opacity-[0.18]"
             style={{
               background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)",
-              filter: "blur(220px)",
+              filter: "blur(180px)",
             }}
           />
-          {/* Brilliant Fuchsia blob — bottom-right */}
+          {/* Blob 2 — Fuchsia Neon — bottom-right */}
           <div
             className="absolute -bottom-[25%] -right-[15%] w-[900px] h-[900px] opacity-[0.18]"
             style={{
               background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)",
-              filter: "blur(220px)",
+              filter: "blur(180px)",
+            }}
+          />
+          {/* Blob 3 — Orange Laser (very subtle) — center behind mockup */}
+          <div
+            className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] opacity-[0.06]"
+            style={{
+              background: "radial-gradient(ellipse at center, #f97316, transparent 55%)",
+              filter: "blur(180px)",
             }}
           />
         </div>
@@ -533,7 +534,7 @@ const Index = () => {
         <header
           className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
             scrolled
-              ? "bg-zinc-900/40 backdrop-blur-2xl border-b border-white/[0.05]"
+              ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]"
               : "bg-transparent"
           }`}
         >
@@ -608,22 +609,22 @@ const Index = () => {
                   Gestión multi-industria
                 </motion.span>
 
-                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.4rem] lg:text-[4rem] xl:text-6xl font-extrabold leading-[1.04] tracking-tighter mb-8">
-                  <span className="bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">
-                    SignFlow — Tu plataforma
+                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.4rem] lg:text-[4rem] xl:text-6xl font-black leading-[1.02] tracking-tighter mb-8">
+                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                    SignFlow: La plataforma
                   </span>
                   <br />
-                  <span className="bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">
-                    camaleón para la gestión
+                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                    camaleón para líderes
                   </span>
                   <br />
-                  <span className="bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
-                    multi-industria.
+                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                    de industria.
                   </span>
                 </h1>
 
-                <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-3xl mx-auto mb-14">
-                  De IT y HVAC a Señalética y Reformas. Adapta flujos, técnicos y fichas técnicas en segundos. Una herramienta, múltiples negocios.
+                <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
+                  Gestión de IT, HVAC y Señalética en una sola interfaz inteligente. Personalización total, eficiencia absoluta.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center gap-4">
@@ -631,10 +632,10 @@ const Index = () => {
                     <Button
                       size="lg"
                       onClick={() => scrollTo("pricing")}
-                      className="relative overflow-hidden bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.4)] hover:shadow-[0_6px_40px_rgba(139,92,246,0.6)]"
+                      className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
                     >
                       <span className="relative z-10 flex items-center">
-                        Empieza tu Prueba Elite (14 días)
+                        Empezar Prueba Pro
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </span>
                       <div
