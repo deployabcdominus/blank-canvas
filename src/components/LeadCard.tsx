@@ -188,7 +188,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
                   onClick={() => onAssign(lead.id)}
                   size="sm"
                   variant="outline"
-                  className="h-9 px-3 text-xs"
+                  className="h-8 px-2.5 text-xs"
                   aria-label="Asignar lead"
                 >
                   <UserPlus className="w-3.5 h-3.5 mr-1" />
