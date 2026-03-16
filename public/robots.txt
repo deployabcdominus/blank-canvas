@@ -1,8 +1,25 @@
-User-agent: Googlebot
+User-agent: *
 Allow: /
-
-User-agent: Bingbot
-Allow: /
+Disallow: /dashboard
+Disallow: /leads
+Disallow: /proposals
+Disallow: /work-orders
+Disallow: /payments
+Disallow: /installation
+Disallow: /installer-companies
+Disallow: /team-management
+Disallow: /production
+Disallow: /projects
+Disallow: /clients
+Disallow: /settings
+Disallow: /audit-log
+Disallow: /map-hub
+Disallow: /onboarding
+Disallow: /setup
+Disallow: /superadmin
+Disallow: /taller
+Disallow: /tecnico
+Disallow: /register
 
 User-agent: Twitterbot
 Allow: /
@@ -10,5 +27,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+Sitemap: https://signflowapp.lovable.app/sitemap.xml
