@@ -313,7 +313,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, rol
         <div className="pt-3 mt-2 border-t border-white/[0.04] space-y-0.5">
           {!isTablet && (
             <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 select-none">
-              Ajustes
+              {adjustmentsLabel || "Settings"}
             </p>
           )}
           {visibleUtils.map(item => (
