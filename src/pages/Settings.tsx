@@ -33,7 +33,6 @@ export default function Settings() {
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
   const { toast } = useToast();
-  const { toast } = useToast();
   
   
   const [formData, setFormData] = useState(settings);
