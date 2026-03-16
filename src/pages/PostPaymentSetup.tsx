@@ -281,7 +281,7 @@ const PostPaymentSetup = () => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
-                className="w-14 h-14 mx-auto mb-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center"
+                className="w-14 h-14 mx-auto mb-6 rounded-full bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl flex items-center justify-center"
               >
                 <CheckCircle2 className="w-7 h-7 text-emerald-400" />
               </motion.div>
