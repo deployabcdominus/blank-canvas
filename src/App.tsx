@@ -39,6 +39,7 @@ import Production from "./pages/Production";
 import WorkerTabletView from "./components/production/WorkerTabletView";
 import MobileTechnicianView from "./components/work-orders/MobileTechnicianView";
 import AuditLog from "./pages/AuditLog";
+import LeadsRecycleBin from "./pages/LeadsRecycleBin";
 import ProposalApproval from "./pages/ProposalApproval";
 
 const queryClient = new QueryClient({
