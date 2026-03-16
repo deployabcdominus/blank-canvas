@@ -122,7 +122,38 @@
     letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: #050505;
+    background: hsl(240 6% 6%);
+  }
+
+  /* Ambient violet / fuchsia blobs — always visible */
+  body::before,
+  body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(180px);
+  }
+  body::before {
+    top: -10%;
+    left: -10%;
+    width: 55vw;
+    height: 55vh;
+    background: radial-gradient(circle, hsl(265 85% 50% / 0.15), transparent 70%);
+  }
+  body::after {
+    bottom: -10%;
+    right: -10%;
+    width: 55vw;
+    height: 55vh;
+    background: radial-gradient(circle, hsl(330 80% 50% / 0.12), transparent 70%);
+  }
+
+  /* Ensure main content stacks above blobs */
+  #root {
+    position: relative;
+    z-index: 1;
   }
 
   /* Glass effect overrides for when disabled */
