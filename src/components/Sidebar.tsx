@@ -256,10 +256,11 @@ function SidebarPlatformNav({ items, isTablet, location, industryLabels, platfor
 
 /* ─── Tenant Nav (accordion) ─── */
 
-function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, role, industryLabels, isAdmin }: {
+function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, role, industryLabels, isAdmin, adjustmentsLabel }: {
   groups: NavGroup[]; utilityItems: NavItem[]; isTablet: boolean;
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels; isAdmin: boolean;
+  adjustmentsLabel?: string;
 }) {
   const activeGroupIdx = groups.findIndex(g =>
     g.items.some(i => isActivePath(location, i.path))
