@@ -252,7 +252,7 @@ function ProposalMiniCard({ proposal, index }: { proposal: Proposal; index: numb
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href={`/proposal-approval/${proposal.approvalToken}`}
+                href={`/p/${proposal.approvalToken}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center h-6 w-6 rounded-md text-violet-500 hover:bg-violet-500/10 transition-colors"

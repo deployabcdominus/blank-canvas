@@ -498,7 +498,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <a
-                                href={`/proposal-approval/${linkedProposal.approvalToken}`}
+                                href={`/p/${linkedProposal.approvalToken}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-1 rounded-md text-violet-500 hover:text-violet-300 hover:bg-violet-500/10 transition-colors"
