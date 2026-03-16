@@ -6,31 +6,31 @@
 
 @layer base {
   :root {
-    /* ── Core: Pure Black + Zinc layers ── */
-    --background: 0 0% 2%;              /* #050505 */
-    --foreground: 0 0% 95%;             /* #F2F2F2 */
+    /* ── Core: Zinc-950 base + Violet Premium ── */
+    --background: 240 6% 6%;              /* ~#0f0f11 zinc-950 */
+    --foreground: 0 0% 95%;               /* #F2F2F2 */
 
-    /* Glass surfaces — neutral zinc, no blue tint */
-    --glass-bg: 0 0% 8% / 0.70;
-    --glass-bg-strong: 0 0% 12% / 0.85;
-    --glass-border: 0 0% 100% / 0.06;
+    /* Glass surfaces */
+    --glass-bg: 240 6% 10% / 0.50;
+    --glass-bg-strong: 240 6% 14% / 0.75;
+    --glass-border: 0 0% 100% / 0.08;
 
     /* Surface layers */
-    --surface: 0 0% 7% / 0.80;
-    --surface-hover: 0 0% 12% / 0.90;
-    --elevated: 0 0% 10% / 0.95;
-    --sidebar-bg: 0 0% 5% / 0.95;
+    --surface: 240 6% 10% / 0.60;
+    --surface-hover: 240 6% 15% / 0.80;
+    --elevated: 240 6% 12% / 0.90;
+    --sidebar-bg: 240 6% 7% / 0.60;
 
     /* Text hierarchy */
     --text-primary: 0 0% 95%;
-    --text-secondary: 0 0% 65%;
-    --text-tertiary: 0 0% 45%;
+    --text-secondary: 240 5% 65%;
+    --text-tertiary: 240 4% 45%;
 
-    /* Accent — Vibrant Orange (used at 5%) */
-    --accent-brand: 25 95% 53%;          /* Electric orange */
-    --accent-brand-hover: 25 95% 60%;
-    --accent-brand-light: 25 95% 53% / 0.15;
-    --accent-brand-lighter: 25 95% 53% / 0.06;
+    /* Accent — Violet Primary */
+    --accent-brand: 265 85% 60%;          /* Electric violet */
+    --accent-brand-hover: 265 85% 68%;
+    --accent-brand-light: 265 85% 60% / 0.15;
+    --accent-brand-lighter: 265 85% 60% / 0.06;
 
     /* Semantic */
     --color-success: 142 72% 37%;
@@ -42,7 +42,7 @@
     --color-info: 199 89% 48%;
     --color-info-bg: 199 89% 48% / 0.10;
 
-    /* Borders — white alpha for pure black bg */
+    /* Borders */
     --border-subtle: 0 0% 100% / 0.04;
     --border-default: 0 0% 100% / 0.08;
     --border-strong: 0 0% 100% / 0.16;
@@ -66,43 +66,47 @@
     --pale-pink-foreground: 340 55% 92%;
     --pale-pink-hover: 340 55% 66%;
 
-    /* ── Shadcn tokens — Orange primary on pure black ── */
-    --card: 0 0% 7%;
+    /* ── Shadcn tokens — Violet primary ── */
+    --card: 240 6% 10%;
     --card-foreground: 0 0% 95%;
-    --popover: 0 0% 7%;
+    --popover: 240 6% 10%;
     --popover-foreground: 0 0% 93%;
-    --primary: 25 95% 53%;               /* Vibrant orange */
+    --primary: 265 85% 60%;               /* Electric violet */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 10%;
+    --secondary: 240 6% 13%;
     --secondary-foreground: 0 0% 90%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 0 0% 10%;
+    --muted: 240 6% 13%;
+    --muted-foreground: 240 5% 55%;
+    --accent: 240 6% 13%;
     --accent-foreground: 0 0% 93%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 14%;
-    --input: 0 0% 10%;
-    --ring: 25 95% 53%;
+    --border: 240 6% 16%;
+    --input: 240 6% 13%;
+    --ring: 265 85% 60%;
     --radius: 0.75rem;
 
-    /* ── Sidebar — minimal dark ── */
-    --sidebar-background: 0 0% 4%;
-    --sidebar-foreground: 0 0% 55%;
-    --sidebar-primary: 25 95% 53%;
+    /* ── Sidebar — glass dark ── */
+    --sidebar-background: 240 6% 7%;
+    --sidebar-foreground: 240 5% 55%;
+    --sidebar-primary: 265 85% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent: 240 6% 11%;
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-border: 0 0% 100% / 0.06;
-    --sidebar-ring: 25 95% 53%;
+    --sidebar-ring: 265 85% 60%;
 
     /* Dashboard card */
-    --dash-card-bg: 0 0% 7% / 0.70;
-    --dash-card-border: 0 0% 100% / 0.06;
+    --dash-card-bg: 240 6% 10% / 0.50;
+    --dash-card-border: 0 0% 100% / 0.08;
     --dash-text-heading: 0 0% 95%;
     --dash-text-value: 0 0% 100%;
-    --dash-text-label: 0 0% 70%;
-    --dash-text-muted: 0 0% 45%;
+    --dash-text-label: 240 5% 70%;
+    --dash-text-muted: 240 4% 45%;
+
+    /* Violet / Fucsia blobs */
+    --blob-violet: 265 85% 50%;
+    --blob-fuchsia: 330 80% 50%;
   }
 }
 
