@@ -192,6 +192,23 @@ export default function SuperadminDashboard() {
     setSavingCompany(false);
   };
 
+  const handleChangePlan = async (companyId: string, planKey: string) => {
+    try {
+      const { error } = await supabase.from("companies").update({
+        plan_id: planKey,
+        subscription_status: "active",
+        billing_type: "manual_admin",
+      } as any).eq("id", companyId);
+      if (error) throw error;
+      const company = companies.find(c => c.id === companyId);
+      await logAudit("PLAN_CHANGED", company?.name || companyId, { newPlan: planKey, billing_type: "manual_admin" });
+      toast({ title: `✅ Plan actualizado`, description: `Plan de ${company?.name} actualizado a ${planKey.charAt(0).toUpperCase() + planKey.slice(1)} correctamente.` });
+      fetchCompanies();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  };
+
   const handleCreateUser = async () => {
     const targetCompanyId = createUserCompanyId;
     if (!targetCompanyId) return;
