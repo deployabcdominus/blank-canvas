@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Settings, User, Menu } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -58,6 +59,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
         </div>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <NotificationBell />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
