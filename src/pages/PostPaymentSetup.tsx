@@ -283,7 +283,7 @@ const PostPaymentSetup = () => {
                 transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
                 className="w-14 h-14 mx-auto mb-6 rounded-full bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl flex items-center justify-center"
               >
-                <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+                <CheckCircle2 className="w-7 h-7 text-purple-400" />
               </motion.div>
 
               <h1 className="text-2xl font-extrabold text-white mb-2">¡Pago Confirmado!</h1>
