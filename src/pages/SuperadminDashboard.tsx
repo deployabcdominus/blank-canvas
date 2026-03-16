@@ -19,10 +19,12 @@ import { SuperadminCompanies } from "@/components/superadmin/SuperadminCompanies
 import { SuperadminUsers } from "@/components/superadmin/SuperadminUsers";
 import { SuperadminProvisioning } from "@/components/superadmin/SuperadminProvisioning";
 import { SuperadminAuditLogs } from "@/components/superadmin/SuperadminAuditLogs";
+import { ChangePlanModal } from "@/components/superadmin/ChangePlanModal";
 
 interface Company {
   id: string; name: string; user_id: string; plan_id: string | null;
   created_at: string; enable_network_index: boolean; is_active: boolean;
+  subscription_status: string | null; billing_type: string | null;
 }
 
 interface CompanyUser {
@@ -71,6 +73,7 @@ export default function SuperadminDashboard() {
   const [companyToEdit, setCompanyToEdit] = useState<Company | null>(null);
   const [editCompanyName, setEditCompanyName] = useState("");
   const [savingCompany, setSavingCompany] = useState(false);
+  const [changePlanCompany, setChangePlanCompany] = useState<Company | null>(null);
 
   const [showCreateUser, setShowCreateUser] = useState(false);
   const [createUserCompanyId, setCreateUserCompanyId] = useState("");
@@ -187,6 +190,23 @@ export default function SuperadminDashboard() {
       toast({ title: "Empresa actualizada" }); setCompanyToEdit(null); fetchCompanies();
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
     setSavingCompany(false);
+  };
+
+  const handleChangePlan = async (companyId: string, planKey: string) => {
+    try {
+      const { error } = await supabase.from("companies").update({
+        plan_id: planKey,
+        subscription_status: "active",
+        billing_type: "manual_admin",
+      } as any).eq("id", companyId);
+      if (error) throw error;
+      const company = companies.find(c => c.id === companyId);
+      await logAudit("PLAN_CHANGED", company?.name || companyId, { newPlan: planKey, billing_type: "manual_admin" });
+      toast({ title: `✅ Plan actualizado`, description: `Plan de ${company?.name} actualizado a ${planKey.charAt(0).toUpperCase() + planKey.slice(1)} correctamente.` });
+      fetchCompanies();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
   };
 
   const handleCreateUser = async () => {
@@ -356,6 +376,7 @@ export default function SuperadminDashboard() {
           onCreateUserForCompany={(id) => { setCreateUserCompanyId(id); setShowCreateUser(true); }}
           onToggleUserActive={handleToggleActive} onChangeUserRole={handleChangeRole} onDeleteUser={setUserToDelete}
           onResetPassword={setResetPasswordUser}
+          onChangePlan={setChangePlanCompany}
         />
       )}
       {activeTab === "users" && (
@@ -559,6 +580,13 @@ export default function SuperadminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ChangePlanModal
+        company={changePlanCompany}
+        open={!!changePlanCompany}
+        onOpenChange={(open) => !open && setChangePlanCompany(null)}
+        onConfirm={handleChangePlan}
+      />
     </ResponsiveLayout>
   );
 }
