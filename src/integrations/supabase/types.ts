@@ -169,6 +169,7 @@ export type Database = {
       }
       companies: {
         Row: {
+          billing_type: string | null
           brand_color: string | null
           created_at: string
           enable_network_index: boolean | null
@@ -187,6 +188,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          billing_type?: string | null
           brand_color?: string | null
           created_at?: string
           enable_network_index?: boolean | null
@@ -205,6 +207,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          billing_type?: string | null
           brand_color?: string | null
           created_at?: string
           enable_network_index?: boolean | null
@@ -1290,6 +1293,7 @@ export type Database = {
           p_user_id: string
         }
         Returns: {
+          billing_type: string | null
           brand_color: string | null
           created_at: string
           enable_network_index: boolean | null
