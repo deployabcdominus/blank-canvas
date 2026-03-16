@@ -589,7 +589,7 @@ const Index = () => {
                   <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                     <Button
                       size="lg"
-                      onClick={() => navigate("/register")}
+                      onClick={() => scrollTo("pricing")}
                       className="relative overflow-hidden bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-10 text-base font-semibold transition-all duration-300 group"
                       style={{ animation: "laser-glow 3s ease-in-out infinite" }}
                     >
