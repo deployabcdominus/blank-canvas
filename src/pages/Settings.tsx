@@ -32,11 +32,7 @@ export default function Settings() {
   const { user } = useAuth();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
-  const { companies, updateCompany } = useInstallerCompanies();
-  
-  const { leads } = useLeads();
-  const { proposals } = useProposals();
-  const { orders } = useWorkOrders();
+  const { toast } = useToast();
   const { toast } = useToast();
   
   
