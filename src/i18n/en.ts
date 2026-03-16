@@ -15,7 +15,7 @@ export const en = {
       titleLine2: "industry leaders.",
       subtitle:
         "Manage IT, HVAC & Signage operations in one intelligent interface. Total customization, absolute efficiency.",
-      ctaPrimary: "Start Pro Trial",
+      ctaPrimary: "Activate Now",
       ctaSecondary: "See how it works",
     },
     trusted: "Companies that trust SignFlow",
