@@ -61,7 +61,7 @@ export const PaymentsProvider: React.FC<{ children: ReactNode }> = ({ children }
     try {
       const { data, error } = await (supabase
         .from('payments' as any)
-        .select('*')
+        .select('id, company_id, proposal_id, amount, currency, method, status, paid_at, note, created_by, created_at')
         .order('paid_at', { ascending: false }) as any);
       if (error) throw error;
       setPayments((data || []).map(mapRow));
