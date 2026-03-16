@@ -141,6 +141,11 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
             {lead.contact.location}
           </div>
         </div>
+
+        {/* Pipeline stepper */}
+        <div className="mb-4">
+          <LeadPipelineStepper currentStage={getLeadPipelineStage(lead.status, linkedProposal?.status)} />
+        </div>
       </div>
 
       {/* Footer */}
