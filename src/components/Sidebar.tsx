@@ -330,10 +330,11 @@ function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, rol
 
 /* ─── User Footer (Premium) ─── */
 
-function SidebarUserFooter({ isTablet, avatarUrl, fullName, email, initials, isSuperadmin, isAdmin, onLogout, onNavigate }: {
+function SidebarUserFooter({ isTablet, avatarUrl, fullName, email, initials, isSuperadmin, isAdmin, onLogout, onNavigate, profileLabel, settingsLabel, logoutLabel }: {
   isTablet: boolean; avatarUrl: string | null; fullName: string; email: string;
   initials: string; isSuperadmin: boolean; isAdmin: boolean;
   onLogout: () => void; onNavigate: (path: string) => void;
+  profileLabel?: string; settingsLabel?: string; logoutLabel?: string;
 }) {
   return (
     <div className="flex-shrink-0 mt-3 pt-3 border-t border-white/[0.04] space-y-1.5">
