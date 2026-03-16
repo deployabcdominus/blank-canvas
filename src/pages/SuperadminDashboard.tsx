@@ -19,6 +19,7 @@ import { SuperadminCompanies } from "@/components/superadmin/SuperadminCompanies
 import { SuperadminUsers } from "@/components/superadmin/SuperadminUsers";
 import { SuperadminProvisioning } from "@/components/superadmin/SuperadminProvisioning";
 import { SuperadminAuditLogs } from "@/components/superadmin/SuperadminAuditLogs";
+import { ChangePlanModal } from "@/components/superadmin/ChangePlanModal";
 
 interface Company {
   id: string; name: string; user_id: string; plan_id: string | null;
