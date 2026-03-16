@@ -79,7 +79,7 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (!user) { setClients([]); setLoading(false); return; }
     const { data, error } = await (supabase as any)
       .from('clients')
-      .select('*')
+      .select('id, company_id, client_name, contact_name, primary_email, primary_phone, address, website, service_type, notes, logo_url, created_at, updated_at')
       .order('client_name', { ascending: true });
     if (error) console.error('Error loading clients:', error);
     else setClients((data || []).map(mapRow));

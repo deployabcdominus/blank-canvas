@@ -94,16 +94,26 @@ serve(async (req) => {
       logStep("Subscription found", { status: sub.status, tier, productId });
     }
 
-    // Sync to companies table
-    await supabaseAdmin
+    // Sync to companies table — skip if billing is managed manually by superadmin
+    const { data: companyRow } = await supabaseAdmin
       .from("companies")
-      .update({
-        plan_id: tier,
-        subscription_status: subscriptionStatus,
-        stripe_customer_id: customerId,
-        subscription_end_date: subscriptionEnd,
-      })
-      .eq("id", profile.company_id);
+      .select("billing_type")
+      .eq("id", profile.company_id)
+      .maybeSingle();
+
+    if (companyRow?.billing_type !== "manual_admin") {
+      await supabaseAdmin
+        .from("companies")
+        .update({
+          plan_id: tier,
+          subscription_status: subscriptionStatus,
+          stripe_customer_id: customerId,
+          subscription_end_date: subscriptionEnd,
+        })
+        .eq("id", profile.company_id);
+    } else {
+      logStep("Skipping company update — billing_type is manual_admin");
+    }
 
     logStep("Company updated", { companyId: profile.company_id, tier, subscriptionStatus });
 

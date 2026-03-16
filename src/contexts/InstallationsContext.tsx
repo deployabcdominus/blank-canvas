@@ -76,7 +76,7 @@ export const InstallationsProvider = ({ children }: { children: ReactNode }) => 
     if (!user) { setInstallations([]); setLoading(false); return; }
     const { data, error } = await supabase
       .from('installations')
-      .select('*')
+      .select('id, client, project, status, location, scheduled_date, team, notes, project_id')
       .order('scheduled_date', { ascending: false });
     if (error) console.error('Error loading installations:', error);
     else setInstallations((data || []).map(mapRow));
