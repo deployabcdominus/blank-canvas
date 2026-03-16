@@ -171,12 +171,12 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
           ) : (
             /* Lead not converted — show normal actions */
             <>
-              {onConvert && (
+               {onConvert && (
                 <Button
                   onClick={() => onConvert(lead.id)}
                   size="sm"
                   variant="outline"
-                  className="h-9 px-3 text-xs"
+                  className="h-8 px-2.5 text-xs"
                   aria-label="Convertir a Cliente/Proyecto"
                 >
                   <FolderKanban className="w-3.5 h-3.5 mr-1" />
