@@ -93,7 +93,11 @@ const App = () => (
                   <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><WorkerTabletView /></div>} />
                   <Route path="/tecnico" element={<MobileTechnicianView />} />
                   <Route path="/audit-log" element={<AuditLog />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Route>
+
+                {/* Settings accessible to superadmin (outside tenant layout) */}
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
