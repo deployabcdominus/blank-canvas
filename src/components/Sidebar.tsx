@@ -377,16 +377,16 @@ function SidebarUserFooter({ isTablet, avatarUrl, fullName, email, initials, isS
           </div>
           <DropdownMenuSeparator className="bg-white/[0.06]" />
           <DropdownMenuItem onClick={() => onNavigate("/settings?tab=perfil")} className="min-h-[40px] text-zinc-300 hover:text-white">
-            <User className="w-4 h-4 mr-2" /> Perfil
+            <User className="w-4 h-4 mr-2" /> {profileLabel || "Profile"}
           </DropdownMenuItem>
           {isAdmin && (
             <DropdownMenuItem onClick={() => onNavigate("/settings")} className="min-h-[40px] text-zinc-300 hover:text-white">
-              <Settings className="w-4 h-4 mr-2" /> Configuración
+              <Settings className="w-4 h-4 mr-2" /> {settingsLabel || "Settings"}
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator className="bg-white/[0.06]" />
           <DropdownMenuItem onClick={onLogout} className="text-red-400 hover:text-red-300 min-h-[40px]">
-            <LogOut className="w-4 h-4 mr-2" /> Salir
+            <LogOut className="w-4 h-4 mr-2" /> {logoutLabel || "Sign Out"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
