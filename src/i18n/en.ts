@@ -146,8 +146,8 @@ export const en = {
       titleLine3: "your results?",
       subtitle:
         "Join hundreds of businesses already managing their operations end-to-end with Sign Flow.",
-      button: "Start Free Now",
-      note: "No credit card · Setup in 3 minutes",
+      button: "Get Started Now",
+      note: "Professional-grade tools · Setup in 3 minutes",
     },
     footer: {
       tagline:
