@@ -8,7 +8,7 @@ export const es: TranslationKeys = {
       pricing: "Precios",
       demo: "Demo",
       login: "Login",
-      freeTrial: "Prueba Gratis",
+      freeTrial: "Empezar",
       goToDashboard: "Ir al Dashboard",
     },
     hero: {
@@ -17,7 +17,7 @@ export const es: TranslationKeys = {
       titleLine2: "de industria.",
       subtitle:
         "Gestión de IT, HVAC y Señalética en una sola interfaz inteligente. Personalización total, eficiencia absoluta.",
-      ctaPrimary: "Empezar Prueba Pro",
+      ctaPrimary: "Activar Ahora",
       ctaSecondary: "Ver cómo funciona",
     },
     trusted: "Empresas que confían en SignFlow",
@@ -133,8 +133,8 @@ export const es: TranslationKeys = {
           a: "Sí. Sign Flow está optimizado para funcionar como una app nativa en cualquier dispositivo. Tu equipo de campo puede usarlo desde su celular o tablet sin instalar nada.",
         },
         {
-          q: "¿Ofrecen periodo de prueba?",
-          a: "Sí. Todos los planes incluyen un periodo de prueba gratuito. Puedes comenzar sin tarjeta de crédito y explorar todas las funciones antes de comprometerte.",
+          q: "¿Cómo obtengo acceso a SignFlow?",
+          a: "Puedes activar tu cuenta seleccionando un plan y completando el proceso de pago, o recibiendo una invitación del administrador de tu organización.",
         },
         {
           q: "¿Qué pasa si necesito más de lo que ofrece el plan Elite?",
@@ -148,8 +148,8 @@ export const es: TranslationKeys = {
       titleLine3: "tus resultados?",
       subtitle:
         "Únete a cientos de negocios que ya controlan su operación de punta a punta con Sign Flow.",
-      button: "Empieza Gratis Ahora",
-      note: "Sin tarjeta de crédito · Configuración en 3 minutos",
+      button: "Empezar Ahora",
+      note: "Herramientas profesionales · Configuración en 3 minutos",
     },
     footer: {
       tagline:
@@ -368,6 +368,6 @@ export const es: TranslationKeys = {
   /* ── SEO / Meta ── */
   seo: {
     title: "SignFlow | El SO de Operaciones y Flujo de Trabajo Todo-en-Uno",
-    description: "Escala tu negocio de servicios con SignFlow. Centraliza datos de proyectos, fichas técnicas e instalaciones en campo para industrias de IT, HVAC y Señalética. Prueba Pro de 14 días.",
+    description: "Escala tu negocio de servicios con SignFlow. Gestión profesional de flujos de trabajo para industrias de IT, HVAC y Señalética. Asegura tu plan hoy.",
   },
 } as const;

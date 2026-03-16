@@ -6,7 +6,7 @@ export const en = {
       pricing: "Pricing",
       demo: "Demo",
       login: "Login",
-      freeTrial: "Start Free",
+      freeTrial: "Get Started",
       goToDashboard: "Go to Dashboard",
     },
     hero: {
@@ -15,7 +15,7 @@ export const en = {
       titleLine2: "industry leaders.",
       subtitle:
         "Manage IT, HVAC & Signage operations in one intelligent interface. Total customization, absolute efficiency.",
-      ctaPrimary: "Start Pro Trial",
+      ctaPrimary: "Activate Now",
       ctaSecondary: "See how it works",
     },
     trusted: "Companies that trust SignFlow",
@@ -131,8 +131,8 @@ export const en = {
           a: "Yes. Sign Flow is optimized to work like a native app on any device. Your field operators can use it from their phone or tablet without installing anything.",
         },
         {
-          q: "Do you offer a free trial?",
-          a: "Yes. All plans include a free trial period. You can start without a credit card and explore all features before committing.",
+          q: "How do I get access to SignFlow?",
+          a: "You can activate your account by selecting a plan and completing the payment process, or by receiving an invitation from your organization's administrator.",
         },
         {
           q: "What if I need more than the Elite plan offers?",
@@ -146,8 +146,8 @@ export const en = {
       titleLine3: "your results?",
       subtitle:
         "Join hundreds of businesses already managing their operations end-to-end with Sign Flow.",
-      button: "Start Free Now",
-      note: "No credit card · Setup in 3 minutes",
+      button: "Get Started Now",
+      note: "Professional-grade tools · Setup in 3 minutes",
     },
     footer: {
       tagline:
@@ -366,7 +366,7 @@ export const en = {
   /* ── SEO / Meta ── */
   seo: {
     title: "SignFlow | The All-in-One Operations & Workflow OS",
-    description: "Scale your service business with SignFlow. Centralize project data, production sheets, and field installations for IT, HVAC, and Signage industries. Start your 14-day Pro trial.",
+    description: "Scale your service business with SignFlow. Professional workflow management for IT, HVAC, and Signage industries. Secure your plan today.",
   },
 };
 
