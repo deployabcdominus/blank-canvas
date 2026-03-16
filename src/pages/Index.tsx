@@ -639,10 +639,10 @@ const Index = () => {
                     <Button
                       size="lg"
                       onClick={() => scrollTo("pricing")}
-                      className="relative overflow-hidden bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.4)] hover:shadow-[0_6px_40px_rgba(139,92,246,0.6)]"
+                      className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
                     >
                       <span className="relative z-10 flex items-center">
-                        Empieza tu Prueba Elite (14 días)
+                        Empezar Prueba Pro
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </span>
                       <div
