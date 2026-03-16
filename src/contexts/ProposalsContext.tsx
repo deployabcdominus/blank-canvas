@@ -35,7 +35,7 @@ export interface Proposal {
 interface ProposalsContextType {
   proposals: Proposal[];
   loading: boolean;
-  addProposal: (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken'>) => Promise<void>;
+  addProposal: (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => Promise<void>;
   updateProposal: (id: string, proposal: Partial<Proposal>) => Promise<void>;
   deleteProposal: (id: string) => Promise<void>;
   refreshProposals: () => Promise<void>;
