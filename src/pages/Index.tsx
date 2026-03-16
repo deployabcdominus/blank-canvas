@@ -500,7 +500,7 @@ const Index = () => {
           }
         `}</style>
 
-        {/* ── Background layers — Violet & Fuchsia radials ── */}
+        {/* ── Background layers — 3-blob lighting system ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
           {/* Subtle grid texture for depth */}
           <div
@@ -511,20 +511,28 @@ const Index = () => {
               backgroundSize: "64px 64px",
             }}
           />
-          {/* Electric Violet blob — top-left */}
+          {/* Blob 1 — Electric Violet — top-left */}
           <div
             className="absolute -top-[25%] -left-[15%] w-[1000px] h-[1000px] opacity-[0.18]"
             style={{
               background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)",
-              filter: "blur(220px)",
+              filter: "blur(180px)",
             }}
           />
-          {/* Brilliant Fuchsia blob — bottom-right */}
+          {/* Blob 2 — Fuchsia Neon — bottom-right */}
           <div
             className="absolute -bottom-[25%] -right-[15%] w-[900px] h-[900px] opacity-[0.18]"
             style={{
               background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)",
-              filter: "blur(220px)",
+              filter: "blur(180px)",
+            }}
+          />
+          {/* Blob 3 — Orange Laser (very subtle) — center behind mockup */}
+          <div
+            className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] opacity-[0.06]"
+            style={{
+              background: "radial-gradient(ellipse at center, #f97316, transparent 55%)",
+              filter: "blur(180px)",
             }}
           />
         </div>
