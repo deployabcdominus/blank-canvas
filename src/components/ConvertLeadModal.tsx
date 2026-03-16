@@ -24,8 +24,10 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   const { user } = useAuth();
   const { clients, addClient } = useClients();
   const { addProject } = useProjects();
+  const { addProposal } = useProposals();
   const { updateLead } = useLeads();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [mode, setMode] = useState<'existing' | 'new'>('existing');
   const [selectedClientId, setSelectedClientId] = useState('');
