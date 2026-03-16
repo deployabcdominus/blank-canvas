@@ -11,6 +11,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PublicRoute } from "@/components/PublicRoute";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import Index from "./pages/Index";
+import PostPaymentSetup from "./pages/PostPaymentSetup";
 import Checkout from "./pages/Checkout";
 import Success from "./pages/Success";
 import Access from "./pages/Access";
@@ -62,6 +63,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
                 <Route path="/success" element={<Success />} />
+                <Route path="/setup" element={<PostPaymentSetup />} />
                 <Route path="/access" element={<Access />} />
                 <Route path="/invite" element={<Invite />} />
                 <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />

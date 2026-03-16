@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.customer-portal]
 verify_jwt = false
+
+[functions.retrieve-session]
+verify_jwt = false
