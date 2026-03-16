@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil, Eye, CheckCircle2 } from "lucide-react";
 import { Lead } from "@/contexts/LeadsContext";
 import { Proposal } from "@/contexts/ProposalsContext";
+import { LeadPipelineStepper, getLeadPipelineStage } from "@/components/LeadPipelineStepper";
 
 interface LeadCardProps {
   lead: Lead;
