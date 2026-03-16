@@ -391,7 +391,7 @@ const PostPaymentSetup = () => {
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-900 border-white/[0.06]">
                           {INDUSTRIES.map((ind) => (
-                            <SelectItem key={ind.value} value={ind.value} className="text-zinc-200 focus:bg-orange-500/10">
+                            <SelectItem key={ind.value} value={ind.value} className="text-zinc-200 focus:bg-purple-500/10">
                               {ind.label}
                             </SelectItem>
                           ))}
