@@ -17,7 +17,7 @@ export const es: TranslationKeys = {
       titleLine2: "de industria.",
       subtitle:
         "Gestión de IT, HVAC y Señalética en una sola interfaz inteligente. Personalización total, eficiencia absoluta.",
-      ctaPrimary: "Empezar Prueba Pro",
+      ctaPrimary: "Activar Ahora",
       ctaSecondary: "Ver cómo funciona",
     },
     trusted: "Empresas que confían en SignFlow",
