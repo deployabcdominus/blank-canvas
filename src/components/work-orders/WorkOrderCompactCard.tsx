@@ -3,11 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   Package, Wrench, AlertTriangle, CheckCircle, Clock,
-  MoreHorizontal, Eye, Pencil, Calendar,
+  MoreHorizontal, Eye, Pencil, Calendar, Trash2,
 } from "lucide-react";
 
 const STATUS_MAP: Record<string, { color: string; icon: React.ReactNode }> = {
@@ -23,10 +23,12 @@ interface Props {
   onOpen?: (order: WorkOrder) => void;
   onEdit?: (order: WorkOrder) => void;
   onMarkBuilt?: (id: string) => void;
+  onDelete?: (id: string) => void;
   canEdit?: boolean;
+  canDelete?: boolean;
 }
 
-export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt, canEdit = true }: Props) {
+export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt, onDelete, canEdit = true, canDelete = false }: Props) {
   const status = STATUS_MAP[order.status] || { color: "bg-muted text-muted-foreground", icon: <Clock className="w-3 h-3" /> };
 
   return (
@@ -65,6 +67,14 @@ export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt
                 <DropdownMenuItem onClick={() => onMarkBuilt(order.id)}>
                   <CheckCircle className="w-3.5 h-3.5 mr-2" /> Marcar Completada
                 </DropdownMenuItem>
+              )}
+              {canDelete && onDelete && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onDelete(order.id)} className="text-destructive focus:text-destructive">
+                    <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
+                  </DropdownMenuItem>
+                </>
               )}
             </DropdownMenuContent>
           </DropdownMenu>

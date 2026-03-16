@@ -20,8 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders, updateOrder } = useWorkOrders();
-  const { canEdit, canDelete } = useUserRole();
+  const { orders, clearOrders, updateOrder, deleteOrder } = useWorkOrders();
+  const { canEdit, canDelete, isAdmin } = useUserRole();
   const { toast } = useToast();
 
   const [search, setSearch] = useState("");
@@ -33,6 +33,7 @@ const WorkOrders = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [completeConfirmId, setCompleteConfirmId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editOrder, setEditOrder] = useState<WorkOrder | null>(null);
   const [editOrderMode, setEditOrderMode] = useState(false);
 
@@ -50,6 +51,22 @@ const WorkOrders = () => {
       console.error(error);
     }
     setCompleteConfirmId(null);
+  };
+
+  const handleDeleteSingle = (id: string) => {
+    setDeleteConfirmId(id);
+  };
+
+  const confirmDeleteSingle = async () => {
+    if (!deleteConfirmId) return;
+    try {
+      await deleteOrder(deleteConfirmId);
+      toast({ title: "Orden eliminada", description: "La orden fue eliminada con éxito." });
+    } catch (error) {
+      toast({ title: "Error", description: "No se pudo eliminar la orden.", variant: "destructive" });
+      console.error(error);
+    }
+    setDeleteConfirmId(null);
   };
 
   const handleClearOrders = () => {
@@ -101,9 +118,9 @@ const WorkOrders = () => {
             <p className="text-muted-foreground text-sm">Gestión y seguimiento de órdenes</p>
           </div>
           <div className="flex gap-2">
-            {orders.length > 0 && canDelete && (
+            {orders.length > 0 && isAdmin && (
               <Button onClick={() => setIsClearDialogOpen(true)} variant="outline" className="btn-glass">
-                <Trash2 className="w-4 h-4 mr-2" /> Limpiar
+                <Trash2 className="w-4 h-4 mr-2" /> Limpiar todo
               </Button>
             )}
             {canEdit && (
@@ -145,7 +162,9 @@ const WorkOrders = () => {
                     order={order}
                     index={i}
                     canEdit={canEdit}
+                    canDelete={canDelete}
                     onMarkBuilt={handleMarkCompleted}
+                    onDelete={handleDeleteSingle}
                     onEdit={canEdit ? (o) => { setEditOrder(o); setEditOrderMode(true); } : undefined}
                     onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
                   />
@@ -154,7 +173,10 @@ const WorkOrders = () => {
             ) : (
               <WorkOrdersTableView
                 orders={paginated}
+                canEdit={canEdit}
+                canDelete={canDelete}
                 onMarkBuilt={handleMarkCompleted}
+                onDelete={handleDeleteSingle}
                 onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
                 onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
               />
@@ -178,21 +200,23 @@ const WorkOrders = () => {
           startInEditMode={editOrderMode}
         />
 
+        {/* Clear ALL orders — admin only */}
         <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>¿Limpiar todas las órdenes?</AlertDialogTitle>
-              <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
+              <AlertDialogDescription>Esta acción eliminará todas las órdenes de servicio y no se puede deshacer.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction onClick={handleClearOrders} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Limpiar
+                Limpiar todo
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
+        {/* Complete confirmation */}
         <AlertDialog open={!!completeConfirmId} onOpenChange={(open) => { if (!open) setCompleteConfirmId(null); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -202,6 +226,22 @@ const WorkOrders = () => {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction onClick={confirmMarkCompleted}>Confirmar</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Individual delete confirmation */}
+        <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Eliminar esta orden de servicio?</AlertDialogTitle>
+              <AlertDialogDescription>Esta acción es permanente y no se puede deshacer.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Eliminar
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
