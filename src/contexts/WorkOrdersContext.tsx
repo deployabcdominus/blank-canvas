@@ -20,6 +20,7 @@ export interface WorkOrder {
   companyId: string | null;
   ownerUserId: string | null;
   projectId: string | null;
+  proposalId?: string | null;
   notes?: string | null;
   priority?: string | null;
   estimatedDelivery?: string | null;
