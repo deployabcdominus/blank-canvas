@@ -177,11 +177,36 @@ const PostPaymentSetup = () => {
   if (loading) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="w-10 h-10 animate-spin text-orange-500 mx-auto mb-4" />
-            <p className="text-zinc-400 text-sm">Verificando tu pago con Stripe...</p>
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+          {/* Violet ambient blobs */}
+          <div className="fixed inset-0 pointer-events-none -z-10">
+            <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-purple-600/15 blur-[180px]" />
+            <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/10 blur-[180px]" />
           </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-center"
+          >
+            {/* Pulsing violet ring */}
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-purple-500/30"
+                animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <div className="w-20 h-20 rounded-full bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+              </div>
+            </div>
+            <h2 className="text-xl font-bold text-white tracking-tight mb-2">
+              Finalizing your secure activation...
+            </h2>
+            <p className="text-zinc-500 text-sm">
+              Connecting with Stripe to verify your payment
+            </p>
+          </motion.div>
         </div>
       </PageTransition>
     );
