@@ -3,7 +3,8 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import brandLogoSrc from "@/assets/brand-logo.png";
-import { pricingPlans } from "@/constants/landingPageData";
+import { STRIPE_TIERS } from "@/lib/stripe-tiers";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ArrowRight,
   Check,
@@ -13,34 +14,37 @@ import {
   FileText,
   Building,
   TrendingUp,
-  ThumbsUp,
-  ThumbsDown,
   Star,
-  Quote,
-  Instagram,
-  Twitter,
-  Linkedin,
   Sparkles,
   ChevronRight,
   Factory,
-  Receipt,
-  PieChart,
   Shield,
-  Layers,
-  XCircle,
   CheckCircle2,
-  Activity,
-  Users,
-  Camera,
   CircleDot,
   BadgeCheck,
-  AlertTriangle,
-  Shuffle,
-  MessageSquare,
-  FolderOpen,
-  Clock,
+  Camera,
+  Monitor,
+  Thermometer,
+  Signpost,
+  Wrench,
+  ClipboardCheck,
+  PenTool,
+  WifiOff,
+  ChevronDown,
+  Twitter,
+  Instagram,
+  Linkedin,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { toast } from "@/hooks/use-toast";
 
 /* ─── Shimmer overlay for premium hover ─── */
 const ShimmerOverlay = () => (
@@ -107,17 +111,13 @@ const SectionBadge = ({ icon: Icon, label }: { icon: any; label: string }) => (
 );
 
 /* ═══════════════════════════════════════════════════════ */
-/*     FLOATING DASHBOARD (HERO MOCKUP) — ISOMETRIC       */
+/*     FLOATING DASHBOARD (HERO MOCKUP)                    */
 /* ═══════════════════════════════════════════════════════ */
 const FloatingDashboard = () => (
-  <div
-    className="relative w-full max-w-5xl mx-auto"
-    style={{ perspective: "1400px" }}
-  >
-    {/* Deep ambient glow */}
-    <div className="absolute -inset-32 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(249,115,22,0.06),transparent_60%)] pointer-events-none" />
+  <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "1400px" }}>
+    {/* Deep orange glow behind mockup */}
+    <div className="absolute -inset-32 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(249,115,22,0.08),transparent_60%)] pointer-events-none" />
 
-    {/* Main dashboard */}
     <motion.div
       initial={{ opacity: 0, y: 60, rotateX: 10 }}
       animate={{ opacity: 1, y: 0, rotateX: 3 }}
@@ -125,7 +125,7 @@ const FloatingDashboard = () => (
       className="relative rounded-[20px] border border-orange-500/[0.08] bg-[#0a0a0a]/90 backdrop-blur-2xl overflow-hidden"
       style={{
         boxShadow:
-          "0 4px 8px rgba(0,0,0,0.3), 0 16px 40px rgba(0,0,0,0.5), 0 48px 120px -20px rgba(0,0,0,0.7), 0 0 60px -20px rgba(249,115,22,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
+          "0 4px 8px rgba(0,0,0,0.3), 0 16px 40px rgba(0,0,0,0.5), 0 48px 120px -20px rgba(0,0,0,0.7), 0 0 80px -20px rgba(249,115,22,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
       }}
     >
       {/* Title bar */}
@@ -153,34 +153,24 @@ const FloatingDashboard = () => (
             transition={{ delay: 0.8 + i * 0.1, duration: 0.5 }}
             className="rounded-xl border border-white/[0.04] bg-white/[0.015] p-3 hover:border-orange-500/10 transition-colors duration-500"
           >
-            <p className="text-[9px] text-zinc-500 uppercase tracking-wider font-medium">
-              {kpi.label}
-            </p>
+            <p className="text-[9px] text-zinc-500 uppercase tracking-wider font-medium">{kpi.label}</p>
             <p className="text-xl font-bold text-white/80 mt-1">{kpi.value}</p>
-            <p className={`text-[9px] font-semibold mt-0.5 ${kpi.accent}`}>
-              {kpi.trend}
-            </p>
+            <p className={`text-[9px] font-semibold mt-0.5 ${kpi.accent}`}>{kpi.trend}</p>
           </motion.div>
         ))}
 
         {/* Chart */}
         <div className="col-span-3 rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 mt-1">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">
-              Flujo de conversión
-            </span>
-            <span className="text-[9px] text-emerald-400/50 bg-emerald-500/[0.06] px-2 py-0.5 rounded-full font-bold">
-              +34%
-            </span>
+            <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Flujo de conversión</span>
+            <span className="text-[9px] text-emerald-400/50 bg-emerald-500/[0.06] px-2 py-0.5 rounded-full font-bold">+34%</span>
           </div>
           <div className="flex items-end gap-[3px] h-[80px]">
             {[30, 45, 38, 62, 55, 78, 65, 85, 72, 92, 80, 95].map((h, i) => (
               <motion.div
                 key={i}
                 className="flex-1 rounded-sm"
-                style={{
-                  background: `linear-gradient(to top, rgba(249,115,22,0.5), rgba(249,115,22,${0.05 + i * 0.03}))`,
-                }}
+                style={{ background: `linear-gradient(to top, rgba(249,115,22,0.5), rgba(249,115,22,${0.05 + i * 0.03}))` }}
                 initial={{ height: 0 }}
                 animate={{ height: `${h}%` }}
                 transition={{ delay: 1.2 + i * 0.06, duration: 0.5, ease: "easeOut" }}
@@ -191,9 +181,7 @@ const FloatingDashboard = () => (
 
         {/* Activity */}
         <div className="col-span-1 rounded-xl border border-white/[0.04] bg-white/[0.01] p-3 mt-1 space-y-2">
-          <span className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider block mb-1">
-            Actividad
-          </span>
+          <span className="text-[9px] text-zinc-500 font-semibold uppercase tracking-wider block mb-1">Actividad</span>
           {[
             { icon: Target, text: "Nuevo lead", time: "2m" },
             { icon: FileText, text: "Propuesta aprobada", time: "8m" },
@@ -209,9 +197,7 @@ const FloatingDashboard = () => (
             >
               <a.icon className="w-3 h-3 text-zinc-600 flex-shrink-0" />
               <span className="text-[8px] text-zinc-500 truncate">{a.text}</span>
-              <span className="text-[7px] text-zinc-700 ml-auto flex-shrink-0">
-                {a.time}
-              </span>
+              <span className="text-[7px] text-zinc-700 ml-auto flex-shrink-0">{a.time}</span>
             </motion.div>
           ))}
         </div>
@@ -225,17 +211,14 @@ const FloatingDashboard = () => (
       transition={{ delay: 1.6, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       className="absolute -left-4 sm:-left-10 bottom-6 sm:bottom-10 w-[200px] sm:w-[240px] rounded-2xl border border-orange-500/[0.08] bg-[#0c0c0c]/90 backdrop-blur-2xl p-4 z-20"
       style={{
-        boxShadow:
-          "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(249,115,22,0.06), inset 0 1px 0 rgba(255,255,255,0.03)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(249,115,22,0.06), inset 0 1px 0 rgba(255,255,255,0.03)",
       }}
     >
       <div className="flex items-center gap-2 mb-2">
         <div className="w-5 h-5 rounded-md bg-white/[0.03] flex items-center justify-center">
           <FileText className="w-3 h-3 text-zinc-500" />
         </div>
-        <span className="text-[10px] font-semibold text-zinc-500">
-          Propuesta #2847
-        </span>
+        <span className="text-[10px] font-semibold text-zinc-500">Propuesta #2847</span>
       </div>
       <p className="text-lg font-bold text-white/85 mb-2">$28,500</p>
       <div className="flex gap-1.5">
@@ -255,15 +238,12 @@ const FloatingDashboard = () => (
       transition={{ delay: 1.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       className="absolute -right-4 sm:-right-10 bottom-14 sm:bottom-18 w-[180px] sm:w-[220px] rounded-2xl border border-orange-500/[0.06] bg-[#0c0c0c]/90 backdrop-blur-2xl p-4 z-20"
       style={{
-        boxShadow:
-          "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(249,115,22,0.04), inset 0 1px 0 rgba(255,255,255,0.03)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.4), 0 32px 80px -8px rgba(0,0,0,0.7), 0 0 30px -10px rgba(249,115,22,0.04), inset 0 1px 0 rgba(255,255,255,0.03)",
       }}
     >
       <div className="flex items-center gap-2 mb-2">
         <div className="w-2 h-2 rounded-full bg-emerald-400/50 animate-pulse" />
-        <span className="text-[10px] font-semibold text-zinc-500">
-          Ejecución en vivo
-        </span>
+        <span className="text-[10px] font-semibold text-zinc-500">Ejecución en vivo</span>
       </div>
       {[
         { label: "Corte", pct: 100 },
@@ -290,354 +270,160 @@ const FloatingDashboard = () => (
 );
 
 /* ═══════════════════════════════════════════════════════ */
-/*              BUSINESS CYCLE — 4 PILLARS                */
+/*              INDUSTRIES DATA                            */
 /* ═══════════════════════════════════════════════════════ */
-
-const PillarLeadUI = () => (
-  <div className="mt-6 space-y-2">
-    {["Empresa ABC — $12,000", "Corp Delta — $8,500", "NovaTech — $24,000"].map(
-      (l, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, x: -10 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 + i * 0.1 }}
-          className="flex items-center gap-2 text-[11px] text-zinc-400 px-3 py-2.5 rounded-lg border border-white/[0.03] bg-white/[0.01] hover:border-orange-500/10 transition-colors duration-300"
-        >
-          <CircleDot className="w-3 h-3 text-orange-400/40 flex-shrink-0" />
-          <span className="truncate">{l}</span>
-          <span className="ml-auto text-[9px] text-emerald-400/40">Nuevo</span>
-        </motion.div>
-      )
-    )}
-  </div>
-);
-
-const PillarProposalUI = () => (
-  <div className="mt-6 rounded-xl border border-white/[0.03] bg-white/[0.01] p-3.5">
-    <div className="flex items-center justify-between mb-2.5">
-      <span className="text-[10px] text-zinc-500 font-medium">Propuesta #1842</span>
-      <BadgeCheck className="w-3.5 h-3.5 text-emerald-400/40" />
-    </div>
-    <div className="h-[2px] rounded bg-white/[0.03] mb-2.5">
-      <div className="h-full w-3/4 rounded bg-gradient-to-r from-orange-600/40 to-orange-400/15" />
-    </div>
-    <div className="flex items-center justify-between">
-      <span className="text-[12px] font-bold text-zinc-300">$18,200</span>
-      <span className="text-[9px] text-orange-400/50 border border-orange-500/15 px-2 py-0.5 rounded-full bg-orange-500/[0.04]">
-        Aprobada
-      </span>
-    </div>
-  </div>
-);
-
-const PillarProductionUI = () => (
-  <div className="mt-6 space-y-2">
-    {[
-      { task: "Corte de material", pct: 100 },
-      { task: "Ensamble", pct: 60 },
-      { task: "Acabado", pct: 15 },
-    ].map((t, i) => (
-      <div key={i} className="flex items-center gap-2 text-[10px] text-zinc-500">
-        <span className="w-20 truncate">{t.task}</span>
-        <div className="flex-1 h-1.5 rounded-full bg-white/[0.03] overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-orange-600/50 to-orange-400/20"
-            initial={{ width: 0 }}
-            whileInView={{ width: `${t.pct}%` }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 + i * 0.15, duration: 0.6 }}
-          />
-        </div>
-        <span className="text-[9px] text-zinc-600 w-7 text-right">{t.pct}%</span>
-      </div>
-    ))}
-  </div>
-);
-
-const PillarDeliveryUI = () => (
-  <div className="mt-6 flex items-center gap-3">
-    <div className="flex-1 rounded-lg border border-white/[0.03] bg-white/[0.01] p-3 text-center">
-      <Camera className="w-4 h-4 mx-auto text-zinc-600 mb-1" />
-      <span className="text-[9px] text-zinc-500">Evidencia</span>
-    </div>
-    <div className="flex-1 rounded-lg border border-emerald-500/10 bg-emerald-500/[0.02] p-3 text-center">
-      <CheckCircle2 className="w-4 h-4 mx-auto text-emerald-400/40 mb-1" />
-      <span className="text-[9px] text-emerald-400/35">Entregado</span>
-    </div>
-  </div>
-);
-
-const pillars = [
+const industries = [
   {
-    icon: Target,
-    step: "01",
-    title: "Captación Inteligente",
-    desc: "Centraliza prospectos, clasifica oportunidades y mantén seguimiento automático desde el primer contacto.",
-    ui: PillarLeadUI,
+    icon: Monitor,
+    title: "Servicios IT",
+    desc: "Gestiona tickets, instalaciones de infraestructura y soporte técnico en campo.",
+    example: "De Tickets → a Órdenes de Instalación",
+    accent: "from-blue-500/20 to-cyan-500/10",
+    borderHover: "hover:border-blue-500/20",
+    iconColor: "text-blue-400/60 group-hover:text-blue-400",
   },
   {
-    icon: FileText,
-    step: "02",
-    title: "Propuestas de Alto Impacto",
-    desc: "Genera cotizaciones profesionales, envía al instante y obtén aprobación digital con un click.",
-    ui: PillarProposalUI,
+    icon: Thermometer,
+    title: "Climatización / HVAC",
+    desc: "Controla mantenimientos preventivos, instalaciones y certificaciones de equipos.",
+    example: "De Cotización → a Certificación de Entrega",
+    accent: "from-orange-500/20 to-red-500/10",
+    borderHover: "hover:border-orange-500/20",
+    iconColor: "text-orange-400/60 group-hover:text-orange-400",
   },
   {
-    icon: Factory,
-    step: "03",
-    title: "Gestión de Ejecución",
-    desc: "Transforma propuestas aprobadas en órdenes de trabajo activas con tareas, materiales y equipos asignados.",
-    ui: PillarProductionUI,
+    icon: Signpost,
+    title: "Señalética / Rotulación",
+    desc: "Desde el diseño del arte hasta la producción e instalación del proyecto.",
+    example: "De Mockup → a Foto de Instalación",
+    accent: "from-purple-500/20 to-pink-500/10",
+    borderHover: "hover:border-purple-500/20",
+    iconColor: "text-purple-400/60 group-hover:text-purple-400",
   },
   {
-    icon: CheckCircle2,
-    step: "04",
-    title: "Certificación de Entrega",
-    desc: "Control de calidad, evidencia fotográfica, facturación y cierre completo del ciclo operativo.",
-    ui: PillarDeliveryUI,
-  },
-];
-
-/* ─── Bento Features ─── */
-const bentoFeatures = [
-  {
-    icon: Target,
-    title: "Pipeline de Leads",
-    description:
-      "Scoring automático, seguimiento inteligente. Cada oportunidad clasificada y lista para convertir.",
-    span: "lg:col-span-2",
-  },
-  {
-    icon: FileText,
-    title: "Propuestas Digitales",
-    description:
-      "Cotizaciones profesionales con aprobación en un click. Historial completo por cliente.",
-    span: "",
-  },
-  {
-    icon: Factory,
-    title: "Órdenes de Ejecución",
-    description:
-      "Control total de producción: tareas, tiempos, materiales y asignación de equipos.",
-    span: "",
-  },
-  {
-    icon: Building,
-    title: "Entregas en Campo",
-    description:
-      "Agenda, supervisa avances y documenta entregas con evidencia fotográfica.",
-    span: "lg:col-span-2",
-  },
-  {
-    icon: Receipt,
-    title: "Facturación y Cobranza",
-    description:
-      "Registra pagos, controla pendientes y mantén visibilidad de tu flujo de caja.",
-    span: "",
-  },
-  {
-    icon: PieChart,
-    title: "Análisis en Tiempo Real",
-    description:
-      "Dashboard con KPIs de conversión, producción y rentabilidad por proyecto.",
-    span: "",
-  },
-  {
-    icon: Users,
-    title: "Multi-equipo & Permisos",
-    description:
-      "Admin, comercial, operaciones. Cada rol ve exactamente lo que necesita.",
-    span: "lg:col-span-2",
-  },
-];
-
-/* ─── Before vs After ─── */
-const comparisonItems = [
-  {
-    icon: Shuffle,
-    before: "Leads dispersos en hojas de cálculo",
-    after: "Pipeline visual con scoring automático",
-  },
-  {
-    icon: MessageSquare,
-    before: "Propuestas por email y WhatsApp",
-    after: "Cotizaciones digitales con aprobación instantánea",
-  },
-  {
-    icon: FolderOpen,
-    before: "Órdenes en libretas y grupos",
-    after: "Gestión de producción con seguimiento en tiempo real",
-  },
-  {
-    icon: AlertTriangle,
-    before: "Entregas sin documentación",
-    after: "Evidencia fotográfica y trazabilidad completa",
-  },
-  {
-    icon: Clock,
-    before: "Cobranza manual y desordenada",
-    after: "Facturación integrada y flujo de caja visible",
-  },
-];
-
-/* ─── Testimonials ─── */
-const testimonials = [
-  {
-    quote:
-      "Sign Flow transformó nuestra operación. Pasamos de perder 3 de cada 10 proyectos a cerrar el 85% de nuestras propuestas. El ROI fue inmediato.",
-    name: "Carlos Mendoza",
-    role: "Director de Operaciones",
-    company: "Grupo Industrial CM",
-    avatar: "CM",
-    result: "+85% tasa de cierre",
-  },
-  {
-    quote:
-      "Mi equipo de 12 personas trabaja sincronizado por primera vez. La evidencia fotográfica eliminó las disputas con clientes y el tiempo de facturación bajó un 60%.",
-    name: "María Rodríguez",
-    role: "Gerente de Proyectos",
-    company: "Solutions MR",
-    avatar: "MR",
-    result: "-60% tiempo de facturación",
-  },
-  {
-    quote:
-      "Antes usábamos 5 herramientas distintas. Ahora todo está en Sign Flow. El ahorro en licencias pagó la suscripción en el primer mes.",
-    name: "David López",
-    role: "Fundador & CEO",
-    company: "DL Tech Solutions",
-    avatar: "DL",
-    result: "5 herramientas → 1 plataforma",
+    icon: Wrench,
+    title: "Mantenimiento",
+    desc: "Programa servicios recurrentes, asigna técnicos y documenta intervenciones.",
+    example: "De Reporte → a Orden de Servicio Completada",
+    accent: "from-emerald-500/20 to-teal-500/10",
+    borderHover: "hover:border-emerald-500/20",
+    iconColor: "text-emerald-400/60 group-hover:text-emerald-400",
   },
 ];
 
 /* ═══════════════════════════════════════════════════════ */
-/*        BONUS: Proposal Status Visualization            */
+/*              FEATURE SHOWCASE DATA                      */
 /* ═══════════════════════════════════════════════════════ */
-const ProposalStatusDemo = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [stage, setStage] = useState(0);
+const crownFeatures = [
+  {
+    icon: ClipboardCheck,
+    title: "Ficha Técnica Inteligente",
+    desc: "Genera fichas técnicas detalladas con materiales, medidas, anotaciones en plano y asignación de equipos. Todo en un solo lugar.",
+    badge: null,
+  },
+  {
+    icon: PenTool,
+    title: "Portal de Firma Digital",
+    desc: "Envía propuestas profesionales con link de aprobación. Tu cliente firma digitalmente desde cualquier dispositivo con validez legal.",
+    badge: "Pro",
+  },
+  {
+    icon: WifiOff,
+    title: "Modo Offline Crítico",
+    desc: "Tu equipo en campo captura fotos, actualiza estados y registra avances sin conexión. Se sincroniza automáticamente al reconectar.",
+    badge: "Elite",
+  },
+];
 
-  useEffect(() => {
-    if (!inView) return;
-    const t1 = setTimeout(() => setStage(1), 800);
-    const t2 = setTimeout(() => setStage(2), 2000);
-    const t3 = setTimeout(() => setStage(3), 3200);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [inView]);
+/* ═══════════════════════════════════════════════════════ */
+/*              PRICING PLANS                              */
+/* ═══════════════════════════════════════════════════════ */
+const plans = [
+  {
+    key: "start" as const,
+    name: "Start",
+    priceMonthly: 29,
+    priceAnnual: 23,
+    features: [
+      "Hasta 50 leads activos",
+      "1 usuario administrador",
+      "Pipeline básico de órdenes",
+      "Gestión de entregas",
+      "Soporte por email",
+    ],
+    recommended: false,
+  },
+  {
+    key: "pro" as const,
+    name: "Pro",
+    priceMonthly: 79,
+    priceAnnual: 63,
+    features: [
+      "Leads ilimitados",
+      "Hasta 5 usuarios",
+      "Portal de firma digital",
+      "Roles y permisos por equipo",
+      "Evidencia fotográfica",
+      "Soporte prioritario",
+    ],
+    recommended: true,
+  },
+  {
+    key: "elite" as const,
+    name: "Elite",
+    priceMonthly: 149,
+    priceAnnual: 119,
+    features: [
+      "Todo lo de Pro",
+      "Usuarios ilimitados",
+      "Ficha técnica avanzada",
+      "Modo offline",
+      "API & integraciones",
+      "Onboarding dedicado",
+      "Soporte 24/7",
+    ],
+    recommended: false,
+  },
+];
 
-  const stages = [
-    { label: "Borrador", color: "border-zinc-700/30 bg-zinc-800/20 text-zinc-500", dot: "bg-zinc-600" },
-    { label: "Enviada", color: "border-blue-500/20 bg-blue-500/[0.06] text-blue-400/70", dot: "bg-blue-400/60" },
-    { label: "En Revisión", color: "border-amber-500/20 bg-amber-500/[0.06] text-amber-400/70", dot: "bg-amber-400/60 animate-pulse" },
-    { label: "Aprobada ✓", color: "border-orange-500/30 bg-orange-500/[0.08] text-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.12)]", dot: "bg-orange-400" },
-  ];
-
-  return (
-    <div ref={ref} className="flex flex-col items-center gap-4">
-      {/* Status card visualization */}
-      <div className="relative w-full max-w-sm mx-auto">
-        <motion.div
-          className="rounded-2xl border bg-[#0a0a0a]/80 backdrop-blur-xl p-6 overflow-hidden"
-          animate={{
-            borderColor: stage === 3 ? "rgba(249,115,22,0.25)" : "rgba(255,255,255,0.04)",
-            boxShadow: stage === 3
-              ? "0 0 40px rgba(249,115,22,0.08), 0 8px 32px rgba(0,0,0,0.4)"
-              : "0 8px 32px rgba(0,0,0,0.4)",
-          }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-zinc-500" />
-              <span className="text-xs text-zinc-500 font-medium">Propuesta #3291</span>
-            </div>
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={stage}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className={`text-[10px] font-bold px-3 py-1 rounded-full border flex items-center gap-1.5 transition-all duration-700 ${stages[stage].color}`}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${stages[stage].dot}`} />
-                {stages[stage].label}
-              </motion.span>
-            </AnimatePresence>
-          </div>
-
-          <div className="flex items-baseline justify-between mb-3">
-            <span className="text-2xl font-bold text-white/90">$34,800</span>
-            <span className="text-[11px] text-zinc-600">Cliente: NovaTech</span>
-          </div>
-
-          {/* Progress bar */}
-          <div className="h-1 rounded-full bg-white/[0.03] overflow-hidden">
-            <motion.div
-              className="h-full rounded-full"
-              style={{
-                background: stage === 3
-                  ? "linear-gradient(90deg, rgba(249,115,22,0.7), rgba(249,115,22,0.4))"
-                  : "linear-gradient(90deg, rgba(161,161,170,0.3), rgba(161,161,170,0.1))",
-              }}
-              animate={{ width: `${(stage + 1) * 25}%` }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            />
-          </div>
-
-          {/* Ambient glow on approval */}
-          <AnimatePresence>
-            {stage === 3 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="absolute -inset-4 bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.04),transparent_70%)] pointer-events-none"
-              />
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
-
-      {/* Step dots */}
-      <div className="flex items-center gap-2 mt-2">
-        {stages.map((s, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <motion.div
-              className="w-2 h-2 rounded-full"
-              animate={{
-                backgroundColor: i <= stage ? "rgba(249,115,22,0.7)" : "rgba(63,63,70,0.4)",
-                scale: i === stage ? 1.3 : 1,
-              }}
-              transition={{ duration: 0.4 }}
-            />
-            {i < stages.length - 1 && (
-              <motion.div
-                className="w-6 h-[1px]"
-                animate={{
-                  backgroundColor: i < stage ? "rgba(249,115,22,0.3)" : "rgba(63,63,70,0.2)",
-                }}
-                transition={{ duration: 0.4 }}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-      <p className="text-[11px] text-zinc-600 mt-1">Transición automática en tiempo real</p>
-    </div>
-  );
-};
+/* ═══════════════════════════════════════════════════════ */
+/*              FAQ DATA                                   */
+/* ═══════════════════════════════════════════════════════ */
+const faqItems = [
+  {
+    q: "¿Necesito conocimientos técnicos para usar Sign Flow?",
+    a: "No. La plataforma está diseñada para que cualquier equipo, sin importar su nivel técnico, pueda configurar su flujo de trabajo en menos de 3 minutos. Sin código, sin complicaciones.",
+  },
+  {
+    q: "¿Puedo cambiar de plan en cualquier momento?",
+    a: "Sí. Puedes actualizar o reducir tu plan en cualquier momento desde tu panel de configuración. Los cambios se aplican de inmediato y el cobro se prorratea automáticamente.",
+  },
+  {
+    q: "¿Mis datos están seguros?",
+    a: "Absolutamente. Usamos cifrado de extremo a extremo, autenticación segura y políticas de aislamiento de datos (RLS) a nivel de base de datos. Cada empresa solo puede ver sus propios datos.",
+  },
+  {
+    q: "¿Funciona en dispositivos móviles?",
+    a: "Sí. Sign Flow está optimizado para funcionar como una app nativa en cualquier dispositivo. Tu equipo de campo puede usarlo desde su celular o tablet sin instalar nada.",
+  },
+  {
+    q: "¿Ofrecen periodo de prueba?",
+    a: "Sí. Todos los planes incluyen un periodo de prueba gratuito. Puedes comenzar sin tarjeta de crédito y explorar todas las funciones antes de comprometerte.",
+  },
+  {
+    q: "¿Qué pasa si necesito más de lo que ofrece el plan Elite?",
+    a: "Contáctanos directamente. Ofrecemos planes Enterprise personalizados con integraciones dedicadas, SLAs garantizados y onboarding a medida para grandes organizaciones.",
+  },
+];
 
 /* ═══════════════════════════════════════════════════════ */
 /*                       MAIN PAGE                        */
 /* ═══════════════════════════════════════════════════════ */
-
 const Index = () => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [isAnnual, setIsAnnual] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -645,10 +431,28 @@ const Index = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handlePlanSelect = (plan: string) => {
-    localStorage.setItem("selectedPlan", plan);
-    localStorage.setItem("selectedBilling", isAnnual ? "annual" : "monthly");
-    navigate("/checkout");
+  const handleCheckout = async (tierKey: "start" | "pro" | "elite") => {
+    setLoadingPlan(tierKey);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/register");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId: STRIPE_TIERS[tierKey].price_id },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally {
+      setLoadingPlan(null);
+    }
   };
 
   const scrollTo = (id: string) => {
@@ -658,17 +462,19 @@ const Index = () => {
   return (
     <PageTransition>
       <div className="noise-bg min-h-screen bg-[#050505] text-[#e4e4e7] overflow-x-hidden scroll-smooth selection:bg-orange-500/15 selection:text-white">
-        {/* ── Shimmer keyframe ── */}
         <style>{`
           @keyframes shimmer-sweep {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
           }
+          @keyframes laser-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(249,115,22,0.2), 0 0 40px rgba(249,115,22,0.1); }
+            50% { box-shadow: 0 0 30px rgba(249,115,22,0.35), 0 0 60px rgba(249,115,22,0.15); }
+          }
         `}</style>
 
         {/* ── Background layers ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-          {/* Subtle grid */}
           <div
             className="absolute inset-0 opacity-[0.015]"
             style={{
@@ -677,7 +483,6 @@ const Index = () => {
               backgroundSize: "64px 64px",
             }}
           />
-          {/* Multiple warm radial glows */}
           <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.04),transparent_50%)]" />
           <div className="absolute top-[40%] left-[-10%] w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.02),transparent_60%)]" />
           <div className="absolute top-[60%] right-[-10%] w-[500px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.015),transparent_60%)]" />
@@ -692,48 +497,28 @@ const Index = () => {
           }`}
         >
           <div className="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 py-4">
-            <a
-              href="/"
-              className="flex items-center gap-1.5 py-2 min-h-[44px]"
-              aria-label="Sign Flow - Inicio"
-            >
+            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[44px]" aria-label="Sign Flow - Inicio">
               <div className="flex-shrink-0 w-[34px] h-[34px] sm:w-[40px] sm:h-[40px] md:w-[44px] md:h-[44px] overflow-hidden">
-                <img
-                  src={brandLogoSrc}
-                  alt="Sign Flow"
-                  className="block w-full h-full object-contain scale-[1.15]"
-                  draggable={false}
-                />
+                <img src={brandLogoSrc} alt="Sign Flow" className="block w-full h-full object-contain scale-[1.15]" draggable={false} />
               </div>
-              <span className="font-bold tracking-[-0.03em] text-[17px] sm:text-[19px] md:text-[21px] text-zinc-100">
-                Sign Flow
-              </span>
+              <span className="font-bold tracking-[-0.03em] text-[17px] sm:text-[19px] md:text-[21px] text-zinc-100">Sign Flow</span>
             </a>
 
             <nav className="hidden md:flex items-center gap-10 text-[13px] font-medium text-zinc-500">
               {[
+                { label: "Industrias", id: "industries" },
                 { label: "Funciones", id: "features" },
-                { label: "Flujo", id: "flow" },
-                { label: "Testimonios", id: "testimonials" },
                 { label: "Precios", id: "pricing" },
+                { label: "FAQ", id: "faq" },
               ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  className="relative hover:text-zinc-200 transition-colors duration-300"
-                >
+                <button key={item.id} onClick={() => scrollTo(item.id)} className="relative hover:text-zinc-200 transition-colors duration-300">
                   {item.label}
                 </button>
               ))}
             </nav>
 
             <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/login")}
-                className="text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px]"
-              >
+              <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px]">
                 <LogIn className="w-4 h-4 mr-1.5" />
                 Ingresar
               </Button>
@@ -768,36 +553,34 @@ const Index = () => {
                 </motion.span>
 
                 <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.2rem] lg:text-[4.2rem] font-extrabold leading-[1.04] tracking-[-0.045em] mb-8 text-white">
-                  Optimiza tu ciclo operativo
+                  La plataforma que entiende
                   <br className="hidden sm:block" />
                   <span className="bg-gradient-to-r from-orange-300 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-                    {" "}de punta a punta.
+                    {" "}tu lenguaje.
                   </span>
                 </h1>
 
                 <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
-                  Desde el primer contacto hasta la entrega final. Centraliza
-                  tus leads, automatiza propuestas profesionales y supervisa la
-                  ejecución en tiempo real con trazabilidad absoluta.
+                  Ya seas una empresa de IT, HVAC o Señalética, configuramos tu
+                  flujo de trabajo en 3 minutos. Sin código, sin complicaciones.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                     <Button
                       size="lg"
-                      onClick={() => scrollTo("pricing")}
-                      className="relative overflow-hidden bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-10 text-base font-semibold shadow-[0_4px_16px_rgba(249,115,22,0.2)] transition-all duration-300 hover:shadow-[0_8px_32px_rgba(249,115,22,0.3)] group"
+                      onClick={() => navigate("/register")}
+                      className="relative overflow-hidden bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-10 text-base font-semibold transition-all duration-300 group"
+                      style={{ animation: "laser-glow 3s ease-in-out infinite" }}
                     >
                       <span className="relative z-10 flex items-center">
-                        Comienza tu transformación
+                        Empieza Gratis Ahora
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </span>
-                      {/* Button shimmer */}
                       <div
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                         style={{
-                          background:
-                            "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%)",
+                          background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%)",
                           backgroundSize: "200% 100%",
                           animation: "shimmer-sweep 1.8s ease-in-out infinite",
                         }}
@@ -808,7 +591,7 @@ const Index = () => {
                     <Button
                       variant="outline"
                       size="lg"
-                      onClick={() => scrollTo("flow")}
+                      onClick={() => scrollTo("industries")}
                       className="rounded-full px-10 text-base font-medium border-white/[0.05] text-zinc-400 hover:text-zinc-200 hover:border-orange-500/10 bg-transparent transition-all duration-300"
                     >
                       Ver cómo funciona
@@ -822,7 +605,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Generous spacer */}
         <div className="h-20 sm:h-28" />
 
         {/* ═══════════ TRUST BAR ═══════════ */}
@@ -836,56 +618,61 @@ const Index = () => {
                 { value: "4.9★", label: "Satisfacción cliente" },
               ].map(({ value, label }) => (
                 <div key={label} className="flex flex-col items-center gap-1.5 p-4">
-                  <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-200">
-                    {value}
-                  </span>
-                  <span className="text-[11px] font-medium text-zinc-600 uppercase tracking-wider">
-                    {label}
-                  </span>
+                  <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-200">{value}</span>
+                  <span className="text-[11px] font-medium text-zinc-600 uppercase tracking-wider">{label}</span>
                 </div>
               ))}
             </div>
           </section>
         </Reveal>
 
-        {/* ═══════════ FEATURES — BENTO GRID ═══════════ */}
-        <section id="features" className="py-36 md:py-44 lg:py-56 px-5 relative">
-          <div className="max-w-6xl mx-auto relative">
+        {/* ═══════════ INDUSTRIES GRID ═══════════ */}
+        <section id="industries" className="py-36 md:py-44 lg:py-52 px-5 relative">
+          <div className="max-w-6xl mx-auto">
             <Reveal>
-              <div className="text-center mb-24">
-                <SectionBadge icon={Layers} label="Módulos" />
+              <div className="text-center mb-20">
+                <SectionBadge icon={Building} label="Industrias" />
                 <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] lg:text-5xl text-white">
-                  Todo lo que tu negocio necesita
+                  Tu industria, tu lenguaje,
+                  <br className="hidden sm:block" /> tu flujo de trabajo
                 </h2>
-                <p className="mt-7 text-zinc-400 max-w-xl mx-auto text-[15px] leading-relaxed">
-                  Cada módulo diseñado para el flujo real de operaciones, producción y entrega.
+                <p className="mt-7 text-zinc-400 max-w-lg mx-auto text-[15px]">
+                  Se adapta automáticamente a tu sector con etiquetas, estados y procesos personalizados.
                 </p>
               </div>
             </Reveal>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {bentoFeatures.map((f, i) => {
-                const Icon = f.icon;
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {industries.map((ind, i) => {
+                const Icon = ind.icon;
                 return (
-                  <Reveal key={f.title} delay={i * 0.06} className={f.span}>
+                  <Reveal key={ind.title} delay={i * 0.1}>
                     <motion.div
-                      whileHover={{
-                        y: -6,
-                        borderColor: "rgba(249,115,22,0.12)",
-                      }}
-                      className="glow-orange-card group relative h-full p-8 sm:p-9 rounded-2xl border border-white/[0.04] bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6),0_0_30px_-10px_rgba(249,115,22,0.04)]"
+                      whileHover={{ y: -6 }}
+                      className={`group relative flex flex-col p-8 rounded-2xl border border-white/[0.04] ${ind.borderHover} bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden`}
                     >
                       <ShimmerOverlay />
+                      {/* Gradient accent on hover */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${ind.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
+
                       <div className="relative z-10">
-                        <div className="w-11 h-11 rounded-xl bg-orange-500/[0.04] border border-orange-500/[0.08] flex items-center justify-center mb-6 group-hover:border-orange-500/20 group-hover:bg-orange-500/[0.06] transition-all duration-500">
-                          <Icon className="w-5 h-5 text-orange-400/50 group-hover:text-orange-400/80 transition-all duration-500" />
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-white/[0.06] bg-white/[0.02] group-hover:bg-white/[0.04] transition-all duration-500">
+                          <Icon className={`w-5 h-5 transition-all duration-500 ${ind.iconColor}`} />
                         </div>
-                        <h3 className="text-[15px] font-bold mb-3 text-white tracking-[-0.01em]">
-                          {f.title}
-                        </h3>
-                        <p className="text-[13px] leading-[1.8] text-zinc-400">
-                          {f.description}
-                        </p>
+                        <h3 className="text-lg font-bold text-white mb-2 tracking-[-0.01em]">{ind.title}</h3>
+                        <p className="text-[13px] text-zinc-400 leading-relaxed mb-5">{ind.desc}</p>
+
+                        {/* Example label that appears on hover */}
+                        <motion.div
+                          initial={{ opacity: 0, y: 8 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.3 + i * 0.1 }}
+                          className="flex items-center gap-2 text-[11px] text-orange-400/70 bg-orange-500/[0.04] border border-orange-500/10 px-3 py-2 rounded-lg"
+                        >
+                          <ArrowRight className="w-3 h-3" />
+                          {ind.example}
+                        </motion.div>
                       </div>
                     </motion.div>
                   </Reveal>
@@ -895,225 +682,58 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══════════ BUSINESS CYCLE — 4 PILLARS ═══════════ */}
-        <section id="flow" className="py-36 md:py-44 lg:py-56 px-5 relative overflow-hidden">
+        {/* ═══════════ FEATURE SHOWCASE ═══════════ */}
+        <section id="features" className="py-36 md:py-44 lg:py-52 px-5 relative">
           <div className="absolute inset-0 bg-[#030303] pointer-events-none" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_35%_at_50%_0%,rgba(249,115,22,0.025),transparent)] pointer-events-none" />
 
-          <div className="max-w-6xl mx-auto relative">
+          <div className="max-w-5xl mx-auto relative">
             <Reveal>
-              <div className="text-center mb-24">
-                <SectionBadge icon={Activity} label="Ciclo de negocio" />
+              <div className="text-center mb-20">
+                <SectionBadge icon={Zap} label="Funciones estrella" />
                 <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] lg:text-5xl text-white">
-                  Un flujo diseñado para la
-                  <br className="hidden sm:block" /> eficiencia operativa
+                  Las 3 joyas de la corona
                 </h2>
                 <p className="mt-7 text-zinc-400 max-w-lg mx-auto text-[15px]">
-                  Cada etapa conectada, cada paso visible. Desde la captación hasta el cierre.
+                  Funciones que transforman tu operación y te dan ventaja competitiva real.
                 </p>
               </div>
             </Reveal>
 
-            {/* Connecting line — orange glow animated */}
-            <div className="relative">
-              <div className="hidden lg:block absolute top-[60px] left-[12%] right-[12%] z-0">
-                <motion.div
-                  className="h-[2px] rounded-full flow-line-animated"
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                />
-                {/* Glow behind the line */}
-                <motion.div
-                  className="h-[1px] rounded-full mt-[-1px] blur-[3px]"
-                  style={{
-                    background: "linear-gradient(90deg, transparent, rgba(249,115,22,0.3), rgba(249,115,22,0.5), rgba(249,115,22,0.3), transparent)",
-                  }}
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  whileInView={{ scaleX: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
-                {pillars.map((p, i) => {
-                  const Icon = p.icon;
-                  const UIComponent = p.ui;
-                  return (
-                    <Reveal key={p.title} delay={i * 0.12}>
-                      <motion.div
-                        whileHover={{ y: -6, borderColor: "rgba(249,115,22,0.12)" }}
-                        className="glow-orange-card group flex flex-col p-7 rounded-2xl border border-white/[0.04] hover:border-orange-500/[0.08] bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
-                      >
-                        <ShimmerOverlay />
-                        <div className="relative z-10">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-orange-400/30 mb-3 block">
-                            Paso {p.step}
-                          </span>
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-orange-500/[0.08] bg-orange-500/[0.03] group-hover:border-orange-500/20 group-hover:bg-orange-500/[0.06] transition-all duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+              {crownFeatures.map((f, i) => {
+                const Icon = f.icon;
+                return (
+                  <Reveal key={f.title} delay={i * 0.12}>
+                    <motion.div
+                      whileHover={{ y: -6, borderColor: "rgba(249,115,22,0.12)" }}
+                      className="group relative flex flex-col p-8 sm:p-9 rounded-2xl border border-white/[0.04] bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 h-full hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
+                    >
+                      <ShimmerOverlay />
+                      <div className="relative z-10 flex flex-col h-full">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center border border-orange-500/[0.08] bg-orange-500/[0.03] group-hover:border-orange-500/20 group-hover:bg-orange-500/[0.06] transition-all duration-500">
                             <Icon className="w-5 h-5 text-orange-400/50 group-hover:text-orange-400/80 transition-all duration-500" />
                           </div>
-                          <h3 className="text-[15px] font-bold text-white mb-2 tracking-[-0.01em]">
-                            {p.title}
-                          </h3>
-                          <p className="text-[12px] text-zinc-400 leading-relaxed">
-                            {p.desc}
-                          </p>
-                          <UIComponent />
+                          {f.badge && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-400/70 bg-orange-500/[0.06] border border-orange-500/15 px-2.5 py-1 rounded-full">
+                              {f.badge}
+                            </span>
+                          )}
                         </div>
-                      </motion.div>
-                    </Reveal>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* ─── BEFORE vs AFTER ─── */}
-            <Reveal>
-              <div className="mt-32 lg:mt-40 max-w-4xl mx-auto">
-                <div className="text-center mb-14">
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-white">
-                    Antes vs. Después
-                  </h3>
-                  <p className="text-zinc-500 text-sm mt-3">
-                    De procesos manuales a un sistema integrado
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* BEFORE */}
-                  <div
-                    className="rounded-2xl border border-white/[0.03] p-7 space-y-1"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(24,24,27,0.6) 0%, rgba(18,18,21,0.8) 100%)",
-                    }}
-                  >
-                    <div className="flex items-center gap-2.5 mb-5">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800/60 flex items-center justify-center">
-                        <XCircle className="w-4 h-4 text-zinc-600" />
+                        <h3 className="text-[17px] font-bold text-white mb-3 tracking-[-0.01em]">{f.title}</h3>
+                        <p className="text-[13px] text-zinc-400 leading-[1.8] flex-1">{f.desc}</p>
                       </div>
-                      <span className="text-sm font-bold text-zinc-500 uppercase tracking-wider">
-                        Antes
-                      </span>
-                    </div>
-                    {comparisonItems.map((item, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.06 }}
-                        className="flex items-center gap-3 text-[13px] text-zinc-500 py-2.5 border-b border-white/[0.02] last:border-0"
-                      >
-                        <item.icon className="w-3.5 h-3.5 text-zinc-600 flex-shrink-0" />
-                        <span className="line-through decoration-zinc-700">{item.before}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* AFTER */}
-                  <div className="rounded-2xl border border-orange-500/15 p-7 space-y-1 bg-[#0a0a0a] shadow-[0_0_30px_-10px_rgba(249,115,22,0.04)]">
-                    <div className="flex items-center gap-2.5 mb-5">
-                      <div className="w-9 h-9 rounded-lg bg-orange-500/[0.06] flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-orange-400/60" />
-                      </div>
-                      <span className="text-sm font-bold text-orange-400/50 uppercase tracking-wider">
-                        Con Sign Flow
-                      </span>
-                    </div>
-                    {comparisonItems.map((item, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: 10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.06 }}
-                        className="flex items-center gap-3 text-[13px] text-zinc-300 py-2.5 border-b border-orange-500/[0.04] last:border-0"
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-orange-400/50 flex-shrink-0" />
-                        {item.after}
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* ─── PROPOSAL STATUS DEMO (Bonus) ─── */}
-            <Reveal>
-              <div className="mt-32 lg:mt-40 max-w-4xl mx-auto">
-                <div className="text-center mb-12">
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-white">
-                    Aprobación en tiempo real
-                  </h3>
-                  <p className="text-zinc-500 text-sm mt-3">
-                    Observa cómo una propuesta pasa de borrador a aprobada
-                  </p>
-                </div>
-                <ProposalStatusDemo />
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ═══════════ TESTIMONIALS ═══════════ */}
-        <section id="testimonials" className="py-36 md:py-44 lg:py-56 px-5 relative">
-          <div className="max-w-6xl mx-auto relative">
-            <Reveal>
-              <div className="text-center mb-24">
-                <SectionBadge icon={Quote} label="Testimonios" />
-                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] max-w-3xl mx-auto lg:text-5xl text-white">
-                  Lo que dicen los líderes que gestionan sus operaciones con nosotros
-                </h2>
-              </div>
-            </Reveal>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
-              {testimonials.map((t, i) => (
-                <Reveal key={t.name} delay={i * 0.1}>
-                  <motion.div
-                    whileHover={{ y: -4, borderColor: "rgba(249,115,22,0.10)" }}
-                    className="glow-orange-card group relative flex flex-col p-8 sm:p-9 rounded-2xl border border-white/[0.04] bg-zinc-950/50 backdrop-blur-sm transition-all duration-500 h-full hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
-                  >
-                    <ShimmerOverlay />
-                    <div className="relative z-10 flex flex-col h-full">
-                      <Quote className="w-7 h-7 text-orange-500/10 mb-6" />
-                      <div className="inline-flex self-start items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-orange-400/60 bg-orange-500/[0.04] border border-orange-500/10 px-3 py-1 rounded-full mb-6">
-                        <TrendingUp className="w-3 h-3" />
-                        {t.result}
-                      </div>
-                      <p className="text-[14px] text-zinc-400 leading-[1.8] mb-10 flex-1">
-                        "{t.quote}"
-                      </p>
-                      <div className="border-t border-white/[0.03] pt-6 flex items-center gap-3.5">
-                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/10 flex items-center justify-center text-sm font-bold text-orange-400/60 flex-shrink-0">
-                          {t.avatar}
-                        </div>
-                        <div>
-                          <p className="text-[14px] font-semibold text-zinc-200">
-                            {t.name}
-                          </p>
-                          <p className="text-[11px] text-zinc-500 mt-0.5">{t.role}</p>
-                          <p className="text-[11px] text-zinc-600 font-medium">
-                            {t.company}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                </Reveal>
-              ))}
+                    </motion.div>
+                  </Reveal>
+                );
+              })}
             </div>
           </div>
         </section>
 
         {/* ═══════════ PRICING ═══════════ */}
-        <section id="pricing" className="py-36 md:py-44 lg:py-56 px-5 relative">
-          <div className="absolute inset-0 bg-[#030303] pointer-events-none" />
-          {/* Orange ambient behind pricing */}
+        <section id="pricing" className="py-36 md:py-44 lg:py-52 px-5 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[radial-gradient(ellipse,rgba(249,115,22,0.025),transparent_60%)] pointer-events-none" />
 
           <div className="max-w-5xl mx-auto relative">
@@ -1133,11 +753,7 @@ const Index = () => {
             {/* Toggle */}
             <Reveal delay={0.1}>
               <div className="flex items-center justify-center gap-4 mb-20">
-                <span
-                  className={`text-sm font-medium transition-colors duration-300 ${
-                    !isAnnual ? "text-zinc-200" : "text-zinc-500"
-                  }`}
-                >
+                <span className={`text-sm font-medium transition-colors duration-300 ${!isAnnual ? "text-zinc-200" : "text-zinc-500"}`}>
                   Mensual
                 </span>
                 <button
@@ -1155,11 +771,7 @@ const Index = () => {
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
                 </button>
-                <span
-                  className={`text-sm font-medium transition-colors duration-300 ${
-                    isAnnual ? "text-zinc-200" : "text-zinc-500"
-                  }`}
-                >
+                <span className={`text-sm font-medium transition-colors duration-300 ${isAnnual ? "text-zinc-200" : "text-zinc-500"}`}>
                   Anual
                 </span>
                 <AnimatePresence>
@@ -1178,16 +790,16 @@ const Index = () => {
             </Reveal>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 items-start">
-              {pricingPlans.map((plan, i) => {
+              {plans.map((plan, i) => {
                 const price = isAnnual ? plan.priceAnnual : plan.priceMonthly;
                 return (
-                  <Reveal key={plan.plan} delay={i * 0.1}>
+                  <Reveal key={plan.key} delay={i * 0.1}>
                     <motion.div
                       whileHover={{ y: -6 }}
                       className={`group relative flex flex-col rounded-2xl transition-all duration-500 ${
                         plan.recommended
-                          ? "border-2 border-orange-500/25 bg-[#0a0a0a] electric-glow electric-glow-animate md:scale-[1.04]"
-                          : "border border-white/[0.04] bg-[#0a0a0a] opacity-80 hover:opacity-100 glow-orange-card"
+                          ? "border-2 border-orange-500/25 bg-[#0a0a0a] md:scale-[1.04] shadow-[0_0_40px_-10px_rgba(249,115,22,0.08)]"
+                          : "border border-white/[0.04] bg-[#0a0a0a] opacity-80 hover:opacity-100"
                       }`}
                     >
                       <ShimmerOverlay />
@@ -1202,13 +814,9 @@ const Index = () => {
                       )}
 
                       <div className="relative z-10 p-8 sm:p-9">
-                        <h3 className="text-xl font-bold mb-1 tracking-[-0.01em] text-white">
-                          {plan.plan}
-                        </h3>
+                        <h3 className="text-xl font-bold mb-1 tracking-[-0.01em] text-white">{plan.name}</h3>
                         {plan.recommended && (
-                          <p className="text-[11px] text-orange-400/40 font-medium mb-4">
-                            Elegido por negocios en crecimiento
-                          </p>
+                          <p className="text-[11px] text-orange-400/40 font-medium mb-4">Elegido por negocios en crecimiento</p>
                         )}
                         {!plan.recommended && <div className="mb-4" />}
 
@@ -1217,15 +825,8 @@ const Index = () => {
                           <span className="text-sm text-zinc-600 font-medium">/mes</span>
                         </div>
                         {isAnnual && (
-                          <motion.p
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            className="text-[11px] text-zinc-600 mb-7"
-                          >
-                            Facturado anualmente ·{" "}
-                            <span className="line-through text-zinc-700">
-                              ${plan.priceMonthly}/mes
-                            </span>
+                          <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-[11px] text-zinc-600 mb-7">
+                            Facturado anualmente · <span className="line-through text-zinc-700">${plan.priceMonthly}/mes</span>
                           </motion.p>
                         )}
                         {!isAnnual && <div className="mb-7" />}
@@ -1240,13 +841,7 @@ const Index = () => {
                               viewport={{ once: true }}
                               transition={{ delay: 0.2 + fi * 0.04 }}
                             >
-                              <Check
-                                className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                                  plan.recommended
-                                    ? "text-orange-400/60"
-                                    : "text-zinc-600"
-                                }`}
-                              />
+                              <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.recommended ? "text-orange-400/60" : "text-zinc-600"}`} />
                               {f}
                             </motion.li>
                           ))}
@@ -1254,7 +849,8 @@ const Index = () => {
 
                         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
                           <Button
-                            onClick={() => handlePlanSelect(plan.plan)}
+                            onClick={() => handleCheckout(plan.key)}
+                            disabled={loadingPlan === plan.key}
                             className={`relative overflow-hidden w-full rounded-xl h-12 font-semibold text-[14px] transition-all duration-500 group/btn ${
                               plan.recommended
                                 ? "bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 shadow-[0_2px_12px_rgba(249,115,22,0.15)] hover:shadow-[0_4px_20px_rgba(249,115,22,0.25)]"
@@ -1262,14 +858,13 @@ const Index = () => {
                             }`}
                           >
                             <span className="relative z-10 flex items-center justify-center">
-                              Elegir {plan.plan}
-                              <ChevronRight className="w-4 h-4 ml-1" />
+                              {loadingPlan === plan.key ? "Procesando..." : `Elegir ${plan.name}`}
+                              {loadingPlan !== plan.key && <ChevronRight className="w-4 h-4 ml-1" />}
                             </span>
                             <div
                               className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500"
                               style={{
-                                background:
-                                  "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)",
+                                background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)",
                                 backgroundSize: "200% 100%",
                                 animation: "shimmer-sweep 1.8s ease-in-out infinite",
                               }}
@@ -1282,6 +877,44 @@ const Index = () => {
                 );
               })}
             </div>
+          </div>
+        </section>
+
+        {/* ═══════════ FAQ ═══════════ */}
+        <section id="faq" className="py-36 md:py-44 lg:py-52 px-5 relative">
+          <div className="absolute inset-0 bg-[#030303] pointer-events-none" />
+
+          <div className="max-w-3xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-16">
+                <SectionBadge icon={Shield} label="Preguntas frecuentes" />
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] lg:text-5xl text-white">
+                  ¿Tienes dudas?
+                </h2>
+                <p className="mt-7 text-zinc-400 text-[15px]">
+                  Aquí respondemos las preguntas más comunes.
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <Accordion type="single" collapsible className="space-y-3">
+                {faqItems.map((item, i) => (
+                  <AccordionItem
+                    key={i}
+                    value={`faq-${i}`}
+                    className="rounded-2xl border border-white/[0.04] bg-zinc-950/50 backdrop-blur-sm px-6 py-1 data-[state=open]:border-orange-500/10 transition-colors duration-300"
+                  >
+                    <AccordionTrigger className="text-[15px] font-semibold text-zinc-200 hover:text-white hover:no-underline py-5 [&[data-state=open]>svg]:rotate-180">
+                      {item.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-[14px] text-zinc-400 leading-[1.8] pb-5">
+                      {item.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </Reveal>
           </div>
         </section>
 
@@ -1315,61 +948,46 @@ const Index = () => {
               <p className="text-base sm:text-lg text-zinc-400 mb-14 max-w-xl mx-auto leading-relaxed">
                 Únete a cientos de negocios que ya controlan su operación de punta a punta con Sign Flow.
               </p>
-              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4">
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="rounded-full"
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="inline-block">
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/register")}
+                  className="relative overflow-hidden bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group"
+                  style={{ animation: "laser-glow 3s ease-in-out infinite" }}
                 >
-                  <Button
-                    size="lg"
-                    onClick={() => scrollTo("pricing")}
-                    className="relative overflow-hidden bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-full px-10 h-14 text-base font-semibold shadow-[0_4px_20px_rgba(249,115,22,0.2)] hover:shadow-[0_8px_32px_rgba(249,115,22,0.3)] transition-all duration-300 group"
-                  >
-                    <span className="relative z-10 flex items-center">
-                      Comienza tu transformación
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </span>
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{
-                        background:
-                          "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%)",
-                        backgroundSize: "200% 100%",
-                        animation: "shimmer-sweep 1.8s ease-in-out infinite",
-                      }}
-                    />
-                  </Button>
-                </motion.div>
-              </div>
+                  <span className="relative z-10 flex items-center">
+                    Empieza Gratis Ahora
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </span>
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%)",
+                      backgroundSize: "200% 100%",
+                      animation: "shimmer-sweep 1.8s ease-in-out infinite",
+                    }}
+                  />
+                </Button>
+              </motion.div>
               <p className="mt-7 text-[12px] text-zinc-600 flex items-center justify-center gap-2">
                 <Shield className="w-3.5 h-3.5" />
-                Sin tarjeta de crédito · Configuración en 5 minutos
+                Sin tarjeta de crédito · Configuración en 3 minutos
               </p>
             </div>
           </Reveal>
         </section>
 
         {/* ═══════════ FOOTER ═══════════ */}
-        <footer
-          className="border-t border-orange-500/[0.04] py-16 sm:py-20 px-5 relative"
-          role="contentinfo"
-        >
+        <footer className="border-t border-orange-500/[0.04] py-16 sm:py-20 px-5 relative" role="contentinfo">
           <div className="absolute inset-0 bg-[#020202] pointer-events-none" />
           <div className="relative max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-14">
               <div className="md:col-span-1">
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-8 h-8 overflow-hidden flex-shrink-0">
-                    <img
-                      src={brandLogoSrc}
-                      alt="Sign Flow"
-                      className="w-full h-full object-contain"
-                    />
+                    <img src={brandLogoSrc} alt="Sign Flow" className="w-full h-full object-contain" />
                   </div>
-                  <span className="font-bold text-lg tracking-[-0.02em] text-zinc-300">
-                    Sign Flow
-                  </span>
+                  <span className="font-bold text-lg tracking-[-0.02em] text-zinc-300">Sign Flow</span>
                 </div>
                 <p className="text-[13px] text-zinc-500 leading-relaxed max-w-[250px]">
                   La plataforma integral de gestión operativa para negocios de servicios y proyectos.
@@ -1378,21 +996,14 @@ const Index = () => {
               {[
                 { title: "Producto", links: ["Funciones", "Precios", "Integraciones", "Actualizaciones"] },
                 { title: "Empresa", links: ["Nosotros", "Blog", "Contacto", "Carreras"] },
-                { title: "Legal", links: ["Privacidad", "Términos", "Cookies", "Soporte"] },
+                { title: "Legal", links: ["Términos de Servicio", "Política de Privacidad", "Cookies", "Soporte"] },
               ].map((col) => (
                 <div key={col.title}>
-                  <h4 className="text-[12px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-5">
-                    {col.title}
-                  </h4>
+                  <h4 className="text-[12px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-5">{col.title}</h4>
                   <ul className="space-y-3">
                     {col.links.map((item) => (
                       <li key={item}>
-                        <a
-                          href="#"
-                          className="text-[13px] text-zinc-600 hover:text-orange-400/60 transition-colors duration-300"
-                        >
-                          {item}
-                        </a>
+                        <a href="#" className="text-[13px] text-zinc-600 hover:text-orange-400/60 transition-colors duration-300">{item}</a>
                       </li>
                     ))}
                   </ul>
@@ -1400,9 +1011,7 @@ const Index = () => {
               ))}
             </div>
             <div className="border-t border-white/[0.025] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-[12px] text-zinc-700">
-                © {new Date().getFullYear()} Sign Flow. Todos los derechos reservados.
-              </p>
+              <p className="text-[12px] text-zinc-700">© {new Date().getFullYear()} Sign Flow. Todos los derechos reservados.</p>
               <div className="flex items-center gap-3">
                 {[Twitter, Instagram, Linkedin].map((Icon, i) => (
                   <a
