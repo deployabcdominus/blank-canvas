@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
