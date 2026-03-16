@@ -87,6 +87,7 @@ const mapRow = (row: any): WorkOrder => ({
   companyId: row.company_id,
   ownerUserId: row.owner_user_id,
   projectId: row.project_id,
+  proposalId: row.proposal_id || null,
   notes: row.notes || null,
   priority: row.priority || 'media',
   estimatedDelivery: row.estimated_delivery || null,
