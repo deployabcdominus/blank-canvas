@@ -438,7 +438,8 @@ const Index = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        navigate("/register");
+        // No auth yet — send to register with plan context so they register after choosing
+        navigate(`/register?plan=${tierKey}`);
         return;
       }
 
