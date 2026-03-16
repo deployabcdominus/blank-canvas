@@ -541,7 +541,7 @@ const Index = () => {
         <header
           className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
             scrolled
-              ? "bg-zinc-900/40 backdrop-blur-2xl border-b border-white/[0.05]"
+              ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]"
               : "bg-transparent"
           }`}
         >
