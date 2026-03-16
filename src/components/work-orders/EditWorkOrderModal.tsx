@@ -1,26 +1,24 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, CheckCircle, Loader2, Pencil, Trash2 } from "lucide-react";
+import {
+  CalendarIcon, CheckCircle, Loader2, Pencil, Trash2, Plus, X,
+  Package, Wrench, ClipboardList, MapPin, Factory,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useCatalog } from "@/hooks/useCatalog";
 import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
@@ -37,15 +35,8 @@ interface EditWorkOrderModalProps {
   startInEditMode?: boolean;
 }
 
-interface OperatorOption {
-  id: string;
-  name: string;
-}
-
-interface InstallerOption {
-  id: string;
-  name: string;
-}
+interface OperatorOption { id: string; name: string; }
+interface InstallerOption { id: string; name: string; }
 
 const PRIORITY_OPTIONS = [
   { value: "baja", label: "Baja" },
@@ -53,6 +44,13 @@ const PRIORITY_OPTIONS = [
   { value: "alta", label: "Alta" },
   { value: "urgente", label: "Urgente" },
 ];
+
+const STATUS_MAP: Record<string, { color: string; icon: React.ReactNode }> = {
+  "Pendiente": { color: "bg-lavender text-lavender-foreground", icon: <Package className="w-3.5 h-3.5" /> },
+  "En Progreso": { color: "bg-soft-blue text-soft-blue-foreground", icon: <Wrench className="w-3.5 h-3.5" /> },
+  "Control de Calidad": { color: "bg-pale-pink text-pale-pink-foreground", icon: <ClipboardList className="w-3.5 h-3.5" /> },
+  "Completada": { color: "bg-mint text-mint-foreground", icon: <CheckCircle className="w-3.5 h-3.5" /> },
+};
 
 const COMPLETED_STATUS_VALUES = ["completada", "completado", "completed", "done"];
 
@@ -80,6 +78,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const [blueprintUrl, setBlueprintUrl] = useState<string | null>(null);
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [technicalDetails, setTechnicalDetails] = useState<TechnicalDetails>({});
+  const [materials, setMaterials] = useState<Array<{ item: string; quantity: string; status: string }>>([]);
 
   const [operators, setOperators] = useState<OperatorOption[]>([]);
   const [installers, setInstallers] = useState<InstallerOption[]>([]);
@@ -99,12 +98,12 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     setBlueprintUrl(order.blueprintUrl || null);
     setAnnotations(Array.isArray(order.annotations) ? order.annotations : []);
     setTechnicalDetails(order.technicalDetails || {});
+    setMaterials(Array.isArray(order.materials) ? [...order.materials] : []);
     setEditing(startInEditMode);
   }, [order, startInEditMode]);
 
   useEffect(() => {
     if (!isOpen || !companyId) return;
-
     const loadOptions = async () => {
       setLoadingOptions(true);
       try {
@@ -112,10 +111,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
           supabase.from("profiles").select("id, full_name").eq("company_id", companyId),
           supabase.from("installer_companies").select("id, name").eq("company_id", companyId).order("name"),
         ]);
-
         if (profilesResult.error) throw profilesResult.error;
         if (installersResult.error) throw installersResult.error;
-
         const profiles = profilesResult.data || [];
         const roleChecks = await Promise.all(
           profiles.map(async (profile) => {
@@ -123,26 +120,19 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
               supabase.rpc("has_role", { _user_id: profile.id, _role: "operations" }),
               supabase.rpc("has_role", { _user_id: profile.id, _role: "member" }),
             ]);
-
             if (isOperations.error || isMember.error) return null;
             if (!isOperations.data && !isMember.data) return null;
-
-            return {
-              id: profile.id,
-              name: profile.full_name || `Usuario ${profile.id.slice(0, 8)}`,
-            } as OperatorOption;
+            return { id: profile.id, name: profile.full_name || `Usuario ${profile.id.slice(0, 8)}` } as OperatorOption;
           })
         );
-
         setOperators(roleChecks.filter(Boolean) as OperatorOption[]);
         setInstallers((installersResult.data || []).map((i) => ({ id: i.id, name: i.name })));
       } catch (error) {
-        console.error("Error loading work order edit options:", error);
+        console.error("Error loading options:", error);
       } finally {
         setLoadingOptions(false);
       }
     };
-
     loadOptions();
   }, [isOpen, companyId]);
 
@@ -156,36 +146,39 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     const ext = file.name.split(".").pop() || "png";
     const path = `${order.companyId || "unknown"}/${order.id}/blueprint.${ext}`;
     const { error } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
-    if (error) { toast({ title: "Error al subir imagen", variant: "destructive" }); console.error(error); return; }
+    if (error) { toast({ title: "Error al subir imagen", variant: "destructive" }); return; }
     const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
     const url = urlData.publicUrl + "?t=" + Date.now();
     setBlueprintUrl(url);
     await updateOrder(order.id, { blueprintUrl: url });
   }, [order, updateOrder, toast]);
 
+  const addMaterial = () => {
+    setMaterials(prev => [...prev, { item: "", quantity: "", status: "pendiente" }]);
+  };
+
+  const updateMaterial = (index: number, field: string, value: string) => {
+    setMaterials(prev => prev.map((m, i) => i === index ? { ...m, [field]: value } : m));
+  };
+
+  const removeMaterial = (index: number) => {
+    setMaterials(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSave = async () => {
     if (!order) return;
     setSaving(true);
-
     try {
       const estimatedDelivery = estimatedDeliveryDate ? format(estimatedDeliveryDate, "yyyy-MM-dd") : "";
-
       await updateOrder(order.id, {
-        client,
-        project,
-        status,
-        progress,
+        client, project, status, progress,
         estimatedCompletion: estimatedDelivery,
         estimatedDelivery,
         assignedToUserId: assignedToUserId === "none" ? null : assignedToUserId,
         installerCompanyId: installerCompanyId === "none" ? null : installerCompanyId,
-        notes,
-        priority,
-        blueprintUrl,
-        annotations,
-        technicalDetails,
+        notes, priority, blueprintUrl, annotations, technicalDetails,
+        materials: materials.filter(m => m.item.trim()),
       });
-
       toast({ title: "Orden actualizada" });
       setEditing(false);
       onClose();
@@ -205,7 +198,6 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
       setConfirmComplete(false);
       onClose();
     } catch (error) {
-      console.error(error);
       toast({ title: "Error al completar", variant: "destructive" });
     }
   };
@@ -218,285 +210,308 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
       setConfirmDelete(false);
       onClose();
     } catch (error) {
-      console.error(error);
       toast({ title: "Error al eliminar", variant: "destructive" });
     }
   };
 
-  const handleClose = () => {
-    setEditing(false);
-    onClose();
-  };
+  const handleClose = () => { setEditing(false); onClose(); };
 
   if (!order) return null;
 
+  const statusCfg = STATUS_MAP[status] || STATUS_MAP["Pendiente"];
   const fieldClass = "min-h-[44px]";
 
   return (
     <>
-      <Sheet open={isOpen} onOpenChange={handleClose}>
-        <SheetContent className="sm:max-w-[520px] overflow-y-auto">
-          <SheetHeader className="mb-6">
-            <div className="flex items-center justify-between gap-3">
-              <SheetTitle className="text-lg font-semibold truncate">
-                {`Editar Orden — ${order.client}`}
-              </SheetTitle>
-              {!editing && (
-                <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+      <Dialog open={isOpen} onOpenChange={handleClose}>
+        <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] overflow-hidden p-0 bg-zinc-950/90 backdrop-blur-2xl border-border/20">
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border/20">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-xl font-bold tracking-tight text-zinc-100 truncate">{client}</h2>
+              <p className="text-sm text-muted-foreground truncate mt-0.5">{project}</p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Badge className={`${statusCfg.color} text-xs gap-1`}>
+                {statusCfg.icon} {status}
+              </Badge>
+              {!editing && isAdmin && (
+                <Button variant="outline" size="sm" onClick={() => setEditing(true)} className="text-xs border-border/40 text-muted-foreground hover:text-foreground">
                   <Pencil className="w-3.5 h-3.5 mr-1.5" /> Editar
                 </Button>
               )}
             </div>
-          </SheetHeader>
+          </div>
 
-          <div className="space-y-4">
-            <div>
-              <Label>Título de la orden</Label>
-              {editing ? (
-                <Input value={client} onChange={(e) => setClient(e.target.value)} className={fieldClass} />
-              ) : (
-                <p className="text-sm text-foreground mt-1">{client || "—"}</p>
-              )}
-            </div>
+          {/* Body: Two-column layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 max-h-[calc(90vh-140px)] overflow-y-auto">
+            {/* LEFT: Project Details */}
+            <div className="p-6 space-y-5 lg:border-r border-border/20">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5" /> Detalles del Proyecto
+              </h3>
 
-            <div>
-              <Label>Descripción</Label>
-              {editing ? (
-                <Input value={project} onChange={(e) => setProject(e.target.value)} className={fieldClass} />
-              ) : (
-                <p className="text-sm text-foreground mt-1">{project || "—"}</p>
-              )}
-            </div>
-
-            <div>
-              <Label>Estado</Label>
-              {editing ? (
-                <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger className={fieldClass}>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statuses.length > 0 ? (
-                      statuses.map((s) => (
-                        <SelectItem key={s.value} value={s.label}>
-                          {s.label}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <>
-                        <SelectItem value="Pendiente">Pendiente</SelectItem>
-                        <SelectItem value="En Progreso">En Progreso</SelectItem>
-                        <SelectItem value="Control de Calidad">Control de Calidad</SelectItem>
-                        <SelectItem value="Completada">Completada</SelectItem>
-                      </>
-                    )}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <p className="text-sm text-foreground mt-1">{status || "—"}</p>
-              )}
-            </div>
-
-            <div>
-              <Label>Progreso — {progress}%</Label>
-              {editing ? (
-                <Slider value={[progress]} onValueChange={(v) => setProgress(v[0])} max={100} step={5} className="mt-2" />
-              ) : (
-                <div className="mt-2 h-2 rounded-full bg-muted/30 overflow-hidden">
-                  <div className="h-full rounded-full bg-primary/60" style={{ width: `${progress}%` }} />
-                </div>
-              )}
-            </div>
-
-            <div>
-              <Label>Fecha estimada de entrega</Label>
-              {editing ? (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !estimatedDeliveryDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {estimatedDeliveryDate ? format(estimatedDeliveryDate, "PPP", { locale: es }) : "Seleccionar fecha"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={estimatedDeliveryDate}
-                      onSelect={setEstimatedDeliveryDate}
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
-              ) : (
-                <p className="text-sm text-foreground mt-1">
-                  {estimatedDeliveryDate ? format(estimatedDeliveryDate, "PPP", { locale: es }) : "—"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label>Operario asignado</Label>
-              {editing ? (
-                <Select value={assignedToUserId} onValueChange={setAssignedToUserId}>
-                  <SelectTrigger className={fieldClass}>
-                    <SelectValue placeholder={loadingOptions ? "Cargando..." : "Seleccionar operario"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sin asignar</SelectItem>
-                    {operators.map((operator) => (
-                      <SelectItem key={operator.id} value={operator.id}>
-                        {operator.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <p className="text-sm text-foreground mt-1">
-                  {operators.find((o) => o.id === assignedToUserId)?.name || "Sin asignar"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label>Subcontratista asignado</Label>
-              {editing ? (
-                <Select value={installerCompanyId} onValueChange={setInstallerCompanyId}>
-                  <SelectTrigger className={fieldClass}>
-                    <SelectValue placeholder={loadingOptions ? "Cargando..." : "Seleccionar subcontratista"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sin asignar</SelectItem>
-                    {installers.map((installer) => (
-                      <SelectItem key={installer.id} value={installer.id}>
-                        {installer.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <p className="text-sm text-foreground mt-1">
-                  {installers.find((i) => i.id === installerCompanyId)?.name || "Sin asignar"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Label>Prioridad</Label>
-              {editing ? (
-                <Select value={priority} onValueChange={setPriority}>
-                  <SelectTrigger className={fieldClass}>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRIORITY_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <p className="text-sm text-foreground mt-1 capitalize">{priority || "media"}</p>
-              )}
-            </div>
-
-            <div>
-              <Label>Notas internas</Label>
-              {editing ? (
-                <Textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Notas sobre esta orden..."
-                  className="min-h-[90px] resize-none"
-                />
-              ) : (
-                <p className="text-sm text-muted-foreground mt-1">{notes || "Sin notas"}</p>
-              )}
-            </div>
-
-            {/* Technical Sheet */}
-            <div className="pt-2 border-t border-border/20">
-              <TechnicalSheet
-                value={technicalDetails}
-                onChange={setTechnicalDetails}
-                readOnly={!editing}
-              />
-            </div>
-
-            {/* Blueprint Annotator */}
-            <div className="pt-2 border-t border-border/20">
-              <BlueprintAnnotator
-                imageUrl={blueprintUrl}
-                annotations={annotations}
-                onChange={(newAnnotations) => setAnnotations(newAnnotations)}
-                onImageUpload={handleBlueprintUpload}
-                readOnly={!editing}
-              />
-            </div>
-
-            {editing && (
-              <div className="flex gap-3 pt-4">
-                <Button variant="outline" onClick={() => setEditing(false)} className={fieldClass} disabled={saving}>
-                  Cancelar
-                </Button>
-                <Button onClick={handleSave} className={cn("flex-1", fieldClass)} disabled={saving}>
-                  {saving ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Guardando...
-                    </>
-                  ) : (
-                    "Guardar cambios"
-                  )}
-                </Button>
+              <div>
+                <Label className="text-xs text-muted-foreground">Cliente</Label>
+                {editing ? (
+                  <Input value={client} onChange={(e) => setClient(e.target.value)} className={fieldClass} />
+                ) : (
+                  <p className="text-sm text-foreground mt-1 font-medium">{client || "—"}</p>
+                )}
               </div>
-            )}
 
-            {!isCompleted && (
-              <div className="pt-2">
+              <div>
+                <Label className="text-xs text-muted-foreground">Proyecto / Descripción</Label>
+                {editing ? (
+                  <Input value={project} onChange={(e) => setProject(e.target.value)} className={fieldClass} />
+                ) : (
+                  <p className="text-sm text-foreground mt-1">{project || "—"}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">Estado</Label>
+                  {editing ? (
+                    <Select value={status} onValueChange={setStatus}>
+                      <SelectTrigger className={fieldClass}><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {statuses.length > 0 ? statuses.map((s) => (
+                          <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>
+                        )) : (
+                          <>
+                            <SelectItem value="Pendiente">Pendiente</SelectItem>
+                            <SelectItem value="En Progreso">En Progreso</SelectItem>
+                            <SelectItem value="Control de Calidad">Control de Calidad</SelectItem>
+                            <SelectItem value="Completada">Completada</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="text-sm text-foreground mt-1">{status}</p>
+                  )}
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Prioridad</Label>
+                  {editing ? (
+                    <Select value={priority} onValueChange={setPriority}>
+                      <SelectTrigger className={fieldClass}><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {PRIORITY_OPTIONS.map((o) => (
+                          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="text-sm text-foreground mt-1 capitalize">{priority}</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-xs text-muted-foreground">Progreso — {progress}%</Label>
+                {editing ? (
+                  <Slider value={[progress]} onValueChange={(v) => setProgress(v[0])} max={100} step={5} className="mt-2" />
+                ) : (
+                  <div className="mt-2 h-2 rounded-full bg-muted/30 overflow-hidden">
+                    <div className="h-full rounded-full bg-primary/60" style={{ width: `${progress}%` }} />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <Label className="text-xs text-muted-foreground">Fecha estimada de entrega</Label>
+                {editing ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !estimatedDeliveryDate && "text-muted-foreground")}>
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {estimatedDeliveryDate ? format(estimatedDeliveryDate, "PPP", { locale: es }) : "Seleccionar fecha"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={estimatedDeliveryDate} onSelect={setEstimatedDeliveryDate} initialFocus className="p-3 pointer-events-auto" />
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <p className="text-sm text-foreground mt-1">
+                    {estimatedDeliveryDate ? format(estimatedDeliveryDate, "PPP", { locale: es }) : "—"}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">Operario asignado</Label>
+                  {editing ? (
+                    <Select value={assignedToUserId} onValueChange={setAssignedToUserId}>
+                      <SelectTrigger className={fieldClass}>
+                        <SelectValue placeholder={loadingOptions ? "Cargando..." : "Seleccionar"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Sin asignar</SelectItem>
+                        {operators.map((o) => <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="text-sm text-foreground mt-1">{operators.find((o) => o.id === assignedToUserId)?.name || "Sin asignar"}</p>
+                  )}
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Subcontratista</Label>
+                  {editing ? (
+                    <Select value={installerCompanyId} onValueChange={setInstallerCompanyId}>
+                      <SelectTrigger className={fieldClass}>
+                        <SelectValue placeholder={loadingOptions ? "Cargando..." : "Seleccionar"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Sin asignar</SelectItem>
+                        {installers.map((i) => <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="text-sm text-foreground mt-1">{installers.find((i) => i.id === installerCompanyId)?.name || "Sin asignar"}</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-xs text-muted-foreground">Notas internas</Label>
+                {editing ? (
+                  <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notas..." className="min-h-[80px] resize-none" />
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-1">{notes || "Sin notas"}</p>
+                )}
+              </div>
+            </div>
+
+            {/* RIGHT: Materials, Technical, Blueprint */}
+            <div className="p-6 space-y-5">
+              {/* Materials Section */}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-3">
+                  <Factory className="w-3.5 h-3.5" /> Gestión de Materiales
+                </h3>
+                <div className="space-y-2">
+                  {materials.map((mat, i) => (
+                    <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/10 border border-border/10">
+                      {editing ? (
+                        <>
+                          <Input
+                            value={mat.item}
+                            onChange={(e) => updateMaterial(i, "item", e.target.value)}
+                            placeholder="Material"
+                            className="flex-1 h-8 text-xs"
+                          />
+                          <Input
+                            value={mat.quantity}
+                            onChange={(e) => updateMaterial(i, "quantity", e.target.value)}
+                            placeholder="Cant."
+                            className="w-20 h-8 text-xs"
+                          />
+                          <Select value={mat.status} onValueChange={(v) => updateMaterial(i, "status", v)}>
+                            <SelectTrigger className="w-28 h-8 text-xs"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pendiente">Pendiente</SelectItem>
+                              <SelectItem value="pedido">Pedido</SelectItem>
+                              <SelectItem value="recibido">Recibido</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => removeMaterial(i)}>
+                            <X className="w-3.5 h-3.5" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-sm flex-1 truncate">{mat.item || "—"}</span>
+                          <span className="text-xs text-muted-foreground">{mat.quantity}</span>
+                          <Badge variant="outline" className="text-[10px] capitalize">{mat.status}</Badge>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                  {materials.length === 0 && !editing && (
+                    <p className="text-xs text-muted-foreground py-3 text-center">Sin materiales registrados</p>
+                  )}
+                  {editing && (
+                    <Button variant="outline" size="sm" onClick={addMaterial} className="w-full text-xs border-dashed border-border/40 text-muted-foreground hover:text-foreground">
+                      <Plus className="w-3.5 h-3.5 mr-1.5" /> Agregar Material
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Technical Sheet */}
+              <div className="pt-3 border-t border-border/20">
+                <TechnicalSheet value={technicalDetails} onChange={setTechnicalDetails} readOnly={!editing} />
+              </div>
+
+              {/* Blueprint Annotator */}
+              <div className="pt-3 border-t border-border/20">
+                <BlueprintAnnotator
+                  imageUrl={blueprintUrl}
+                  annotations={annotations}
+                  onChange={(a) => setAnnotations(a)}
+                  onImageUpload={handleBlueprintUpload}
+                  readOnly={!editing}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sticky Footer */}
+          <div className="flex items-center justify-between px-6 py-3 border-t border-border/20 bg-zinc-950/80 backdrop-blur-xl">
+            <div className="flex gap-2">
+              {!isCompleted && (
                 <Button
                   variant="outline"
-                  className="w-full text-mint border-mint/40 hover:bg-mint/10 hover:text-mint"
+                  size="sm"
+                  className="text-xs text-muted-foreground border-border/40 hover:text-foreground"
                   onClick={() => setConfirmComplete(true)}
                 >
-                  <CheckCircle className="w-4 h-4 mr-2" /> Marcar como completada
+                  <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Completar
                 </Button>
-              </div>
-            )}
-
-            {editing && isAdmin && (
-              <div className="pt-4 border-t border-border">
+              )}
+              {editing && isAdmin && (
                 <Button
                   variant="outline"
-                  className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                  size="sm"
+                  className="text-xs text-destructive border-destructive/30 hover:bg-destructive/10"
                   onClick={() => setConfirmDelete(true)}
                 >
-                  <Trash2 className="w-4 h-4 mr-2" /> Eliminar orden
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Eliminar
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
+            <div className="flex gap-2">
+              {editing && (
+                <>
+                  <Button variant="outline" size="sm" onClick={() => setEditing(false)} disabled={saving} className="text-xs text-muted-foreground border-border/40">
+                    Cancelar
+                  </Button>
+                  <Button size="sm" onClick={handleSave} disabled={saving} className="text-xs btn-violet">
+                    {saving ? <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Guardando...</> : "Guardar cambios"}
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar esta orden?</AlertDialogTitle>
+            <AlertDialogTitle>¿Eliminar esta orden de producción?</AlertDialogTitle>
             <AlertDialogDescription>
-              Se eliminará permanentemente la orden "{order.client}". Esta acción no se puede deshacer.
+              Se eliminará permanentemente la orden de "{order.client}". Esta acción no se puede deshacer y todos los datos asociados (materiales, plano, ficha técnica) se perderán.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Eliminar
+              Eliminar permanentemente
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -506,7 +521,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Confirmas que esta orden está completada?</AlertDialogTitle>
-            <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
+            <AlertDialogDescription>El progreso se marcará al 100% y el estado cambiará a "Completada".</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>

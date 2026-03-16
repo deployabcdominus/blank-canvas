@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Package, Wrench, AlertTriangle, CheckCircle, Clock,
-  MoreHorizontal, Eye, Printer, Share2, Calendar, Pencil,
+  MoreHorizontal, Eye, Pencil, Calendar,
 } from "lucide-react";
 
 const STATUS_MAP: Record<string, { color: string; icon: React.ReactNode }> = {
@@ -23,9 +23,10 @@ interface Props {
   onOpen?: (order: WorkOrder) => void;
   onEdit?: (order: WorkOrder) => void;
   onMarkBuilt?: (id: string) => void;
+  canEdit?: boolean;
 }
 
-export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt }: Props) {
+export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt, canEdit = true }: Props) {
   const status = STATUS_MAP[order.status] || { color: "bg-muted text-muted-foreground", icon: <Clock className="w-3 h-3" /> };
 
   return (
@@ -38,39 +39,35 @@ export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-semibold truncate">{order.client}</h3>
-          <p className="text-xs text-muted-foreground truncate">{order.project}</p>
+          <h3 className="text-sm font-bold tracking-tight text-zinc-100 truncate">{order.client}</h3>
+          <p className="text-xs text-muted-foreground truncate mt-0.5">{order.project}</p>
         </div>
         <div className="flex items-center gap-1">
-          <button
-            onClick={(e) => { e.stopPropagation(); onEdit?.(order); }}
-            className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent text-muted-foreground hover:text-foreground"
-          >
-            <Pencil size={13} />
-          </button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
-              <MoreHorizontal className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onOpen?.(order)}>
-              <Eye className="w-3.5 h-3.5 mr-2" /> Abrir
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Printer className="w-3.5 h-3.5 mr-2" /> Imprimir
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Share2 className="w-3.5 h-3.5 mr-2" /> Compartir
-            </DropdownMenuItem>
-            {order.status === "Control de Calidad" && onMarkBuilt && (
-              <DropdownMenuItem onClick={() => onMarkBuilt(order.id)}>
-                <CheckCircle className="w-3.5 h-3.5 mr-2" /> Marcar Completada
+          {canEdit && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onEdit?.(order); }}
+              className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent text-muted-foreground hover:text-foreground"
+            >
+              <Pencil size={13} />
+            </button>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+                <MoreHorizontal className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onOpen?.(order)}>
+                <Eye className="w-3.5 h-3.5 mr-2" /> Abrir
               </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {order.status === "Control de Calidad" && onMarkBuilt && (
+                <DropdownMenuItem onClick={() => onMarkBuilt(order.id)}>
+                  <CheckCircle className="w-3.5 h-3.5 mr-2" /> Marcar Completada
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -79,6 +76,11 @@ export function WorkOrderCompactCard({ order, index, onOpen, onEdit, onMarkBuilt
           {status.icon}
           {order.status}
         </Badge>
+        {order.priority && order.priority !== 'media' && (
+          <Badge variant="outline" className="text-[10px] capitalize">
+            {order.priority}
+          </Badge>
+        )}
         {order.estimatedCompletion && (
           <span className="text-[10px] text-muted-foreground flex items-center gap-1">
             <Calendar className="w-3 h-3" />
