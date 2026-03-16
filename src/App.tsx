@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { SettingsProvider } from "@/contexts/SettingsContext";
+import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { TenantLayout } from "@/components/TenantLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
