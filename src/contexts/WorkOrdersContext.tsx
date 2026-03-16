@@ -119,7 +119,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (!user) { setOrders([]); setLoading(false); return; }
     const { data, error } = await supabase
       .from('production_orders')
-      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at')
+      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, proposal_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading work orders:', error);
     else setOrders((data || []).map(mapRow));
