@@ -104,7 +104,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
         </div>
 
         {/* Service type */}
-        <p className="text-sm font-medium text-zinc-400 mb-3">{lead.service}</p>
+        <p className="text-sm font-medium text-zinc-400 mb-2">{lead.service}</p>
 
         {/* Price block */}
         <div className="mb-3">
