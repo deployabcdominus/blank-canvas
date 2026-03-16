@@ -111,6 +111,9 @@ export const Sidebar = () => {
         isAdmin={isAdmin}
         onLogout={async () => { await signOut(); navigate("/login"); }}
         onNavigate={navigate}
+        profileLabel={t.nav.profile}
+        settingsLabel={t.nav.settings}
+        logoutLabel={t.nav.logout}
       />
     </motion.aside>
   );
