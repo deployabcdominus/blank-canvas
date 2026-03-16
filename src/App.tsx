@@ -11,6 +11,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PublicRoute } from "@/components/PublicRoute";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import Index from "./pages/Index";
+import PostPaymentSetup from "./pages/PostPaymentSetup";
 import Checkout from "./pages/Checkout";
 import Success from "./pages/Success";
 import Access from "./pages/Access";
