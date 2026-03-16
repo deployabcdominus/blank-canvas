@@ -150,6 +150,16 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const [createdProposalId, setCreatedProposalId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [activityEvents, setActivityEvents] = useState<ActivityEvent[]>([]);
+  const [voiceNoteText, setVoiceNoteText] = useState("");
+  const [isDictated, setIsDictated] = useState(false);
+
+  const speechToText = useSpeechToText({
+    lang: "es-ES",
+    onResult: (transcript) => {
+      setIsDictated(true);
+      setNotes(prev => prev + (prev ? ' ' : '') + transcript);
+    },
+  });
 
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
