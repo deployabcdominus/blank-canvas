@@ -4,11 +4,6 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
-import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
-
-import { useLeads } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
-import { useWorkOrders } from "@/contexts/WorkOrdersContext";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,11 +32,6 @@ export default function Settings() {
   const { user } = useAuth();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
-  const { companies, updateCompany } = useInstallerCompanies();
-  
-  const { leads } = useLeads();
-  const { proposals } = useProposals();
-  const { orders } = useWorkOrders();
   const { toast } = useToast();
   
   
