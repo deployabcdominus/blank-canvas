@@ -234,16 +234,17 @@ function SidebarCollapsibleGroup({ group, isOpen, onToggle, isTablet, location, 
 
 /* ─── Platform Nav (superadmin) ─── */
 
-function SidebarPlatformNav({ items, isTablet, location, industryLabels }: {
+function SidebarPlatformNav({ items, isTablet, location, industryLabels, platformLabel }: {
   items: NavItem[]; isTablet: boolean;
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
+  platformLabel?: string;
 }) {
   return (
     <nav className="flex-1 overflow-y-auto scrollbar-none space-y-1 min-h-0">
       {!isTablet && (
         <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
-          Plataforma
+          {platformLabel || "Platform"}
         </p>
       )}
       {items.map(item => (
