@@ -26,7 +26,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
   const breakpoint = useBreakpoint();
   const { signOut } = useAuth();
   const { fullName, email, initials } = useUserProfile();
-
+  const { t } = useLanguage();
   const handleLogout = async () => {
     await signOut();
     navigate('/login');
