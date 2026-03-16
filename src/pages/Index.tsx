@@ -606,7 +606,7 @@ const Index = () => {
 
                 <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.4rem] lg:text-[4rem] xl:text-6xl font-black leading-[1.02] tracking-tighter mb-8">
                   <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
-                    SignFlow: La plataforma
+                    La plataforma
                   </span>
                   <br />
                   <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
