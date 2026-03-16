@@ -357,7 +357,7 @@ const PostPaymentSetup = () => {
 
                     <Button
                       onClick={handleCreateAccount}
-                      className="w-full h-12 bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 rounded-xl font-semibold"
+                      className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-xl font-semibold shadow-[0_0_20px_rgba(168,85,247,0.3)]"
                     >
                       Continuar
                       <ArrowRight className="w-4 h-4 ml-2" />
