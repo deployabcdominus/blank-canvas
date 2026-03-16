@@ -1,20 +1,27 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil, Eye, CheckCircle2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil, Eye, CheckCircle2, Trash2, MoreVertical } from "lucide-react";
 import { Lead } from "@/contexts/LeadsContext";
 import { Proposal } from "@/contexts/ProposalsContext";
 import { LeadPipelineStepper, getLeadPipelineStage } from "@/components/LeadPipelineStepper";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface LeadCardProps {
   lead: Lead;
   proposals: Proposal[];
   index: number;
   isMobile: boolean;
+  selected?: boolean;
+  onSelect?: (leadId: string, checked: boolean) => void;
   onAdvance: (leadId: string) => void;
   onAssign?: (leadId: string) => void;
   onConvert?: (leadId: string) => void;
   onEdit?: (lead: Lead) => void;
+  onDelete?: (leadId: string) => void;
   onCardClick?: (lead: Lead) => void;
   onViewProposal?: (proposalId: string) => void;
 }
@@ -50,7 +57,7 @@ function getProposalBadge(proposal: Proposal | null) {
   }
 }
 
-export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign, onConvert, onEdit, onCardClick, onViewProposal }: LeadCardProps) => {
+export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect, onAdvance, onAssign, onConvert, onEdit, onDelete, onCardClick, onViewProposal }: LeadCardProps) => {
   const linkedProposal = getLeadProposal(lead.id, proposals);
   const proposalBadge = getProposalBadge(linkedProposal);
   const isConverted = lead.status === 'Convertido' || !!lead.clientId;
@@ -60,14 +67,28 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className="rounded-xl border border-white/[0.06] bg-zinc-900/60 hover:border-primary/15 transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover"
+      className={`rounded-xl border bg-zinc-900/60 hover:border-primary/15 transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover relative ${
+        selected ? 'border-violet-500/30 ring-1 ring-violet-500/20' : 'border-white/[0.06]'
+      }`}
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}
       onClick={() => onCardClick?.(lead)}
     >
+      {/* Checkbox */}
+      {onSelect && (
+        <div className="absolute top-3 left-3 z-10" onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={selected}
+            onCheckedChange={(checked) => onSelect(lead.id, !!checked)}
+            className="h-4 w-4 border-zinc-600 data-[state=checked]:bg-violet-500 data-[state=checked]:border-violet-500"
+            aria-label={`Seleccionar lead ${lead.company}`}
+          />
+        </div>
+      )}
+
       {/* Header: Company + Lead Status */}
       <div>
-        <div className={`flex items-start justify-between mb-3 ${isMobile ? 'flex-col gap-2' : ''}`}>
+        <div className={`flex items-start justify-between mb-3 ${isMobile ? 'flex-col gap-2' : ''} ${onSelect ? 'pl-6' : ''}`}>
           <div className="flex items-center gap-3 min-w-0">
             {lead.logoUrl ? (
               <img src={lead.logoUrl} alt={`Logo ${lead.company}`} className="w-11 h-11 rounded-xl object-contain border border-white/[0.06] bg-white/[0.03] flex-shrink-0" />
@@ -91,15 +112,33 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               {isConverted && <CheckCircle2 className="w-3 h-3 mr-1" />}
               {lead.status}
             </Badge>
-            {onEdit && (
-              <button
-                onClick={(e) => { e.stopPropagation(); onEdit(lead); }}
-                className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/[0.05] text-zinc-500 hover:text-foreground"
-                aria-label="Editar lead"
-              >
-                <Pencil size={13} />
-              </button>
-            )}
+            {/* Three-dot menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  onClick={(e) => e.stopPropagation()}
+                  className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/[0.05] text-zinc-500 hover:text-foreground"
+                  aria-label="Acciones del lead"
+                >
+                  <MoreVertical size={14} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {onEdit && (
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(lead); }}>
+                    <Pencil className="w-3.5 h-3.5 mr-2" /> Editar
+                  </DropdownMenuItem>
+                )}
+                {onDelete && (
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={(e) => { e.stopPropagation(); onDelete(lead.id); }}
+                  >
+                    <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -155,7 +194,6 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
         </span>
         <div className="flex items-center gap-2">
           {isConverted ? (
-            /* Lead already converted — show "View Proposal" if one exists */
             linkedProposal && onViewProposal ? (
               <Button
                 onClick={() => onViewProposal(linkedProposal.id)}
@@ -169,7 +207,6 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               </Button>
             ) : null
           ) : (
-            /* Lead not converted — show normal actions */
             <>
                {onConvert && (
                 <Button
