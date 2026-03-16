@@ -442,6 +442,7 @@ export type Database = {
           company_id: string | null
           created_at: string
           created_by_user_id: string | null
+          deleted_at: string | null
           email: string | null
           id: string
           location: string | null
@@ -464,6 +465,7 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           created_by_user_id?: string | null
+          deleted_at?: string | null
           email?: string | null
           id?: string
           location?: string | null
@@ -486,6 +488,7 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           created_by_user_id?: string | null
+          deleted_at?: string | null
           email?: string | null
           id?: string
           location?: string | null
