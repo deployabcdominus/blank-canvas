@@ -120,7 +120,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     return data?.company_id || null;
   };
 
-  const addProposal = async (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken'>) => {
+  const addProposal = async (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => {
     if (!user) return;
     const companyId = await getCompanyId();
     const { error } = await supabase.from('proposals').insert({
