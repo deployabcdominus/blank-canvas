@@ -73,9 +73,29 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     [user]
   );
 
-  // Set html lang attribute
+  // Set html lang attribute and update meta tags
   useEffect(() => {
     document.documentElement.lang = locale;
+    const t = dictionaries[locale];
+    
+    // Update title
+    document.title = t.seo.title;
+    
+    // Update meta description
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", t.seo.description);
+    
+    // Update OG tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", t.seo.title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", t.seo.description);
+    
+    // Update Twitter tags
+    const twTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twTitle) twTitle.setAttribute("content", t.seo.title);
+    const twDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twDesc) twDesc.setAttribute("content", t.seo.description);
   }, [locale]);
 
   return (
