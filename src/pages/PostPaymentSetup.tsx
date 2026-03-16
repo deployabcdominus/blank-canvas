@@ -298,9 +298,9 @@ const PostPaymentSetup = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="rounded-2xl border border-orange-500/[0.08] bg-[#0a0a0a]/90 backdrop-blur-xl p-8 relative overflow-hidden"
+              className="rounded-2xl border border-purple-500/10 bg-zinc-900/40 backdrop-blur-xl p-8 relative overflow-hidden"
               style={{
-                boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 0 60px -20px rgba(249,115,22,0.06), inset 0 1px 0 rgba(255,255,255,0.03)",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.4), 0 0 60px -20px rgba(168,85,247,0.08), inset 0 1px 0 rgba(255,255,255,0.03)",
               }}
             >
               {/* Step indicator */}
