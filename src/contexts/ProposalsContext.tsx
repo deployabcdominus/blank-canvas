@@ -29,12 +29,13 @@ export interface Proposal {
   approvedAt: string | null;
   approvalToken: string | null;
   mockupUrl: string | null;
+  hasOrder: boolean;
 }
 
 interface ProposalsContextType {
   proposals: Proposal[];
   loading: boolean;
-  addProposal: (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken'>) => Promise<void>;
+  addProposal: (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => Promise<void>;
   updateProposal: (id: string, proposal: Partial<Proposal>) => Promise<void>;
   deleteProposal: (id: string) => Promise<void>;
   refreshProposals: () => Promise<void>;
@@ -50,7 +51,7 @@ export const useProposals = () => {
   return context;
 };
 
-const mapRow = (row: any): Proposal => ({
+const mapRow = (row: any, orderProposalIds: Set<string>): Proposal => ({
   id: row.id,
   client: row.client,
   project: row.project,
@@ -71,6 +72,7 @@ const mapRow = (row: any): Proposal => ({
   approvedAt: row.approved_at || null,
   approvalToken: row.approval_token || null,
   mockupUrl: row.mockup_url || null,
+  hasOrder: orderProposalIds.has(row.id),
 });
 
 export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -81,12 +83,22 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
   const fetchProposals = async () => {
     if (!user) { setProposals([]); setLoading(false); return; }
     try {
-      const { data, error } = await (supabase
-        .from('proposals')
-        .select('*, leads(name, company, logo_url)')
-        .order('created_at', { ascending: false }) as any);
-      if (error) throw error;
-      setProposals((data || []).map(mapRow));
+      // Fetch proposals and existing order links in parallel
+      const [proposalsRes, ordersRes] = await Promise.all([
+        supabase
+          .from('proposals')
+          .select('*, leads(name, company, logo_url)')
+          .order('created_at', { ascending: false }) as any,
+        supabase
+          .from('production_orders')
+          .select('proposal_id')
+          .not('proposal_id', 'is', null),
+      ]);
+      if (proposalsRes.error) throw proposalsRes.error;
+      const orderProposalIds = new Set<string>(
+        (ordersRes.data || []).map((o: any) => o.proposal_id)
+      );
+      setProposals((proposalsRes.data || []).map((r: any) => mapRow(r, orderProposalIds)));
     } catch (e) {
       console.error('Error fetching proposals:', e);
     } finally {
@@ -108,7 +120,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     return data?.company_id || null;
   };
 
-  const addProposal = async (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken'>) => {
+  const addProposal = async (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => {
     if (!user) return;
     const companyId = await getCompanyId();
     const { error } = await supabase.from('proposals').insert({

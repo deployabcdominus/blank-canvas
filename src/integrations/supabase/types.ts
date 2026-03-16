@@ -692,6 +692,7 @@ export type Database = {
           progress: number | null
           project: string | null
           project_id: string | null
+          proposal_id: string | null
           start_date: string | null
           status: string | null
           technical_details: Json | null
@@ -716,6 +717,7 @@ export type Database = {
           progress?: number | null
           project?: string | null
           project_id?: string | null
+          proposal_id?: string | null
           start_date?: string | null
           status?: string | null
           technical_details?: Json | null
@@ -740,6 +742,7 @@ export type Database = {
           progress?: number | null
           project?: string | null
           project_id?: string | null
+          proposal_id?: string | null
           start_date?: string | null
           status?: string | null
           technical_details?: Json | null
@@ -772,6 +775,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_orders_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
             referencedColumns: ["id"]
           },
         ]

@@ -47,6 +47,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
   const logoUrl = proposal.lead?.logoUrl;
 
   const isApproved = proposal.status === 'Aprobada';
+  const hasOrder = proposal.hasOrder;
   const totalApproved = proposal.approvedTotal ?? proposal.value;
   const totalPaid = getTotalPaidForProposal(proposal.id);
   const balance = totalApproved - totalPaid;
@@ -150,10 +151,15 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         {isApproved && onCreateOrder && (
           <Button
             size="sm"
-            onClick={() => onCreateOrder(proposal)}
-            className="text-xs h-8 px-2.5 bg-mint text-mint-foreground hover:bg-mint/80"
+            onClick={() => !hasOrder && onCreateOrder(proposal)}
+            disabled={hasOrder}
+            className={`text-xs h-8 px-2.5 ${hasOrder
+              ? 'border-zinc-800 text-zinc-600 opacity-60 cursor-not-allowed hover:bg-transparent'
+              : 'bg-mint text-mint-foreground hover:bg-mint/80'
+            }`}
+            variant={hasOrder ? 'outline' : 'default'}
           >
-            <Factory className="w-3.5 h-3.5 mr-1" /> Orden
+            <Factory className="w-3.5 h-3.5 mr-1" /> {hasOrder ? 'Orden Generada' : 'Orden'}
           </Button>
         )}
         {isApproved && onRegisterPayment && (

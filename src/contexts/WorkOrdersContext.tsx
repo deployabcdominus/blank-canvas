@@ -20,6 +20,7 @@ export interface WorkOrder {
   companyId: string | null;
   ownerUserId: string | null;
   projectId: string | null;
+  proposalId?: string | null;
   notes?: string | null;
   priority?: string | null;
   estimatedDelivery?: string | null;
@@ -86,6 +87,7 @@ const mapRow = (row: any): WorkOrder => ({
   companyId: row.company_id,
   ownerUserId: row.owner_user_id,
   projectId: row.project_id,
+  proposalId: row.proposal_id || null,
   notes: row.notes || null,
   priority: row.priority || 'media',
   estimatedDelivery: row.estimated_delivery || null,
@@ -117,7 +119,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (!user) { setOrders([]); setLoading(false); return; }
     const { data, error } = await supabase
       .from('production_orders')
-      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at')
+      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, proposal_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading work orders:', error);
     else setOrders((data || []).map(mapRow));
@@ -144,6 +146,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       project_id: order.projectId || null,
       notes: order.notes || null,
       priority: order.priority || 'media',
+      proposal_id: order.proposalId || null,
       assigned_to_user_id: order.assignedToUserId || null,
       installer_company_id: order.installerCompanyId || null,
     }).select().single();
