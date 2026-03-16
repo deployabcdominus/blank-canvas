@@ -245,10 +245,11 @@ const PostPaymentSetup = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-[#050505] text-zinc-200 overflow-x-hidden">
-        {/* Background */}
+      <div className="min-h-screen text-zinc-200 overflow-x-hidden relative">
+        {/* Violet ambient background */}
         <div className="fixed inset-0 pointer-events-none -z-10">
-          <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.04),transparent_50%)]" />
+          <div className="absolute top-[-10%] left-[15%] w-[600px] h-[500px] rounded-full bg-purple-600/10 blur-[180px]" />
+          <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/8 blur-[180px]" />
         </div>
 
         {/* Progress bar */}
