@@ -252,6 +252,17 @@ const Leads = () => {
             </div>
 
             <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
+              {isAdmin && (
+                <Button
+                  onClick={() => navigate('/leads/recycle-bin')}
+                  variant="outline"
+                  className={`min-h-[44px] border-violet-500/20 text-violet-400 hover:bg-violet-500/10 ${isMobile ? '' : ''}`}
+                  title="Papelera de reciclaje"
+                >
+                  <Recycle className="w-4 h-4" />
+                  {!isMobile && <span className="ml-2">Papelera</span>}
+                </Button>
+              )}
               {leads.length > 0 && isAdmin && (
                 <Button
                   onClick={() => setIsConfirmClearOpen(true)}
