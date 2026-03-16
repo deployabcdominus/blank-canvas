@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -25,7 +26,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
   const breakpoint = useBreakpoint();
   const { signOut } = useAuth();
   const { fullName, email, initials } = useUserProfile();
-
+  const { t } = useLanguage();
   const handleLogout = async () => {
     await signOut();
     navigate('/login');
@@ -51,8 +52,8 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
           )}
           {isDashboard && (
             <div className={isMobile ? 'hidden' : ''}>
-              <h1 className="font-bold text-2xl">¡Bienvenido de vuelta, {fullName.split(' ')[0]}!</h1>
-              <p className="text-muted-foreground text-sm">Mira lo que está pasando con tus proyectos hoy.</p>
+              <h1 className="font-bold text-2xl">{t.dashboard.welcomeBack}, {fullName.split(' ')[0]}!</h1>
+              <p className="text-muted-foreground text-sm">{t.dashboard.projectsToday}</p>
             </div>
           )}
           {isMobile && <h1 className="text-lg font-bold">{FIXED_BRANDING.appName}</h1>}
@@ -76,14 +77,14 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
               </div>
               <DropdownMenuSeparator className="bg-white/20" />
               <DropdownMenuItem onClick={() => navigate('/settings?tab=perfil')} className="hover:bg-white/10 min-h-[44px]">
-                <User className="w-4 h-4 mr-2" /> Perfil
+                <User className="w-4 h-4 mr-2" /> {t.nav.profile}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/settings')} className="hover:bg-white/10 min-h-[44px]">
-                <Settings className="w-4 h-4 mr-2" /> Configuración
+                <Settings className="w-4 h-4 mr-2" /> {t.nav.settings}
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-white/20" />
               <DropdownMenuItem onClick={handleLogout} className="hover:bg-white/10 text-destructive min-h-[44px]">
-                <LogOut className="w-4 h-4 mr-2" /> Salir
+                <LogOut className="w-4 h-4 mr-2" /> {t.nav.logout}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

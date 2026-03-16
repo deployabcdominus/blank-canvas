@@ -7,6 +7,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAvatarUrl } from "@/hooks/useAvatarUrl";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIndustryLabels } from "@/hooks/useIndustryLabels";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,6 +36,7 @@ export const Sidebar = () => {
   const { avatarUrl } = useAvatarUrl();
   const { fullName, email, initials } = useUserProfile();
   const industryLabels = useIndustryLabels();
+  const { t } = useLanguage();
 
   if (breakpoint === "mobile") return null;
   if (roleLoading) return null;
@@ -67,24 +69,36 @@ export const Sidebar = () => {
         </div>
       )}
 
-      {isSuperadmin ? (
-        <SidebarPlatformNav
-          items={platformItems}
-          isTablet={isTablet}
-          location={location}
-          industryLabels={industryLabels}
-        />
-      ) : (
-        <SidebarTenantNav
-          groups={tenantGroups}
-          utilityItems={utilityItems}
-          isTablet={isTablet}
-          location={location}
-          role={role}
-          industryLabels={industryLabels}
-          isAdmin={isAdmin}
-        />
-      )}
+      {/* Build i18n-aware groups */}
+      {(() => {
+        const localizedGroups = tenantGroups.map((g, i) => ({
+          ...g,
+          groupLabel: i === 0 ? t.nav.principal
+            : i === 1 ? t.nav.crmSales
+            : i === 2 ? t.nav.production
+            : t.nav.administration,
+        }));
+        return isSuperadmin ? (
+          <SidebarPlatformNav
+            items={platformItems}
+            isTablet={isTablet}
+            location={location}
+            industryLabels={industryLabels}
+            platformLabel={t.nav.platform}
+          />
+        ) : (
+          <SidebarTenantNav
+            groups={localizedGroups}
+            utilityItems={utilityItems}
+            isTablet={isTablet}
+            location={location}
+            role={role}
+            industryLabels={industryLabels}
+            isAdmin={isAdmin}
+            adjustmentsLabel={t.nav.adjustments}
+          />
+        );
+      })()}
 
       {/* User footer */}
       <SidebarUserFooter
@@ -97,6 +111,9 @@ export const Sidebar = () => {
         isAdmin={isAdmin}
         onLogout={async () => { await signOut(); navigate("/login"); }}
         onNavigate={navigate}
+        profileLabel={t.nav.profile}
+        settingsLabel={t.nav.settings}
+        logoutLabel={t.nav.logout}
       />
     </motion.aside>
   );
@@ -220,16 +237,17 @@ function SidebarCollapsibleGroup({ group, isOpen, onToggle, isTablet, location, 
 
 /* ─── Platform Nav (superadmin) ─── */
 
-function SidebarPlatformNav({ items, isTablet, location, industryLabels }: {
+function SidebarPlatformNav({ items, isTablet, location, industryLabels, platformLabel }: {
   items: NavItem[]; isTablet: boolean;
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
+  platformLabel?: string;
 }) {
   return (
     <nav className="flex-1 overflow-y-auto scrollbar-none space-y-1 min-h-0">
       {!isTablet && (
         <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
-          Plataforma
+          {platformLabel || "Platform"}
         </p>
       )}
       {items.map(item => (
@@ -241,10 +259,11 @@ function SidebarPlatformNav({ items, isTablet, location, industryLabels }: {
 
 /* ─── Tenant Nav (accordion) ─── */
 
-function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, role, industryLabels, isAdmin }: {
+function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, role, industryLabels, isAdmin, adjustmentsLabel }: {
   groups: NavGroup[]; utilityItems: NavItem[]; isTablet: boolean;
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels; isAdmin: boolean;
+  adjustmentsLabel?: string;
 }) {
   const activeGroupIdx = groups.findIndex(g =>
     g.items.some(i => isActivePath(location, i.path))
@@ -297,7 +316,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, rol
         <div className="pt-3 mt-2 border-t border-white/[0.04] space-y-0.5">
           {!isTablet && (
             <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 select-none">
-              Ajustes
+              {adjustmentsLabel || "Settings"}
             </p>
           )}
           {visibleUtils.map(item => (
@@ -311,10 +330,11 @@ function SidebarTenantNav({ groups, utilityItems: utils, isTablet, location, rol
 
 /* ─── User Footer (Premium) ─── */
 
-function SidebarUserFooter({ isTablet, avatarUrl, fullName, email, initials, isSuperadmin, isAdmin, onLogout, onNavigate }: {
+function SidebarUserFooter({ isTablet, avatarUrl, fullName, email, initials, isSuperadmin, isAdmin, onLogout, onNavigate, profileLabel, settingsLabel, logoutLabel }: {
   isTablet: boolean; avatarUrl: string | null; fullName: string; email: string;
   initials: string; isSuperadmin: boolean; isAdmin: boolean;
   onLogout: () => void; onNavigate: (path: string) => void;
+  profileLabel?: string; settingsLabel?: string; logoutLabel?: string;
 }) {
   return (
     <div className="flex-shrink-0 mt-3 pt-3 border-t border-white/[0.04] space-y-1.5">
@@ -361,16 +381,16 @@ function SidebarUserFooter({ isTablet, avatarUrl, fullName, email, initials, isS
           </div>
           <DropdownMenuSeparator className="bg-white/[0.06]" />
           <DropdownMenuItem onClick={() => onNavigate("/settings?tab=perfil")} className="min-h-[40px] text-zinc-300 hover:text-white">
-            <User className="w-4 h-4 mr-2" /> Perfil
+            <User className="w-4 h-4 mr-2" /> {profileLabel || "Profile"}
           </DropdownMenuItem>
           {isAdmin && (
             <DropdownMenuItem onClick={() => onNavigate("/settings")} className="min-h-[40px] text-zinc-300 hover:text-white">
-              <Settings className="w-4 h-4 mr-2" /> Configuración
+              <Settings className="w-4 h-4 mr-2" /> {settingsLabel || "Settings"}
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator className="bg-white/[0.06]" />
           <DropdownMenuItem onClick={onLogout} className="text-red-400 hover:text-red-300 min-h-[40px]">
-            <LogOut className="w-4 h-4 mr-2" /> Salir
+            <LogOut className="w-4 h-4 mr-2" /> {logoutLabel || "Sign Out"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

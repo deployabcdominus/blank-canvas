@@ -18,6 +18,7 @@ import { useInstallations } from "@/contexts/InstallationsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { isThisMonth } from "date-fns";
 import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
   const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
+  const { t } = useLanguage();
   useRealtimeDashboard();
 
   const { leads } = useLeads();
@@ -49,12 +51,12 @@ const Dashboard = () => {
     }).length;
 
     return [
-      { key: "leads" as KanbanColumn, label: "Leads Activos", desc: "Sin propuesta asignada", value: activeLeads, icon: Users, accent: "hud-indigo" },
-      { key: "work-orders" as KanbanColumn, label: "En Progreso", desc: "Órdenes en curso", value: inProgress, icon: ClipboardList, accent: "hud-amber" },
-      { key: "entrega" as KanbanColumn, label: "Esperando Entrega", desc: "Agendadas pendientes", value: awaitingDelivery, icon: MapPin, accent: "hud-cyan" },
-      { key: "completado" as KanbanColumn, label: "Completados", desc: "Este mes", value: completedThisMonth, icon: CheckCircle2, accent: "hud-green" },
+      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: t.dashboard.noProposal, value: activeLeads, icon: Users, accent: "hud-indigo" },
+      { key: "work-orders" as KanbanColumn, label: t.dashboard.inProgress, desc: t.dashboard.ordersInProgress, value: inProgress, icon: ClipboardList, accent: "hud-amber" },
+      { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan" },
+      { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green" },
     ];
-  }, [leads, orders, installations]);
+  }, [leads, orders, installations, t]);
 
   const handleKpiClick = (key: KanbanColumn) => {
     setActiveFilter(prev => (prev === key ? null : key));
@@ -68,9 +70,9 @@ const Dashboard = () => {
         <GracePeriodBanner />
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6 flex items-end justify-between">
           <div>
-            <h1 className="font-bold text-2xl text-foreground">Centro de Control</h1>
+            <h1 className="font-bold text-2xl text-foreground">{t.dashboard.controlCenter}</h1>
             <p className="text-muted-foreground text-sm">
-              {showFinancials ? "Vista ejecutiva · Datos en tiempo real" : "Vista operativa · Tus tareas de hoy"}
+              {showFinancials ? t.dashboard.executiveView : t.dashboard.operativeView}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -78,7 +80,7 @@ const Dashboard = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            <span className="text-xs text-muted-foreground">En vivo</span>
+            <span className="text-xs text-muted-foreground">{t.common.live}</span>
           </div>
         </motion.div>
 

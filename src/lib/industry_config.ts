@@ -48,112 +48,153 @@ export interface IndustryLabels {
   production: string;
 }
 
-const DEFAULT_LABELS: IndustryLabels = {
-  projects: "Proyectos",
-  leads: "Leads",
-  workOrders: "Órdenes de Servicio",
-  installation: "Ejecuciones",
-  installerCompanies: "Subcontratistas",
-  operationGroup: "Operación",
-  labelProject: "Proyecto",
-  labelUnit: "Medidas",
-  production: "Producción",
-};
-
-const INDUSTRY_LABELS: Record<string, Partial<IndustryLabels>> = {
-  "Señalética y Publicidad": {
-    projects: "Rótulos / Proyectos",
-    leads: "Oportunidades",
-    workOrders: "Órdenes de Producción",
-    installation: "Instalación",
-    labelProject: "Rótulo / Proyecto",
-    labelUnit: "Medidas (L × A)",
+const DEFAULT_LABELS: Record<string, IndustryLabels> = {
+  en: {
+    projects: "Projects",
+    leads: "Leads",
+    workOrders: "Work Orders",
+    installation: "Field Services",
+    installerCompanies: "Partners",
+    operationGroup: "Operations",
+    labelProject: "Project",
+    labelUnit: "Specifications",
+    production: "Production",
+  },
+  es: {
+    projects: "Proyectos",
+    leads: "Leads",
+    workOrders: "Órdenes de Servicio",
+    installation: "Ejecuciones",
+    installerCompanies: "Subcontratistas",
+    operationGroup: "Operación",
+    labelProject: "Proyecto",
+    labelUnit: "Medidas",
     production: "Producción",
   },
+};
+
+const INDUSTRY_LABELS: Record<string, Record<string, Partial<IndustryLabels>>> = {
+  "Señalética y Publicidad": {
+    es: {
+      projects: "Rótulos / Proyectos",
+      leads: "Oportunidades",
+      workOrders: "Órdenes de Producción",
+      installation: "Instalación",
+      labelProject: "Rótulo / Proyecto",
+      labelUnit: "Medidas (L × A)",
+      production: "Producción",
+    },
+    en: {
+      projects: "Signs / Projects",
+      leads: "Opportunities",
+      workOrders: "Production Orders",
+      installation: "Installation",
+      labelProject: "Sign / Project",
+      labelUnit: "Dimensions (L × W)",
+      production: "Production",
+    },
+  },
   "Climatización y HVAC": {
-    projects: "Instalaciones",
-    leads: "Solicitudes",
-    workOrders: "Órdenes de Servicio",
-    installation: "Visita Técnica",
-    labelProject: "Instalación",
-    labelUnit: "BTU / Capacidad",
-    production: "Mantenimiento",
-    installerCompanies: "Técnicos",
+    es: {
+      projects: "Instalaciones",
+      leads: "Solicitudes",
+      workOrders: "Órdenes de Servicio",
+      installation: "Visita Técnica",
+      labelProject: "Instalación",
+      labelUnit: "BTU / Capacidad",
+      production: "Mantenimiento",
+      installerCompanies: "Técnicos",
+    },
+    en: {
+      projects: "Installations",
+      leads: "Requests",
+      workOrders: "Service Orders",
+      installation: "Site Visit",
+      labelProject: "Installation",
+      labelUnit: "BTU / Capacity",
+      production: "Maintenance",
+      installerCompanies: "Technicians",
+    },
   },
   "Servicios IT y Software": {
-    projects: "Tickets",
-    leads: "Solicitudes",
-    workOrders: "Órdenes de Soporte",
-    installation: "Implementación",
-    labelProject: "Ticket",
-    labelUnit: "SLA",
-    production: "Soporte",
-    installerCompanies: "Proveedores",
+    es: {
+      projects: "Tickets",
+      leads: "Solicitudes",
+      workOrders: "Órdenes de Soporte",
+      installation: "Implementación",
+      labelProject: "Ticket",
+      labelUnit: "SLA",
+      production: "Soporte",
+      installerCompanies: "Proveedores",
+    },
+    en: {
+      projects: "Tickets",
+      leads: "Requests",
+      workOrders: "Support Orders",
+      installation: "Deployment",
+      labelProject: "Ticket",
+      labelUnit: "SLA",
+      production: "Support",
+      installerCompanies: "Vendors",
+    },
   },
   "Mantenimiento y Reformas": {
-    projects: "Obras",
-    leads: "Oportunidades",
-    workOrders: "Órdenes de Trabajo",
-    installation: "Ejecución en Campo",
-    labelProject: "Obra / Proyecto",
-    labelUnit: "Medidas (L × A × P)",
-    production: "Ejecución",
-    installerCompanies: "Subcontratistas",
+    es: {
+      projects: "Obras",
+      leads: "Oportunidades",
+      workOrders: "Órdenes de Trabajo",
+      installation: "Ejecución en Campo",
+      labelProject: "Obra / Proyecto",
+      labelUnit: "Medidas (L × A × P)",
+      production: "Ejecución",
+      installerCompanies: "Subcontratistas",
+    },
+    en: {
+      projects: "Jobs",
+      leads: "Opportunities",
+      workOrders: "Work Orders",
+      installation: "Field Execution",
+      labelProject: "Job / Project",
+      labelUnit: "Dimensions (L × W × D)",
+      production: "Execution",
+      installerCompanies: "Subcontractors",
+    },
   },
-  // Legacy support
+  // Legacy support (fallback to es only)
   "Field Service / Instalaciones": {
-    projects: "Instalaciones",
-    workOrders: "Órdenes de Servicio",
-    installation: "Visita Técnica",
-    labelProject: "Instalación",
-    labelUnit: "BTU / Capacidad",
+    es: { projects: "Instalaciones", workOrders: "Órdenes de Servicio", installation: "Visita Técnica", labelProject: "Instalación", labelUnit: "BTU / Capacidad" },
+    en: { projects: "Installations", workOrders: "Service Orders", installation: "Site Visit", labelProject: "Installation", labelUnit: "BTU / Capacity" },
   },
   "Impresión / Producción": {
-    projects: "Rótulos / Proyectos",
-    workOrders: "Órdenes de Producción",
-    installation: "Instalación",
-    labelProject: "Rótulo / Proyecto",
-    labelUnit: "Medidas (L × A)",
+    es: { projects: "Rótulos / Proyectos", workOrders: "Órdenes de Producción", installation: "Instalación", labelProject: "Rótulo / Proyecto", labelUnit: "Medidas (L × A)" },
+    en: { projects: "Signs / Projects", workOrders: "Production Orders", installation: "Installation", labelProject: "Sign / Project", labelUnit: "Dimensions (L × W)" },
   },
   "Diseño / Creativos": {
-    leads: "Oportunidades",
-    workOrders: "Briefings",
-    installation: "Entrega",
-    installerCompanies: "Colaboradores",
-    labelProject: "Proyecto",
-    labelUnit: "Especificaciones",
+    es: { leads: "Oportunidades", workOrders: "Briefings", installation: "Entrega", installerCompanies: "Colaboradores", labelProject: "Proyecto", labelUnit: "Especificaciones" },
+    en: { leads: "Opportunities", workOrders: "Briefings", installation: "Delivery", installerCompanies: "Collaborators", labelProject: "Project", labelUnit: "Specifications" },
   },
   "Construcción / Contratistas": {
-    projects: "Obras",
-    leads: "Oportunidades",
-    workOrders: "Órdenes de Trabajo",
-    installation: "Ejecución en Campo",
-    labelProject: "Obra",
-    labelUnit: "Medidas (L × A × P)",
+    es: { projects: "Obras", leads: "Oportunidades", workOrders: "Órdenes de Trabajo", installation: "Ejecución en Campo", labelProject: "Obra", labelUnit: "Medidas (L × A × P)" },
+    en: { projects: "Jobs", leads: "Opportunities", workOrders: "Work Orders", installation: "Field Execution", labelProject: "Job", labelUnit: "Dimensions (L × W × D)" },
   },
   "Eventos / Hospitality": {
-    projects: "Eventos",
-    leads: "Oportunidades",
-    workOrders: "Logística",
-    installation: "Montaje",
-    labelProject: "Evento",
-    labelUnit: "Capacidad / Asistentes",
+    es: { projects: "Eventos", leads: "Oportunidades", workOrders: "Logística", installation: "Montaje", labelProject: "Evento", labelUnit: "Capacidad / Asistentes" },
+    en: { projects: "Events", leads: "Opportunities", workOrders: "Logistics", installation: "Setup", labelProject: "Event", labelUnit: "Capacity / Attendees" },
   },
   "Retail / Tiendas": {
-    projects: "Campañas",
-    leads: "Oportunidades",
-    workOrders: "Pedidos",
-    installation: "Distribución",
-    labelProject: "Campaña",
-    labelUnit: "SKU / Unidades",
+    es: { projects: "Campañas", leads: "Oportunidades", workOrders: "Pedidos", installation: "Distribución", labelProject: "Campaña", labelUnit: "SKU / Unidades" },
+    en: { projects: "Campaigns", leads: "Opportunities", workOrders: "Orders", installation: "Distribution", labelProject: "Campaign", labelUnit: "SKU / Units" },
   },
 };
 
-export function getIndustryLabels(industry: string | null | undefined): IndustryLabels {
+export function getIndustryLabels(industry: string | null | undefined, locale: string = "en"): IndustryLabels {
+  const lang = locale === "es" ? "es" : "en";
+  const defaults = DEFAULT_LABELS[lang] || DEFAULT_LABELS.en;
   if (!industry || !INDUSTRY_LABELS[industry]) {
-    return DEFAULT_LABELS;
+    return defaults;
   }
-  return { ...DEFAULT_LABELS, ...INDUSTRY_LABELS[industry] };
+  const overrides = INDUSTRY_LABELS[industry][lang] || INDUSTRY_LABELS[industry].es || {};
+  return { ...defaults, ...overrides };
 }
 
 /* ── Default Services per Industry ── */

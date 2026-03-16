@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 export const DashboardHeader = () => {
+  const { t } = useLanguage();
+  const { fullName } = useUserProfile();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -8,9 +13,9 @@ export const DashboardHeader = () => {
       transition={{ duration: 0.5 }}
       className="mb-6"
     >
-      <h1 className="font-bold text-2xl">¡Bienvenido de vuelta!</h1>
+      <h1 className="font-bold text-2xl">{t.dashboard.welcomeBack}, {fullName.split(" ")[0]}!</h1>
       <p className="text-muted-foreground text-sm">
-        Mira lo que está pasando con tus proyectos hoy.
+        {t.dashboard.projectsToday}
       </p>
     </motion.div>
   );
