@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil, Eye, CheckCircle2 } from "lucide-react";
 import { Lead } from "@/contexts/LeadsContext";
 import { Proposal } from "@/contexts/ProposalsContext";
+import { LeadPipelineStepper, getLeadPipelineStage } from "@/components/LeadPipelineStepper";
 
 interface LeadCardProps {
   lead: Lead;
@@ -139,6 +140,11 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
             <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
             {lead.contact.location}
           </div>
+        </div>
+
+        {/* Pipeline stepper */}
+        <div className="mb-4">
+          <LeadPipelineStepper currentStage={getLeadPipelineStage(lead.status, linkedProposal?.status)} />
         </div>
       </div>
 
