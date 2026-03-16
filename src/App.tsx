@@ -74,6 +74,7 @@ const App = () => (
                 <Route path="/p/:proposalId" element={<ProposalApproval />} />
                 {/* Superadmin — no tenant providers needed */}
                 <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
+                <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
                 {/* Tenant routes — single TenantProviders wrapper via layout route */}
                 <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
@@ -95,9 +96,6 @@ const App = () => (
                   <Route path="/audit-log" element={<AuditLog />} />
                   <Route path="/settings" element={<Settings />} />
                 </Route>
-
-                {/* Settings accessible to superadmin (outside tenant layout) */}
-                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
