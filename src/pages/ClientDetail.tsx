@@ -244,9 +244,29 @@ function ProposalMiniCard({ proposal, index }: { proposal: Proposal; index: numb
           {proposal.status}
         </Badge>
       </div>
-      <p className="text-lg font-bold mb-1">
-        ${proposal.value.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-      </p>
+      <div className="flex items-center gap-2 mb-1">
+        <p className="text-lg font-bold">
+          ${proposal.value.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+        </p>
+        {proposal.approvalToken && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={`/proposal-approval/${proposal.approvalToken}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center h-6 w-6 rounded-md text-violet-500 hover:bg-violet-500/10 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <FileText className="w-3.5 h-3.5" />
+              </a>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <p className="text-xs">Ver términos y detalles de la propuesta</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
       <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <Calendar className="w-3 h-3" />
