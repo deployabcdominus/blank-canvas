@@ -124,6 +124,7 @@ const Proposals = () => {
         projectId: null,
         notes: `Orden generada automáticamente desde propuesta aprobada manualmente.`,
         priority: 'media',
+        proposalId: id,
       });
       logAudit({
         action: 'aprobado',
