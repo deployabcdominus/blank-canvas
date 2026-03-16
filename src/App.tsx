@@ -100,6 +100,7 @@ const App = () => (
             </AnimatePresence>
           </BrowserRouter>
         </SettingsProvider>
+        </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
