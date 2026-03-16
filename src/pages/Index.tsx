@@ -425,7 +425,7 @@ const Index = () => {
                     onClick={() => scrollTo("pricing")}
                     className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_4px_24px_rgba(139,92,246,0.4)]"
                   >
-                    {L.nav.freeTrial}
+                    {L.nav.getStarted}
                   </Button>
                 </>
               )}

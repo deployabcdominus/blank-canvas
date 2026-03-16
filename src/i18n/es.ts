@@ -8,7 +8,7 @@ export const es: TranslationKeys = {
       pricing: "Precios",
       demo: "Demo",
       login: "Login",
-      freeTrial: "Empezar",
+      getStarted: "Empezar",
       goToDashboard: "Ir al Dashboard",
     },
     hero: {
