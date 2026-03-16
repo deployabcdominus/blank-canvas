@@ -36,6 +36,9 @@ interface LeadsContextType {
   deleteLead: (id: string) => Promise<void>;
   deleteLeads: (ids: string[]) => Promise<void>;
   clearLeads: () => Promise<void>;
+  restoreLead: (id: string) => Promise<void>;
+  permanentDeleteLead: (id: string) => Promise<void>;
+  fetchDeletedLeads: () => Promise<Lead[]>;
   refreshLeads: () => Promise<void>;
   loading: boolean;
   totalCount: number;
