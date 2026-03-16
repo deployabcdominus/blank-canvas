@@ -15,7 +15,7 @@ import { AssignLeadModal } from "@/components/AssignLeadModal";
 import { ConvertLeadModal } from "@/components/ConvertLeadModal";
 import { LeadsKPIBar } from "@/components/LeadsKPIBar";
 import { LeadCard } from "@/components/LeadCard";
-import { Plus, Search, X, Trash2, UserPlus, Menu } from "lucide-react";
+import { Plus, Search, X, Trash2, UserPlus, Menu, XCircle } from "lucide-react";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -25,17 +25,20 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Leads = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const breakpoint = useBreakpoint();
-  const { leads, addLead, clearLeads } = useLeads();
+  const { leads, addLead, clearLeads, deleteLead, deleteLeads } = useLeads();
   const { proposals, addProposal } = useProposals();
   const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [assignLeadId, setAssignLeadId] = useState<string | null>(null);
   const [assignCurrentUser, setAssignCurrentUser] = useState<string | null>(null);
@@ -44,6 +47,7 @@ const Leads = () => {
   const [editLeadMode, setEditLeadMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [ownershipFilter, setOwnershipFilter] = useState("todos");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const isMobile = breakpoint === 'mobile';
   const isTablet = breakpoint === 'tablet';
@@ -71,7 +75,6 @@ const Leads = () => {
     const lead = leads.find(l => l.id === leadId);
     if (!lead) return;
 
-    // Block if already converted
     if (lead.status === 'Convertido' || lead.clientId) {
       toast({ title: "Lead ya convertido", description: "Este lead ya fue procesado.", variant: "destructive" });
       return;
@@ -108,14 +111,55 @@ const Leads = () => {
     setIsAssignModalOpen(true);
   };
 
-  const handleClearLeads = () => {
-    clearLeads();
-    setIsConfirmClearOpen(false);
-    toast({ title: "Leads eliminados con éxito", description: "Todos los leads fueron removidos del sistema." });
+  const handleClearLeads = async () => {
+    try {
+      await clearLeads();
+      setIsConfirmClearOpen(false);
+      setSelectedIds(new Set());
+      toast({ title: "Leads eliminados con éxito", description: "Todos los leads fueron removidos del sistema." });
+    } catch {
+      toast({ title: "Error al eliminar", description: "No se pudieron eliminar los leads.", variant: "destructive" });
+    }
+  };
+
+  const handleDeleteSingle = (leadId: string) => {
+    setDeleteTargetId(leadId);
+    setIsConfirmDeleteOpen(true);
+  };
+
+  const handleConfirmDeleteSingle = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await deleteLead(deleteTargetId);
+      setSelectedIds(prev => { const n = new Set(prev); n.delete(deleteTargetId); return n; });
+      toast({ title: "Lead eliminado", description: "El lead fue removido del sistema." });
+    } catch {
+      toast({ title: "Error", description: "No se pudo eliminar el lead.", variant: "destructive" });
+    }
+    setDeleteTargetId(null);
+    setIsConfirmDeleteOpen(false);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.size === 0) return;
+    try {
+      await deleteLeads(Array.from(selectedIds));
+      toast({ title: `${selectedIds.size} lead(s) eliminados`, description: "Los leads seleccionados fueron removidos." });
+      setSelectedIds(new Set());
+    } catch {
+      toast({ title: "Error", description: "No se pudieron eliminar los leads.", variant: "destructive" });
+    }
+  };
+
+  const handleSelect = (leadId: string, checked: boolean) => {
+    setSelectedIds(prev => {
+      const n = new Set(prev);
+      if (checked) n.add(leadId); else n.delete(leadId);
+      return n;
+    });
   };
 
   const filteredLeads = leads.filter(lead => {
-    // Ownership filter (for comercial)
     if (ownershipFilter === "mios" && lead.createdByUserId !== user?.id) return false;
     if (ownershipFilter === "asignados" && lead.assignedToUserId !== user?.id) return false;
     if (ownershipFilter === "sin_asignar" && lead.assignedToUserId) return false;
@@ -140,7 +184,7 @@ const Leads = () => {
         <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
         <main
-          className={`flex-1 transition-all duration-300 ${isMobile ? 'p-4' : 'p-6'}`}
+          className={`flex-1 transition-all duration-300 ${isMobile ? 'p-4' : 'p-6'} ${selectedIds.size > 0 ? 'pb-24' : ''}`}
           style={{ marginLeft: `${sidebarWidth}px` }}
         >
           {isMobile && (
@@ -259,16 +303,52 @@ const Leads = () => {
                   proposals={proposals}
                   index={index}
                   isMobile={isMobile}
+                  selected={selectedIds.has(lead.id)}
+                  onSelect={isAdmin ? handleSelect : undefined}
                   onAdvance={handleAdvanceToProposal}
                   onAssign={canManageLeads ? handleAssignLead : undefined}
                   onConvert={(leadId) => setConvertLeadId(leadId)}
                   onEdit={(l) => { setEditLead(l); setEditLeadMode(true); }}
+                  onDelete={isAdmin ? handleDeleteSingle : undefined}
                   onCardClick={(l) => { setEditLead(l); setEditLeadMode(false); }}
                   onViewProposal={handleViewProposal}
                 />
               ))}
             </div>
           )}
+
+          {/* Floating Bulk Action Bar */}
+          <AnimatePresence>
+            {selectedIds.size > 0 && isAdmin && (
+              <motion.div
+                initial={{ y: 80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 80, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/[0.08] bg-zinc-900/90 backdrop-blur-xl shadow-2xl"
+              >
+                <span className="text-sm font-medium text-zinc-300">
+                  {selectedIds.size} seleccionado{selectedIds.size > 1 ? 's' : ''}
+                </span>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-8 text-xs"
+                  onClick={handleDeleteSelected}
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Eliminar Selección
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 text-xs text-zinc-400 hover:text-zinc-100"
+                  onClick={() => setSelectedIds(new Set())}
+                >
+                  <XCircle className="w-3.5 h-3.5 mr-1.5" /> Deseleccionar
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <AddLeadModal isOpen={isAddLeadModalOpen} onClose={() => setIsAddLeadModalOpen(false)} onAddLead={handleAddLead} />
 
@@ -292,17 +372,38 @@ const Leads = () => {
             lead={leads.find(l => l.id === convertLeadId) || null}
           />
 
+          {/* Clear All Confirmation - Glassmorphism */}
           <AlertDialog open={isConfirmClearOpen} onOpenChange={setIsConfirmClearOpen}>
-            <AlertDialogContent>
+            <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
               <AlertDialogHeader>
-                <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Esta acción eliminará todos los leads del sistema. Esta acción no se puede deshacer.
+                <AlertDialogTitle className="text-lg">⚠️ Eliminar todos los leads</AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400">
+                  ¿Estás seguro de que deseas eliminar <strong className="text-zinc-200">TODOS</strong> los leads ({leads.length} registros)? Esta acción no se puede deshacer.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleClearLeads}>Confirmar</AlertDialogAction>
+                <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleClearLeads} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Sí, eliminar todo
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* Single Delete Confirmation */}
+          <AlertDialog open={isConfirmDeleteOpen} onOpenChange={setIsConfirmDeleteOpen}>
+            <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Eliminar lead</AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400">
+                  ¿Estás seguro de que deseas eliminar este lead? Esta acción no se puede deshacer.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleConfirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Eliminar
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
