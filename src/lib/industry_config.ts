@@ -48,16 +48,29 @@ export interface IndustryLabels {
   production: string;
 }
 
-const DEFAULT_LABELS: IndustryLabels = {
-  projects: "Proyectos",
-  leads: "Leads",
-  workOrders: "Órdenes de Servicio",
-  installation: "Ejecuciones",
-  installerCompanies: "Subcontratistas",
-  operationGroup: "Operación",
-  labelProject: "Proyecto",
-  labelUnit: "Medidas",
-  production: "Producción",
+const DEFAULT_LABELS: Record<string, IndustryLabels> = {
+  en: {
+    projects: "Projects",
+    leads: "Leads",
+    workOrders: "Work Orders",
+    installation: "Field Services",
+    installerCompanies: "Partners",
+    operationGroup: "Operations",
+    labelProject: "Project",
+    labelUnit: "Specifications",
+    production: "Production",
+  },
+  es: {
+    projects: "Proyectos",
+    leads: "Leads",
+    workOrders: "Órdenes de Servicio",
+    installation: "Ejecuciones",
+    installerCompanies: "Subcontratistas",
+    operationGroup: "Operación",
+    labelProject: "Proyecto",
+    labelUnit: "Medidas",
+    production: "Producción",
+  },
 };
 
 const INDUSTRY_LABELS: Record<string, Partial<IndustryLabels>> = {
