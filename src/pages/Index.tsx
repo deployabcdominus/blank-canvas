@@ -616,22 +616,22 @@ const Index = () => {
                   Gestión multi-industria
                 </motion.span>
 
-                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.4rem] lg:text-[4rem] xl:text-6xl font-extrabold leading-[1.04] tracking-tighter mb-8">
-                  <span className="bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">
-                    SignFlow — Tu plataforma
+                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.4rem] lg:text-[4rem] xl:text-6xl font-black leading-[1.02] tracking-tighter mb-8">
+                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                    SignFlow: La plataforma
                   </span>
                   <br />
-                  <span className="bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">
-                    camaleón para la gestión
+                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                    camaleón para líderes
                   </span>
                   <br />
-                  <span className="bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
-                    multi-industria.
+                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                    de industria.
                   </span>
                 </h1>
 
-                <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-3xl mx-auto mb-14">
-                  De IT y HVAC a Señalética y Reformas. Adapta flujos, técnicos y fichas técnicas en segundos. Una herramienta, múltiples negocios.
+                <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
+                  Gestión de IT, HVAC y Señalética en una sola interfaz inteligente. Personalización total, eficiencia absoluta.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center gap-4">
