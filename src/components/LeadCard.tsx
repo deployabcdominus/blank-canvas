@@ -60,7 +60,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className="rounded-xl border border-white/[0.06] bg-[#0a0a0a] hover:border-primary/20 transition-all duration-300 p-6 md:p-7 flex flex-col justify-between group cursor-pointer shimmer-hover"
+      className="rounded-xl border border-white/[0.06] bg-zinc-900/60 hover:border-primary/15 transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover"
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}
       onClick={() => onCardClick?.(lead)}
