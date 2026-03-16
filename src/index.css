@@ -223,10 +223,10 @@
   .stat-card:nth-child(3) { animation-delay: 160ms; }
   .stat-card:nth-child(4) { animation-delay: 240ms; }
 
-  .glow-mint { box-shadow: 0 0 20px hsl(var(--mint) / 0.3); }
-  .glow-blue { box-shadow: 0 0 20px hsl(var(--soft-blue) / 0.3); }
-  .glow-lavender { box-shadow: 0 0 20px hsl(var(--lavender) / 0.3); }
-  .glow-pink { box-shadow: 0 0 20px hsl(var(--pale-pink) / 0.3); }
+  .glow-mint { box-shadow: 0 0 12px hsl(var(--mint) / 0.15); }
+  .glow-blue { box-shadow: 0 0 12px hsl(var(--soft-blue) / 0.15); }
+  .glow-lavender { box-shadow: 0 0 12px hsl(var(--lavender) / 0.15); }
+  .glow-pink { box-shadow: 0 0 12px hsl(var(--pale-pink) / 0.15); }
 
   .btn-glass {
     @apply glass-card px-6 py-3 font-medium transition-all duration-200 hover:shadow-md;
