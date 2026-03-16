@@ -55,6 +55,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
     if (!lead || !user || isAlreadyConverted) return;
     setSaving(true);
     try {
+      // Step 1: Create or recover client
       let clientId: string;
 
       if (mode === 'new') {
@@ -70,12 +71,14 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
           notes: lead.notes || null,
           logoUrl: lead.logoUrl || null,
         });
+        if (!newClient?.id) throw new Error('Error al crear el cliente: no se recibió ID');
         clientId = newClient.id;
       } else {
         if (!selectedClientId) throw new Error('Seleccione un cliente');
         clientId = selectedClientId;
       }
 
+      // Step 2: Create project
       const project = await addProject({
         clientId,
         projectName: projectName.trim() || lead.service || 'Proyecto',
@@ -86,15 +89,43 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         folderRelativePath: null,
         folderFullPath: null,
       });
+      if (!project?.id) throw new Error('Error al crear el proyecto: no se recibió ID');
 
+      // Step 3: Create proposal linked to lead
+      try {
+        await addProposal({
+          client: newClientName.trim() || lead.company || lead.name,
+          project: projectName.trim() || lead.service || 'Proyecto',
+          value: lead.value ? parseFloat(lead.value) || 0 : 0,
+          description: lead.notes || lead.service || '',
+          status: 'Borrador',
+          sentDate: null,
+          sentMethod: null,
+          leadId: lead.id,
+          updatedAt: null,
+          lead: null,
+          approvedTotal: null,
+          approvedAt: null,
+          mockupUrl: null,
+        });
+      } catch (proposalErr: any) {
+        const msg = proposalErr?.message || 'Error desconocido';
+        toast({ title: "Error al crear propuesta", description: `Detalle: ${msg}. Verifique que todos los campos requeridos estén completos.`, variant: "destructive" });
+        throw new Error(`Fallo en creación de propuesta: ${msg}`);
+      }
+
+      // Step 4: Mark lead as converted
       await updateLead(lead.id, {
         status: 'Convertido',
         clientId: clientId,
         projectId: project.id,
       } as any);
 
-      toast({ title: "Lead convertido", description: "Cliente y proyecto creados exitosamente." });
+      toast({ title: "Lead convertido", description: "Cliente, proyecto y propuesta creados exitosamente." });
       onClose();
+
+      // Step 5: Redirect to proposals
+      navigate('/proposals');
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally { setSaving(false); }
