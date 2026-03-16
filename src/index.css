@@ -207,9 +207,9 @@
   }
   .card-interactive:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.15);
-    background: rgba(9, 9, 11, 0.55);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    border-color: hsl(265 85% 60% / 0.20);
+    background: rgba(15, 15, 20, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px -8px hsl(265 85% 60% / 0.12);
   }
 
   /* Stat card staggered entrance */
