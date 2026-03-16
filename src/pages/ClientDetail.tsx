@@ -13,8 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft, Mail, Phone, StickyNote, FolderOpen, FileText, BarChart3,
-  Calendar, MapPin, TrendingUp, DollarSign, CheckCircle, Clock,
+  Calendar, MapPin, TrendingUp, DollarSign, CheckCircle, Clock, ExternalLink,
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { VisualStatusTracker } from "@/components/VisualStatusTracker";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
