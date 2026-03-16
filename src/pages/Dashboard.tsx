@@ -51,10 +51,10 @@ const Dashboard = () => {
     }).length;
 
     return [
-      { key: "leads" as KanbanColumn, label: "Leads Activos", desc: "Sin propuesta asignada", value: activeLeads, icon: Users, accent: "hud-indigo" },
-      { key: "work-orders" as KanbanColumn, label: "En Progreso", desc: "Órdenes en curso", value: inProgress, icon: ClipboardList, accent: "hud-amber" },
-      { key: "entrega" as KanbanColumn, label: "Esperando Entrega", desc: "Agendadas pendientes", value: awaitingDelivery, icon: MapPin, accent: "hud-cyan" },
-      { key: "completado" as KanbanColumn, label: "Completados", desc: "Este mes", value: completedThisMonth, icon: CheckCircle2, accent: "hud-green" },
+      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: t.dashboard.noProposal, value: activeLeads, icon: Users, accent: "hud-indigo" },
+      { key: "work-orders" as KanbanColumn, label: t.dashboard.inProgress, desc: t.dashboard.ordersInProgress, value: inProgress, icon: ClipboardList, accent: "hud-amber" },
+      { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan" },
+      { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green" },
     ];
   }, [leads, orders, installations]);
 
