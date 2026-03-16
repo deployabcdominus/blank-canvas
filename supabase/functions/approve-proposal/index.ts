@@ -19,7 +19,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Capture client info
     const signerIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
       || req.headers.get("cf-connecting-ip")
       || "unknown";
@@ -29,7 +28,7 @@ Deno.serve(async (req) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const admin = createClient(supabaseUrl, serviceRoleKey);
 
-    // Find proposal by approval_token
+    // Find proposal with lead data
     const { data: proposal, error: fetchErr } = await admin
       .from("proposals")
       .select("id, client, project, value, status, company_id, lead_id, user_id, approved_at")
@@ -66,6 +65,95 @@ Deno.serve(async (req) => {
 
     if (updateErr) throw updateErr;
 
+    // ── Auto-create Client from Lead if not already linked ──
+    let clientId: string | null = null;
+
+    if (proposal.lead_id) {
+      const { data: lead } = await admin
+        .from("leads")
+        .select("id, name, company, email, phone, location, website, logo_url, service, client_id, notes")
+        .eq("id", proposal.lead_id)
+        .single();
+
+      if (lead) {
+        if (lead.client_id) {
+          // Lead already converted — reuse existing client
+          clientId = lead.client_id;
+        } else {
+          // Check if a client with same name already exists in this company
+          const clientName = lead.company || lead.name || proposal.client;
+          const { data: existingClient } = await admin
+            .from("clients")
+            .select("id")
+            .eq("company_id", proposal.company_id)
+            .eq("client_name", clientName)
+            .maybeSingle();
+
+          if (existingClient) {
+            clientId = existingClient.id;
+          } else {
+            // Create new client from lead data
+            const { data: newClient, error: clientErr } = await admin
+              .from("clients")
+              .insert({
+                company_id: proposal.company_id,
+                client_name: clientName,
+                contact_name: lead.name || "",
+                primary_email: lead.email || null,
+                primary_phone: lead.phone || null,
+                address: lead.location || "",
+                website: lead.website || "",
+                service_type: lead.service || "",
+                notes: lead.notes || null,
+                logo_url: lead.logo_url || null,
+              })
+              .select("id")
+              .single();
+
+            if (!clientErr && newClient) {
+              clientId = newClient.id;
+            } else {
+              console.error("Error creating client:", clientErr);
+            }
+          }
+
+          // Link client back to lead
+          if (clientId) {
+            await admin.from("leads").update({
+              client_id: clientId,
+              status: "Convertido",
+            }).eq("id", lead.id);
+          }
+        }
+      }
+    }
+
+    // If no lead, try to find/create client by proposal.client name
+    if (!clientId && proposal.client) {
+      const { data: existingClient } = await admin
+        .from("clients")
+        .select("id")
+        .eq("company_id", proposal.company_id)
+        .eq("client_name", proposal.client)
+        .maybeSingle();
+
+      if (existingClient) {
+        clientId = existingClient.id;
+      } else {
+        const { data: newClient } = await admin
+          .from("clients")
+          .insert({
+            company_id: proposal.company_id,
+            client_name: proposal.client,
+            contact_name: "",
+            address: "",
+          })
+          .select("id")
+          .single();
+        if (newClient) clientId = newClient.id;
+      }
+    }
+
     // Create audit log
     await admin.from("audit_logs").insert({
       company_id: proposal.company_id,
@@ -80,10 +168,11 @@ Deno.serve(async (req) => {
         signer_ip: signerIp,
         approved_at: now,
         value: proposal.value,
+        auto_client_created: !!clientId,
       },
     });
 
-    // Auto-create Work Order
+    // Auto-create Work Order linked to client
     const { error: woErr } = await admin.from("production_orders").insert({
       user_id: proposal.user_id,
       company_id: proposal.company_id,
@@ -95,6 +184,7 @@ Deno.serve(async (req) => {
       priority: "media",
       materials: [],
       start_date: now,
+      client_id: clientId,
       notes: `Generada automáticamente al aprobarse la propuesta por ${signerName.trim()}.`,
     });
 
@@ -106,14 +196,12 @@ Deno.serve(async (req) => {
     try {
       const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
       if (RESEND_API_KEY && proposal.company_id) {
-        // Get admin emails
         const { data: admins } = await admin
           .from("user_roles")
           .select("user_id")
           .in("role", ["admin", "superadmin"]);
 
         if (admins && admins.length > 0) {
-          // Get admin profiles with company match
           const adminIds = admins.map((a: any) => a.user_id);
           const { data: profiles } = await admin
             .from("profiles")
@@ -122,14 +210,12 @@ Deno.serve(async (req) => {
             .in("id", adminIds);
 
           if (profiles && profiles.length > 0) {
-            // Get emails from auth
             const emails: string[] = [];
             for (const p of profiles) {
               const { data: authUser } = await admin.auth.admin.getUserById(p.id);
               if (authUser?.user?.email) emails.push(authUser.user.email);
             }
 
-            // Get company name
             const { data: comp } = await admin
               .from("companies")
               .select("name, logo_url")
@@ -139,7 +225,7 @@ Deno.serve(async (req) => {
             const companyName = comp?.name || "Sign Flow";
             const logoHtml = comp?.logo_url
               ? `<img src="${comp.logo_url}" style="height:40px;object-fit:contain;margin-bottom:16px" />`
-              : `<h2 style="margin:0 0 16px;color:#E8712A;font-size:24px">Sign Flow</h2>`;
+              : `<h2 style="margin:0 0 16px;color:#7c3aed;font-size:24px">Sign Flow</h2>`;
 
             const formattedValue = proposal.value
               ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(proposal.value)
@@ -159,9 +245,9 @@ Deno.serve(async (req) => {
                   html: `
                     <div style="font-family:'Inter',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#0a0a0a;color:#e4e4e7;border-radius:12px">
                       ${logoHtml}
-                      <div style="background:linear-gradient(135deg,rgba(249,115,22,0.15),rgba(249,115,22,0.05));border:1px solid rgba(249,115,22,0.2);border-radius:12px;padding:24px;margin-bottom:24px">
+                      <div style="background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(124,58,237,0.05));border:1px solid rgba(124,58,237,0.2);border-radius:12px;padding:24px;margin-bottom:24px">
                         <p style="margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:#a1a1aa">Propuesta aprobada</p>
-                        <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#f97316">🚀 ¡${proposal.client} ha firmado!</h1>
+                        <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#8b5cf6">🚀 ¡${proposal.client} ha firmado!</h1>
                         <p style="margin:0;color:#d4d4d8;font-size:15px;line-height:1.6">
                           La propuesta <strong>${proposal.project || proposal.client}</strong> ha sido aprobada
                           y firmada por <strong>${signerName.trim()}</strong>.
@@ -170,7 +256,7 @@ Deno.serve(async (req) => {
                       <div style="display:flex;gap:16px;margin-bottom:24px">
                         <div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px;text-align:center">
                           <p style="margin:0;font-size:11px;color:#71717a;text-transform:uppercase">Monto</p>
-                          <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#f97316">${formattedValue}</p>
+                          <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#8b5cf6">${formattedValue}</p>
                         </div>
                         <div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px;text-align:center">
                           <p style="margin:0;font-size:11px;color:#71717a;text-transform:uppercase">Firmado por</p>
@@ -178,7 +264,7 @@ Deno.serve(async (req) => {
                         </div>
                       </div>
                       <p style="color:#52525b;font-size:11px;margin:0;text-align:center">
-                        Se ha creado automáticamente una orden de trabajo · ${companyName} via Sign Flow
+                        Cliente registrado y orden de trabajo creada automáticamente · ${companyName} via Sign Flow
                       </p>
                     </div>
                   `,
@@ -190,10 +276,14 @@ Deno.serve(async (req) => {
       }
     } catch (emailErr) {
       console.error("Error sending approval email:", emailErr);
-      // Non-blocking
     }
 
-    return new Response(JSON.stringify({ success: true, proposalId: proposal.id }), {
+    return new Response(JSON.stringify({
+      success: true,
+      proposalId: proposal.id,
+      clientId,
+      clientAutoCreated: !!clientId,
+    }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

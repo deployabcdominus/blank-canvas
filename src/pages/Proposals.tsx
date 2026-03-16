@@ -12,6 +12,8 @@ import { ProposalsTableView } from "@/components/proposals/ProposalsTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
 import { useProposals, type Proposal } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
+import { useClients } from "@/contexts/ClientsContext";
+import { useLeads } from "@/contexts/LeadsContext";
 import { useCompany } from "@/hooks/useCompany";
 import { useUserRole } from "@/hooks/useUserRole";
 import { logAudit } from "@/lib/audit";
@@ -21,6 +23,8 @@ import { toast } from "sonner";
 const Proposals = () => {
   const { proposals, loading, addProposal, updateProposal, deleteProposal } = useProposals();
   const { addOrder } = useWorkOrders();
+  const { clients, addClient, refreshClients } = useClients();
+  const { leads, updateLead } = useLeads();
   const { company } = useCompany();
   const { canEdit, canDelete } = useUserRole();
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -45,13 +49,71 @@ const Proposals = () => {
     const previousProposal = proposals.find(p => p.id === id);
     await updateProposal(id, rest);
 
-    // Auto-create work order when manually approved
+    // Auto-create client + work order when manually approved
     if (rest.status === 'Aprobada' && previousProposal?.status !== 'Aprobada') {
+      let clientId: string | null = null;
+      const clientName = rest.client || previousProposal?.client || '';
+
+      // Try to find/create client from linked lead
+      const leadId = previousProposal?.leadId;
+      if (leadId) {
+        const lead = leads.find(l => l.id === leadId);
+        if (lead?.clientId) {
+          clientId = lead.clientId;
+        } else if (lead) {
+          // Check if client already exists by name
+          const existing = clients.find(c => c.clientName === (lead.company || lead.name));
+          if (existing) {
+            clientId = existing.id;
+          } else {
+            try {
+              const newClient = await addClient({
+                clientName: lead.company || lead.name || clientName,
+                contactName: lead.name || null,
+                primaryEmail: lead.contact.email || null,
+                primaryPhone: lead.contact.phone || null,
+                address: lead.contact.location || null,
+                website: lead.website || null,
+                serviceType: lead.service || null,
+                notes: lead.notes || null,
+                logoUrl: lead.logoUrl || null,
+              });
+              clientId = newClient.id;
+            } catch (e) {
+              console.error('Error auto-creating client:', e);
+            }
+          }
+          // Mark lead as converted
+          if (clientId) {
+            try {
+              await updateLead(leadId, { status: 'Convertido', clientId } as any);
+            } catch (e) {
+              console.error('Error updating lead:', e);
+            }
+          }
+        }
+      }
+
+      // Fallback: create client from proposal name if no lead
+      if (!clientId && clientName) {
+        const existing = clients.find(c => c.clientName === clientName);
+        if (existing) {
+          clientId = existing.id;
+        } else {
+          try {
+            const newClient = await addClient({ clientName, contactName: null, primaryEmail: null, primaryPhone: null, address: null, website: null, serviceType: null, notes: null, logoUrl: null });
+            clientId = newClient.id;
+          } catch (e) {
+            console.error('Error auto-creating client:', e);
+          }
+        }
+      }
+
       const today = new Date().toISOString().split('T')[0];
       const endDate = new Date();
       endDate.setDate(endDate.getDate() + 7);
       await addOrder({
-        client: rest.client || previousProposal?.client || '',
+        client: clientName,
         project: rest.project || previousProposal?.project || '',
         serviceType: rest.project || previousProposal?.project || '',
         status: "Pendiente",
@@ -67,10 +129,12 @@ const Proposals = () => {
         action: 'aprobado',
         entityType: 'propuesta',
         entityId: id,
-        entityLabel: rest.client || previousProposal?.client,
-        details: { method: 'manual', auto_work_order: true },
+        entityLabel: clientName,
+        details: { method: 'manual', auto_work_order: true, auto_client: !!clientId },
       });
-      toast.success(`Propuesta aprobada → Orden de Trabajo creada para "${rest.client || previousProposal?.client}"`);
+
+      await refreshClients();
+      toast.success(`Cliente registrado y Orden de Trabajo generada con éxito para "${clientName}"`);
     } else {
       toast.success("Propuesta actualizada");
     }
