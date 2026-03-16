@@ -15,7 +15,7 @@ import { AssignLeadModal } from "@/components/AssignLeadModal";
 import { ConvertLeadModal } from "@/components/ConvertLeadModal";
 import { LeadsKPIBar } from "@/components/LeadsKPIBar";
 import { LeadCard } from "@/components/LeadCard";
-import { Plus, Search, X, Trash2, UserPlus, Menu, XCircle } from "lucide-react";
+import { Plus, Search, X, Trash2, UserPlus, Menu, XCircle, Recycle } from "lucide-react";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
