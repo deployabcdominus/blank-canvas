@@ -148,8 +148,8 @@ export const es: TranslationKeys = {
       titleLine3: "tus resultados?",
       subtitle:
         "Únete a cientos de negocios que ya controlan su operación de punta a punta con Sign Flow.",
-      button: "Empieza Gratis Ahora",
-      note: "Sin tarjeta de crédito · Configuración en 3 minutos",
+      button: "Empezar Ahora",
+      note: "Herramientas profesionales · Configuración en 3 minutos",
     },
     footer: {
       tagline:
