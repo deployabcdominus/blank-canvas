@@ -17,6 +17,8 @@ interface Company {
   created_at: string;
   enable_network_index: boolean;
   is_active: boolean;
+  subscription_status: string | null;
+  billing_type: string | null;
 }
 
 interface CompanyUser {
