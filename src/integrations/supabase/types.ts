@@ -678,6 +678,7 @@ export type Database = {
           assigned_to_user_id: string | null
           blueprint_url: string | null
           client: string
+          client_id: string | null
           company_id: string | null
           created_at: string
           end_date: string | null
@@ -701,6 +702,7 @@ export type Database = {
           assigned_to_user_id?: string | null
           blueprint_url?: string | null
           client: string
+          client_id?: string | null
           company_id?: string | null
           created_at?: string
           end_date?: string | null
@@ -724,6 +726,7 @@ export type Database = {
           assigned_to_user_id?: string | null
           blueprint_url?: string | null
           client?: string
+          client_id?: string | null
           company_id?: string | null
           created_at?: string
           end_date?: string | null
@@ -743,6 +746,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "production_orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "production_orders_company_id_fkey"
             columns: ["company_id"]
