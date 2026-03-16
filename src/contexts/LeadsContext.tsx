@@ -226,7 +226,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (error) throw error;
     setLeads(prev => prev.filter(l => !ids.includes(l.id)));
     setTotalCount(prev => prev - ids.length);
-    logAudit({ action: 'eliminado_masivo', entityType: 'lead', entityId: ids[0], entityLabel: `${ids.length} leads`, details: { count: ids.length } });
+    logAudit({ action: 'eliminado', entityType: 'lead', entityId: ids[0], entityLabel: `${ids.length} leads`, details: { count: ids.length } });
   };
 
   const clearLeads = async () => {
