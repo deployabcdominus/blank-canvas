@@ -23,6 +23,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface EditLeadModalProps {
   lead: Lead | null;
@@ -491,6 +492,25 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-md bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
                             Propuesta
                           </span>
+                        )}
+                        {/* PDF shortcut */}
+                        {linkedProposal?.approvalToken && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <a
+                                href={`/proposal-approval/${linkedProposal.approvalToken}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-1 rounded-md text-violet-500 hover:text-violet-300 hover:bg-violet-500/10 transition-colors"
+                                aria-label="Ver PDF de propuesta"
+                              >
+                                <FileText className="w-3.5 h-3.5" />
+                              </a>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-xs">
+                              Ver términos y detalles de la propuesta aprobada
+                            </TooltipContent>
+                          </Tooltip>
                         )}
                       </div>
                     </div>
