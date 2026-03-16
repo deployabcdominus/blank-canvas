@@ -39,6 +39,7 @@ import Production from "./pages/Production";
 import WorkerTabletView from "./components/production/WorkerTabletView";
 import MobileTechnicianView from "./components/work-orders/MobileTechnicianView";
 import AuditLog from "./pages/AuditLog";
+import LeadsRecycleBin from "./pages/LeadsRecycleBin";
 import ProposalApproval from "./pages/ProposalApproval";
 
 const queryClient = new QueryClient({
@@ -83,6 +84,7 @@ const App = () => (
                   <Route path="/clients/:id" element={<ClientDetail />} />
                   <Route path="/projects" element={<Projects />} />
                   <Route path="/leads" element={<Leads />} />
+                  <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
                   <Route path="/proposals" element={<Proposals />} />
                   <Route path="/work-orders" element={<WorkOrders />} />
                   <Route path="/payments" element={<Payments />} />

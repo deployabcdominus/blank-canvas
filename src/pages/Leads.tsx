@@ -15,7 +15,7 @@ import { AssignLeadModal } from "@/components/AssignLeadModal";
 import { ConvertLeadModal } from "@/components/ConvertLeadModal";
 import { LeadsKPIBar } from "@/components/LeadsKPIBar";
 import { LeadCard } from "@/components/LeadCard";
-import { Plus, Search, X, Trash2, UserPlus, Menu, XCircle } from "lucide-react";
+import { Plus, Search, X, Trash2, UserPlus, Menu, XCircle, Recycle } from "lucide-react";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -252,6 +252,17 @@ const Leads = () => {
             </div>
 
             <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
+              {isAdmin && (
+                <Button
+                  onClick={() => navigate('/leads/recycle-bin')}
+                  variant="outline"
+                  className={`min-h-[44px] border-violet-500/20 text-violet-400 hover:bg-violet-500/10 ${isMobile ? '' : ''}`}
+                  title="Papelera de reciclaje"
+                >
+                  <Recycle className="w-4 h-4" />
+                  {!isMobile && <span className="ml-2">Papelera</span>}
+                </Button>
+              )}
               {leads.length > 0 && isAdmin && (
                 <Button
                   onClick={() => setIsConfirmClearOpen(true)}

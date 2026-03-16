@@ -36,6 +36,9 @@ interface LeadsContextType {
   deleteLead: (id: string) => Promise<void>;
   deleteLeads: (ids: string[]) => Promise<void>;
   clearLeads: () => Promise<void>;
+  restoreLead: (id: string) => Promise<void>;
+  permanentDeleteLead: (id: string) => Promise<void>;
+  fetchDeletedLeads: () => Promise<Lead[]>;
   refreshLeads: () => Promise<void>;
   loading: boolean;
   totalCount: number;
@@ -98,6 +101,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     const { data, error, count } = await supabase
       .from('leads')
       .select('id, name, company, service, status, phone, email, location, value, source, notes, website, logo_url, company_id, created_by_user_id, assigned_to_user_id, client_id, project_id, created_at', { count: 'exact' })
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
       .range(from, to);
 
@@ -213,7 +217,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   const deleteLead = async (id: string) => {
     if (!user) return;
     const lead = leads.find(l => l.id === id);
-    const { error } = await supabase.from('leads').delete().eq('id', id);
+    const { error } = await supabase.from('leads').update({ deleted_at: new Date().toISOString() } as any).eq('id', id);
     if (error) throw error;
     setLeads(prev => prev.filter(l => l.id !== id));
     setTotalCount(prev => prev - 1);
@@ -222,7 +226,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
   const deleteLeads = async (ids: string[]) => {
     if (!user || ids.length === 0) return;
-    const { error } = await supabase.from('leads').delete().in('id', ids);
+    const { error } = await supabase.from('leads').update({ deleted_at: new Date().toISOString() } as any).in('id', ids);
     if (error) throw error;
     setLeads(prev => prev.filter(l => !ids.includes(l.id)));
     setTotalCount(prev => prev - ids.length);
@@ -231,32 +235,54 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
   const clearLeads = async () => {
     if (!user) return;
-
     const companyId = await getCompanyId();
     const filterCol = companyId ? 'company_id' : 'user_id';
     const filterVal = companyId || user.id;
 
     const { error } = await supabase
       .from('leads')
-      .delete()
-      .eq(filterCol, filterVal);
+      .update({ deleted_at: new Date().toISOString() } as any)
+      .eq(filterCol, filterVal)
+      .is('deleted_at', null);
 
-    if (error) {
-      if (import.meta.env.DEV) console.error('Error clearing leads:', error);
-      throw error;
-    }
-
+    if (error) throw error;
     setLeads([]);
     setTotalCount(0);
   };
 
-  const refreshLeads = useCallback(async () => {
+  const restoreLead = async (id: string) => {
+    if (!user) return;
+    const { error } = await supabase.from('leads').update({ deleted_at: null } as any).eq('id', id);
+    if (error) throw error;
+    // Refresh to pick it up
+    await refreshLeadsInternal();
+  };
+
+  const permanentDeleteLead = async (id: string) => {
+    if (!user) return;
+    const { error } = await supabase.from('leads').delete().eq('id', id);
+    if (error) throw error;
+  };
+
+  const fetchDeletedLeads = async (): Promise<Lead[]> => {
+    const { data, error } = await supabase
+      .from('leads')
+      .select('id, name, company, service, status, phone, email, location, value, source, notes, website, logo_url, company_id, created_by_user_id, assigned_to_user_id, client_id, project_id, created_at, deleted_at')
+      .not('deleted_at', 'is', null)
+      .order('deleted_at', { ascending: false });
+    if (error) throw error;
+    return (data || []).map(mapRow);
+  };
+
+  const refreshLeadsInternal = useCallback(async () => {
     setPage(0);
     await fetchPage(0);
   }, [fetchPage]);
 
+  const refreshLeads = refreshLeadsInternal;
+
   return (
-    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, deleteLead, deleteLeads, clearLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
+    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, deleteLead, deleteLeads, clearLeads, restoreLead, permanentDeleteLead, fetchDeletedLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
       {children}
     </LeadsContext.Provider>
   );

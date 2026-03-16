@@ -1,0 +1,1 @@
+ALTER TABLE public.leads ADD COLUMN deleted_at timestamp with time zone DEFAULT NULL;
