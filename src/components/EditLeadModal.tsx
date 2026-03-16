@@ -464,33 +464,38 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                     </SelectContent>
                   </Select>
                 </FieldRow>
-                <FieldRow icon={TrendingUp} label="Valor Estimado" value="" editing={editing}>
-                  {editing ? (
+                {editing ? (
+                  <FieldRow icon={TrendingUp} label="Valor Estimado" value={value} editing>
                     <Input value={value} onChange={e => setValue(e.target.value)} placeholder="$0.00" className={`h-8 text-sm ${editRing}`} />
-                  ) : (() => {
-                    const isApproved = linkedProposal?.status === 'Aprobada';
-                    const proposalVal = linkedProposal?.approvedTotal ?? linkedProposal?.value;
-                    const displayVal = proposalVal != null
-                      ? `$${proposalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
-                      : value || "Por definir";
-                    return (
+                  </FieldRow>
+                ) : (
+                  <div className="flex items-start gap-3 py-2">
+                    <TrendingUp className="w-4 h-4 text-zinc-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-0.5">Valor</p>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm text-zinc-200">{displayVal}</p>
-                        {isApproved && (
+                        <p className="text-sm text-zinc-200 font-medium">
+                          {(() => {
+                            const proposalVal = linkedProposal?.approvedTotal ?? linkedProposal?.value;
+                            return proposalVal != null
+                              ? `$${proposalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+                              : value || "Por definir";
+                          })()}
+                        </p>
+                        {linkedProposal?.status === 'Aprobada' && (
                           <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                             Aprobado
                           </span>
                         )}
-                        {linkedProposal && !isApproved && (
+                        {linkedProposal && linkedProposal.status !== 'Aprobada' && (
                           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-md bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
                             Propuesta
                           </span>
                         )}
                       </div>
-                    );
-                  })()}
-                </FieldRow>
-                </FieldRow>
+                    </div>
+                  </div>
+                )}
                 {editing && (
                   <>
                     <FieldRow icon={Globe} label="Fuente" value={source} editing>
