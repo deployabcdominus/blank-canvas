@@ -51,7 +51,7 @@ export const useProposals = () => {
   return context;
 };
 
-const mapRow = (row: any): Proposal => ({
+const mapRow = (row: any, orderProposalIds: Set<string>): Proposal => ({
   id: row.id,
   client: row.client,
   project: row.project,
@@ -72,6 +72,7 @@ const mapRow = (row: any): Proposal => ({
   approvedAt: row.approved_at || null,
   approvalToken: row.approval_token || null,
   mockupUrl: row.mockup_url || null,
+  hasOrder: orderProposalIds.has(row.id),
 });
 
 export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
