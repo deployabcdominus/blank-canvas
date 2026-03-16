@@ -52,8 +52,8 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
           )}
           {isDashboard && (
             <div className={isMobile ? 'hidden' : ''}>
-              <h1 className="font-bold text-2xl">¡Bienvenido de vuelta, {fullName.split(' ')[0]}!</h1>
-              <p className="text-muted-foreground text-sm">Mira lo que está pasando con tus proyectos hoy.</p>
+              <h1 className="font-bold text-2xl">{t.dashboard.welcomeBack}, {fullName.split(' ')[0]}!</h1>
+              <p className="text-muted-foreground text-sm">{t.dashboard.projectsToday}</p>
             </div>
           )}
           {isMobile && <h1 className="text-lg font-bold">{FIXED_BRANDING.appName}</h1>}
