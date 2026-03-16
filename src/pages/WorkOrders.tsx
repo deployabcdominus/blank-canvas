@@ -144,8 +144,9 @@ const WorkOrders = () => {
                     key={order.id}
                     order={order}
                     index={i}
+                    canEdit={canEdit}
                     onMarkBuilt={handleMarkCompleted}
-                    onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
+                    onEdit={canEdit ? (o) => { setEditOrder(o); setEditOrderMode(true); } : undefined}
                     onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
                   />
                 ))}
