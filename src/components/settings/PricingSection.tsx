@@ -297,7 +297,7 @@ export const PricingSection = () => {
                       {isLoading ? (
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       ) : null}
-                      {plan.tier === "start" ? "Downgrade" : "Upgrade"}
+                      {PLANS.findIndex(p => p.tier === plan.tier) < PLANS.findIndex(p => p.tier === planTier) ? "Downgrade" : "Upgrade"}
                     </Button>
                   )}
                 </CardContent>
