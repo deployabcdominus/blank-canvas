@@ -193,9 +193,8 @@
     transition: border-color 300ms ease, backdrop-filter 300ms ease, background 300ms ease;
   }
   .dash-card:hover {
-    border-color: hsl(265 85% 60% / 0.25);
-    background: rgba(15, 15, 20, 0.55);
-    box-shadow: 0 0 24px -8px hsl(265 85% 60% / 0.15);
+    border-color: hsl(265 85% 60% / 0.18);
+    background: rgba(15, 15, 20, 0.50);
   }
 
   /* Card hover micro-interaction */
