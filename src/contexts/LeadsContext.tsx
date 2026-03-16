@@ -282,7 +282,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   const refreshLeads = refreshLeadsInternal;
 
   return (
-    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, deleteLead, deleteLeads, clearLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
+    <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, deleteLead, deleteLeads, clearLeads, restoreLead, permanentDeleteLead, fetchDeletedLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
       {children}
     </LeadsContext.Provider>
   );
