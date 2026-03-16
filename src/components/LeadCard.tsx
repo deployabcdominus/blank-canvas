@@ -83,7 +83,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               >
                 {lead.company}
               </h3>
-              <p className="text-zinc-500 text-sm truncate">{lead.name}</p>
+              <p className="text-zinc-400 text-sm truncate">{lead.name}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
