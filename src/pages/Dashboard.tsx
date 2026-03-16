@@ -56,7 +56,7 @@ const Dashboard = () => {
       { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan" },
       { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green" },
     ];
-  }, [leads, orders, installations]);
+  }, [leads, orders, installations, t]);
 
   const handleKpiClick = (key: KanbanColumn) => {
     setActiveFilter(prev => (prev === key ? null : key));
