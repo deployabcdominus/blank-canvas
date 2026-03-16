@@ -23,6 +23,7 @@ import { SuperadminAuditLogs } from "@/components/superadmin/SuperadminAuditLogs
 interface Company {
   id: string; name: string; user_id: string; plan_id: string | null;
   created_at: string; enable_network_index: boolean; is_active: boolean;
+  subscription_status: string | null; billing_type: string | null;
 }
 
 interface CompanyUser {

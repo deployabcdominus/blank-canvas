@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Plus, Eye, Edit, Trash2, Power, PowerOff, Building, UserPlus, KeyRound } from "lucide-react";
+import { Search, Plus, Eye, Edit, Trash2, Power, PowerOff, Building, UserPlus, KeyRound, Sparkles } from "lucide-react";
 import { BulkActionBar } from "./BulkActionBar";
 
 interface Company {
