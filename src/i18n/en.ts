@@ -6,7 +6,7 @@ export const en = {
       pricing: "Pricing",
       demo: "Demo",
       login: "Login",
-      freeTrial: "Start Free",
+      freeTrial: "Get Started",
       goToDashboard: "Go to Dashboard",
     },
     hero: {
