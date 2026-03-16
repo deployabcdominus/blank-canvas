@@ -362,6 +362,12 @@ export const en = {
     website: "Website",
     address: "Address",
   },
+
+  /* ── SEO / Meta ── */
+  seo: {
+    title: "SignFlow | The All-in-One Operations & Workflow OS",
+    description: "Scale your service business with SignFlow. Centralize project data, production sheets, and field installations for IT, HVAC, and Signage industries. Start your 14-day Pro trial.",
+  },
 };
 
 // Use a deep string type so both locales can have different values

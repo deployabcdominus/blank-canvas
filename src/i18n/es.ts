@@ -364,4 +364,10 @@ export const es: TranslationKeys = {
     website: "Sitio Web",
     address: "Dirección",
   },
+
+  /* ── SEO / Meta ── */
+  seo: {
+    title: "SignFlow | El SO de Operaciones y Flujo de Trabajo Todo-en-Uno",
+    description: "Escala tu negocio de servicios con SignFlow. Centraliza datos de proyectos, fichas técnicas e instalaciones en campo para industrias de IT, HVAC y Señalética. Prueba Pro de 14 días.",
+  },
 } as const;
