@@ -580,6 +580,13 @@ export default function SuperadminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ChangePlanModal
+        company={changePlanCompany}
+        open={!!changePlanCompany}
+        onOpenChange={(open) => !open && setChangePlanCompany(null)}
+        onConfirm={handleChangePlan}
+      />
     </ResponsiveLayout>
   );
 }
