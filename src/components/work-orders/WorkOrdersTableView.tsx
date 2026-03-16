@@ -2,9 +2,9 @@ import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Eye, Printer, Share2, CheckCircle, Pencil } from "lucide-react";
+import { MoreHorizontal, Eye, Printer, Share2, CheckCircle, Pencil, Trash2 } from "lucide-react";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
 
@@ -20,9 +20,12 @@ interface Props {
   onOpen?: (order: WorkOrder) => void;
   onEdit?: (order: WorkOrder) => void;
   onMarkBuilt?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  canEdit?: boolean;
+  canDelete?: boolean;
 }
 
-export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt }: Props) {
+export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt, onDelete, canEdit = true, canDelete = false }: Props) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <div className="glass-card rounded-2xl overflow-hidden border border-border/50">
@@ -56,15 +59,17 @@ export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt }: Pro
                 <TableCell className="text-center text-xs">{order.progress}%</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{order.startDate}</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{order.estimatedCompletion}</TableCell>
-                  <TableCell>
+                <TableCell>
+                  {canEdit && (
                     <button
                       onClick={(e) => { e.stopPropagation(); onEdit?.(order); }}
                       className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent text-muted-foreground hover:text-foreground"
                     >
                       <Pencil size={13} />
                     </button>
-                  </TableCell>
-                  <TableCell>
+                  )}
+                </TableCell>
+                <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
                       <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -81,6 +86,14 @@ export function WorkOrdersTableView({ orders, onOpen, onEdit, onMarkBuilt }: Pro
                         <DropdownMenuItem onClick={e => { e.stopPropagation(); onMarkBuilt(order.id); }}>
                           <CheckCircle className="w-3.5 h-3.5 mr-2" /> Marcar Completada
                         </DropdownMenuItem>
+                      )}
+                      {canDelete && onDelete && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={e => { e.stopPropagation(); onDelete(order.id); }} className="text-destructive focus:text-destructive">
+                            <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
+                          </DropdownMenuItem>
+                        </>
                       )}
                     </DropdownMenuContent>
                   </DropdownMenu>
