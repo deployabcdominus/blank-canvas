@@ -59,6 +59,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
         </div>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <NotificationBell />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
