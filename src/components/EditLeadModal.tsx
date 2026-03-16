@@ -13,8 +13,9 @@ import { toast } from "@/hooks/use-toast";
 import {
   Loader2, Pencil, Trash2, Upload, X, Phone, Mail, MapPin,
   Briefcase, Tag, TrendingUp, StickyNote, ArrowRight, Globe,
-  Clock, CheckCircle2, MessageSquare, FileText, ExternalLink, Copy
+  Clock, CheckCircle2, MessageSquare, FileText, ExternalLink, Copy, Mic, MicOff
 } from "lucide-react";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -149,6 +150,16 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const [createdProposalId, setCreatedProposalId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [activityEvents, setActivityEvents] = useState<ActivityEvent[]>([]);
+  const [voiceNoteText, setVoiceNoteText] = useState("");
+  const [isDictated, setIsDictated] = useState(false);
+
+  const speechToText = useSpeechToText({
+    lang: "es-ES",
+    onResult: (transcript) => {
+      setIsDictated(true);
+      setNotes(prev => prev + (prev ? ' ' : '') + transcript);
+    },
+  });
 
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
@@ -194,6 +205,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       setEditing(startInEditMode);
       setCreatedProposalId(null);
       setAdvancing(false);
+      setIsDictated(false);
+      speechToText.stop();
       fetchActivity(lead.id);
     }
   }, [lead, startInEditMode, fetchActivity]);
@@ -477,15 +490,45 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
               </div>
             </GlassCard>
 
-            {/* Notes Card */}
+            {/* Notes Card with Voice Input */}
             <GlassCard title="Notas Internas" icon={StickyNote}>
               {editing ? (
-                <Textarea
-                  value={notes}
-                  onChange={e => setNotes(e.target.value)}
-                  placeholder="Agrega notas sobre este lead..."
-                  className={`min-h-[80px] resize-none text-sm ${editRing}`}
-                />
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Textarea
+                      value={notes}
+                      onChange={e => { setNotes(e.target.value); }}
+                      placeholder={speechToText.isListening ? "Escuchando..." : "Agrega notas sobre este lead..."}
+                      className={`min-h-[80px] resize-none text-sm pr-12 ${editRing} ${speechToText.isListening ? 'border-violet-500/40' : ''}`}
+                    />
+                    {/* Mic button */}
+                    {speechToText.isSupported && (
+                      <button
+                        type="button"
+                        onClick={speechToText.toggle}
+                        className={`absolute right-2 bottom-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full border transition-all duration-300 ${
+                          speechToText.isListening
+                            ? 'bg-violet-600 border-violet-500 text-white shadow-[0_0_16px_-2px_rgba(139,92,246,0.5)] animate-pulse'
+                            : 'bg-white/[0.05] border-white/[0.1] text-zinc-500 hover:text-violet-400 hover:border-violet-500/30 hover:bg-violet-500/10'
+                        }`}
+                        aria-label={speechToText.isListening ? "Detener dictado" : "Dictar nota por voz"}
+                      >
+                        {speechToText.isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                      </button>
+                    )}
+                  </div>
+                  {/* Interim transcript preview */}
+                  {speechToText.isListening && speechToText.interimTranscript && (
+                    <p className="text-xs text-violet-400/70 italic px-1">
+                      {speechToText.interimTranscript}
+                    </p>
+                  )}
+                  {isDictated && (
+                    <p className="text-[10px] text-zinc-600 flex items-center gap-1 px-1">
+                      <Mic className="w-3 h-3" /> Dictado por voz
+                    </p>
+                  )}
+                </div>
               ) : (
                 <p className="text-sm text-zinc-400 whitespace-pre-wrap leading-relaxed">
                   {notes || "Sin notas"}
