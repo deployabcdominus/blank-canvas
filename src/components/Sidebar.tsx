@@ -69,24 +69,36 @@ export const Sidebar = () => {
         </div>
       )}
 
-      {isSuperadmin ? (
-        <SidebarPlatformNav
-          items={platformItems}
-          isTablet={isTablet}
-          location={location}
-          industryLabels={industryLabels}
-        />
-      ) : (
-        <SidebarTenantNav
-          groups={tenantGroups}
-          utilityItems={utilityItems}
-          isTablet={isTablet}
-          location={location}
-          role={role}
-          industryLabels={industryLabels}
-          isAdmin={isAdmin}
-        />
-      )}
+      {/* Build i18n-aware groups */}
+      {(() => {
+        const localizedGroups = tenantGroups.map((g, i) => ({
+          ...g,
+          groupLabel: i === 0 ? t.nav.principal
+            : i === 1 ? t.nav.crmSales
+            : i === 2 ? t.nav.production
+            : t.nav.administration,
+        }));
+        return isSuperadmin ? (
+          <SidebarPlatformNav
+            items={platformItems}
+            isTablet={isTablet}
+            location={location}
+            industryLabels={industryLabels}
+            platformLabel={t.nav.platform}
+          />
+        ) : (
+          <SidebarTenantNav
+            groups={localizedGroups}
+            utilityItems={utilityItems}
+            isTablet={isTablet}
+            location={location}
+            role={role}
+            industryLabels={industryLabels}
+            isAdmin={isAdmin}
+            adjustmentsLabel={t.nav.adjustments}
+          />
+        );
+      })()}
 
       {/* User footer */}
       <SidebarUserFooter
