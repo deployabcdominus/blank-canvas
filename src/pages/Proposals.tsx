@@ -143,6 +143,10 @@ const Proposals = () => {
   const handleDelete = async (id: string) => { await deleteProposal(id); toast.success("Propuesta eliminada"); };
 
   const handleCreateOrder = async (proposal: Proposal) => {
+    if (proposal.hasOrder) {
+      toast.error("Esta propuesta ya tiene una Orden de Trabajo asociada.");
+      return;
+    }
     const today = new Date().toISOString().split('T')[0];
     const endDate = new Date(); endDate.setDate(endDate.getDate() + 7);
     await addOrder({
@@ -150,6 +154,7 @@ const Proposals = () => {
       status: "Pendiente", progress: 0, materials: [],
       startDate: today, estimatedCompletion: endDate.toISOString().split('T')[0],
       projectId: null, notes: null, priority: 'media',
+      proposalId: proposal.id,
     });
     toast.success(`Orden creada para "${proposal.client}"`);
   };
