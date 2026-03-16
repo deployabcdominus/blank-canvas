@@ -368,6 +368,6 @@ export const es: TranslationKeys = {
   /* ── SEO / Meta ── */
   seo: {
     title: "SignFlow | El SO de Operaciones y Flujo de Trabajo Todo-en-Uno",
-    description: "Escala tu negocio de servicios con SignFlow. Centraliza datos de proyectos, fichas técnicas e instalaciones en campo para industrias de IT, HVAC y Señalética. Prueba Pro de 14 días.",
+    description: "Escala tu negocio de servicios con SignFlow. Gestión profesional de flujos de trabajo para industrias de IT, HVAC y Señalética. Asegura tu plan hoy.",
   },
 } as const;

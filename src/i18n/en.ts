@@ -366,7 +366,7 @@ export const en = {
   /* ── SEO / Meta ── */
   seo: {
     title: "SignFlow | The All-in-One Operations & Workflow OS",
-    description: "Scale your service business with SignFlow. Centralize project data, production sheets, and field installations for IT, HVAC, and Signage industries. Start your 14-day Pro trial.",
+    description: "Scale your service business with SignFlow. Professional workflow management for IT, HVAC, and Signage industries. Secure your plan today.",
   },
 };
 
