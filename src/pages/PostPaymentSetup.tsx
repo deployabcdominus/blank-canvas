@@ -255,7 +255,7 @@ const PostPaymentSetup = () => {
         {/* Progress bar */}
         <div className="fixed top-0 inset-x-0 z-50 h-1 bg-zinc-900">
           <motion.div
-            className="h-full bg-gradient-to-r from-orange-500 to-orange-600"
+            className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
             initial={{ width: "0%" }}
             animate={{ width: step === 1 ? "50%" : "100%" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
