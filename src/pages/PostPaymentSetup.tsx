@@ -305,12 +305,12 @@ const PostPaymentSetup = () => {
             >
               {/* Step indicator */}
               <div className="flex items-center gap-3 mb-8">
-                <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 1 ? "text-orange-400" : "text-zinc-600"}`}>
+              <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 1 ? "text-purple-400" : "text-zinc-600"}`}>
                   <User className="w-3.5 h-3.5" />
                   Tu Cuenta
                 </div>
                 <div className="flex-1 h-px bg-zinc-800" />
-                <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 2 ? "text-orange-400" : "text-zinc-600"}`}>
+                <div className={`flex items-center gap-2 text-xs font-semibold ${step >= 2 ? "text-purple-400" : "text-zinc-600"}`}>
                   <Building className="w-3.5 h-3.5" />
                   Tu Empresa
                 </div>
