@@ -7,6 +7,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAvatarUrl } from "@/hooks/useAvatarUrl";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIndustryLabels } from "@/hooks/useIndustryLabels";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
