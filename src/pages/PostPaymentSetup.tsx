@@ -351,7 +351,7 @@ const PostPaymentSetup = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Mínimo 6 caracteres"
-                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-orange-500/20"
+                        className="bg-zinc-900/50 border-white/[0.06] text-zinc-100 placeholder:text-zinc-600 focus:border-purple-500/30"
                       />
                     </div>
 
