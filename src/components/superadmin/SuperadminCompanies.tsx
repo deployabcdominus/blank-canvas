@@ -98,7 +98,8 @@ export function SuperadminCompanies({
                 <Checkbox checked={filtered.length > 0 && selectedCompanyIds.size === filtered.length} onCheckedChange={() => toggleAllCompanies(filtered)} />
               </TableHead>
               <TableHead>Nombre</TableHead>
-              <TableHead>ID</TableHead>
+              <TableHead>Plan</TableHead>
+              <TableHead>Billing</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead>Creada</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
