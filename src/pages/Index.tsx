@@ -502,29 +502,29 @@ const Index = () => {
 
         {/* ── Background layers — Violet & Fuchsia radials ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-          {/* Subtle grid */}
+          {/* Subtle grid texture for depth */}
           <div
-            className="absolute inset-0 opacity-[0.012]"
+            className="absolute inset-0 opacity-[0.015]"
             style={{
               backgroundImage:
                 "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
               backgroundSize: "64px 64px",
             }}
           />
-          {/* Violet radial — top-left */}
+          {/* Electric Violet blob — top-left */}
           <div
-            className="absolute -top-[20%] -left-[10%] w-[900px] h-[900px] opacity-[0.15]"
+            className="absolute -top-[25%] -left-[15%] w-[1000px] h-[1000px] opacity-[0.18]"
             style={{
-              background: "radial-gradient(ellipse at center, rgba(139,92,246,1), transparent 60%)",
-              filter: "blur(180px)",
+              background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)",
+              filter: "blur(220px)",
             }}
           />
-          {/* Fuchsia radial — bottom-right */}
+          {/* Brilliant Fuchsia blob — bottom-right */}
           <div
-            className="absolute -bottom-[20%] -right-[10%] w-[800px] h-[800px] opacity-[0.15]"
+            className="absolute -bottom-[25%] -right-[15%] w-[900px] h-[900px] opacity-[0.18]"
             style={{
-              background: "radial-gradient(ellipse at center, rgba(217,70,239,1), transparent 60%)",
-              filter: "blur(180px)",
+              background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)",
+              filter: "blur(220px)",
             }}
           />
         </div>
