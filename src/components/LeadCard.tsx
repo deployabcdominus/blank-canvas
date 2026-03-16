@@ -79,7 +79,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
             <div className="min-w-0">
               <h3
                 id={`lead-${lead.id}-company`}
-                className="text-base md:text-lg font-bold truncate text-white"
+                className="text-base font-bold truncate text-zinc-100"
               >
                 {lead.company}
               </h3>
