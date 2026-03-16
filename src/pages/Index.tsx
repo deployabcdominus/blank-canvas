@@ -5,6 +5,7 @@ import { PageTransition } from "@/components/PageTransition";
 import brandLogoSrc from "@/assets/brand-logo.png";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   ArrowRight,
   Check,
