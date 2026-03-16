@@ -215,7 +215,11 @@ const PostPaymentSetup = () => {
   if (completed) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center px-5">
+        <div className="min-h-screen flex items-center justify-center px-5 relative overflow-hidden">
+          <div className="fixed inset-0 pointer-events-none -z-10">
+            <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-purple-600/15 blur-[180px]" />
+            <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] rounded-full bg-fuchsia-600/10 blur-[180px]" />
+          </div>
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -226,13 +230,13 @@ const PostPaymentSetup = () => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
-              className="w-20 h-20 mx-auto mb-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center"
+              className="w-20 h-20 mx-auto mb-8 rounded-full bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl flex items-center justify-center"
             >
-              <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+              <CheckCircle2 className="w-10 h-10 text-purple-400" />
             </motion.div>
-            <h1 className="text-3xl font-extrabold text-white mb-3">¡Todo listo!</h1>
-            <p className="text-zinc-400 mb-2">Tu empresa está activa con el plan <span className="text-orange-400 font-semibold">{planName}</span>.</p>
-            <p className="text-zinc-600 text-sm">Redirigiendo al dashboard...</p>
+            <h1 className="text-3xl font-extrabold text-white mb-3 tracking-tight">¡Todo listo!</h1>
+            <p className="text-zinc-400 mb-2">Tu empresa está activa con el plan <span className="text-purple-400 font-semibold">{planName}</span>.</p>
+            <p className="text-zinc-500 text-sm">Redirigiendo al dashboard...</p>
           </motion.div>
         </div>
       </PageTransition>
