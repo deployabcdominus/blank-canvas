@@ -610,7 +610,7 @@ const Index = () => {
                   </span>
                   <br />
                   <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
-                    camaleón para líderes
+                    para líderes
                   </span>
                   <br />
                   <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
