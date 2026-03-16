@@ -450,19 +450,14 @@ const Index = () => {
   const handleCheckout = async (tierKey: "start" | "pro" | "elite") => {
     setLoadingPlan(tierKey);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate(`/register?plan=${tierKey}`);
-        return;
-      }
-
+      // Call create-checkout directly — works for both authenticated and guest users
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { priceId: STRIPE_TIERS[tierKey].price_id },
       });
 
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        window.location.href = data.url;
       }
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
@@ -929,8 +924,20 @@ const Index = () => {
                             }`}
                           >
                             <span className="relative z-10 flex items-center justify-center">
-                              {loadingPlan === plan.key ? "Procesando..." : `Elegir ${plan.name}`}
-                              {loadingPlan !== plan.key && <ChevronRight className="w-4 h-4 ml-1" />}
+                              {loadingPlan === plan.key ? (
+                                <span className="flex items-center gap-2">
+                                  <svg className="animate-spin w-4 h-4 text-purple-300" viewBox="0 0 24 24" fill="none">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                  </svg>
+                                  Conectando con Stripe...
+                                </span>
+                              ) : (
+                                <span className="flex items-center justify-center">
+                                  Elegir {plan.name}
+                                  <ChevronRight className="w-4 h-4 ml-1" />
+                                </span>
+                              )}
                             </span>
                             <div
                               className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500"
