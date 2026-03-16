@@ -56,6 +56,7 @@ interface Props {
   onChangeUserRole: (userId: string, role: string) => void;
   onDeleteUser: (u: CompanyUser) => void;
   onResetPassword: (u: CompanyUser) => void;
+  onChangePlan: (c: Company) => void;
 }
 
 export function SuperadminCompanies({
