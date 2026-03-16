@@ -464,8 +464,32 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                     </SelectContent>
                   </Select>
                 </FieldRow>
-                <FieldRow icon={TrendingUp} label="Valor Estimado" value={value} editing={editing}>
-                  <Input value={value} onChange={e => setValue(e.target.value)} placeholder="$0.00" className={`h-8 text-sm ${editRing}`} />
+                <FieldRow icon={TrendingUp} label="Valor Estimado" value="" editing={editing}>
+                  {editing ? (
+                    <Input value={value} onChange={e => setValue(e.target.value)} placeholder="$0.00" className={`h-8 text-sm ${editRing}`} />
+                  ) : (() => {
+                    const isApproved = linkedProposal?.status === 'Aprobada';
+                    const proposalVal = linkedProposal?.approvedTotal ?? linkedProposal?.value;
+                    const displayVal = proposalVal != null
+                      ? `$${proposalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+                      : value || "Por definir";
+                    return (
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-zinc-200">{displayVal}</p>
+                        {isApproved && (
+                          <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            Aprobado
+                          </span>
+                        )}
+                        {linkedProposal && !isApproved && (
+                          <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-md bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
+                            Propuesta
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </FieldRow>
                 </FieldRow>
                 {editing && (
                   <>
