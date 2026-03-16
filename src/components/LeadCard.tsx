@@ -60,7 +60,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className="rounded-xl border border-white/[0.06] bg-[#0a0a0a] hover:border-primary/20 transition-all duration-300 p-6 md:p-7 flex flex-col justify-between group cursor-pointer shimmer-hover"
+      className="rounded-xl border border-white/[0.06] bg-zinc-900/60 hover:border-primary/15 transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover"
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}
       onClick={() => onCardClick?.(lead)}
@@ -79,11 +79,11 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
             <div className="min-w-0">
               <h3
                 id={`lead-${lead.id}-company`}
-                className="text-base md:text-lg font-bold truncate text-white"
+                className="text-base font-bold truncate text-zinc-100"
               >
                 {lead.company}
               </h3>
-              <p className="text-zinc-500 text-sm truncate">{lead.name}</p>
+              <p className="text-zinc-400 text-sm truncate">{lead.name}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -104,12 +104,12 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
         </div>
 
         {/* Service type */}
-        <p className="text-sm font-medium text-zinc-400 mb-3">{lead.service}</p>
+        <p className="text-sm font-medium text-zinc-400 mb-2">{lead.service}</p>
 
         {/* Price block */}
         <div className="mb-3">
           {linkedProposal ? (
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-zinc-100">
               ${linkedProposal.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </p>
           ) : (
@@ -171,12 +171,12 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
           ) : (
             /* Lead not converted — show normal actions */
             <>
-              {onConvert && (
+               {onConvert && (
                 <Button
                   onClick={() => onConvert(lead.id)}
                   size="sm"
                   variant="outline"
-                  className="h-9 px-3 text-xs"
+                  className="h-8 px-2.5 text-xs"
                   aria-label="Convertir a Cliente/Proyecto"
                 >
                   <FolderKanban className="w-3.5 h-3.5 mr-1" />
@@ -188,7 +188,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
                   onClick={() => onAssign(lead.id)}
                   size="sm"
                   variant="outline"
-                  className="h-9 px-3 text-xs"
+                  className="h-8 px-2.5 text-xs"
                   aria-label="Asignar lead"
                 >
                   <UserPlus className="w-3.5 h-3.5 mr-1" />
@@ -198,11 +198,11 @@ export const LeadCard = ({ lead, proposals, index, isMobile, onAdvance, onAssign
               <Button
                 onClick={() => onAdvance(lead.id)}
                 size="sm"
-                className={`min-h-[40px] font-medium ${isMobile ? 'w-full' : 'px-4'}`}
+                className={`min-h-[36px] font-medium text-xs ${isMobile ? 'w-full' : 'px-3'}`}
                 aria-label={`Avanzar lead de ${lead.name} a propuesta`}
               >
                 Avanzar a Propuesta
-                <ArrowRight className="w-4 h-4 ml-1.5" aria-hidden="true" />
+                <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
               </Button>
             </>
           )}

@@ -24,8 +24,8 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
         rounded-2xl border p-5 transition-all duration-300 shimmer-hover
         backdrop-blur-2xl
         ${isActive
-          ? "border-primary/30 bg-zinc-950/50 shadow-[0_0_24px_-6px_hsl(25_95%_53%/0.2)]"
-          : "border-white/[0.06] bg-zinc-950/40 hover:border-white/[0.12] hover:bg-zinc-950/50"
+          ? "border-primary/25 bg-zinc-900/60"
+          : "border-white/[0.06] bg-zinc-900/40 hover:border-white/[0.10] hover:bg-zinc-900/50"
         }
       `}
     >
@@ -54,9 +54,9 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           )}
         </div>
 
-        <p className="font-semibold text-[32px] leading-none tracking-tight text-white">{value}</p>
-        <p className="text-sm font-medium mt-2 text-white">{label}</p>
-        <p className="text-xs mt-0.5 text-zinc-500">{desc}</p>
+        <p className="font-semibold text-[32px] leading-none tracking-tight text-zinc-100">{value}</p>
+        <p className="text-sm font-medium mt-2 text-zinc-100">{label}</p>
+        <p className="text-xs mt-0.5 text-zinc-400">{desc}</p>
       </div>
     </motion.button>
   );

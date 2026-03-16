@@ -193,9 +193,8 @@
     transition: border-color 300ms ease, backdrop-filter 300ms ease, background 300ms ease;
   }
   .dash-card:hover {
-    border-color: hsl(265 85% 60% / 0.25);
-    background: rgba(15, 15, 20, 0.55);
-    box-shadow: 0 0 24px -8px hsl(265 85% 60% / 0.15);
+    border-color: hsl(265 85% 60% / 0.18);
+    background: rgba(15, 15, 20, 0.50);
   }
 
   /* Card hover micro-interaction */
@@ -206,10 +205,9 @@
                 background 300ms ease;
   }
   .card-interactive:hover {
-    transform: translateY(-2px);
-    border-color: hsl(265 85% 60% / 0.20);
-    background: rgba(15, 15, 20, 0.55);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px -8px hsl(265 85% 60% / 0.12);
+    transform: translateY(-1px);
+    border-color: hsl(265 85% 60% / 0.14);
+    background: rgba(15, 15, 20, 0.50);
   }
 
   /* Stat card staggered entrance */
@@ -225,10 +223,10 @@
   .stat-card:nth-child(3) { animation-delay: 160ms; }
   .stat-card:nth-child(4) { animation-delay: 240ms; }
 
-  .glow-mint { box-shadow: 0 0 20px hsl(var(--mint) / 0.3); }
-  .glow-blue { box-shadow: 0 0 20px hsl(var(--soft-blue) / 0.3); }
-  .glow-lavender { box-shadow: 0 0 20px hsl(var(--lavender) / 0.3); }
-  .glow-pink { box-shadow: 0 0 20px hsl(var(--pale-pink) / 0.3); }
+  .glow-mint { box-shadow: 0 0 12px hsl(var(--mint) / 0.15); }
+  .glow-blue { box-shadow: 0 0 12px hsl(var(--soft-blue) / 0.15); }
+  .glow-lavender { box-shadow: 0 0 12px hsl(var(--lavender) / 0.15); }
+  .glow-pink { box-shadow: 0 0 12px hsl(var(--pale-pink) / 0.15); }
 
   .btn-glass {
     @apply glass-card px-6 py-3 font-medium transition-all duration-200 hover:shadow-md;
@@ -293,10 +291,9 @@
     color: hsl(265 85% 70%) !important;
     background: hsl(265 85% 60% / 0.08) !important;
     font-weight: 600;
-    border: 1px solid hsl(265 85% 60% / 0.15);
+    border: 1px solid hsl(265 85% 60% / 0.12);
     border-left: 3px solid hsl(265 85% 60%);
     border-radius: 0 8px 8px 0;
-    box-shadow: 0 0 16px -6px hsl(265 85% 60% / 0.25);
   }
 
   .sidebar-nav-active::before {
@@ -445,18 +442,19 @@
 
   /* Violet gradient primary button */
   .btn-violet {
-    background: linear-gradient(135deg, hsl(265 85% 55%), hsl(330 80% 55%));
+    background: linear-gradient(135deg, hsl(265 80% 52%), hsl(310 70% 50%));
     color: white;
     font-weight: 600;
-    box-shadow: 0 4px 20px -4px hsl(265 85% 50% / 0.40);
-    transition: box-shadow 200ms ease, transform 150ms ease;
+    box-shadow: none;
+    transition: filter 200ms ease, transform 150ms ease;
   }
   .btn-violet:hover {
-    box-shadow: 0 6px 28px -4px hsl(265 85% 50% / 0.55);
+    filter: brightness(1.12);
     transform: translateY(-1px);
   }
   .btn-violet:active {
     transform: translateY(0) scale(0.98);
+    filter: brightness(0.95);
   }
 
   /* Global headings tracking */
