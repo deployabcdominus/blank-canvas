@@ -27,7 +27,7 @@ export const platformItems: NavItem[] = [
   { icon: Building, label: "Companies", path: "/superadmin?tab=companies" },
   { icon: Users, label: "Users", path: "/superadmin?tab=users" },
   { icon: ServerCog, label: "Provisioning", path: "/superadmin?tab=provisioning" },
-  { icon: Settings, label: "Settings", path: "/settings" },
+  { icon: Settings, label: "Settings", path: "/superadmin/settings" },
 ];
 
 // ── Tenant groups ──

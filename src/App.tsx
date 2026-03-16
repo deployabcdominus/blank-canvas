@@ -74,6 +74,7 @@ const App = () => (
                 <Route path="/p/:proposalId" element={<ProposalApproval />} />
                 {/* Superadmin — no tenant providers needed */}
                 <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
+                <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
                 {/* Tenant routes — single TenantProviders wrapper via layout route */}
                 <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
@@ -93,6 +94,7 @@ const App = () => (
                   <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><WorkerTabletView /></div>} />
                   <Route path="/tecnico" element={<MobileTechnicianView />} />
                   <Route path="/audit-log" element={<AuditLog />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
