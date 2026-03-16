@@ -442,6 +442,28 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+
+  /* Violet gradient primary button */
+  .btn-violet {
+    background: linear-gradient(135deg, hsl(265 85% 55%), hsl(330 80% 55%));
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 20px -4px hsl(265 85% 50% / 0.40);
+    transition: box-shadow 200ms ease, transform 150ms ease;
+  }
+  .btn-violet:hover {
+    box-shadow: 0 6px 28px -4px hsl(265 85% 50% / 0.55);
+    transform: translateY(-1px);
+  }
+  .btn-violet:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Global headings tracking */
+  .heading-tight {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
 }
 
 /* Print styles for production orders */
