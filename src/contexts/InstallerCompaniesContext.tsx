@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
+import { resolveCompanyId } from '@/lib/resolve-company';
 
 export interface InstallerCompany {
   id: string;
