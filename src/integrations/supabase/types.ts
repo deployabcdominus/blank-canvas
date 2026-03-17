@@ -1356,6 +1356,7 @@ export type Database = {
       get_my_company_id: { Args: never; Returns: string }
       get_my_company_id_safe: { Args: never; Returns: string }
       get_platform_health: { Args: never; Returns: Json }
+      get_weekly_report: { Args: { p_company_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
