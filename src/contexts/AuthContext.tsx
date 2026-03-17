@@ -81,20 +81,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!isMounted) return;
 
       if (session) {
-        const { data, error } = await supabase.auth.getUser();
-        if (!isMounted) return;
+        try {
+          const { data, error } = await supabase.auth.getUser();
+          if (!isMounted) return;
 
-        if (error || !data?.user) {
-          await supabase.auth.signOut();
-          localStorage.clear();
-          currentUserIdRef.current = null;
-          setSession(null);
-          setUser(null);
-          setLoading(false);
-          return;
+          // Only force sign-out on definitive auth errors (invalid/expired session),
+          // NOT on transient network errors which would kick the user out unnecessarily
+          if (error && (error.message?.includes('session_not_found') || 
+                        error.message?.includes('invalid') ||
+                        error.status === 401 || 
+                        error.status === 403)) {
+            console.warn('Auth: Invalid session detected, signing out', error.message);
+            await supabase.auth.signOut();
+            localStorage.clear();
+            currentUserIdRef.current = null;
+            setSession(null);
+            setUser(null);
+            setLoading(false);
+            return;
+          }
+          // If getUser succeeded or error was transient, trust the session
+        } catch (e) {
+          // Network error — trust existing session rather than kicking user out
+          console.warn('Auth: getUser failed (network), trusting existing session');
         }
       }
 
+      if (!isMounted) return;
       currentUserIdRef.current = session?.user?.id ?? null;
       setSession(session);
       setUser(session?.user ?? null);
