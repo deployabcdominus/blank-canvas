@@ -22,6 +22,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { isThisMonth } from "date-fns";
 import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
+import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
 
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
@@ -97,6 +98,8 @@ const Dashboard = () => {
           {canViewOperations && <WorkOrdersRadial orders={orders} />}
           <GeoHeatmap installations={installations} />
         </div>
+
+        {isAdmin && <WeeklyReport />}
 
         {isAdmin && (
           <div className="mb-8">
