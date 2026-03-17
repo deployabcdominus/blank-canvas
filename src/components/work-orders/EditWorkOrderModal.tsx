@@ -4,8 +4,9 @@ import { es } from "date-fns/locale";
 import {
   CalendarIcon, CheckCircle, Loader2, Pencil, Trash2, Plus, X,
   Package, Wrench, ClipboardList, MapPin, Factory, ChevronDown,
-  StickyNote, Maximize2, User, Building2, Save,
+  StickyNote, Maximize2, User, Building2, Save, FileDown,
 } from "lucide-react";
+import { generateProductionPDF } from "@/lib/generate-production-pdf";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
