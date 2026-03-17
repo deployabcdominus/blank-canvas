@@ -354,7 +354,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden min-h-0">
 
             {/* LEFT COLUMN */}
-            <div className="p-6 space-y-4 lg:border-r border-white/[0.06]">
+            <div className="overflow-y-auto p-6 space-y-4 lg:border-r border-white/[0.06]">
               <Section title="Detalles del Proyecto" icon={<MapPin className="w-3.5 h-3.5" />}>
                 <div>
                   <Label className="text-[11px] text-muted-foreground">Cliente</Label>
