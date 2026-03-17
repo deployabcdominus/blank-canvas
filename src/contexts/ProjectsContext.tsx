@@ -69,7 +69,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     if (!user) { setProjects([]); setLoading(false); return; }
     const { data, error } = await (supabase as any)
       .from('projects')
-      .select('*, clients!projects_client_id_fkey(client_name)')
+      .select('id, company_id, client_id, project_name, install_address, status, owner_user_id, assigned_to_user_id, folder_relative_path, folder_full_path, created_at, updated_at, clients!projects_client_id_fkey(client_name)')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading projects:', error);
     else setProjects((data || []).map(mapRow));
