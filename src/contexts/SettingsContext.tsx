@@ -57,7 +57,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       try {
         const { data, error } = await supabase
           .from('user_settings')
-          .select('*')
+          .select('id, user_id, theme, brand_logo, brand_color, glass_effect')
           .eq('user_id', user.id)
           .maybeSingle();
 
