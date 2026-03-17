@@ -91,6 +91,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
 
   const [editing, setEditing] = useState(startInEditMode);
   const [saving, setSaving] = useState(false);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
   const [loadingOptions, setLoadingOptions] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmComplete, setConfirmComplete] = useState(false);
