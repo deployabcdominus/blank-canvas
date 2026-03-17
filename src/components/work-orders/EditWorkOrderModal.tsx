@@ -271,13 +271,13 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="max-w-6xl w-[96vw] max-h-[92vh] overflow-hidden p-0 bg-zinc-950/95 backdrop-blur-2xl border-white/[0.08] rounded-2xl">
-          {/* ── Header ── */}
-          <div className="px-6 pt-5 pb-4 border-b border-white/[0.06]">
+        <DialogContent className="max-w-6xl w-[96vw] max-h-[90vh] p-0 gap-0 bg-zinc-950/95 backdrop-blur-2xl border-white/[0.08] rounded-2xl flex flex-col overflow-hidden">
+          {/* ── STICKY HEADER ── */}
+          <div className="shrink-0 px-6 pt-5 pb-4 border-b border-white/[0.06] bg-zinc-950/80 backdrop-blur-xl z-10">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <h2 className="text-xl font-bold tracking-tight text-zinc-100 truncate">{client}</h2>
-                <p className="text-sm text-muted-foreground truncate mt-0.5">{project || "Sin descripción de proyecto"}</p>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-100 truncate">{client}</h2>
+                <p className="text-sm text-zinc-400 truncate mt-0.5">{project || "Sin descripción de proyecto"}</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <Badge className={cn("text-[11px] gap-1 font-medium", statusCfg.color)}>
@@ -350,11 +350,11 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
             </div>
           </div>
 
-          {/* ── Body: Two-column grid ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 max-h-[calc(92vh-220px)] overflow-y-auto">
+          {/* ── Body: Two-column grid with smart scroll ── */}
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden min-h-0">
 
             {/* LEFT COLUMN */}
-            <div className="p-6 space-y-4 lg:border-r border-white/[0.06]">
+            <div className="overflow-y-auto p-6 space-y-4 lg:border-r border-white/[0.06]">
               <Section title="Detalles del Proyecto" icon={<MapPin className="w-3.5 h-3.5" />}>
                 <div>
                   <Label className="text-[11px] text-muted-foreground">Cliente</Label>
@@ -460,7 +460,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
             </div>
 
             {/* RIGHT COLUMN */}
-            <div className="p-6 space-y-4">
+            <div className="overflow-y-auto p-6 space-y-4">
               {/* Blueprint / Design */}
               <Section title="Plano de Fabricación" icon={<Maximize2 className="w-3.5 h-3.5" />}>
                 <div className="relative">
@@ -540,8 +540,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
             </div>
           </div>
 
-          {/* ── Sticky Footer ── */}
-          <div className="flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-xl">
+          {/* ── STICKY FOOTER ── */}
+          <div className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md z-10">
             <div className="flex gap-2">
               {!isCompleted && (
                 <Button variant="outline" size="sm" onClick={() => setConfirmComplete(true)}

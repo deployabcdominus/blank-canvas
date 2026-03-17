@@ -368,7 +368,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   return (
     <>
       <Dialog open={isOpen} onOpenChange={() => { resetForm(); onClose(); }}>
-        <DialogContent className="w-[96vw] max-w-6xl max-h-[92vh] p-0 gap-0 bg-zinc-950/95 saturate-150 backdrop-blur-3xl border border-white/[0.1] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <DialogContent className="w-[96vw] max-w-6xl max-h-[90vh] p-0 gap-0 bg-zinc-950/95 saturate-150 backdrop-blur-3xl border border-white/[0.1] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
 
           {/* ══ STICKY HEADER ══ */}
           <div className="shrink-0 px-6 py-4 border-b border-white/[0.06] bg-zinc-950/80 backdrop-blur-xl z-10">
@@ -378,10 +378,10 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                   <Package className="w-5 h-5 text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <DialogTitle className="text-lg font-bold tracking-tight text-zinc-100 truncate">
+                  <DialogTitle className="text-2xl font-bold tracking-tight text-zinc-100 truncate">
                     {clientName || 'Nueva Orden de Servicio'}
                   </DialogTitle>
-                  <p className="text-xs text-muted-foreground truncate">
+                  <p className="text-xs text-zinc-400 truncate">
                     {projectName || 'Configura el contexto del proyecto y las especificaciones técnicas'}
                   </p>
                 </div>
