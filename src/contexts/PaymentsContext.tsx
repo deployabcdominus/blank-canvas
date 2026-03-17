@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { resolveCompanyId } from '@/lib/resolve-company';
 
 export type PaymentMethod = 'cash' | 'zelle' | 'card' | 'transfer' | 'check' | 'other';
 export type PaymentStatus = 'pending' | 'received' | 'refunded' | 'void';
