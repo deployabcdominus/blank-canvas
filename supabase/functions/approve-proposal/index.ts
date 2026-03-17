@@ -172,19 +172,26 @@ Deno.serve(async (req) => {
       },
     });
 
+    // Resolve the company/client display name
+    let displayClientName = proposal.client;
+    if (clientId) {
+      const { data: clientRow } = await admin
+        .from("clients")
+        .select("client_name")
+        .eq("id", clientId)
+        .single();
+      if (clientRow?.client_name) displayClientName = clientRow.client_name;
+    }
+
     // Auto-create Project linked to client
     let projectId: string | null = null;
     {
-      const clientName = clientId
-        ? (await admin.from("clients").select("client_name").eq("id", clientId).single()).data?.client_name || proposal.client
-        : proposal.client;
-
       const { data: newProject, error: projErr } = await admin
         .from("projects")
         .insert({
           company_id: proposal.company_id,
           client_id: clientId,
-          project_name: proposal.project || clientName,
+          project_name: proposal.project || displayClientName,
           install_address: "",
           status: "Production",
           owner_user_id: proposal.user_id,
@@ -204,7 +211,7 @@ Deno.serve(async (req) => {
       user_id: proposal.user_id,
       company_id: proposal.company_id,
       owner_user_id: proposal.user_id,
-      client: proposal.client,
+      client: displayClientName,
       project: proposal.project || "",
       status: "Pendiente",
       progress: 0,
