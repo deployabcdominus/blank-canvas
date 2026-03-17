@@ -149,7 +149,7 @@ export function useProductionSteps(orderId?: string) {
     ? Math.round((steps.filter(s => s.status === "completed").length / steps.length) * 100)
     : 0;
 
-  return { steps, loading, startStep, completeStep, addStep, progress, fetchSteps };
+  return { steps, loading, syncing, startStep, completeStep, addStep, progress, fetchSteps };
 }
 
 export function useWorkerStats() {
