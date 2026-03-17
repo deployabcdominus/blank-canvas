@@ -113,12 +113,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const getCompanyId = async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-    return data?.company_id || null;
+    return resolveCompanyId(user.id);
   };
 
   const addProposal = async (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => {

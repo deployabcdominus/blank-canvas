@@ -129,15 +129,9 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     await fetchPage(nextPage, true);
   }, [page, fetchPage]);
 
-  // Fetch user's company_id for multi-tenant inserts
   const getCompanyId = async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-    return data?.company_id || null;
+    return resolveCompanyId(user.id);
   };
 
   const addLead = async (lead: Omit<Lead, 'id'>) => {

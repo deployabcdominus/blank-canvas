@@ -69,8 +69,7 @@ export const InstallationsProvider = ({ children }: { children: ReactNode }) => 
 
   const getCompanyId = useCallback(async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase.from('profiles').select('company_id').eq('id', user.id).maybeSingle();
-    return data?.company_id || null;
+    return resolveCompanyId(user.id);
   }, [user]);
 
   const fetchInstallations = useCallback(async () => {

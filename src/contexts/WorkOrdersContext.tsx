@@ -106,14 +106,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
 
   const getCompanyId = useCallback(async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase.from('profiles').select('company_id').eq('id', user.id).maybeSingle();
-    if (data?.company_id) return data.company_id;
-    const { data: comp } = await supabase.from('companies').select('id').eq('user_id', user.id).maybeSingle();
-    if (comp?.id) {
-      await supabase.from('profiles').update({ company_id: comp.id }).eq('id', user.id);
-      return comp.id;
-    }
-    return null;
+    return resolveCompanyId(user.id);
   }, [user]);
 
   const fetchOrders = useCallback(async () => {
