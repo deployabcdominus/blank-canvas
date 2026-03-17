@@ -460,7 +460,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
             </div>
 
             {/* RIGHT COLUMN */}
-            <div className="p-6 space-y-4">
+            <div className="overflow-y-auto p-6 space-y-4">
               {/* Blueprint / Design */}
               <Section title="Plano de Fabricación" icon={<Maximize2 className="w-3.5 h-3.5" />}>
                 <div className="relative">
