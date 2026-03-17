@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, X, FolderKanban, Copy, FolderOpen, Pencil, Trash2, Globe } from "lucide-react";
+import { Plus, Search, X, FolderKanban, Copy, FolderOpen, Pencil, Trash2, Globe, Building2 } from "lucide-react";
 import { VisualStatusTracker } from "@/components/VisualStatusTracker";
 import { motion } from "framer-motion";
 import {
@@ -175,16 +175,21 @@ export default function Projects() {
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((p, i) => (
                 <motion.div key={p.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                  <Card className="glass-card hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setDetailProject(p)}>
-                    <CardHeader className="pb-2 flex flex-row items-start justify-between">
-                      <div>
-                        <CardTitle className="text-base">{p.projectName}</CardTitle>
-                        <p className="text-xs text-muted-foreground">{p.clientName}</p>
+                  <Card className="glass-card hover:shadow-lg transition-shadow cursor-pointer group" onClick={() => setDetailProject(p)}>
+                    <CardHeader className="pb-3 flex flex-row items-start gap-3">
+                      <div className="shrink-0 mt-0.5 h-9 w-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                        <Building2 className="w-4 h-4 text-primary" />
                       </div>
-                      <Badge className={statusColors[p.status]}>{p.status}</Badge>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="text-lg font-bold leading-tight truncate">{p.clientName || 'Sin cliente'}</CardTitle>
+                          <Badge className={statusColors[p.status]}>{p.status}</Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate">{p.projectName}</p>
+                      </div>
                     </CardHeader>
-                    <CardContent className="text-sm text-muted-foreground">
-                      {p.installAddress && <p className="line-clamp-1">{p.installAddress}</p>}
+                    <CardContent className="pt-0 text-sm text-muted-foreground">
+                      {p.installAddress && <p className="line-clamp-1 text-xs">{p.installAddress}</p>}
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -204,17 +209,25 @@ export default function Projects() {
           {detailProject && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-center justify-between">
-                  <span>{detailProject.projectName}</span>
-                  <Badge className={statusColors[detailProject.status]}>{detailProject.status}</Badge>
-                </DialogTitle>
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Building2 className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <DialogTitle className="text-xl font-bold">{detailProject.clientName || 'Sin cliente'}</DialogTitle>
+                      <Badge className={statusColors[detailProject.status]}>{detailProject.status}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-0.5">{detailProject.projectName}</p>
+                  </div>
+                </div>
               </DialogHeader>
               <div className="mb-4">
                 <VisualStatusTracker currentStatus={detailProject.status} showHints />
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div><span className="text-muted-foreground">Cliente:</span> <span className="font-medium">{detailProject.clientName}</span></div>
+                  <div><span className="text-muted-foreground">Proyecto:</span> <span className="font-medium">{detailProject.projectName}</span></div>
                   <div><span className="text-muted-foreground">Dirección:</span> <span className="font-medium">{detailProject.installAddress || '—'}</span></div>
                 </div>
                 {networkEnabled && networkBasePath ? (
