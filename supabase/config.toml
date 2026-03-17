@@ -32,6 +32,3 @@ verify_jwt = false
 
 [functions.retrieve-session]
 verify_jwt = false
-
-[functions.patch-orphaned-projects]
-verify_jwt = false
