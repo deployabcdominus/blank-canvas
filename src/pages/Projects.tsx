@@ -209,17 +209,25 @@ export default function Projects() {
           {detailProject && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-center justify-between">
-                  <span>{detailProject.projectName}</span>
-                  <Badge className={statusColors[detailProject.status]}>{detailProject.status}</Badge>
-                </DialogTitle>
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Building2 className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <DialogTitle className="text-xl font-bold">{detailProject.clientName || 'Sin cliente'}</DialogTitle>
+                      <Badge className={statusColors[detailProject.status]}>{detailProject.status}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-0.5">{detailProject.projectName}</p>
+                  </div>
+                </div>
               </DialogHeader>
               <div className="mb-4">
                 <VisualStatusTracker currentStatus={detailProject.status} showHints />
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div><span className="text-muted-foreground">Cliente:</span> <span className="font-medium">{detailProject.clientName}</span></div>
+                  <div><span className="text-muted-foreground">Proyecto:</span> <span className="font-medium">{detailProject.projectName}</span></div>
                   <div><span className="text-muted-foreground">Dirección:</span> <span className="font-medium">{detailProject.installAddress || '—'}</span></div>
                 </div>
                 {networkEnabled && networkBasePath ? (
