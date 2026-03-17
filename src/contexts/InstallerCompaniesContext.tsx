@@ -54,7 +54,7 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
       try {
         const { data, error } = await supabase
           .from('installer_companies')
-          .select('*');
+          .select('id, name, contact, email, logo_url, services');
 
         if (error) throw error;
 
