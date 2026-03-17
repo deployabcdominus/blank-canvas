@@ -564,6 +564,47 @@ export type Database = {
         }
         Relationships: []
       }
+      operation_templates: {
+        Row: {
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          product_type: string
+          steps: Json
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          product_type: string
+          steps?: Json
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          product_type?: string
+          steps?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operation_templates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -692,6 +733,7 @@ export type Database = {
           notes: string | null
           owner_user_id: string | null
           priority: string | null
+          product_type: string | null
           progress: number | null
           project: string | null
           project_id: string | null
@@ -717,6 +759,7 @@ export type Database = {
           notes?: string | null
           owner_user_id?: string | null
           priority?: string | null
+          product_type?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
@@ -742,6 +785,7 @@ export type Database = {
           notes?: string | null
           owner_user_id?: string | null
           priority?: string | null
+          product_type?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
@@ -796,6 +840,7 @@ export type Database = {
           company_id: string
           completed_at: string | null
           created_at: string | null
+          department: string | null
           description: string | null
           duration_minutes: number | null
           id: string
@@ -812,6 +857,7 @@ export type Database = {
           company_id: string
           completed_at?: string | null
           created_at?: string | null
+          department?: string | null
           description?: string | null
           duration_minutes?: number | null
           id?: string
@@ -828,6 +874,7 @@ export type Database = {
           company_id?: string
           completed_at?: string | null
           created_at?: string | null
+          department?: string | null
           description?: string | null
           duration_minutes?: number | null
           id?: string
