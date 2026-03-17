@@ -90,6 +90,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const { isAdmin, companyId } = useUserRole();
   const { items: statuses } = useCatalog("order_status");
   const { toast } = useToast();
+  const { templates, applyTemplate } = useOperationTemplates();
 
   const [editing, setEditing] = useState(startInEditMode);
   const [saving, setSaving] = useState(false);
