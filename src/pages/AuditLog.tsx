@@ -75,7 +75,7 @@ export default function AuditLog() {
     setLoading(true);
     let query = (supabase as any)
       .from('audit_logs')
-      .select('*')
+      .select('id, entity_type, action, entity_label, user_name, details, created_at')
       .order('created_at', { ascending: false })
       .limit(500);
 
