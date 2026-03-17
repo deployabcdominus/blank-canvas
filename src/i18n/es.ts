@@ -365,6 +365,20 @@ export const es: TranslationKeys = {
     address: "Dirección",
   },
 
+  /* ── Weekly Report ── */
+  weeklyReport: {
+    title: "Rendimiento Semanal",
+    subtitle: "Últimos 7 días vs. semana anterior",
+    newLeads: "Nuevos Leads",
+    converted: "Convertidos",
+    revenue: "Revenue Aprobado",
+    lostValue: "Oportunidades Perdidas",
+    closedOrders: "Órdenes Cerradas",
+    thisWeek: "Esta Semana",
+    prevWeek: "Semana Ant.",
+    emailNotice: "Este reporte se envía automáticamente a los administradores cada lunes.",
+  },
+
   /* ── SEO / Meta ── */
   seo: {
     title: "SignFlow | El SO de Operaciones y Flujo de Trabajo Todo-en-Uno",

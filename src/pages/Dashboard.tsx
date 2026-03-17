@@ -99,6 +99,8 @@ const Dashboard = () => {
           <GeoHeatmap installations={installations} />
         </div>
 
+        {isAdmin && <WeeklyReport />}
+
         {isAdmin && (
           <div className="mb-8">
             <TeamActivityWidget />

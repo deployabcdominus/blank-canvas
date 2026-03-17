@@ -363,6 +363,20 @@ export const en = {
     address: "Address",
   },
 
+  /* ── Weekly Report ── */
+  weeklyReport: {
+    title: "Weekly Performance",
+    subtitle: "Last 7 days vs. previous week",
+    newLeads: "New Leads",
+    converted: "Converted",
+    revenue: "Approved Revenue",
+    lostValue: "Lost Opportunities",
+    closedOrders: "Closed Orders",
+    thisWeek: "This Week",
+    prevWeek: "Prev. Week",
+    emailNotice: "This report is automatically sent to admin inboxes every Monday.",
+  },
+
   /* ── SEO / Meta ── */
   seo: {
     title: "SignFlow | The All-in-One Operations & Workflow OS",
