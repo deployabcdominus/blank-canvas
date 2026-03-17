@@ -1,5 +1,5 @@
 import { useProductionSteps } from "@/hooks/useProductionSteps";
-import { Check, Zap, Clock, User } from "lucide-react";
+import { Check, Zap, Clock, User, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function LiveProductionTimeline({ orderId, compact = false }: Props) {
-  const { steps, loading, progress } = useProductionSteps(orderId);
+  const { steps, loading, syncing, progress } = useProductionSteps(orderId);
 
   if (loading) {
     return (
