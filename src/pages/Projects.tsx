@@ -175,16 +175,21 @@ export default function Projects() {
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((p, i) => (
                 <motion.div key={p.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                  <Card className="glass-card hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setDetailProject(p)}>
-                    <CardHeader className="pb-2 flex flex-row items-start justify-between">
-                      <div>
-                        <CardTitle className="text-base">{p.projectName}</CardTitle>
-                        <p className="text-xs text-muted-foreground">{p.clientName}</p>
+                  <Card className="glass-card hover:shadow-lg transition-shadow cursor-pointer group" onClick={() => setDetailProject(p)}>
+                    <CardHeader className="pb-3 flex flex-row items-start gap-3">
+                      <div className="shrink-0 mt-0.5 h-9 w-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                        <Building2 className="w-4 h-4 text-primary" />
                       </div>
-                      <Badge className={statusColors[p.status]}>{p.status}</Badge>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="text-lg font-bold leading-tight truncate">{p.clientName || 'Sin cliente'}</CardTitle>
+                          <Badge className={statusColors[p.status]}>{p.status}</Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate">{p.projectName}</p>
+                      </div>
                     </CardHeader>
-                    <CardContent className="text-sm text-muted-foreground">
-                      {p.installAddress && <p className="line-clamp-1">{p.installAddress}</p>}
+                    <CardContent className="pt-0 text-sm text-muted-foreground">
+                      {p.installAddress && <p className="line-clamp-1 text-xs">{p.installAddress}</p>}
                     </CardContent>
                   </Card>
                 </motion.div>
