@@ -102,6 +102,23 @@ Deno.serve(async (req) => {
     }
   }
 
+  // 2b. Fix work orders where client field has contact name instead of company name
+  for (const order of orphanedOrders || []) {
+    const resolvedClientId = order.client_id;
+    if (resolvedClientId) {
+      const { data: client } = await admin
+        .from("clients")
+        .select("client_name")
+        .eq("id", resolvedClientId)
+        .single();
+
+      if (client && client.client_name && client.client_name !== order.client) {
+        await admin.from("production_orders").update({ client: client.client_name }).eq("id", order.id);
+        patches.push(`Order ${order.id} client: "${order.client}" → "${client.client_name}"`);
+      }
+    }
+  }
+
   // 3. Fix proposals that store contact name instead of company name
   const { data: proposals } = await admin
     .from("proposals")
