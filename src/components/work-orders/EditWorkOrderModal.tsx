@@ -262,6 +262,35 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
     }
   };
 
+  const handleDownloadPdf = async () => {
+    if (!order) return;
+    setGeneratingPdf(true);
+    try {
+      await generateProductionPDF({
+        id: order.id,
+        client,
+        project,
+        status,
+        priority,
+        progress,
+        estimatedDelivery: order.estimatedDelivery || order.estimatedCompletion,
+        startDate: order.startDate,
+        notes,
+        assignedOperator: operators.find(o => o.id === assignedToUserId)?.name || null,
+        installerCompany: installers.find(i => i.id === installerCompanyId)?.name || null,
+        blueprintUrl,
+        materials,
+        technicalDetails,
+      });
+      toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error al generar PDF", variant: "destructive" });
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+
   const handleClose = () => { setEditing(false); onClose(); };
 
   if (!order) return null;
