@@ -378,10 +378,10 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                   <Package className="w-5 h-5 text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <DialogTitle className="text-lg font-bold tracking-tight text-zinc-100 truncate">
+                  <DialogTitle className="text-2xl font-bold tracking-tight text-zinc-100 truncate">
                     {clientName || 'Nueva Orden de Servicio'}
                   </DialogTitle>
-                  <p className="text-xs text-muted-foreground truncate">
+                  <p className="text-xs text-zinc-400 truncate">
                     {projectName || 'Configura el contexto del proyecto y las especificaciones técnicas'}
                   </p>
                 </div>
