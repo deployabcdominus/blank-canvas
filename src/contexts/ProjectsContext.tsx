@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { resolveCompanyId } from '@/lib/resolve-company';
 
 export type ProjectStatus = 'Lead' | 'Proposal' | 'Production' | 'Installation' | 'Completed';
 
@@ -61,21 +62,14 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const getCompanyId = useCallback(async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase.from('profiles').select('company_id').eq('id', user.id).maybeSingle();
-    if (data?.company_id) return data.company_id;
-    const { data: comp } = await supabase.from('companies').select('id').eq('user_id', user.id).maybeSingle();
-    if (comp?.id) {
-      await supabase.from('profiles').update({ company_id: comp.id }).eq('id', user.id);
-      return comp.id;
-    }
-    return null;
+    return resolveCompanyId(user.id);
   }, [user]);
 
   const fetchProjects = useCallback(async () => {
     if (!user) { setProjects([]); setLoading(false); return; }
     const { data, error } = await (supabase as any)
       .from('projects')
-      .select('*, clients!projects_client_id_fkey(client_name)')
+      .select('id, company_id, client_id, project_name, install_address, status, owner_user_id, assigned_to_user_id, folder_relative_path, folder_full_path, created_at, updated_at, clients!projects_client_id_fkey(client_name)')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading projects:', error);
     else setProjects((data || []).map(mapRow));

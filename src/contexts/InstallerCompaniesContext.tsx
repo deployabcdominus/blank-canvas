@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
+import { resolveCompanyId } from '@/lib/resolve-company';
 
 export interface InstallerCompany {
   id: string;
@@ -38,8 +39,7 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
 
   const getCompanyId = useCallback(async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase.from('profiles').select('company_id').eq('id', user.id).maybeSingle();
-    return data?.company_id || null;
+    return resolveCompanyId(user.id);
   }, [user]);
 
   // Load companies from Supabase
@@ -54,7 +54,7 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
       try {
         const { data, error } = await supabase
           .from('installer_companies')
-          .select('*');
+          .select('id, name, contact, email, logo_url, services');
 
         if (error) throw error;
 

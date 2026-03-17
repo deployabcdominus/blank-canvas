@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logAudit } from '@/lib/audit';
+import { resolveCompanyId } from '@/lib/resolve-company';
 
 export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
 export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
@@ -87,7 +88,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
       const [proposalsRes, ordersRes] = await Promise.all([
         supabase
           .from('proposals')
-          .select('*, leads(name, company, logo_url)')
+          .select('id, client, project, value, description, status, sent_date, sent_method, created_at, updated_at, lead_id, approved_total, approved_at, approval_token, mockup_url, leads(name, company, logo_url)')
           .order('created_at', { ascending: false }) as any,
         supabase
           .from('production_orders')
@@ -112,12 +113,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const getCompanyId = async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-    return data?.company_id || null;
+    return resolveCompanyId(user.id);
   };
 
   const addProposal = async (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => {

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { resolveCompanyId } from '@/lib/resolve-company';
 
 export type PaymentMethod = 'cash' | 'zelle' | 'card' | 'transfer' | 'check' | 'other';
 export type PaymentStatus = 'pending' | 'received' | 'refunded' | 'void';
@@ -76,12 +77,7 @@ export const PaymentsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const getCompanyId = async (): Promise<string | null> => {
     if (!user) return null;
-    const { data } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-    return data?.company_id || null;
+    return resolveCompanyId(user.id);
   };
 
   const addPayment = async (payment: Omit<Payment, 'id' | 'createdAt'>) => {
