@@ -172,12 +172,46 @@ Deno.serve(async (req) => {
       },
     });
 
-    // Auto-create Work Order linked to client
+    // Resolve the company/client display name
+    let displayClientName = proposal.client;
+    if (clientId) {
+      const { data: clientRow } = await admin
+        .from("clients")
+        .select("client_name")
+        .eq("id", clientId)
+        .single();
+      if (clientRow?.client_name) displayClientName = clientRow.client_name;
+    }
+
+    // Auto-create Project linked to client
+    let projectId: string | null = null;
+    {
+      const { data: newProject, error: projErr } = await admin
+        .from("projects")
+        .insert({
+          company_id: proposal.company_id,
+          client_id: clientId,
+          project_name: proposal.project || displayClientName,
+          install_address: "",
+          status: "Production",
+          owner_user_id: proposal.user_id,
+        })
+        .select("id")
+        .single();
+
+      if (!projErr && newProject) {
+        projectId = newProject.id;
+      } else {
+        console.error("Error creating project:", projErr);
+      }
+    }
+
+    // Auto-create Work Order linked to client and project
     const { error: woErr } = await admin.from("production_orders").insert({
       user_id: proposal.user_id,
       company_id: proposal.company_id,
       owner_user_id: proposal.user_id,
-      client: proposal.client,
+      client: displayClientName,
       project: proposal.project || "",
       status: "Pendiente",
       progress: 0,
@@ -185,6 +219,8 @@ Deno.serve(async (req) => {
       materials: [],
       start_date: now,
       client_id: clientId,
+      project_id: projectId,
+      proposal_id: proposal.id,
       notes: `Generada automáticamente al aprobarse la propuesta por ${signerName.trim()}.`,
     });
 
