@@ -36,7 +36,7 @@ import NotFound from "./pages/NotFound";
 import MapHub from "./pages/MapHub";
 import Payments from "./pages/Payments";
 import Production from "./pages/Production";
-import WorkerTabletView from "./components/production/WorkerTabletView";
+import OperatorStation from "./components/production/OperatorStation";
 import MobileTechnicianView from "./components/work-orders/MobileTechnicianView";
 import AuditLog from "./pages/AuditLog";
 import LeadsRecycleBin from "./pages/LeadsRecycleBin";
@@ -93,7 +93,7 @@ const App = () => (
                   <Route path="/installer-companies" element={<InstallerCompanies />} />
                   <Route path="/team-management" element={<TenantTeamManagement />} />
                   <Route path="/production" element={<Production />} />
-                  <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><WorkerTabletView /></div>} />
+                  <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
                   <Route path="/tecnico" element={<MobileTechnicianView />} />
                   <Route path="/audit-log" element={<AuditLog />} />
                   <Route path="/settings" element={<Settings />} />

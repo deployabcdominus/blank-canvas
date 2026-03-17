@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
-import WorkerTabletView from "@/components/production/WorkerTabletView";
+import OperatorStation from "@/components/production/OperatorStation";
 import WorkerLeaderboard from "@/components/production/WorkerLeaderboard";
-import ProductionStepsTimeline from "@/components/production/ProductionStepsTimeline";
+import LiveProductionTimeline from "@/components/production/LiveProductionTimeline";
 
 const Production = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
@@ -103,7 +103,7 @@ const Production = () => {
     return (
       <PageTransition>
         <div className="min-h-screen bg-background">
-          <WorkerTabletView />
+          <OperatorStation />
         </div>
       </PageTransition>
     );
@@ -183,7 +183,7 @@ const Production = () => {
             {selectedOrderId && (
               <div className="rounded-2xl border border-border bg-card p-5">
                 <h3 className="font-bold text-foreground mb-3">Etapas de Producción</h3>
-                <ProductionStepsTimeline orderId={selectedOrderId} />
+                <LiveProductionTimeline orderId={selectedOrderId} />
               </div>
             )}
             <WorkerLeaderboard />

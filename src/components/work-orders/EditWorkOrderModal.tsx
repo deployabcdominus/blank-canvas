@@ -31,6 +31,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { BlueprintAnnotator, type Annotation } from "./BlueprintAnnotator";
 import { TechnicalSheet, type TechnicalDetails } from "./TechnicalSheet";
+import LiveProductionTimeline from "@/components/production/LiveProductionTimeline";
+import { useOperationTemplates } from "@/hooks/useOperationTemplates";
 
 interface EditWorkOrderModalProps {
   order: WorkOrder | null;
@@ -88,6 +90,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const { isAdmin, companyId } = useUserRole();
   const { items: statuses } = useCatalog("order_status");
   const { toast } = useToast();
+  const { templates, applyTemplate } = useOperationTemplates();
 
   const [editing, setEditing] = useState(startInEditMode);
   const [saving, setSaving] = useState(false);
@@ -567,6 +570,28 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
               {/* Technical Sheet */}
               <Section title="Ficha Técnica" icon={<Wrench className="w-3.5 h-3.5" />} defaultOpen={false}>
                 <TechnicalSheet value={technicalDetails} onChange={editing ? handleAutoSaveTechnical : setTechnicalDetails} readOnly={!editing} />
+              </Section>
+
+              <div className="border-t border-white/[0.06]" />
+
+              {/* Live Production Timeline */}
+              <Section title="Timeline de Producción" icon={<ClipboardList className="w-3.5 h-3.5" />}>
+                {editing && templates.length > 0 && (
+                  <div className="mb-3">
+                    <Label className="text-[11px] text-muted-foreground mb-1 block">Aplicar plantilla de operaciones</Label>
+                    <Select onValueChange={(v) => order && applyTemplate(order.id, v)}>
+                      <SelectTrigger className="h-8 text-xs border-white/[0.08] bg-transparent">
+                        <SelectValue placeholder="Seleccionar tipo de producto..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {templates.map(t => (
+                          <SelectItem key={t.id} value={t.product_type}>{t.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                {order && <LiveProductionTimeline orderId={order.id} />}
               </Section>
             </div>
           </div>
