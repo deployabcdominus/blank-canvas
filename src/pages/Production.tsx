@@ -183,7 +183,7 @@ const Production = () => {
             {selectedOrderId && (
               <div className="rounded-2xl border border-border bg-card p-5">
                 <h3 className="font-bold text-foreground mb-3">Etapas de Producción</h3>
-                <ProductionStepsTimeline orderId={selectedOrderId} />
+                <LiveProductionTimeline orderId={selectedOrderId} />
               </div>
             )}
             <WorkerLeaderboard />
