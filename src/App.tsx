@@ -36,7 +36,7 @@ import NotFound from "./pages/NotFound";
 import MapHub from "./pages/MapHub";
 import Payments from "./pages/Payments";
 import Production from "./pages/Production";
-import WorkerTabletView from "./components/production/WorkerTabletView";
+import OperatorStation from "./components/production/OperatorStation";
 import MobileTechnicianView from "./components/work-orders/MobileTechnicianView";
 import AuditLog from "./pages/AuditLog";
 import LeadsRecycleBin from "./pages/LeadsRecycleBin";
