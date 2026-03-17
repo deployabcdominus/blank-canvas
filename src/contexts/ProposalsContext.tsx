@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logAudit } from '@/lib/audit';
+import { resolveCompanyId } from '@/lib/resolve-company';
 
 export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
 export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
