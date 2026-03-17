@@ -1412,6 +1412,10 @@ export type Database = {
         Returns: boolean
       }
       manter_bd_ativo: { Args: never; Returns: undefined }
+      recalc_project_progress: {
+        Args: { p_project_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role:

@@ -1,5 +1,5 @@
 import { useProductionSteps } from "@/hooks/useProductionSteps";
-import { Check, Zap, Clock, User } from "lucide-react";
+import { Check, Zap, Clock, User, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function LiveProductionTimeline({ orderId, compact = false }: Props) {
-  const { steps, loading, progress } = useProductionSteps(orderId);
+  const { steps, loading, syncing, progress } = useProductionSteps(orderId);
 
   if (loading) {
     return (
@@ -30,6 +30,13 @@ export default function LiveProductionTimeline({ orderId, compact = false }: Pro
 
   return (
     <div className="space-y-4">
+      {/* Syncing indicator */}
+      {syncing && (
+        <div className="flex items-center gap-2 text-xs text-primary animate-pulse">
+          <Loader2 className="w-3 h-3 animate-spin" />
+          Sincronizando progreso…
+        </div>
+      )}
       {/* Progress summary */}
       <div>
         <div className="flex justify-between text-xs mb-1.5">

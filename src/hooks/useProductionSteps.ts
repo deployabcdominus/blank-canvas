@@ -78,11 +78,14 @@ export function useProductionSteps(orderId?: string) {
     }).eq("id", stepId);
   };
 
+  const [syncing, setSyncing] = useState(false);
+
   const completeStep = async (stepId: string) => {
     const now = new Date().toISOString();
     const step = steps.find(s => s.id === stepId);
     if (!step) return;
 
+    setSyncing(true);
     const minutes = step.started_at
       ? Math.round((Date.now() - new Date(step.started_at).getTime()) / 60000)
       : 0;
@@ -92,6 +95,9 @@ export function useProductionSteps(orderId?: string) {
       completed_at: now,
       duration_minutes: minutes,
     }).eq("id", stepId);
+
+    // Brief delay to let DB triggers cascade progress
+    setTimeout(() => setSyncing(false), 1500);
 
     // Update worker stats
     if (!user || !companyId) return;
@@ -143,7 +149,7 @@ export function useProductionSteps(orderId?: string) {
     ? Math.round((steps.filter(s => s.status === "completed").length / steps.length) * 100)
     : 0;
 
-  return { steps, loading, startStep, completeStep, addStep, progress, fetchSteps };
+  return { steps, loading, syncing, startStep, completeStep, addStep, progress, fetchSteps };
 }
 
 export function useWorkerStats() {
