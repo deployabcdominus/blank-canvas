@@ -103,7 +103,7 @@ const Production = () => {
     return (
       <PageTransition>
         <div className="min-h-screen bg-background">
-          <WorkerTabletView />
+          <OperatorStation />
         </div>
       </PageTransition>
     );
