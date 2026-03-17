@@ -540,8 +540,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
             </div>
           </div>
 
-          {/* ── Sticky Footer ── */}
-          <div className="flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-xl">
+          {/* ── STICKY FOOTER ── */}
+          <div className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md z-10">
             <div className="flex gap-2">
               {!isCompleted && (
                 <Button variant="outline" size="sm" onClick={() => setConfirmComplete(true)}
