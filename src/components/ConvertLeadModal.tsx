@@ -93,8 +93,13 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
 
       // Step 3: Create proposal linked to lead
       try {
+        // Use company name (not contact name) as the proposal client identifier
+        const proposalClientName = mode === 'new'
+          ? newClientName.trim()
+          : (clients.find(c => c.id === selectedClientId)?.clientName || lead.company || lead.name);
+
         await addProposal({
-          client: newClientName.trim() || lead.company || lead.name,
+          client: proposalClientName,
           project: projectName.trim() || lead.service || 'Proyecto',
           value: lead.value ? parseFloat(lead.value) || 0 : 0,
           description: lead.notes || lead.service || '',
