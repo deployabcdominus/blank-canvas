@@ -368,7 +368,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   return (
     <>
       <Dialog open={isOpen} onOpenChange={() => { resetForm(); onClose(); }}>
-        <DialogContent className="w-[96vw] max-w-6xl max-h-[92vh] p-0 gap-0 bg-zinc-950/95 saturate-150 backdrop-blur-3xl border border-white/[0.1] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <DialogContent className="w-[96vw] max-w-6xl max-h-[90vh] p-0 gap-0 bg-zinc-950/95 saturate-150 backdrop-blur-3xl border border-white/[0.1] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
 
           {/* ══ STICKY HEADER ══ */}
           <div className="shrink-0 px-6 py-4 border-b border-white/[0.06] bg-zinc-950/80 backdrop-blur-xl z-10">
