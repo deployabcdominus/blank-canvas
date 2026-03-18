@@ -316,6 +316,17 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     }
   }, [order, toast]);
 
+  const handleDeleteBlueprint = useCallback(async () => {
+    if (!order) return;
+    try {
+      setLocalBlueprintUrl(null);
+      await supabase.from("production_orders").update({ blueprint_url: null } as any).eq("id", order.id);
+      toast({ title: "Diseño eliminado", description: "La imagen fue removida." });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+  }, [order, toast]);
+
   const orderUrl = order ? `${window.location.origin}/work-orders?id=${order.id}` : "";
 
   if (!order) return null;
