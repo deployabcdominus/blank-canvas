@@ -168,7 +168,7 @@ const WorkOrders = () => {
                     onMarkBuilt={handleMarkCompleted}
                     onDelete={handleDeleteSingle}
                     onEdit={canEdit ? (o) => { setEditOrder(o); setEditOrderMode(true); } : undefined}
-                    onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+                    onOpen={(o) => { setSheetOrder(o); }}
                   />
                 ))}
               </div>
