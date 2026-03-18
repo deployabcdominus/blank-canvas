@@ -282,13 +282,22 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
             <div className="flex items-start justify-between" style={{ marginBottom: 12 }}>
               {/* Left: Company info */}
               <div style={{ flex: "0 0 30%" }}>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#1a1a2e", letterSpacing: "-0.02em" }}>
-                  THE SIGN SPACE CORP.
-                </div>
+                {company?.logo_url ? (
+                  <img
+                    src={company.logo_url}
+                    alt={company.name}
+                    style={{ maxHeight: 36, maxWidth: 140, objectFit: "contain", marginBottom: 4 }}
+                    crossOrigin="anonymous"
+                  />
+                ) : (
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#1a1a2e", letterSpacing: "-0.02em" }}>
+                    {company?.name || "MY COMPANY"}
+                  </div>
+                )}
                 <div style={{ fontSize: 9, color: "#666", marginTop: 2 }}>
-                  <div className="flex items-center gap-1"><MapPin size={9} /> Kendall, FL 33186</div>
-                  <div className="flex items-center gap-1"><Phone size={9} /> (305) 555-0199</div>
-                  <div className="flex items-center gap-1"><Mail size={9} /> info@thesignspace.com</div>
+                  <div className="flex items-center gap-1"><MapPin size={9} /> {siteAddress || "—"}</div>
+                  <div className="flex items-center gap-1"><Phone size={9} /> {contactPhone || "—"}</div>
+                  <div className="flex items-center gap-1"><Mail size={9} /> {contactEmail || "—"}</div>
                 </div>
               </div>
 
