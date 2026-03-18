@@ -173,6 +173,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setContactEmail(raw.contact_email || "");
     setSiteAddress(raw.site_address || "");
     setProjectName(raw.project_name || order.project || "");
+    setLocalBlueprintUrl(order.blueprintUrl || null);
   }, [order]);
 
   // Realtime subscription for live updates
