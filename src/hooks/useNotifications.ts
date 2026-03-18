@@ -101,9 +101,13 @@ export function useNotifications() {
           setNotifications(prev => [newNotif, ...prev].slice(0, 20));
           setUnreadCount(prev => prev + 1);
 
-          // Play sound for success notifications (proposal approved)
-          if (newNotif.type === "success" && document.visibilityState === "visible") {
-            playNotificationSound();
+          // Play sound for all new notifications if page is visible
+          if (document.visibilityState === "visible") {
+            // Check user preference from localStorage
+            const soundEnabled = localStorage.getItem("notification_sound") !== "false";
+            if (soundEnabled) {
+              playNotificationSound();
+            }
           }
         }
       )

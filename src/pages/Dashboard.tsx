@@ -31,6 +31,7 @@ const Dashboard = () => {
   const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
   useRealtimeDashboard();
+  useDashboardToasts();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
