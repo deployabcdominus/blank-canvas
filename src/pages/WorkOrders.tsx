@@ -202,6 +202,12 @@ const WorkOrders = () => {
           startInEditMode={editOrderMode}
         />
 
+        <ProductionSheetModal
+          order={sheetOrder}
+          isOpen={!!sheetOrder}
+          onClose={() => setSheetOrder(null)}
+        />
+
         {/* Clear ALL orders — admin only */}
         <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
           <AlertDialogContent>
