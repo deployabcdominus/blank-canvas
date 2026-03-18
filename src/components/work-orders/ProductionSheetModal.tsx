@@ -4,7 +4,7 @@ import { es } from "date-fns/locale";
 import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
   MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
-  FileText, AlertCircle, Upload,
+  FileText, AlertCircle, Upload, Trash2,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
