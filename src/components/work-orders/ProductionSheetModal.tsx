@@ -299,6 +299,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
         <div className="flex-1 overflow-auto p-4 sm:p-6" style={{ background: "hsl(240 5% 12%)" }}>
           <div
             ref={sheetRef}
+            data-print-sheet
             className="mx-auto bg-white text-zinc-900 shadow-2xl"
             style={{
               maxWidth: "1120px",
