@@ -24,6 +24,8 @@ interface PdfData {
   qcChecklist: Record<string, boolean | string | null>;
   blueprintUrl: string | null;
   annotations: Array<{ text?: string }>;
+  companyName?: string;
+  companyLogoUrl?: string | null;
 }
 
 const V: [number, number, number] = [124, 58, 237]; // Violet
