@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
+import { QCSignaturePad } from "./QCSignaturePad";
 
 /* ── Types ── */
 interface StaffEntry {
@@ -130,6 +131,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [operators, setOperators] = useState<Array<{ id: string; name: string }>>([]);
   const [localBlueprintUrl, setLocalBlueprintUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
 
   // Form state
   const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
@@ -174,6 +176,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setSiteAddress(raw.site_address || "");
     setProjectName(raw.project_name || order.project || "");
     setLocalBlueprintUrl(order.blueprintUrl || null);
+    setSignatureUrl((order as any).qc_signature_url || null);
   }, [order]);
 
   // Realtime subscription for live updates
@@ -275,6 +278,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         annotations: ((order as any).annotations || []) as Array<{ text?: string }>,
         companyName: company?.name || "MY COMPANY",
         companyLogoUrl: company?.logo_url || null,
+        qcSignatureUrl: signatureUrl || null,
       });
       toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
     } catch (e: any) {
@@ -665,25 +669,22 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                     </button>
                   ))}
 
-                  {/* Signature */}
-                  <div style={{ marginTop: 6, borderTop: "1px solid #eee", paddingTop: 6 }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "60px 1fr", gap: 4, alignItems: "center" }}>
-                      <span style={{ fontSize: 9, fontWeight: 600, color: "#555" }}>Signature:</span>
-                      <Input
-                        value={qcChecklist.qc_signature}
-                        onChange={e => setQcChecklist(prev => ({ ...prev, qc_signature: e.target.value }))}
-                        className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                        placeholder="QC Inspector name"
-                      />
-                      <span style={{ fontSize: 9, fontWeight: 600, color: "#555" }}>Date:</span>
-                      <Input
-                        type="date"
-                        value={qcChecklist.qc_date || ""}
-                        onChange={e => setQcChecklist(prev => ({ ...prev, qc_date: e.target.value }))}
-                        className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                      />
-                    </div>
-                  </div>
+                  {/* Digital Signature Pad */}
+                  <QCSignaturePad
+                    orderId={order.id}
+                    companyId={order.companyId}
+                    allQcPassed={allQcPassed}
+                    existingSignatureUrl={signatureUrl}
+                    inspectorName={qcChecklist.qc_signature || ""}
+                    onSignatureSaved={(url) => {
+                      setSignatureUrl(url);
+                      setQcChecklist(prev => ({
+                        ...prev,
+                        qc_signature: prev.qc_signature || "QC Inspector",
+                        qc_date: new Date().toISOString().split("T")[0],
+                      }));
+                    }}
+                  />
 
                   {/* Status indicator */}
                   {allQcPassed && (
