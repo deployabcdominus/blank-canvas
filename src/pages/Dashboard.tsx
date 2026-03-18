@@ -21,17 +21,19 @@ import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { isThisMonth } from "date-fns";
-import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
+import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
 import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
 
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
-  const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
+  const { canViewFinancials, canViewOperations, isAdmin, isSuperadmin, companyId, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
   useRealtimeDashboard();
   useDashboardToasts();
+
+  const hasNoCompany = !roleLoading && !companyId && !isSuperadmin;
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
@@ -70,6 +72,16 @@ const Dashboard = () => {
   return (
     <PageTransition>
       <ResponsiveLayout>
+        {/* Incomplete profile banner */}
+        {hasNoCompany && (
+          <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-xl px-5 py-3">
+            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-amber-300">Configuración incompleta</p>
+              <p className="text-xs text-amber-400/80">Tu cuenta no está vinculada a una empresa. Los datos del dashboard no estarán disponibles. Contacta al administrador.</p>
+            </div>
+          </div>
+        )}
         <GracePeriodBanner />
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6 flex items-end justify-between">
           <div>
@@ -91,7 +103,7 @@ const Dashboard = () => {
 
         <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
           {stats.map((stat, index) => (
-            <HudCard key={stat.key} label={stat.label} desc={stat.desc} value={stat.value} icon={stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} />
+            <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? "Sin acceso" : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} />
           ))}
         </div>
 
