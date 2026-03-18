@@ -56,29 +56,41 @@ export const useProposals = () => {
   return context;
 };
 
-const mapRow = (row: any, orderProposalIds: Set<string>): Proposal => ({
-  id: row.id,
-  client: row.client,
-  project: row.project,
-  value: Number(row.value),
-  description: row.description || '',
-  status: row.status as ProposalStatus,
-  sentDate: row.sent_date,
-  sentMethod: row.sent_method as SentMethod | null,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at || null,
-  leadId: row.lead_id || null,
-  lead: row.leads ? {
-    name: row.leads.name,
-    company: row.leads.company || '',
-    logoUrl: row.leads.logo_url || null,
-  } : null,
-  approvedTotal: row.approved_total != null ? Number(row.approved_total) : null,
-  approvedAt: row.approved_at || null,
-  approvalToken: row.approval_token || null,
-  mockupUrl: row.mockup_url || null,
-  hasOrder: orderProposalIds.has(row.id),
-});
+const mapRow = (row: any, orderProposalIds: Set<string>): Proposal => {
+  const leadData = row.leads;
+  const clientData = leadData?.clients;
+  // If the lead is linked to a client, use client data as source of truth
+  const resolvedClient = clientData
+    ? clientData.client_name || row.client
+    : row.client;
+
+  return {
+    id: row.id,
+    client: resolvedClient,
+    project: row.project,
+    value: Number(row.value),
+    description: row.description || '',
+    status: row.status as ProposalStatus,
+    sentDate: row.sent_date,
+    sentMethod: row.sent_method as SentMethod | null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at || null,
+    leadId: row.lead_id || null,
+    lead: leadData ? {
+      name: clientData?.contact_name || clientData?.client_name || leadData.name,
+      company: clientData?.client_name || leadData.company || '',
+      logoUrl: clientData?.logo_url || leadData.logo_url || null,
+      clientName: clientData?.client_name || undefined,
+      clientPhone: clientData?.primary_phone || undefined,
+      clientEmail: clientData?.primary_email || undefined,
+    } : null,
+    approvedTotal: row.approved_total != null ? Number(row.approved_total) : null,
+    approvedAt: row.approved_at || null,
+    approvalToken: row.approval_token || null,
+    mockupUrl: row.mockup_url || null,
+    hasOrder: orderProposalIds.has(row.id),
+  };
+};
 
 export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
