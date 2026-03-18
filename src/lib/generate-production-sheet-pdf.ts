@@ -322,6 +322,19 @@ export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
     qy += 4.5;
   });
 
+  // QC Signature image
+  let sigImg: HTMLImageElement | null = null;
+  if (data.qcSignatureUrl) sigImg = await loadImage(data.qcSignatureUrl);
+
+  if (sigImg) {
+    qy += 3;
+    const sigRatio = Math.min(50 / sigImg.naturalWidth, 20 / sigImg.naturalHeight);
+    const sigW = sigImg.naturalWidth * sigRatio;
+    const sigH = sigImg.naturalHeight * sigRatio;
+    doc.addImage(sigImg, "PNG", qcX + 2, qy, sigW, sigH);
+    qy += sigH + 2;
+  }
+
   // QC Signature
   qy += 3;
   thinLine(doc, qcX + 2, qy, qcX + 60, qy);
