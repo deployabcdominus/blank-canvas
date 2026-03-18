@@ -668,25 +668,22 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                     </button>
                   ))}
 
-                  {/* Signature */}
-                  <div style={{ marginTop: 6, borderTop: "1px solid #eee", paddingTop: 6 }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "60px 1fr", gap: 4, alignItems: "center" }}>
-                      <span style={{ fontSize: 9, fontWeight: 600, color: "#555" }}>Signature:</span>
-                      <Input
-                        value={qcChecklist.qc_signature}
-                        onChange={e => setQcChecklist(prev => ({ ...prev, qc_signature: e.target.value }))}
-                        className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                        placeholder="QC Inspector name"
-                      />
-                      <span style={{ fontSize: 9, fontWeight: 600, color: "#555" }}>Date:</span>
-                      <Input
-                        type="date"
-                        value={qcChecklist.qc_date || ""}
-                        onChange={e => setQcChecklist(prev => ({ ...prev, qc_date: e.target.value }))}
-                        className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                      />
-                    </div>
-                  </div>
+                  {/* Digital Signature Pad */}
+                  <QCSignaturePad
+                    orderId={order.id}
+                    companyId={order.companyId}
+                    allQcPassed={allQcPassed}
+                    existingSignatureUrl={signatureUrl}
+                    inspectorName={qcChecklist.qc_signature || ""}
+                    onSignatureSaved={(url) => {
+                      setSignatureUrl(url);
+                      setQcChecklist(prev => ({
+                        ...prev,
+                        qc_signature: prev.qc_signature || "QC Inspector",
+                        qc_date: new Date().toISOString().split("T")[0],
+                      }));
+                    }}
+                  />
 
                   {/* Status indicator */}
                   {allQcPassed && (
