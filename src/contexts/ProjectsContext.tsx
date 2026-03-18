@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
@@ -39,21 +39,30 @@ export const useProjects = () => {
   return ctx;
 };
 
-const mapRow = (row: any): Project => ({
-  id: row.id,
-  companyId: row.company_id,
-  clientId: row.client_id,
-  projectName: row.project_name,
-  installAddress: row.install_address || '',
-  status: row.status || 'Lead',
-  ownerUserId: row.owner_user_id,
-  assignedToUserId: row.assigned_to_user_id,
-  folderRelativePath: row.folder_relative_path,
-  folderFullPath: row.folder_full_path,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-  clientName: row.clients?.client_name || undefined,
-});
+const mapRow = (row: any): Project => {
+  // Source of truth: client name from joined clients table
+  // Fallback: lead company name via leads join
+  const clientName = row.clients?.client_name
+    || row.leads?.[0]?.company
+    || row.leads?.[0]?.name
+    || undefined;
+
+  return {
+    id: row.id,
+    companyId: row.company_id,
+    clientId: row.client_id,
+    projectName: row.project_name,
+    installAddress: row.install_address || '',
+    status: row.status || 'Lead',
+    ownerUserId: row.owner_user_id,
+    assignedToUserId: row.assigned_to_user_id,
+    folderRelativePath: row.folder_relative_path,
+    folderFullPath: row.folder_full_path,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    clientName,
+  };
+};
 
 export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
@@ -69,7 +78,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     if (!user) { setProjects([]); setLoading(false); return; }
     const { data, error } = await (supabase as any)
       .from('projects')
-      .select('id, company_id, client_id, project_name, install_address, status, owner_user_id, assigned_to_user_id, folder_relative_path, folder_full_path, created_at, updated_at, clients!projects_client_id_fkey(client_name)')
+      .select('id, company_id, client_id, project_name, install_address, status, owner_user_id, assigned_to_user_id, folder_relative_path, folder_full_path, created_at, updated_at, clients!projects_client_id_fkey(client_name), leads!leads_project_id_fkey(name, company)')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading projects:', error);
     else setProjects((data || []).map(mapRow));
@@ -77,6 +86,29 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [user]);
 
   useEffect(() => { fetchProjects(); }, [fetchProjects]);
+
+  // Realtime subscription for projects, clients, and proposals
+  useEffect(() => {
+    if (!user) return;
+    const debounceRef = { current: null as ReturnType<typeof setTimeout> | null };
+
+    const handleChange = () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => fetchProjects(), 500);
+    };
+
+    const channel = supabase
+      .channel('projects-realtime')
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "projects" }, handleChange)
+      .on("postgres_changes" as any, { event: "UPDATE", schema: "public", table: "clients" }, handleChange)
+      .on("postgres_changes" as any, { event: "UPDATE", schema: "public", table: "proposals" }, handleChange)
+      .subscribe();
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      supabase.removeChannel(channel);
+    };
+  }, [user, fetchProjects]);
 
   const addProject = async (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'companyId' | 'clientName'>): Promise<Project> => {
     const companyId = await getCompanyId();
