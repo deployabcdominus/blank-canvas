@@ -26,6 +26,9 @@ export interface Lead {
   assignedToUserId?: string;
   clientId?: string;
   projectId?: string;
+  /** Resolved client name (from clients table when linked) */
+  resolvedName?: string;
+  resolvedCompany?: string;
 }
 
 interface LeadsContextType {
