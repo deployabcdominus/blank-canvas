@@ -296,6 +296,26 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setQcChecklist(prev => ({ ...prev, [key]: !prev[key as keyof QCChecklist] }));
   }, []);
 
+  const handleBlueprintUpload = useCallback(async (file: File) => {
+    if (!order) return;
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `${order.companyId || "unknown"}/${order.id}/blueprint.${ext}`;
+      const { error } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+      const url = urlData.publicUrl + "?t=" + Date.now();
+      setLocalBlueprintUrl(url);
+      await supabase.from("production_orders").update({ blueprint_url: url } as any).eq("id", order.id);
+      toast({ title: "Diseño subido", description: "La imagen fue cargada exitosamente." });
+    } catch (e: any) {
+      toast({ title: "Error al subir", description: e.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  }, [order, toast]);
+
   const orderUrl = order ? `${window.location.origin}/work-orders?id=${order.id}` : "";
 
   if (!order) return null;
