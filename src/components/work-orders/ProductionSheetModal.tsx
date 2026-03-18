@@ -336,8 +336,8 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
                     ? format(new Date((order.estimatedDelivery || order.estimatedCompletion)!), "MMM dd, yyyy")
                     : "—"}</div>
                 </div>
-                <div style={{ marginTop: 6 }}>
-                  <QrCode size={40} strokeWidth={1} className="ml-auto" style={{ color: "#ccc" }} />
+                <div style={{ marginTop: 6 }} className="flex justify-end print-qr">
+                  <QRCodeSVG value={orderUrl} size={44} level="M" bgColor="transparent" fgColor="#333" />
                 </div>
               </div>
             </div>
