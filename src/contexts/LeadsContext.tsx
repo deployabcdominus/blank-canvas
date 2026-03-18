@@ -112,7 +112,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
     const { data, error, count } = await supabase
       .from('leads')
-      .select('id, name, company, service, status, phone, email, location, value, source, notes, website, logo_url, company_id, created_by_user_id, assigned_to_user_id, client_id, project_id, created_at', { count: 'exact' })
+      .select('id, name, company, service, status, phone, email, location, value, source, notes, website, logo_url, company_id, created_by_user_id, assigned_to_user_id, client_id, project_id, created_at, clients!leads_client_id_fkey(client_name, contact_name, primary_phone, primary_email, address, website, logo_url)', { count: 'exact' })
       .is('deleted_at', null)
       .order('created_at', { ascending: false })
       .range(from, to);
