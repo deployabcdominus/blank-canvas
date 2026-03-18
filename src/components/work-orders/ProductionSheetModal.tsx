@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
+import { QCSignaturePad } from "./QCSignaturePad";
 
 /* ── Types ── */
 interface StaffEntry {
