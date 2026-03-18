@@ -111,7 +111,22 @@ const mapRow = (row: any): WorkOrder => ({
   installerCompanyId: row.installer_company_id || null,
   blueprintUrl: row.blueprint_url || null,
   annotations: Array.isArray(row.annotations) ? row.annotations : [],
-  technicalDetails: (row as any).technical_details || {},
+  technicalDetails: row.technical_details || {},
+  // Production Sheet fields
+  face_material_spec: row.face_material_spec || '',
+  returns_material_spec: row.returns_material_spec || '',
+  backs_material_spec: row.backs_material_spec || '',
+  trim_cap_spec: row.trim_cap_spec || '',
+  led_mfg_spec: row.led_mfg_spec || '',
+  power_supply_spec: row.power_supply_spec || '',
+  responsible_staff: row.responsible_staff || null,
+  qc_checklist: row.qc_checklist || null,
+  wo_number: row.wo_number || null,
+  contact_name: row.contact_name || '',
+  contact_phone: row.contact_phone || '',
+  contact_email: row.contact_email || '',
+  site_address: row.site_address || '',
+  project_name: row.project_name || '',
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
