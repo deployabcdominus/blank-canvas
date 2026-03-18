@@ -325,7 +325,87 @@ export default function Settings() {
                     Edita el nombre de tu empresa. Este cambio se refleja para todos los miembros.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
+                  {/* Company Logo */}
+                  <div className="space-y-3">
+                    <Label>Logo de la empresa</Label>
+                    <div className="flex items-center gap-4">
+                      {company?.logo_url ? (
+                        <div className="relative group">
+                          <img
+                            src={company.logo_url}
+                            alt={company.name}
+                            className="h-16 max-w-[200px] object-contain rounded-lg border border-border p-2 bg-muted/30"
+                          />
+                          <button
+                            onClick={async () => {
+                              if (!company) return;
+                              try {
+                                await supabase.from('companies').update({ logo_url: null }).eq('id', company.id);
+                                toast({ title: "Logo eliminado" });
+                                window.location.reload();
+                              } catch { /* noop */ }
+                            }}
+                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="h-16 w-32 rounded-lg border border-dashed border-border flex items-center justify-center bg-muted/20">
+                          <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={uploadingLogo}
+                          onClick={() => document.getElementById('company-logo-input')?.click()}
+                          className="flex items-center gap-2"
+                        >
+                          {uploadingLogo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                          {uploadingLogo ? 'Subiendo...' : company?.logo_url ? 'Cambiar logo' : 'Subir logo'}
+                        </Button>
+                        <p className="text-xs text-muted-foreground mt-1">PNG, JPG. Max 2MB.</p>
+                        <input
+                          id="company-logo-input"
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file || !company || !user) return;
+                            if (file.size > 2 * 1024 * 1024) {
+                              toast({ title: "Error", description: "El archivo es muy grande. Máximo 2MB.", variant: "destructive" });
+                              return;
+                            }
+                            setUploadingLogo(true);
+                            try {
+                              const ext = file.name.split('.').pop() || 'png';
+                              const path = `${user.id}/logo.${ext}`;
+                              const { error: upErr } = await supabase.storage.from('company-logos').upload(path, file, { upsert: true });
+                              if (upErr) throw upErr;
+                              const { data: urlData } = supabase.storage.from('company-logos').getPublicUrl(path);
+                              const logoUrl = urlData.publicUrl + '?t=' + Date.now();
+                              await supabase.from('companies').update({ logo_url: logoUrl }).eq('id', company.id);
+                              toast({ title: "Logo actualizado", description: "El logo se guardó correctamente." });
+                              window.location.reload();
+                            } catch (err: any) {
+                              toast({ title: "Error", description: err.message, variant: "destructive" });
+                            } finally {
+                              setUploadingLogo(false);
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Company Name */}
                   <div className="space-y-2">
                     <Label htmlFor="org-name">Nombre de la empresa</Label>
                     <Input

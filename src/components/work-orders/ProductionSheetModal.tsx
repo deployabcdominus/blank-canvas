@@ -438,12 +438,32 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                 }}
               >
                 {localBlueprintUrl ? (
-                  <img
-                    src={localBlueprintUrl}
-                    alt="Technical drawing"
-                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                    crossOrigin="anonymous"
-                  />
+                  <>
+                    <img
+                      src={localBlueprintUrl}
+                      alt="Technical drawing"
+                      style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                      crossOrigin="anonymous"
+                    />
+                    <button
+                      data-print-hide
+                      onClick={handleDeleteBlueprint}
+                      style={{
+                        position: "absolute",
+                        top: 6, left: 6,
+                        fontSize: 9, fontWeight: 600,
+                        background: "rgba(220,38,38,0.85)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: 4,
+                        padding: "3px 8px",
+                        cursor: "pointer",
+                        display: "flex", alignItems: "center", gap: 4,
+                      }}
+                    >
+                      <Trash2 size={10} /> Remove
+                    </button>
+                  </>
                 ) : (
                   <div style={{ textAlign: "center", color: "#bbb", padding: 20 }}>
                     <FileText size={32} strokeWidth={1} />
