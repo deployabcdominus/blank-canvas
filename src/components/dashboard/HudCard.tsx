@@ -102,9 +102,13 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           )}
         </div>
 
-        <AnimatedCounter value={value} className="font-semibold text-[32px] leading-none tracking-tight text-zinc-100" />
+        {noAccess ? (
+          <span className="font-semibold text-[32px] leading-none tracking-tight text-amber-400/60">—</span>
+        ) : (
+          <AnimatedCounter value={value} className="font-semibold text-[32px] leading-none tracking-tight text-zinc-100" />
+        )}
         <p className="text-sm font-medium mt-2 text-zinc-100">{label}</p>
-        <p className="text-xs mt-0.5 text-zinc-400">{desc}</p>
+        <p className={`text-xs mt-0.5 ${noAccess ? 'text-amber-400/60' : 'text-zinc-400'}`}>{desc}</p>
       </div>
     </motion.button>
   );
