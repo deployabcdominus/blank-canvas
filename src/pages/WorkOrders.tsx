@@ -180,7 +180,7 @@ const WorkOrders = () => {
                 onMarkBuilt={handleMarkCompleted}
                 onDelete={handleDeleteSingle}
                 onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
-                onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+                onOpen={(o) => { setSheetOrder(o); }}
               />
             )}
             <WorkOrdersPagination
