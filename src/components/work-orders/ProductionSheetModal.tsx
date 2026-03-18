@@ -3,9 +3,10 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
-  QrCode, MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
+  MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
   FileText, AlertCircle,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorkOrders, type WorkOrder } from "@/contexts/WorkOrdersContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useCompany } from "@/hooks/useCompany";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
 
 /* ── Types ── */
