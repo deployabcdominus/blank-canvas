@@ -11,6 +11,10 @@ export interface ProposalLead {
   name: string;
   company: string;
   logoUrl: string | null;
+  /** Client data when lead is linked to a client */
+  clientName?: string;
+  clientPhone?: string;
+  clientEmail?: string;
 }
 
 export interface Proposal {
