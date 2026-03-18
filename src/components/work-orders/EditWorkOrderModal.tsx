@@ -686,6 +686,13 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Production Sheet Modal */}
+      <ProductionSheetModal
+        order={order}
+        isOpen={showProductionSheet}
+        onClose={() => setShowProductionSheet(false)}
+      />
     </>
   );
 }
