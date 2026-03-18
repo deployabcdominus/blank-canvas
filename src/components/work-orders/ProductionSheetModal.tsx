@@ -622,7 +622,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
         </div>
 
         {/* ── Footer Actions (outside paper) ── */}
-        <div className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md">
+        <div data-print-hide className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md">
           <Button variant="outline" size="sm" onClick={onClose} className="text-xs border-white/[0.1] text-muted-foreground h-8">
             <X className="w-3.5 h-3.5 mr-1.5" /> Close
           </Button>
