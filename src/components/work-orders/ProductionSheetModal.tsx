@@ -119,6 +119,7 @@ const defaultMaterialSpecs: MaterialSpecs = {
 export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheetModalProps) {
   const { updateOrder } = useWorkOrders();
   const { companyId } = useUserRole();
+  const { company } = useCompany();
   const { toast } = useToast();
   const sheetRef = useRef<HTMLDivElement>(null);
 
