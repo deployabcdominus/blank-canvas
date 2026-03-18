@@ -171,7 +171,40 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
     setProjectName(raw.project_name || order.project || "");
   }, [order]);
 
-  const woNumber = useMemo(() => {
+  // Realtime subscription for live updates
+  useEffect(() => {
+    if (!isOpen || !order) return;
+    const channel = supabase
+      .channel(`wo-sheet-${order.id}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'production_orders',
+        filter: `id=eq.${order.id}`,
+      }, (payload) => {
+        const raw = payload.new as any;
+        setMaterialSpecs({
+          face_material_spec: raw.face_material_spec || "",
+          returns_material_spec: raw.returns_material_spec || "",
+          backs_material_spec: raw.backs_material_spec || "",
+          trim_cap_spec: raw.trim_cap_spec || "",
+          led_mfg_spec: raw.led_mfg_spec || "",
+          power_supply_spec: raw.power_supply_spec || "",
+        });
+        if (raw.responsible_staff) setStaff(raw.responsible_staff);
+        if (raw.qc_checklist) setQcChecklist(raw.qc_checklist);
+        if (raw.contact_name !== undefined) setContactName(raw.contact_name || "");
+        if (raw.contact_phone !== undefined) setContactPhone(raw.contact_phone || "");
+        if (raw.contact_email !== undefined) setContactEmail(raw.contact_email || "");
+        if (raw.site_address !== undefined) setSiteAddress(raw.site_address || "");
+        if (raw.project_name !== undefined) setProjectName(raw.project_name || "");
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [isOpen, order?.id]);
+
+
     if (!order) return "";
     return (order as any).wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
   }, [order]);
