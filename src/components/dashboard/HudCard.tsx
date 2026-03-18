@@ -12,9 +12,10 @@ interface HudCardProps {
   onClick: () => void;
   index: number;
   accentClass?: string;
+  noAccess?: boolean;
 }
 
-export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index }: HudCardProps) => {
+export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, noAccess }: HudCardProps) => {
   const [glowPulse, setGlowPulse] = useState(false);
   const prevValue = useRef(value);
   const isFirstRender = useRef(true);
