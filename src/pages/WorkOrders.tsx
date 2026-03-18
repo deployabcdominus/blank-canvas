@@ -37,6 +37,7 @@ const WorkOrders = () => {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editOrder, setEditOrder] = useState<WorkOrder | null>(null);
   const [editOrderMode, setEditOrderMode] = useState(false);
+  const [sheetOrder, setSheetOrder] = useState<WorkOrder | null>(null);
 
   const handleMarkCompleted = (id: string) => {
     setCompleteConfirmId(id);
