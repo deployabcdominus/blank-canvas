@@ -103,7 +103,7 @@ const Dashboard = () => {
 
         <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
           {stats.map((stat, index) => (
-            <HudCard key={stat.key} label={stat.label} desc={stat.desc} value={stat.value} icon={stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} />
+            <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? "Sin acceso" : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} />
           ))}
         </div>
 
