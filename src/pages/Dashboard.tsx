@@ -28,10 +28,12 @@ import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
 const Dashboard = () => {
   const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
-  const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
+  const { canViewFinancials, canViewOperations, isAdmin, isSuperadmin, companyId, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
   useRealtimeDashboard();
   useDashboardToasts();
+
+  const hasNoCompany = !roleLoading && !companyId && !isSuperadmin;
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
