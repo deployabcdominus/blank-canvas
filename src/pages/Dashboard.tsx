@@ -77,8 +77,8 @@ const Dashboard = () => {
           <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-xl px-5 py-3">
             <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-amber-300">Configuración incompleta</p>
-              <p className="text-xs text-amber-400/80">Tu cuenta no está vinculada a una empresa. Los datos del dashboard no estarán disponibles. Contacta al administrador.</p>
+              <p className="text-sm font-semibold text-amber-300">Contexto de Negocio Desactivado</p>
+              <p className="text-xs text-amber-400/80">Tus datos no se poblarán hasta que estés vinculado a una empresa. Contacta al soporte o al administrador.</p>
             </div>
           </div>
         )}
