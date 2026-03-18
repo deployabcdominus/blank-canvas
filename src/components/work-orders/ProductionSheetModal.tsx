@@ -4,7 +4,7 @@ import { es } from "date-fns/locale";
 import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
   MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
-  FileText, AlertCircle, Upload,
+  FileText, AlertCircle, Upload, Trash2,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -271,8 +271,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         materialSpecs: materialSpecs as unknown as Record<string, string>,
         staff: staff as unknown as Record<string, any>,
         qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
-        blueprintUrl: order.blueprintUrl || null,
-        annotations: order.annotations || [],
+        blueprintUrl: localBlueprintUrl || order.blueprintUrl || null,
+        annotations: ((order as any).annotations || []) as Array<{ text?: string }>,
         companyName: company?.name || "MY COMPANY",
         companyLogoUrl: company?.logo_url || null,
       });
@@ -313,6 +313,17 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
       toast({ title: "Error al subir", description: e.message, variant: "destructive" });
     } finally {
       setUploading(false);
+    }
+  }, [order, toast]);
+
+  const handleDeleteBlueprint = useCallback(async () => {
+    if (!order) return;
+    try {
+      setLocalBlueprintUrl(null);
+      await supabase.from("production_orders").update({ blueprint_url: null } as any).eq("id", order.id);
+      toast({ title: "Diseño eliminado", description: "La imagen fue removida." });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
     }
   }, [order, toast]);
 
@@ -427,12 +438,32 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                 }}
               >
                 {localBlueprintUrl ? (
-                  <img
-                    src={localBlueprintUrl}
-                    alt="Technical drawing"
-                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                    crossOrigin="anonymous"
-                  />
+                  <>
+                    <img
+                      src={localBlueprintUrl}
+                      alt="Technical drawing"
+                      style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                      crossOrigin="anonymous"
+                    />
+                    <button
+                      data-print-hide
+                      onClick={handleDeleteBlueprint}
+                      style={{
+                        position: "absolute",
+                        top: 6, left: 6,
+                        fontSize: 9, fontWeight: 600,
+                        background: "rgba(220,38,38,0.85)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: 4,
+                        padding: "3px 8px",
+                        cursor: "pointer",
+                        display: "flex", alignItems: "center", gap: 4,
+                      }}
+                    >
+                      <Trash2 size={10} /> Remove
+                    </button>
+                  </>
                 ) : (
                   <div style={{ textAlign: "center", color: "#bbb", padding: 20 }}>
                     <FileText size={32} strokeWidth={1} />
