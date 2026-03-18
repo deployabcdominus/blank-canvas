@@ -77,15 +77,25 @@ export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
   doc.rect(0, 0, W, H, "F");
 
   // ═══ HEADER ═══
-  // Left: Company
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(...D);
-  doc.text("THE SIGN SPACE CORP.", mx, my + 5);
+  // Left: Company logo or name
+  let logoImg: HTMLImageElement | null = null;
+  if (data.companyLogoUrl) logoImg = await loadImage(data.companyLogoUrl);
+
+  if (logoImg) {
+    const logoRatio = Math.min(50 / logoImg.naturalWidth, 12 / logoImg.naturalHeight);
+    const lw = logoImg.naturalWidth * logoRatio;
+    const lh = logoImg.naturalHeight * logoRatio;
+    doc.addImage(logoImg, "PNG", mx, my, lw, lh);
+  } else {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(...D);
+    doc.text(data.companyName || "MY COMPANY", mx, my + 5);
+  }
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
   doc.setTextColor(...M);
-  doc.text("Kendall, FL 33186 · (305) 555-0199 · info@thesignspace.com", mx, my + 10);
+  doc.text(data.siteAddress || "", mx, my + (logoImg ? 16 : 10));
 
   // Center: Title
   const cx = W / 2;
