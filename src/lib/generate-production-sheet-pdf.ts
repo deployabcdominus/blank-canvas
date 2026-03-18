@@ -309,7 +309,8 @@ export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
     const checked = !!data.qcChecklist[item.key];
     doc.setFont("helvetica", "normal");
     doc.setFontSize(6.5);
-    doc.setTextColor(checked ? GREEN : INK);
+    const qcColor = checked ? GREEN : INK;
+    doc.setTextColor(...qcColor);
     doc.text(checked ? "☑" : "☐", qcX + 2, qy);
     doc.text(item.label, qcX + 7, qy);
     if (checked) {
