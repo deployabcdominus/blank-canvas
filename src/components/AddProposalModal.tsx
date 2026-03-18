@@ -13,9 +13,9 @@ import { toast } from "sonner";
 import type { ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
+import { SmartEntitySearch, type EntityResult } from "@/components/SmartEntitySearch";
 
 const schema = z.object({
-  client: z.string().min(1, "El cliente es obligatorio"),
   project: z.string().min(1, "El proyecto es obligatorio"),
   value: z.string().min(1, "El monto es obligatorio"),
   description: z.string().min(1, "La descripción del alcance es obligatoria"),
@@ -30,12 +30,13 @@ interface AddProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddProposal: (proposal: any) => Promise<void>;
+  onCreateClient?: (name: string) => void;
 }
 
 const SENT_METHODS: SentMethod[] = ['Gmail', 'WhatsApp', 'PDF físico', 'Otro'];
 const STATUSES: ProposalStatus[] = ['Borrador', 'Enviada externamente', 'Aprobada', 'Rechazada'];
 
-export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onClose, onAddProposal }) => {
+export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onClose, onAddProposal, onCreateClient }) => {
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
   const resolvedServices = catalogServices.length > 0
@@ -47,20 +48,31 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     defaultValues: { status: 'Borrador' },
   });
   const [sentDate, setSentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedEntity, setSelectedEntity] = useState<EntityResult | null>(null);
+  const [entityError, setEntityError] = useState<string | null>(null);
 
   const onSubmit = async (data: FormData) => {
+    if (!selectedEntity) {
+      setEntityError("Debes seleccionar o crear un cliente/lead");
+      return;
+    }
+    setEntityError(null);
+
     try {
       await onAddProposal({
-        client: data.client,
+        client: selectedEntity.name,
         project: data.project,
         value: parseFloat(data.value.replace(/[^0-9.]/g, '')) || 0,
         description: data.description,
         status: data.status as ProposalStatus,
         sentDate: data.status === 'Borrador' ? null : sentDate,
         sentMethod: data.status === 'Borrador' ? null : (data.sentMethod as SentMethod),
+        leadId: selectedEntity.type === "lead" ? selectedEntity.id : null,
+        // If client selected, we still pass lead_id as null (proposals link through leads)
       });
       toast.success("Propuesta registrada con éxito");
       reset();
+      setSelectedEntity(null);
       setSentDate(new Date().toISOString().split('T')[0]);
       onClose();
     } catch {
@@ -68,7 +80,23 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     }
   };
 
-  const handleClose = () => { reset(); setSentDate(new Date().toISOString().split('T')[0]); onClose(); };
+  const handleClose = () => {
+    reset();
+    setSelectedEntity(null);
+    setEntityError(null);
+    setSentDate(new Date().toISOString().split('T')[0]);
+    onClose();
+  };
+
+  const handleCreateNew = (name: string) => {
+    // Set as a temporary entity so the form can proceed
+    setSelectedEntity({ id: "", name, type: "client" });
+    setEntityError(null);
+    // Optionally trigger create-client modal
+    if (onCreateClient) {
+      onCreateClient(name);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -79,12 +107,20 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="client">Cliente *</Label>
-              <Input {...register("client")} id="client" placeholder="Nombre del cliente" />
-              {errors.client && <p className="text-sm text-destructive mt-1">{errors.client.message}</p>}
+            <div className="col-span-2 sm:col-span-1">
+              <Label>Cliente / Lead *</Label>
+              <SmartEntitySearch
+                value={selectedEntity}
+                onSelect={(entity) => {
+                  setSelectedEntity(entity);
+                  setEntityError(null);
+                }}
+                onCreateNew={handleCreateNew}
+                placeholder="Buscar empresa o lead..."
+              />
+              {entityError && <p className="text-sm text-destructive mt-1">{entityError}</p>}
             </div>
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="project">Proyecto *</Label>
               <Input {...register("project")} id="project" placeholder="Nombre del proyecto" />
               {errors.project && <p className="text-sm text-destructive mt-1">{errors.project.message}</p>}
