@@ -28,6 +28,7 @@ interface PdfData {
   annotations: Array<{ text?: string }>;
   companyName?: string;
   companyLogoUrl?: string | null;
+  qcSignatureUrl?: string | null;
 }
 
 /* ── Color Palette ── */
