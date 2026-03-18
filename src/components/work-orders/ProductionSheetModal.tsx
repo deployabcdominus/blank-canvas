@@ -271,8 +271,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         materialSpecs: materialSpecs as unknown as Record<string, string>,
         staff: staff as unknown as Record<string, any>,
         qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
-        blueprintUrl: order.blueprintUrl || null,
-        annotations: order.annotations || [],
+        blueprintUrl: localBlueprintUrl || order.blueprintUrl || null,
+        annotations: ((order as any).annotations || []) as Array<{ text?: string }>,
         companyName: company?.name || "MY COMPANY",
         companyLogoUrl: company?.logo_url || null,
       });
