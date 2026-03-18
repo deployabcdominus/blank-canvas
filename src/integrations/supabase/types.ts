@@ -747,6 +747,7 @@ export type Database = {
           project_name: string | null
           proposal_id: string | null
           qc_checklist: Json | null
+          qc_signature_url: string | null
           responsible_staff: Json | null
           returns_material_spec: string | null
           site_address: string | null
@@ -787,6 +788,7 @@ export type Database = {
           project_name?: string | null
           proposal_id?: string | null
           qc_checklist?: Json | null
+          qc_signature_url?: string | null
           responsible_staff?: Json | null
           returns_material_spec?: string | null
           site_address?: string | null
@@ -827,6 +829,7 @@ export type Database = {
           project_name?: string | null
           proposal_id?: string | null
           qc_checklist?: Json | null
+          qc_signature_url?: string | null
           responsible_staff?: Json | null
           returns_material_spec?: string | null
           site_address?: string | null
