@@ -268,6 +268,8 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
         qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
         blueprintUrl: order.blueprintUrl || null,
         annotations: order.annotations || [],
+        companyName: company?.name || "MY COMPANY",
+        companyLogoUrl: company?.logo_url || null,
       });
       toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
     } catch (e: any) {
