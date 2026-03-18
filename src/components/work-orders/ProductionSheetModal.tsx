@@ -227,9 +227,9 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
         contactPhone,
         contactEmail,
         siteAddress,
-        materialSpecs,
-        staff,
-        qcChecklist,
+        materialSpecs: materialSpecs as unknown as Record<string, string>,
+        staff: staff as unknown as Record<string, any>,
+        qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
         blueprintUrl: order.blueprintUrl || null,
         annotations: order.annotations || [],
       });
