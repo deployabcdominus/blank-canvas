@@ -107,6 +107,8 @@ export function AiBriefing() {
 
   const completedSteps = steps.filter(s => s.done).length;
 
+  const [aiUnavailable, setAiUnavailable] = useState(false);
+
   const generateBriefing = async () => {
     setBriefingLoading(true);
     setBriefingOpen(true);
@@ -130,42 +132,48 @@ export function AiBriefing() {
         clients: clientList,
       };
 
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) throw new Error("No se pudo validar tu sesión. Intenta nuevamente.");
-
+      const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token;
       if (!accessToken) {
-        throw new Error("Tu sesión expiró. Vuelve a iniciar sesión para generar el briefing.");
+        toast({ title: "Sesión expirada", description: "Vuelve a iniciar sesión para usar el asistente de IA.", variant: "destructive" });
+        setBriefingOpen(false);
+        setBriefingLoading(false);
+        return;
       }
 
       const response = await supabase.functions.invoke("ai-briefing", {
         body: { businessData },
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
+      // Parse error codes from edge function
       if (response.error) {
-        let errorMessage = response.error.message || "Error desconocido en la Edge Function";
+        let errorCode = "unknown";
         const errorContext = (response.error as { context?: Response }).context;
-
         if (errorContext) {
           try {
             const payload = await errorContext.clone().json();
-            if (payload?.error && typeof payload.error === "string") {
-              errorMessage = payload.error;
-            }
-          } catch {
-            // Keep default edge function error message
-          }
+            errorCode = payload?.error || errorCode;
+          } catch { /* ignore */ }
         }
 
-        throw new Error(errorMessage);
+        if (errorCode === "session_expired") {
+          toast({ title: "Sesión expirada", description: "Vuelve a iniciar sesión para usar el asistente.", variant: "destructive" });
+        } else if (errorCode === "ai_not_configured") {
+          setAiUnavailable(true);
+          toast({ title: "Asistente no disponible", description: "La configuración del servicio de IA necesita revisión. Contacta al administrador." });
+        } else if (errorCode === "rate_limited") {
+          toast({ title: "Demasiadas solicitudes", description: "Espera unos minutos antes de generar otro briefing." });
+        } else {
+          toast({ title: "Problema de conexión", description: "No se pudo conectar con el asistente. Inténtalo de nuevo más tarde." });
+        }
+        setBriefingOpen(false);
+        return;
       }
 
       setBriefingText(response.data?.briefing || "No se pudo generar el briefing.");
-    } catch (e: any) {
-      toast({ title: "Error al generar briefing", description: e.message, variant: "destructive" });
+    } catch {
+      toast({ title: "Problema de conexión", description: "No se pudo conectar con el asistente. Inténtalo de nuevo más tarde." });
       setBriefingOpen(false);
     } finally {
       setBriefingLoading(false);
@@ -280,15 +288,21 @@ export function AiBriefing() {
                   })}
                 </div>
 
-                <Button
-                  onClick={generateBriefing}
-                  disabled={briefingLoading}
-                  variant="ghost"
-                  className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-medium btn-spring"
-                >
-                  <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
-                  Generar briefing completo con IA
-                </Button>
+                {aiUnavailable ? (
+                  <div className="w-full text-center py-2 text-xs text-muted-foreground border border-border/50 rounded-lg">
+                    Asistente de IA no disponible · Verifica la configuración
+                  </div>
+                ) : (
+                  <Button
+                    onClick={generateBriefing}
+                    disabled={briefingLoading}
+                    variant="ghost"
+                    className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-medium btn-spring"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
+                    Generar briefing completo con IA
+                  </Button>
+                )}
               </div>
             )}
           </div>
