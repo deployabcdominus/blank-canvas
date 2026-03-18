@@ -57,6 +57,7 @@ interface ProductionSheetModalProps {
   order: WorkOrder | null;
   isOpen: boolean;
   onClose: () => void;
+  onRefreshOrder?: () => void;
 }
 
 const STAFF_ROLES = [
