@@ -1416,6 +1416,13 @@ export type Database = {
         Args: { p_project_id: string }
         Returns: undefined
       }
+      validate_purchase_by_token: {
+        Args: { p_access_token: string }
+        Returns: {
+          id: string
+          status: string
+        }[]
+      }
     }
     Enums: {
       app_role:
