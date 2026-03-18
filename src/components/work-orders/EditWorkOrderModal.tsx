@@ -100,6 +100,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmComplete, setConfirmComplete] = useState(false);
   const [blueprintFullscreen, setBlueprintFullscreen] = useState(false);
+  const [showProductionSheet, setShowProductionSheet] = useState(false);
 
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
