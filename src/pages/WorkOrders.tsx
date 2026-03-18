@@ -10,6 +10,7 @@ import { WorkOrderCompactCard } from "@/components/work-orders/WorkOrderCompactC
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
 import { EditWorkOrderModal } from "@/components/work-orders/EditWorkOrderModal";
+import { ProductionSheetModal } from "@/components/work-orders/ProductionSheetModal";
 import { ClipboardList, Package, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -36,6 +37,7 @@ const WorkOrders = () => {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editOrder, setEditOrder] = useState<WorkOrder | null>(null);
   const [editOrderMode, setEditOrderMode] = useState(false);
+  const [sheetOrder, setSheetOrder] = useState<WorkOrder | null>(null);
 
   const handleMarkCompleted = (id: string) => {
     setCompleteConfirmId(id);
@@ -166,7 +168,7 @@ const WorkOrders = () => {
                     onMarkBuilt={handleMarkCompleted}
                     onDelete={handleDeleteSingle}
                     onEdit={canEdit ? (o) => { setEditOrder(o); setEditOrderMode(true); } : undefined}
-                    onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+                    onOpen={(o) => { setSheetOrder(o); }}
                   />
                 ))}
               </div>
@@ -178,7 +180,7 @@ const WorkOrders = () => {
                 onMarkBuilt={handleMarkCompleted}
                 onDelete={handleDeleteSingle}
                 onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
-                onOpen={(o) => { setEditOrder(o); setEditOrderMode(false); }}
+                onOpen={(o) => { setSheetOrder(o); }}
               />
             )}
             <WorkOrdersPagination
@@ -198,6 +200,12 @@ const WorkOrders = () => {
           isOpen={!!editOrder}
           onClose={() => setEditOrder(null)}
           startInEditMode={editOrderMode}
+        />
+
+        <ProductionSheetModal
+          order={sheetOrder}
+          isOpen={!!sheetOrder}
+          onClose={() => setSheetOrder(null)}
         />
 
         {/* Clear ALL orders — admin only */}
