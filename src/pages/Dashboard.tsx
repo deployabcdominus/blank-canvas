@@ -18,6 +18,7 @@ import { useInstallations } from "@/contexts/InstallationsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
+import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { isThisMonth } from "date-fns";
 import { Users, ClipboardList, MapPin, CheckCircle2 } from "lucide-react";
@@ -30,6 +31,7 @@ const Dashboard = () => {
   const { canViewFinancials, canViewOperations, isAdmin, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
   useRealtimeDashboard();
+  useDashboardToasts();
 
   const { leads } = useLeads();
   const { proposals } = useProposals();
