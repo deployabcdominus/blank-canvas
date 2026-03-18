@@ -176,6 +176,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setSiteAddress(raw.site_address || "");
     setProjectName(raw.project_name || order.project || "");
     setLocalBlueprintUrl(order.blueprintUrl || null);
+    setSignatureUrl((order as any).qc_signature_url || null);
   }, [order]);
 
   // Realtime subscription for live updates
