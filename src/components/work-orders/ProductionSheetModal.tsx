@@ -383,7 +383,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                 <div style={{ fontSize: 11, fontWeight: 600, color: "#555", letterSpacing: "0.05em" }}>
                   PRODUCTION SHEET
                 </div>
-                <div style={{ fontSize: 10, color: "#888", marginTop: 4 }}>
+                <div data-print-mono style={{ fontSize: 10, color: "#888", marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>
                   {woNumber}
                 </div>
                 <div style={{ fontSize: 10, fontWeight: 600, color: "#333", marginTop: 2 }}>

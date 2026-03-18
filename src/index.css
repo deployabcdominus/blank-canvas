@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -703,14 +703,27 @@
   background: #09090b !important;
 }
 
-/* ═══ PRINT STYLES — Production Sheet ═══ */
+/* ═══ PRINT STYLES — Production Sheet (A4 Landscape) ═══ */
 @media print {
-  /* Hide everything except the paper sheet */
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  /* Hide EVERYTHING first */
+  html, body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: visible !important;
+  }
+
   body * {
     visibility: hidden !important;
   }
 
-  /* Show only the production sheet container */
+  /* Reveal only the paper sheet */
   [data-print-sheet],
   [data-print-sheet] * {
     visibility: visible !important;
@@ -726,42 +739,54 @@
     padding: 8mm 10mm !important;
     box-shadow: none !important;
     border: none !important;
+    border-radius: 0 !important;
     background: white !important;
-    color: black !important;
-    font-size: 11px !important;
+    color: #111 !important;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
   }
 
-  /* Force white backgrounds */
+  /* Force white on form fields */
   [data-print-sheet] input,
   [data-print-sheet] select,
-  [data-print-sheet] button[data-radix-collection-item] {
-    border: 1px solid #ccc !important;
+  [data-print-sheet] [data-radix-collection-item] {
+    border: 1px solid #bbb !important;
     background: white !important;
-    color: black !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    color: #111 !important;
+    box-shadow: none !important;
   }
 
-  /* Hide action buttons and dialog chrome */
-  [data-print-hide] {
+  /* Hide interactive elements & dialog chrome */
+  [data-print-hide],
+  nav, aside, header, footer,
+  [data-radix-dialog-overlay],
+  [role="dialog"] > [data-print-hide] {
     display: none !important;
   }
 
-  /* Ensure images print */
-  [data-print-sheet] img {
+  /* Ensure images & QR print with full color */
+  [data-print-sheet] img,
+  .print-qr svg {
     max-width: 100% !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* QR code should print */
-  .print-qr svg {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  /* Status badges: light border for ink-saving */
+  [data-print-sheet] [data-badge] {
+    background: white !important;
+    color: #333 !important;
+    border: 1px solid #999 !important;
   }
 
-  @page {
-    size: A4 landscape;
-    margin: 0;
+  /* Mono font for IDs and specs */
+  [data-print-mono] {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  /* Engineering grid lines */
+  [data-print-sheet] [style*="border"] {
+    border-color: #ccc !important;
   }
 }
