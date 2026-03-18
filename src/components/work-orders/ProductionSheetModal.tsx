@@ -640,6 +640,15 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
             </Button>
             <Button
               size="sm"
+              variant="outline"
+              onClick={() => window.print()}
+              className="text-xs h-8 border-white/[0.1] text-muted-foreground"
+            >
+              <Printer className="w-3.5 h-3.5 mr-1.5" />
+              Ctrl+P
+            </Button>
+            <Button
+              size="sm"
               onClick={handlePrint}
               disabled={printing}
               style={{
@@ -649,7 +658,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
               className="text-xs h-8 hover:opacity-90"
             >
               {printing ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1.5" />}
-              Print Production Sheet
+              Download PDF
             </Button>
           </div>
         </div>
