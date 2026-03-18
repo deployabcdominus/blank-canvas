@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { AnimatedCounter } from "./AnimatedCounter";
 
 interface HudCardProps {
   label: string;
@@ -54,7 +55,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           )}
         </div>
 
-        <p className="font-semibold text-[32px] leading-none tracking-tight text-zinc-100">{value}</p>
+        <AnimatedCounter value={value} className="font-semibold text-[32px] leading-none tracking-tight text-zinc-100" />
         <p className="text-sm font-medium mt-2 text-zinc-100">{label}</p>
         <p className="text-xs mt-0.5 text-zinc-400">{desc}</p>
       </div>

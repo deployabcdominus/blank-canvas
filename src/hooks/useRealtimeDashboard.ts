@@ -15,7 +15,6 @@ export function useRealtimeDashboard() {
   const { refreshInstallations } = useInstallations();
   const { refreshPayments } = usePayments();
 
-  // Debounce: avoid rapid-fire refreshes when multiple changes come at once
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleChange = useCallback(() => {
@@ -26,7 +25,7 @@ export function useRealtimeDashboard() {
       refreshOrders();
       refreshInstallations();
       refreshPayments();
-    }, 800);
+    }, 500);
   }, [refreshLeads, refreshProposals, refreshOrders, refreshInstallations, refreshPayments]);
 
   useEffect(() => {
@@ -39,6 +38,8 @@ export function useRealtimeDashboard() {
       .on("postgres_changes", { event: "*", schema: "public", table: "proposals", filter: `company_id=eq.${companyId}` }, handleChange)
       .on("postgres_changes", { event: "*", schema: "public", table: "payments", filter: `company_id=eq.${companyId}` }, handleChange)
       .on("postgres_changes", { event: "*", schema: "public", table: "installations", filter: `company_id=eq.${companyId}` }, handleChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "projects", filter: `company_id=eq.${companyId}` }, handleChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "production_steps" }, handleChange)
       .subscribe();
 
     return () => {
