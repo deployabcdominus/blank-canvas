@@ -104,7 +104,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
       const [proposalsRes, ordersRes] = await Promise.all([
         supabase
           .from('proposals')
-          .select('id, client, project, value, description, status, sent_date, sent_method, created_at, updated_at, lead_id, approved_total, approved_at, approval_token, mockup_url, leads(name, company, logo_url)')
+          .select('id, client, project, value, description, status, sent_date, sent_method, created_at, updated_at, lead_id, approved_total, approved_at, approval_token, mockup_url, leads!proposals_lead_id_fkey(name, company, logo_url, client_id, clients!leads_client_id_fkey(client_name, contact_name, primary_phone, primary_email, logo_url))')
           .order('created_at', { ascending: false }) as any,
         supabase
           .from('production_orders')
