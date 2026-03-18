@@ -72,6 +72,16 @@ const Dashboard = () => {
   return (
     <PageTransition>
       <ResponsiveLayout>
+        {/* Incomplete profile banner */}
+        {hasNoCompany && (
+          <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-xl px-5 py-3">
+            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-amber-300">Configuración incompleta</p>
+              <p className="text-xs text-amber-400/80">Tu cuenta no está vinculada a una empresa. Los datos del dashboard no estarán disponibles. Contacta al administrador.</p>
+            </div>
+          </div>
+        )}
         <GracePeriodBanner />
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6 flex items-end justify-between">
           <div>
