@@ -4,9 +4,10 @@ import { es } from "date-fns/locale";
 import {
   CalendarIcon, CheckCircle, Loader2, Pencil, Trash2, Plus, X,
   Package, Wrench, ClipboardList, MapPin, Factory, ChevronDown,
-  StickyNote, Maximize2, User, Building2, Save, FileDown,
+  StickyNote, Maximize2, User, Building2, Save, FileDown, FileText,
 } from "lucide-react";
 import { generateProductionPDF } from "@/lib/generate-production-pdf";
+import { ProductionSheetModal } from "./ProductionSheetModal";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -99,6 +100,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmComplete, setConfirmComplete] = useState(false);
   const [blueprintFullscreen, setBlueprintFullscreen] = useState(false);
+  const [showProductionSheet, setShowProductionSheet] = useState(false);
 
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
@@ -599,11 +601,19 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
           {/* ── STICKY FOOTER ── */}
           <div className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md z-10">
             <div className="flex gap-2">
+              <Button
+                variant="outline" size="sm"
+                onClick={() => setShowProductionSheet(true)}
+                className="text-xs border-violet-500/30 text-violet-300 hover:bg-violet-500/10 h-8"
+                style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(168,85,247,0.15))" }}
+              >
+                <FileText className="w-3.5 h-3.5 mr-1.5" /> Production Sheet
+              </Button>
               <Button variant="outline" size="sm" onClick={handleDownloadPdf} disabled={generatingPdf}
                 className="text-xs border-white/[0.1] text-muted-foreground hover:text-foreground h-8">
                 {generatingPdf
                   ? <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Generando...</>
-                  : <><FileDown className="w-3.5 h-3.5 mr-1.5" /> Download Production Sheet</>}
+                  : <><FileDown className="w-3.5 h-3.5 mr-1.5" /> Download PDF</>}
               </Button>
               {!isCompleted && (
                 <Button variant="outline" size="sm" onClick={() => setConfirmComplete(true)}
@@ -676,6 +686,13 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Production Sheet Modal */}
+      <ProductionSheetModal
+        order={order}
+        isOpen={showProductionSheet}
+        onClose={() => setShowProductionSheet(false)}
+      />
     </>
   );
 }

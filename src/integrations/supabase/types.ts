@@ -720,80 +720,122 @@ export type Database = {
         Row: {
           annotations: Json | null
           assigned_to_user_id: string | null
+          backs_material_spec: string | null
           blueprint_url: string | null
           client: string
           client_id: string | null
           company_id: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
           end_date: string | null
           estimated_delivery: string | null
+          face_material_spec: string | null
           id: string
           installer_company_id: string | null
+          led_mfg_spec: string | null
           materials: Json | null
           notes: string | null
           owner_user_id: string | null
+          power_supply_spec: string | null
           priority: string | null
           product_type: string | null
           progress: number | null
           project: string | null
           project_id: string | null
+          project_name: string | null
           proposal_id: string | null
+          qc_checklist: Json | null
+          responsible_staff: Json | null
+          returns_material_spec: string | null
+          site_address: string | null
           start_date: string | null
           status: string | null
           technical_details: Json | null
+          trim_cap_spec: string | null
           user_id: string
+          wo_number: string | null
         }
         Insert: {
           annotations?: Json | null
           assigned_to_user_id?: string | null
+          backs_material_spec?: string | null
           blueprint_url?: string | null
           client: string
           client_id?: string | null
           company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           end_date?: string | null
           estimated_delivery?: string | null
+          face_material_spec?: string | null
           id?: string
           installer_company_id?: string | null
+          led_mfg_spec?: string | null
           materials?: Json | null
           notes?: string | null
           owner_user_id?: string | null
+          power_supply_spec?: string | null
           priority?: string | null
           product_type?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
+          project_name?: string | null
           proposal_id?: string | null
+          qc_checklist?: Json | null
+          responsible_staff?: Json | null
+          returns_material_spec?: string | null
+          site_address?: string | null
           start_date?: string | null
           status?: string | null
           technical_details?: Json | null
+          trim_cap_spec?: string | null
           user_id: string
+          wo_number?: string | null
         }
         Update: {
           annotations?: Json | null
           assigned_to_user_id?: string | null
+          backs_material_spec?: string | null
           blueprint_url?: string | null
           client?: string
           client_id?: string | null
           company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           end_date?: string | null
           estimated_delivery?: string | null
+          face_material_spec?: string | null
           id?: string
           installer_company_id?: string | null
+          led_mfg_spec?: string | null
           materials?: Json | null
           notes?: string | null
           owner_user_id?: string | null
+          power_supply_spec?: string | null
           priority?: string | null
           product_type?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
+          project_name?: string | null
           proposal_id?: string | null
+          qc_checklist?: Json | null
+          responsible_staff?: Json | null
+          returns_material_spec?: string | null
+          site_address?: string | null
           start_date?: string | null
           status?: string | null
           technical_details?: Json | null
+          trim_cap_spec?: string | null
           user_id?: string
+          wo_number?: string | null
         }
         Relationships: [
           {

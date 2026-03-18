@@ -30,6 +30,21 @@ export interface WorkOrder {
   blueprintUrl?: string | null;
   annotations?: any[];
   technicalDetails?: Record<string, any>;
+  // Production Sheet fields
+  face_material_spec?: string;
+  returns_material_spec?: string;
+  backs_material_spec?: string;
+  trim_cap_spec?: string;
+  led_mfg_spec?: string;
+  power_supply_spec?: string;
+  responsible_staff?: any;
+  qc_checklist?: any;
+  wo_number?: string;
+  contact_name?: string;
+  contact_phone?: string;
+  contact_email?: string;
+  site_address?: string;
+  project_name?: string;
 }
 
 // Backward-compatible alias
@@ -96,7 +111,22 @@ const mapRow = (row: any): WorkOrder => ({
   installerCompanyId: row.installer_company_id || null,
   blueprintUrl: row.blueprint_url || null,
   annotations: Array.isArray(row.annotations) ? row.annotations : [],
-  technicalDetails: (row as any).technical_details || {},
+  technicalDetails: row.technical_details || {},
+  // Production Sheet fields
+  face_material_spec: row.face_material_spec || '',
+  returns_material_spec: row.returns_material_spec || '',
+  backs_material_spec: row.backs_material_spec || '',
+  trim_cap_spec: row.trim_cap_spec || '',
+  led_mfg_spec: row.led_mfg_spec || '',
+  power_supply_spec: row.power_supply_spec || '',
+  responsible_staff: row.responsible_staff || null,
+  qc_checklist: row.qc_checklist || null,
+  wo_number: row.wo_number || null,
+  contact_name: row.contact_name || '',
+  contact_phone: row.contact_phone || '',
+  contact_email: row.contact_email || '',
+  site_address: row.site_address || '',
+  project_name: row.project_name || '',
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -113,7 +143,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (!user) { setOrders([]); setLoading(false); return; }
     const { data, error } = await supabase
       .from('production_orders')
-      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, proposal_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at')
+      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, proposal_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at, face_material_spec, returns_material_spec, backs_material_spec, trim_cap_spec, led_mfg_spec, power_supply_spec, responsible_staff, qc_checklist, wo_number, contact_name, contact_phone, contact_email, site_address, project_name')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading work orders:', error);
     else setOrders((data || []).map(mapRow));
