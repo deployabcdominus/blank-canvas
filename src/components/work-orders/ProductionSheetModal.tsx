@@ -117,12 +117,13 @@ const defaultMaterialSpecs: MaterialSpecs = {
   power_supply_spec: "",
 };
 
-export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheetModalProps) {
+export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }: ProductionSheetModalProps) {
   const { updateOrder } = useWorkOrders();
   const { companyId } = useUserRole();
   const { company } = useCompany();
   const { toast } = useToast();
   const sheetRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [saving, setSaving] = useState(false);
   const [printing, setPrinting] = useState(false);
