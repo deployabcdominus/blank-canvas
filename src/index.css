@@ -702,3 +702,66 @@
 .leaflet-container {
   background: #09090b !important;
 }
+
+/* ═══ PRINT STYLES — Production Sheet ═══ */
+@media print {
+  /* Hide everything except the paper sheet */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Show only the production sheet container */
+  [data-print-sheet],
+  [data-print-sheet] * {
+    visibility: visible !important;
+  }
+
+  [data-print-sheet] {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 297mm !important;
+    height: 210mm !important;
+    margin: 0 !important;
+    padding: 8mm 10mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: white !important;
+    color: black !important;
+    font-size: 11px !important;
+  }
+
+  /* Force white backgrounds */
+  [data-print-sheet] input,
+  [data-print-sheet] select,
+  [data-print-sheet] button[data-radix-collection-item] {
+    border: 1px solid #ccc !important;
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide action buttons and dialog chrome */
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Ensure images print */
+  [data-print-sheet] img {
+    max-width: 100% !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* QR code should print */
+  .print-qr svg {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+}

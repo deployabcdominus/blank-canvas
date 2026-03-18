@@ -3,9 +3,10 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
-  QrCode, MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
+  MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
   FileText, AlertCircle,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorkOrders, type WorkOrder } from "@/contexts/WorkOrdersContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useCompany } from "@/hooks/useCompany";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
 
 /* ── Types ── */
@@ -117,6 +119,7 @@ const defaultMaterialSpecs: MaterialSpecs = {
 export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheetModalProps) {
   const { updateOrder } = useWorkOrders();
   const { companyId } = useUserRole();
+  const { company } = useCompany();
   const { toast } = useToast();
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -167,6 +170,39 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
     setSiteAddress(raw.site_address || "");
     setProjectName(raw.project_name || order.project || "");
   }, [order]);
+
+  // Realtime subscription for live updates
+  useEffect(() => {
+    if (!isOpen || !order) return;
+    const channel = supabase
+      .channel(`wo-sheet-${order.id}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'production_orders',
+        filter: `id=eq.${order.id}`,
+      }, (payload) => {
+        const raw = payload.new as any;
+        setMaterialSpecs({
+          face_material_spec: raw.face_material_spec || "",
+          returns_material_spec: raw.returns_material_spec || "",
+          backs_material_spec: raw.backs_material_spec || "",
+          trim_cap_spec: raw.trim_cap_spec || "",
+          led_mfg_spec: raw.led_mfg_spec || "",
+          power_supply_spec: raw.power_supply_spec || "",
+        });
+        if (raw.responsible_staff) setStaff(raw.responsible_staff);
+        if (raw.qc_checklist) setQcChecklist(raw.qc_checklist);
+        if (raw.contact_name !== undefined) setContactName(raw.contact_name || "");
+        if (raw.contact_phone !== undefined) setContactPhone(raw.contact_phone || "");
+        if (raw.contact_email !== undefined) setContactEmail(raw.contact_email || "");
+        if (raw.site_address !== undefined) setSiteAddress(raw.site_address || "");
+        if (raw.project_name !== undefined) setProjectName(raw.project_name || "");
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [isOpen, order?.id]);
 
   const woNumber = useMemo(() => {
     if (!order) return "";
@@ -232,6 +268,8 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
         qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
         blueprintUrl: order.blueprintUrl || null,
         annotations: order.annotations || [],
+        companyName: company?.name || "MY COMPANY",
+        companyLogoUrl: company?.logo_url || null,
       });
       toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
     } catch (e: any) {
@@ -253,7 +291,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
     setQcChecklist(prev => ({ ...prev, [key]: !prev[key as keyof QCChecklist] }));
   }, []);
 
-  if (!order) return null;
+  const orderUrl = `${window.location.origin}/work-orders?id=${order.id}`;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -263,6 +301,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
         <div className="flex-1 overflow-auto p-4 sm:p-6" style={{ background: "hsl(240 5% 12%)" }}>
           <div
             ref={sheetRef}
+            data-print-sheet
             className="mx-auto bg-white text-zinc-900 shadow-2xl"
             style={{
               maxWidth: "1120px",
@@ -279,13 +318,22 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
             <div className="flex items-start justify-between" style={{ marginBottom: 12 }}>
               {/* Left: Company info */}
               <div style={{ flex: "0 0 30%" }}>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#1a1a2e", letterSpacing: "-0.02em" }}>
-                  THE SIGN SPACE CORP.
-                </div>
+                {company?.logo_url ? (
+                  <img
+                    src={company.logo_url}
+                    alt={company.name}
+                    style={{ maxHeight: 36, maxWidth: 140, objectFit: "contain", marginBottom: 4 }}
+                    crossOrigin="anonymous"
+                  />
+                ) : (
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#1a1a2e", letterSpacing: "-0.02em" }}>
+                    {company?.name || "MY COMPANY"}
+                  </div>
+                )}
                 <div style={{ fontSize: 9, color: "#666", marginTop: 2 }}>
-                  <div className="flex items-center gap-1"><MapPin size={9} /> Kendall, FL 33186</div>
-                  <div className="flex items-center gap-1"><Phone size={9} /> (305) 555-0199</div>
-                  <div className="flex items-center gap-1"><Mail size={9} /> info@thesignspace.com</div>
+                  <div className="flex items-center gap-1"><MapPin size={9} /> {siteAddress || "—"}</div>
+                  <div className="flex items-center gap-1"><Phone size={9} /> {contactPhone || "—"}</div>
+                  <div className="flex items-center gap-1"><Mail size={9} /> {contactEmail || "—"}</div>
                 </div>
               </div>
 
@@ -324,8 +372,8 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
                     ? format(new Date((order.estimatedDelivery || order.estimatedCompletion)!), "MMM dd, yyyy")
                     : "—"}</div>
                 </div>
-                <div style={{ marginTop: 6 }}>
-                  <QrCode size={40} strokeWidth={1} className="ml-auto" style={{ color: "#ccc" }} />
+                <div style={{ marginTop: 6 }} className="flex justify-end print-qr">
+                  <QRCodeSVG value={orderUrl} size={44} level="M" bgColor="transparent" fgColor="#333" />
                 </div>
               </div>
             </div>
@@ -576,7 +624,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
         </div>
 
         {/* ── Footer Actions (outside paper) ── */}
-        <div className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md">
+        <div data-print-hide className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md">
           <Button variant="outline" size="sm" onClick={onClose} className="text-xs border-white/[0.1] text-muted-foreground h-8">
             <X className="w-3.5 h-3.5 mr-1.5" /> Close
           </Button>
@@ -592,6 +640,15 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
             </Button>
             <Button
               size="sm"
+              variant="outline"
+              onClick={() => window.print()}
+              className="text-xs h-8 border-white/[0.1] text-muted-foreground"
+            >
+              <Printer className="w-3.5 h-3.5 mr-1.5" />
+              Ctrl+P
+            </Button>
+            <Button
+              size="sm"
               onClick={handlePrint}
               disabled={printing}
               style={{
@@ -601,7 +658,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
               className="text-xs h-8 hover:opacity-90"
             >
               {printing ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1.5" />}
-              Print Production Sheet
+              Download PDF
             </Button>
           </div>
         </div>
