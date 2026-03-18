@@ -131,6 +131,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [operators, setOperators] = useState<Array<{ id: string; name: string }>>([]);
   const [localBlueprintUrl, setLocalBlueprintUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
 
   // Form state
   const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
