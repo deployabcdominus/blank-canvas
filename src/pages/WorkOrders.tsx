@@ -10,6 +10,7 @@ import { WorkOrderCompactCard } from "@/components/work-orders/WorkOrderCompactC
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
 import { EditWorkOrderModal } from "@/components/work-orders/EditWorkOrderModal";
+import { ProductionSheetModal } from "@/components/work-orders/ProductionSheetModal";
 import { ClipboardList, Package, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
