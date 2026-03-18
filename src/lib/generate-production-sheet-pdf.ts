@@ -276,7 +276,8 @@ export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
     doc.setFont("courier", "normal");
     doc.text(name.substring(0, 18), mx + 30, sy);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(status === "done" || status === "verified" ? GREEN : GRAY);
+    const statusColor = (status === "done" || status === "verified") ? GREEN : GRAY;
+    doc.setTextColor(...statusColor);
     doc.text(status, mx + 68, sy);
     doc.setTextColor(entry?.is_verified ? GREEN : GRAY);
     doc.text(verified, mx + 88, sy);
