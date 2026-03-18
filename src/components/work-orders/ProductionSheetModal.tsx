@@ -278,6 +278,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         annotations: ((order as any).annotations || []) as Array<{ text?: string }>,
         companyName: company?.name || "MY COMPANY",
         companyLogoUrl: company?.logo_url || null,
+        qcSignatureUrl: signatureUrl || null,
       });
       toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
     } catch (e: any) {
