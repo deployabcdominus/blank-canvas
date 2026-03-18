@@ -463,17 +463,7 @@
   }
 }
 
-/* Print styles for production orders */
-@media print {
-  body { background: white !important; color: black !important; }
-  .print-order { color: black !important; }
-  .print-order * { color: black !important; border-color: #ddd !important; }
-  .print-order h2, .print-order h3 { color: #111 !important; }
-  .print-order .text-muted-foreground { color: #666 !important; }
-  nav, aside, header, footer, button, [role="dialog"] > div:first-child,
-  [role="dialog"] > div:last-child { display: none !important; }
-  [role="dialog"] { position: static !important; max-width: 100% !important; max-height: none !important; border: none !important; background: white !important; box-shadow: none !important; backdrop-filter: none !important; }
-}
+/* Print styles — see comprehensive A4 Landscape block below */
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
