@@ -30,6 +30,21 @@ export interface WorkOrder {
   blueprintUrl?: string | null;
   annotations?: any[];
   technicalDetails?: Record<string, any>;
+  // Production Sheet fields
+  face_material_spec?: string;
+  returns_material_spec?: string;
+  backs_material_spec?: string;
+  trim_cap_spec?: string;
+  led_mfg_spec?: string;
+  power_supply_spec?: string;
+  responsible_staff?: any;
+  qc_checklist?: any;
+  wo_number?: string;
+  contact_name?: string;
+  contact_phone?: string;
+  contact_email?: string;
+  site_address?: string;
+  project_name?: string;
 }
 
 // Backward-compatible alias
