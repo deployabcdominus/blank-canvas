@@ -39,21 +39,30 @@ export const useProjects = () => {
   return ctx;
 };
 
-const mapRow = (row: any): Project => ({
-  id: row.id,
-  companyId: row.company_id,
-  clientId: row.client_id,
-  projectName: row.project_name,
-  installAddress: row.install_address || '',
-  status: row.status || 'Lead',
-  ownerUserId: row.owner_user_id,
-  assignedToUserId: row.assigned_to_user_id,
-  folderRelativePath: row.folder_relative_path,
-  folderFullPath: row.folder_full_path,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-  clientName: row.clients?.client_name || undefined,
-});
+const mapRow = (row: any): Project => {
+  // Source of truth: client name from joined clients table
+  // Fallback: lead company name via leads join
+  const clientName = row.clients?.client_name
+    || row.leads?.[0]?.company
+    || row.leads?.[0]?.name
+    || undefined;
+
+  return {
+    id: row.id,
+    companyId: row.company_id,
+    clientId: row.client_id,
+    projectName: row.project_name,
+    installAddress: row.install_address || '',
+    status: row.status || 'Lead',
+    ownerUserId: row.owner_user_id,
+    assignedToUserId: row.assigned_to_user_id,
+    folderRelativePath: row.folder_relative_path,
+    folderFullPath: row.folder_full_path,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    clientName,
+  };
+};
 
 export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
