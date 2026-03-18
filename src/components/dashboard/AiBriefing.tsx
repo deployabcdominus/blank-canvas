@@ -288,15 +288,21 @@ export function AiBriefing() {
                   })}
                 </div>
 
-                <Button
-                  onClick={generateBriefing}
-                  disabled={briefingLoading}
-                  variant="ghost"
-                  className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-medium btn-spring"
-                >
-                  <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
-                  Generar briefing completo con IA
-                </Button>
+                {aiUnavailable ? (
+                  <div className="w-full text-center py-2 text-xs text-muted-foreground border border-border/50 rounded-lg">
+                    Asistente de IA no disponible · Verifica la configuración
+                  </div>
+                ) : (
+                  <Button
+                    onClick={generateBriefing}
+                    disabled={briefingLoading}
+                    variant="ghost"
+                    className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-medium btn-spring"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
+                    Generar briefing completo con IA
+                  </Button>
+                )}
               </div>
             )}
           </div>
