@@ -279,7 +279,8 @@ export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
     const statusColor = (status === "done" || status === "verified") ? GREEN : GRAY;
     doc.setTextColor(...statusColor);
     doc.text(status, mx + 68, sy);
-    doc.setTextColor(entry?.is_verified ? GREEN : GRAY);
+    const verColor = entry?.is_verified ? GREEN : GRAY;
+    doc.setTextColor(...verColor);
     doc.text(verified, mx + 88, sy);
     sy += 4.5;
   });
