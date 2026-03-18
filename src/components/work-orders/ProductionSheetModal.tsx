@@ -291,7 +291,9 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
     setQcChecklist(prev => ({ ...prev, [key]: !prev[key as keyof QCChecklist] }));
   }, []);
 
-  const orderUrl = `${window.location.origin}/work-orders?id=${order.id}`;
+  const orderUrl = order ? `${window.location.origin}/work-orders?id=${order.id}` : "";
+
+  if (!order) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
