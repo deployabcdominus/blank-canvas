@@ -70,10 +70,7 @@ const Register = () => {
 
       if (accessToken) {
         const { data } = await supabase
-          .from("purchases")
-          .select("id, status")
-          .eq("access_token", accessToken)
-          .eq("status", "paid")
+          .rpc("validate_purchase_by_token", { p_access_token: accessToken })
           .maybeSingle();
 
         if (data) {
