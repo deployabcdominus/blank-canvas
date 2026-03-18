@@ -42,6 +42,7 @@ export default function Settings() {
   const [networkEnabled, setNetworkEnabled] = useState(false);
   const [networkBasePath, setNetworkBasePath] = useState('');
   const [savingStorage, setSavingStorage] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   // Editable full name
   const [fullName, setFullName] = useState('');
