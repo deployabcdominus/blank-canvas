@@ -426,19 +426,51 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                   position: "relative",
                 }}
               >
-                {order.blueprintUrl ? (
+                {localBlueprintUrl ? (
                   <img
-                    src={order.blueprintUrl}
+                    src={localBlueprintUrl}
                     alt="Technical drawing"
                     style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
                     crossOrigin="anonymous"
                   />
                 ) : (
-                  <div style={{ textAlign: "center", color: "#bbb", padding: 40 }}>
+                  <div style={{ textAlign: "center", color: "#bbb", padding: 20 }}>
                     <FileText size={32} strokeWidth={1} />
                     <div style={{ fontSize: 10, marginTop: 8 }}>No technical drawing uploaded</div>
                   </div>
                 )}
+                {/* Upload Design button */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleBlueprintUpload(file);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  data-print-hide
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  style={{
+                    position: "absolute",
+                    top: 6, right: 6,
+                    fontSize: 9, fontWeight: 600,
+                    background: "rgba(124,58,237,0.85)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: 4,
+                    padding: "3px 8px",
+                    cursor: "pointer",
+                    display: "flex", alignItems: "center", gap: 4,
+                  }}
+                >
+                  {uploading ? <Loader2 size={10} className="animate-spin" /> : <Upload size={10} />}
+                  {uploading ? "Uploading..." : "Upload Design"}
+                </button>
                 {/* Annotations overlay indicators */}
                 {(order.annotations || []).filter((a: any) => a.text).length > 0 && (
                   <div style={{ position: "absolute", bottom: 4, left: 4, display: "flex", gap: 3, flexWrap: "wrap" }}>
