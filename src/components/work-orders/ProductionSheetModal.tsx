@@ -204,7 +204,7 @@ export function ProductionSheetModal({ order, isOpen, onClose }: ProductionSheet
     return () => { supabase.removeChannel(channel); };
   }, [isOpen, order?.id]);
 
-
+  const woNumber = useMemo(() => {
     if (!order) return "";
     return (order as any).wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
   }, [order]);
