@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
 import {
   ChevronLeft, Pencil, Printer, QrCode, Calendar, User, Save,
   CheckCircle, ShieldCheck, Circle, Loader2, Clock, X, Wrench,
+  Upload, Maximize2, Plus, Trash2, ChevronRight, ChevronLeftIcon,
 } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
