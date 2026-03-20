@@ -307,7 +307,7 @@ export default function WorkOrderDetail() {
     const updated = existing.filter(u => u !== urlToRemove);
     await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
     toast.success("Mockup removed");
-    refreshOrders();
+    await refreshOrders();
   }, [order, refreshOrders]);
 
   // All images for fullscreen navigation
