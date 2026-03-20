@@ -80,7 +80,7 @@ export const tenantGroups: NavGroup[] = [principalGroup, crmGroup, productionGro
 export const mainItems: NavItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: Contact, label: "Clientes", path: "/clients", roles: ['admin', 'sales', 'operations', 'member'] },
-  { icon: FolderKanban, label: "Proyectos", labelKey: "projects", path: "/projects", roles: ['admin', 'sales', 'operations', 'member'] },
+  { icon: ClipboardList, label: "Work Orders", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
   { icon: Users, label: "Leads", labelKey: "leads", path: "/leads", roles: ['admin', 'sales', 'member'] },
   { icon: FileText, label: "Propuestas", path: "/proposals", roles: ['admin', 'sales', 'member'] },
   { icon: DollarSign, label: "Pagos", path: "/payments", roles: ['admin', 'sales'] },
