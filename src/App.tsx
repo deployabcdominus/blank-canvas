@@ -52,64 +52,91 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <LanguageProvider>
-        <SettingsProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AnimatePresence>
-              <Routes>
-                {/* Public routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
-                <Route path="/success" element={<Success />} />
-                <Route path="/setup" element={<PostPaymentSetup />} />
-                <Route path="/access" element={<Access />} />
-                <Route path="/invite" element={<Invite />} />
-                <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
-                <Route path="/p/:proposalId" element={<ProposalApproval />} />
-                <Route path="/poi/:orderId" element={<POIPage />} />
-                {/* Superadmin — no tenant providers needed */}
-                <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
-                <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+const App = () => {
+  // POI and proposal-approval routes must render completely outside AuthProvider
+  // to avoid Supabase auth-bridge redirect on anonymous access
+  const isPOIRoute = window.location.pathname.startsWith("/poi/");
+  const isProposalRoute = window.location.pathname.startsWith("/p/");
 
-                {/* Tenant routes — single TenantProviders wrapper via layout route */}
-                <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/clients" element={<Clients />} />
-                  <Route path="/clients/:id" element={<ClientDetail />} />
-                  <Route path="/projects" element={<Projects />} />
-                  <Route path="/leads" element={<Leads />} />
-                  <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
-                  <Route path="/proposals" element={<Proposals />} />
-                  <Route path="/work-orders" element={<WorkOrders />} />
-                  <Route path="/payments" element={<Payments />} />
-                  <Route path="/installation" element={<Installation />} />
-                  <Route path="/map-hub" element={<MapHub />} />
-                  <Route path="/installer-companies" element={<InstallerCompanies />} />
-                  <Route path="/team-management" element={<TenantTeamManagement />} />
-                  <Route path="/production" element={<Production />} />
-                  <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
-                  <Route path="/tecnico" element={<MobileTechnicianView />} />
-                  <Route path="/audit-log" element={<AuditLog />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Route>
+  if (isPOIRoute) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/poi/:orderId" element={<POIPage />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AnimatePresence>
-          </BrowserRouter>
-        </SettingsProvider>
-        </LanguageProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  if (isProposalRoute) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/p/:proposalId" element={<ProposalApproval />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <LanguageProvider>
+          <SettingsProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AnimatePresence>
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
+                  <Route path="/success" element={<Success />} />
+                  <Route path="/setup" element={<PostPaymentSetup />} />
+                  <Route path="/access" element={<Access />} />
+                  <Route path="/invite" element={<Invite />} />
+                  <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
+                  <Route path="/p/:proposalId" element={<ProposalApproval />} />
+                  <Route path="/poi/:orderId" element={<POIPage />} />
+                  {/* Superadmin — no tenant providers needed */}
+                  <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
+                  <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+                  {/* Tenant routes — single TenantProviders wrapper via layout route */}
+                  <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/clients" element={<Clients />} />
+                    <Route path="/clients/:id" element={<ClientDetail />} />
+                    <Route path="/projects" element={<Projects />} />
+                    <Route path="/leads" element={<Leads />} />
+                    <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
+                    <Route path="/proposals" element={<Proposals />} />
+                    <Route path="/work-orders" element={<WorkOrders />} />
+                    <Route path="/payments" element={<Payments />} />
+                    <Route path="/installation" element={<Installation />} />
+                    <Route path="/map-hub" element={<MapHub />} />
+                    <Route path="/installer-companies" element={<InstallerCompanies />} />
+                    <Route path="/team-management" element={<TenantTeamManagement />} />
+                    <Route path="/production" element={<Production />} />
+                    <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
+                    <Route path="/tecnico" element={<MobileTechnicianView />} />
+                    <Route path="/audit-log" element={<AuditLog />} />
+                    <Route path="/settings" element={<Settings />} />
+                  </Route>
+
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AnimatePresence>
+            </BrowserRouter>
+          </SettingsProvider>
+          </LanguageProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
