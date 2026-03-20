@@ -840,6 +840,50 @@ export default function WorkOrderDetail() {
           onClose={() => setSheetOpen(false)}
           onRefreshOrder={refreshOrders}
         />
+
+        {/* Fullscreen image viewer */}
+        {fullscreenImg && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ background: "rgba(0,0,0,0.92)" }}
+            onClick={() => setFullscreenImg(null)}
+            onKeyDown={e => {
+              if (e.key === "Escape") setFullscreenImg(null);
+              if (e.key === "ArrowRight" && fullscreenImg.index < allImages.length - 1)
+                setFullscreenImg({ url: allImages[fullscreenImg.index + 1], index: fullscreenImg.index + 1 });
+              if (e.key === "ArrowLeft" && fullscreenImg.index > 0)
+                setFullscreenImg({ url: allImages[fullscreenImg.index - 1], index: fullscreenImg.index - 1 });
+            }}
+            tabIndex={0}
+            ref={el => el?.focus()}
+          >
+            <button className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors" onClick={() => setFullscreenImg(null)}>
+              <X className="w-6 h-6 text-white" />
+            </button>
+            {allImages.length > 1 && fullscreenImg.index > 0 && (
+              <button
+                className="absolute left-4 p-2 rounded-full hover:bg-white/10 transition-colors"
+                onClick={e => { e.stopPropagation(); setFullscreenImg({ url: allImages[fullscreenImg.index - 1], index: fullscreenImg.index - 1 }); }}
+              >
+                <ChevronLeftIcon className="w-8 h-8 text-white" />
+              </button>
+            )}
+            {allImages.length > 1 && fullscreenImg.index < allImages.length - 1 && (
+              <button
+                className="absolute right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
+                onClick={e => { e.stopPropagation(); setFullscreenImg({ url: allImages[fullscreenImg.index + 1], index: fullscreenImg.index + 1 }); }}
+              >
+                <ChevronRight className="w-8 h-8 text-white" />
+              </button>
+            )}
+            <img
+              src={fullscreenImg.url}
+              alt="Fullscreen mockup"
+              className="max-w-[90vw] max-h-[90vh] object-contain"
+              onClick={e => e.stopPropagation()}
+            />
+          </div>
+        )}
       </ResponsiveLayout>
     </PageTransition>
   );
