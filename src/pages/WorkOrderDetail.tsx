@@ -726,10 +726,10 @@ export default function WorkOrderDetail() {
             {/* RIGHT COL – 40% (2/5) */}
             <div className="lg:col-span-2 space-y-4">
 
-              {/* Project Details — sticky */}
-              <SectionCard className="lg:sticky lg:top-5">
+              {/* Project Details */}
+              <SectionCard>
                 <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Project Details</h2>
-                <div className="space-y-3">
+                <div className="flex flex-col gap-3">
                   {editMode ? (
                     <>
                       <Field label="Client"><Input value={editFields.client} onChange={e => setEditFields(p => ({ ...p, client: e.target.value }))} /></Field>
@@ -746,7 +746,7 @@ export default function WorkOrderDetail() {
                         </Select>
                       </Field>
                       <Field label="Delivery Date"><Input type="date" value={editFields.estimated_delivery} onChange={e => setEditFields(p => ({ ...p, estimated_delivery: e.target.value }))} /></Field>
-                      <div className="border-t pt-3 mt-3" style={{ borderColor: "rgba(255,255,255,0.05)" }} />
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 12, marginTop: 4 }} />
                       <Field label="Site Address"><Input value={editFields.site_address} onChange={e => setEditFields(p => ({ ...p, site_address: e.target.value }))} /></Field>
                       <Field label="Contact"><Input value={editFields.contact_name} onChange={e => setEditFields(p => ({ ...p, contact_name: e.target.value }))} /></Field>
                       <Field label="Phone"><Input value={editFields.contact_phone} onChange={e => setEditFields(p => ({ ...p, contact_phone: e.target.value }))} /></Field>
@@ -754,19 +754,19 @@ export default function WorkOrderDetail() {
                     </>
                   ) : (
                     <>
-                      <ReadField label="Client" value={order.client} />
-                      <ReadField label="Project" value={raw.project_name || order.project} />
-                      <ReadField label="WO Number" value={woNumber} mono />
-                      <ReadField label="Priority">
+                      <DetailRow label="Client" value={order.client} />
+                      <DetailRow label="Project" value={raw.project_name || order.project} />
+                      <DetailRow label="WO Number" value={woNumber} mono />
+                      <DetailRow label="Priority">
                         <Badge className={`${priorityInfo.color} border-0 text-[10px]`}>{priorityInfo.label}</Badge>
-                      </ReadField>
-                      <ReadField label="Delivery" value={fmtDate(order.estimatedDelivery || order.estimatedCompletion) || "No date set"} dim={!order.estimatedDelivery && !order.estimatedCompletion} />
-                      <ReadField label="Assignee" value={assigneeName || "Unassigned"} dim={!assigneeName} />
-                      <div className="border-t pt-3 mt-3" style={{ borderColor: "rgba(255,255,255,0.05)" }} />
-                      <ReadField label="Site Address" value={raw.site_address || "—"} dim={!raw.site_address} />
-                      <ReadField label="Contact" value={raw.contact_name || "—"} dim={!raw.contact_name} />
-                      <ReadField label="Phone" value={raw.contact_phone || "—"} dim={!raw.contact_phone} />
-                      <ReadField label="Email" value={raw.contact_email || "—"} dim={!raw.contact_email} />
+                      </DetailRow>
+                      <DetailRow label="Delivery" value={fmtDate(order.estimatedDelivery || order.estimatedCompletion) || "No date set"} dim={!order.estimatedDelivery && !order.estimatedCompletion} />
+                      <DetailRow label="Assignee" value={assigneeName || "Unassigned"} dim={!assigneeName} />
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }} />
+                      <DetailRow label="Site Address" value={raw.site_address || "—"} dim={!raw.site_address} />
+                      <DetailRow label="Contact" value={raw.contact_name || "—"} dim={!raw.contact_name} />
+                      <DetailRow label="Phone" value={raw.contact_phone || "—"} dim={!raw.contact_phone} />
+                      <DetailRow label="Email" value={raw.contact_email || "—"} dim={!raw.contact_email} />
                     </>
                   )}
                 </div>
@@ -775,12 +775,12 @@ export default function WorkOrderDetail() {
               {/* Material Specs */}
               <SectionCard>
                 <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Material Specs</h2>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {MATERIAL_FIELDS.map(f => (
                     <div key={f.key}>
                       <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground mb-1">{f.label}</p>
-                      <p className={`text-sm ${raw[f.key] ? "text-foreground" : "text-zinc-600"}`}>
-                        {raw[f.key] || "—"}
+                      <p className={`text-[13px] break-words ${(order as any)[f.key] ? "text-foreground" : "text-zinc-600"}`}>
+                        {(order as any)[f.key] || "—"}
                       </p>
                     </div>
                   ))}
@@ -905,6 +905,21 @@ function ReadField({ label, value, mono, dim, children }: { label: string; value
         <p className={`text-sm text-right truncate ${mono ? "font-mono" : ""} ${dim ? "text-zinc-600" : "text-foreground"}`}>
           {value}
         </p>
+      )}
+    </div>
+  );
+}
+
+function DetailRow({ label, value, mono, dim, children }: { label: string; value?: string; mono?: boolean; dim?: boolean; children?: React.ReactNode }) {
+  return (
+    <div className="flex items-baseline justify-between gap-3" style={{ paddingBottom: 10, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+      <span className="text-[11px] uppercase tracking-wide shrink-0" style={{ color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", minWidth: 90 }}>
+        {label}
+      </span>
+      {children || (
+        <span className={`text-[13px] text-right break-words ${mono ? "font-mono" : ""} ${dim ? "text-zinc-600" : "text-foreground"}`}>
+          {value}
+        </span>
       )}
     </div>
   );
