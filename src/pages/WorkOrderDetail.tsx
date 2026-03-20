@@ -274,7 +274,7 @@ export default function WorkOrderDetail() {
       const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
       await supabase.from("production_orders").update({ blueprint_url: urlData.publicUrl } as any).eq("id", order.id);
       toast.success("Mockup uploaded");
-      refreshOrders();
+      await refreshOrders();
     } catch (e: any) { toast.error(e.message || "Upload failed"); }
     setMockupUploading(false);
   }, [order, companyId, refreshOrders]);
