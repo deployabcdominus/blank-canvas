@@ -1,36 +1,51 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
-import { WorkOrdersControlBar, type SortKey, type ViewMode } from "@/components/work-orders/WorkOrdersControlBar";
 import { useUserRole } from "@/hooks/useUserRole";
-import { WorkOrderCompactCard } from "@/components/work-orders/WorkOrderCompactCard";
+import { WorkOrderCard } from "@/components/work-orders/WorkOrderCard";
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
 import { EditWorkOrderModal } from "@/components/work-orders/EditWorkOrderModal";
 import { ProductionSheetModal } from "@/components/work-orders/ProductionSheetModal";
-import { ClipboardList, Package, Plus, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import {
+  ClipboardList, Package, Plus, Trash2, Search, X,
+  LayoutGrid, List,
+} from "lucide-react";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
+
+type ViewMode = "cards" | "list";
+
+const STATUS_OPTIONS = [
+  { value: "all", label: "All Statuses" },
+  { value: "Pendiente", label: "Pending" },
+  { value: "En Progreso", label: "In Production" },
+  { value: "Control de Calidad", label: "QC" },
+  { value: "Completada", label: "Ready" },
+  { value: "installed", label: "Installed" },
+];
 
 const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { orders, clearOrders, updateOrder, deleteOrder } = useWorkOrders();
   const { canEdit, canDelete, isAdmin } = useUserRole();
-  const { toast } = useToast();
 
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SortKey>("newest");
   const [view, setView] = useState<ViewMode>("cards");
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [assigneeFilter, setAssigneeFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [completeConfirmId, setCompleteConfirmId] = useState<string | null>(null);
@@ -39,34 +54,72 @@ const WorkOrders = () => {
   const [editOrderMode, setEditOrderMode] = useState(false);
   const [sheetOrder, setSheetOrder] = useState<WorkOrder | null>(null);
 
-  const handleMarkCompleted = (id: string) => {
-    setCompleteConfirmId(id);
-  };
+  // Resolve assignee names
+  const [profileMap, setProfileMap] = useState<Record<string, string>>({});
+  const assigneeIds = useMemo(() => {
+    const ids = new Set<string>();
+    orders.forEach(o => { if (o.assignedToUserId) ids.add(o.assignedToUserId); });
+    return Array.from(ids);
+  }, [orders]);
+
+  useEffect(() => {
+    if (assigneeIds.length === 0) return;
+    supabase
+      .from("profiles")
+      .select("id, full_name")
+      .in("id", assigneeIds)
+      .then(({ data }) => {
+        if (data) {
+          const map: Record<string, string> = {};
+          data.forEach((p: any) => { map[p.id] = p.full_name || "Unknown"; });
+          setProfileMap(map);
+        }
+      });
+  }, [assigneeIds]);
+
+  const teamMembers = useMemo(() => {
+    return Object.entries(profileMap).map(([id, name]) => ({ id, name }));
+  }, [profileMap]);
+
+  const generatePOIToken = useCallback(async (order: WorkOrder) => {
+    const token = crypto.randomUUID();
+    const exp = new Date();
+    exp.setHours(exp.getHours() + 72);
+    const { error } = await supabase
+      .from("production_orders")
+      .update({
+        poi_token: token,
+        poi_token_exp: exp.toISOString(),
+        poi_token_used: false,
+      } as any)
+      .eq("id", order.id);
+    if (error) {
+      toast.error("Failed to generate POI link");
+      return;
+    }
+    const url = `${window.location.origin}/poi/${order.id}?token=${token}`;
+    await navigator.clipboard.writeText(url);
+    toast.success("POI link copied — valid 72 hours");
+  }, []);
 
   const confirmMarkCompleted = async () => {
     if (!completeConfirmId) return;
     try {
       await updateOrder(completeConfirmId, { status: "Completada", progress: 100 });
-      toast({ title: "Orden completada", description: "La orden fue marcada como completada." });
-    } catch (error) {
-      toast({ title: "Error", description: "No se pudo completar la orden.", variant: "destructive" });
-      console.error(error);
+      toast.success("Order marked as completed");
+    } catch {
+      toast.error("Could not complete order");
     }
     setCompleteConfirmId(null);
-  };
-
-  const handleDeleteSingle = (id: string) => {
-    setDeleteConfirmId(id);
   };
 
   const confirmDeleteSingle = async () => {
     if (!deleteConfirmId) return;
     try {
       await deleteOrder(deleteConfirmId);
-      toast({ title: "Orden eliminada", description: "La orden fue eliminada con éxito." });
-    } catch (error) {
-      toast({ title: "Error", description: "No se pudo eliminar la orden.", variant: "destructive" });
-      console.error(error);
+      toast.success("Order deleted");
+    } catch {
+      toast.error("Could not delete order");
     }
     setDeleteConfirmId(null);
   };
@@ -74,7 +127,7 @@ const WorkOrders = () => {
   const handleClearOrders = () => {
     clearOrders();
     setIsClearDialogOpen(false);
-    toast({ title: "Órdenes eliminadas", description: "Todas las órdenes de servicio fueron eliminadas con éxito." });
+    toast.success("All orders cleared");
   };
 
   const processed = useMemo(() => {
@@ -84,103 +137,141 @@ const WorkOrders = () => {
       result = result.filter(o =>
         o.client.toLowerCase().includes(q) ||
         o.project.toLowerCase().includes(q) ||
-        String(o.id).includes(q)
+        (o.wo_number || "").toLowerCase().includes(q)
       );
     }
-    if (statusFilter.length > 0) {
-      result = result.filter(o => statusFilter.includes(o.status));
-    }
-    if (dateFrom) result = result.filter(o => o.startDate >= dateFrom);
-    if (dateTo) result = result.filter(o => o.estimatedCompletion <= dateTo);
-    result.sort((a, b) => {
-      switch (sort) {
-        case "newest": return b.id.localeCompare(a.id);
-        case "oldest": return a.id.localeCompare(b.id);
-        case "status": return a.status.localeCompare(b.status);
-        case "targetDate": return (a.estimatedCompletion || "").localeCompare(b.estimatedCompletion || "");
-        default: return 0;
+    if (statusFilter !== "all") {
+      if (statusFilter === "installed") {
+        result = result.filter(o => o.poi_token_used);
+      } else {
+        result = result.filter(o => o.status === statusFilter && !o.poi_token_used);
       }
-    });
+    }
+    if (assigneeFilter !== "all") {
+      result = result.filter(o => o.assignedToUserId === assigneeFilter);
+    }
+    result.sort((a, b) => b.id.localeCompare(a.id));
     return result;
-  }, [orders, search, statusFilter, dateFrom, dateTo, sort]);
+  }, [orders, search, statusFilter, assigneeFilter]);
 
   const totalPages = Math.ceil(processed.length / pageSize);
   const safePage = Math.min(page, Math.max(totalPages, 1));
   const paginated = processed.slice((safePage - 1) * pageSize, safePage * pageSize);
-  const showing = processed.length > 0
-    ? `Mostrando ${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, processed.length)} de ${processed.length}`
-    : "Sin resultados";
 
   return (
     <PageTransition>
       <ResponsiveLayout>
+        {/* Header */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Órdenes de Servicio</h1>
-            <p className="text-muted-foreground text-sm">Gestión y seguimiento de órdenes</p>
+            <h1 className="text-2xl font-bold mb-1">Work Orders</h1>
+            <p className="text-muted-foreground text-sm">Production floor management</p>
           </div>
           <div className="flex gap-2">
             {orders.length > 0 && isAdmin && (
-              <Button onClick={() => setIsClearDialogOpen(true)} variant="outline" className="btn-glass">
-                <Trash2 className="w-4 h-4 mr-2" /> Limpiar todo
+              <Button onClick={() => setIsClearDialogOpen(true)} variant="outline">
+                <Trash2 className="w-4 h-4 mr-2" /> Clear all
               </Button>
             )}
             {canEdit && (
-              <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
-                <ClipboardList className="w-4 h-4 mr-2" /> Nueva Orden
+              <Button onClick={() => setIsNewOrderModalOpen(true)}>
+                <Plus className="w-4 h-4 mr-2" /> New Order
               </Button>
             )}
           </div>
         </div>
 
         {orders.length === 0 ? (
-          <div className="text-center py-12 glass-card">
+          <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,92,246,0.15)" }}>
             <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">Sin órdenes de servicio</h3>
-            <p className="text-muted-foreground mb-4">Comience creando su primera orden</p>
+            <h3 className="text-lg font-semibold mb-2">No work orders yet</h3>
+            <p className="text-muted-foreground mb-4">Create your first production order</p>
             {canEdit && (
-              <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
-                <Plus className="w-4 h-4 mr-2" /> Nueva Orden
+              <Button onClick={() => setIsNewOrderModalOpen(true)}>
+                <Plus className="w-4 h-4 mr-2" /> New Order
               </Button>
             )}
           </div>
         ) : (
           <>
-            <WorkOrdersControlBar
-              search={search} onSearchChange={v => { setSearch(v); setPage(1); }}
-              sort={sort} onSortChange={setSort}
-              view={view} onViewChange={setView}
-              statusFilter={statusFilter} onStatusFilterChange={v => { setStatusFilter(v); setPage(1); }}
-              dateFrom={dateFrom} onDateFromChange={setDateFrom}
-              dateTo={dateTo} onDateToChange={setDateTo}
-              totalItems={processed.length}
-              showing={showing}
-            />
+            {/* Filters */}
+            <div className="flex items-center gap-3 mb-5 flex-wrap">
+              <div className="relative min-w-[200px] max-w-sm flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by client or project..."
+                  value={search}
+                  onChange={e => { setSearch(e.target.value); setPage(1); }}
+                  className="pl-9 pr-8"
+                />
+                {search && (
+                  <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              <Select value={statusFilter} onValueChange={v => { setStatusFilter(v); setPage(1); }}>
+                <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {STATUS_OPTIONS.map(o => (
+                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={assigneeFilter} onValueChange={v => { setAssigneeFilter(v); setPage(1); }}>
+                <SelectTrigger className="w-40"><SelectValue placeholder="Assignee" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Assignees</SelectItem>
+                  {teamMembers.map(m => (
+                    <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex rounded-lg border border-border/50 overflow-hidden ml-auto">
+                <button
+                  onClick={() => setView("cards")}
+                  className={`p-2 transition-colors ${view === "cards" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                  aria-label="Grid view"
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setView("list")}
+                  className={`p-2 transition-colors ${view === "list" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                  aria-label="List view"
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
             {view === "cards" ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {paginated.map((order, i) => (
-                  <WorkOrderCompactCard
+                  <WorkOrderCard
                     key={order.id}
                     order={order}
                     index={i}
-                    canEdit={canEdit}
+                    assigneeName={order.assignedToUserId ? profileMap[order.assignedToUserId] : undefined}
                     canDelete={canDelete}
-                    onMarkBuilt={handleMarkCompleted}
-                    onDelete={handleDeleteSingle}
-                    onEdit={canEdit ? (o) => { setEditOrder(o); setEditOrderMode(true); } : undefined}
-                    onOpen={(o) => { setSheetOrder(o); }}
+                    onOpen={(o) => setSheetOrder(o)}
+                    onGeneratePOI={generatePOIToken}
+                    onPrintSheet={(o) => setSheetOrder(o)}
+                    onDelete={(id) => setDeleteConfirmId(id)}
                   />
                 ))}
               </div>
             ) : (
               <WorkOrdersTableView
                 orders={paginated}
+                profileMap={profileMap}
                 canEdit={canEdit}
                 canDelete={canDelete}
-                onMarkBuilt={handleMarkCompleted}
-                onDelete={handleDeleteSingle}
+                onMarkBuilt={(id) => setCompleteConfirmId(id)}
+                onDelete={(id) => setDeleteConfirmId(id)}
                 onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
-                onOpen={(o) => { setSheetOrder(o); }}
+                onOpen={(o) => setSheetOrder(o)}
+                onGeneratePOI={generatePOIToken}
               />
             )}
             <WorkOrdersPagination
@@ -194,61 +285,59 @@ const WorkOrders = () => {
         )}
 
         <NewWorkOrderModal isOpen={isNewOrderModalOpen} onClose={() => setIsNewOrderModalOpen(false)} />
-
         <EditWorkOrderModal
           order={editOrder}
           isOpen={!!editOrder}
           onClose={() => setEditOrder(null)}
           startInEditMode={editOrderMode}
         />
-
         <ProductionSheetModal
           order={sheetOrder}
           isOpen={!!sheetOrder}
           onClose={() => setSheetOrder(null)}
         />
 
-        {/* Clear ALL orders — admin only */}
+        {/* Clear ALL */}
         <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>¿Limpiar todas las órdenes?</AlertDialogTitle>
-              <AlertDialogDescription>Esta acción eliminará todas las órdenes de servicio y no se puede deshacer.</AlertDialogDescription>
+              <AlertDialogTitle>Clear all work orders?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={handleClearOrders} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Limpiar todo
+                Clear all
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Complete confirmation */}
+        {/* Complete confirm */}
         <AlertDialog open={!!completeConfirmId} onOpenChange={(open) => { if (!open) setCompleteConfirmId(null); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>¿Confirmas que esta orden está completada?</AlertDialogTitle>
-              <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
+              <AlertDialogTitle>Mark this order as completed?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmMarkCompleted}>Confirmar</AlertDialogAction>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmMarkCompleted}>Confirm</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Individual delete confirmation */}
+        {/* Delete confirm */}
         <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>¿Eliminar esta orden de servicio?</AlertDialogTitle>
-              <AlertDialogDescription>Esta acción es permanente y no se puede deshacer.</AlertDialogDescription>
+              <AlertDialogTitle>Delete this work order?</AlertDialogTitle>
+              <AlertDialogDescription>This action is permanent.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={confirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Eliminar
+                Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

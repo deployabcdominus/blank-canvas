@@ -45,6 +45,11 @@ export interface WorkOrder {
   contact_email?: string;
   site_address?: string;
   project_name?: string;
+  // POI & QC fields
+  poi_token_used?: boolean;
+  poi_completed_at?: string | null;
+  qc_signature_url?: string | null;
+  product_type?: string | null;
 }
 
 // Backward-compatible alias
@@ -127,6 +132,11 @@ const mapRow = (row: any): WorkOrder => ({
   contact_email: row.contact_email || '',
   site_address: row.site_address || '',
   project_name: row.project_name || '',
+  // POI & QC fields
+  poi_token_used: row.poi_token_used || false,
+  poi_completed_at: row.poi_completed_at || null,
+  qc_signature_url: row.qc_signature_url || null,
+  product_type: row.product_type || null,
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -143,7 +153,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (!user) { setOrders([]); setLoading(false); return; }
     const { data, error } = await supabase
       .from('production_orders')
-      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, proposal_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at, face_material_spec, returns_material_spec, backs_material_spec, trim_cap_spec, led_mfg_spec, power_supply_spec, responsible_staff, qc_checklist, wo_number, contact_name, contact_phone, contact_email, site_address, project_name')
+      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, proposal_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at, face_material_spec, returns_material_spec, backs_material_spec, trim_cap_spec, led_mfg_spec, power_supply_spec, responsible_staff, qc_checklist, wo_number, contact_name, contact_phone, contact_email, site_address, project_name, poi_token_used, poi_completed_at, qc_signature_url, product_type')
       .order('created_at', { ascending: false });
     if (error) console.error('Error loading work orders:', error);
     else setOrders((data || []).map(mapRow));
