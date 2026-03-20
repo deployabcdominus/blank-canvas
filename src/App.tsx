@@ -26,6 +26,7 @@ import Onboarding from "./pages/Onboarding";
 import Leads from "./pages/Leads";
 import Proposals from "./pages/Proposals";
 import WorkOrders from "./pages/WorkOrders";
+import WorkOrderDetail from "./pages/WorkOrderDetail";
 import Installation from "./pages/Installation";
 import InstallerCompanies from "./pages/InstallerCompanies";
 import Settings from "./pages/Settings";
