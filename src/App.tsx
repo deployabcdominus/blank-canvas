@@ -26,6 +26,7 @@ import Onboarding from "./pages/Onboarding";
 import Leads from "./pages/Leads";
 import Proposals from "./pages/Proposals";
 import WorkOrders from "./pages/WorkOrders";
+import WorkOrderDetail from "./pages/WorkOrderDetail";
 import Installation from "./pages/Installation";
 import InstallerCompanies from "./pages/InstallerCompanies";
 import Settings from "./pages/Settings";
@@ -115,6 +116,7 @@ const App = () => {
                     <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
                     <Route path="/proposals" element={<Proposals />} />
                     <Route path="/work-orders" element={<WorkOrders />} />
+                    <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
                     <Route path="/payments" element={<Payments />} />
                     <Route path="/installation" element={<Installation />} />
                     <Route path="/map-hub" element={<MapHub />} />
