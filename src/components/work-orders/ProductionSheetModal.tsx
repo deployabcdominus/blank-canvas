@@ -197,6 +197,12 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setSignatureUrl((order as any).qc_signature_url || null);
     setQcSignerName((order as any).qc_signer_name || null);
     setQcSignedAt((order as any).qc_signed_at || null);
+    // Init editable fields
+    setEditClient(order.client || "");
+    setEditEstimatedDelivery(raw.estimated_delivery || order.estimatedCompletion || "");
+    setEditPriority(order.priority || "media");
+    setEditNotes(order.notes || "");
+    setEditMode(false);
   }, [order]);
 
   // Realtime subscription for live updates
