@@ -4,6 +4,8 @@ import { Eraser, PenTool, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 interface QCSignaturePadProps {
   orderId: string;
@@ -11,7 +13,7 @@ interface QCSignaturePadProps {
   allQcPassed: boolean;
   existingSignatureUrl: string | null;
   inspectorName: string;
-  onSignatureSaved: (url: string) => void;
+  onSignatureSaved: (url: string, signerName: string, signedAt: string) => void;
 }
 
 export function QCSignaturePad({
@@ -25,6 +27,8 @@ export function QCSignaturePad({
   const sigRef = useRef<SignatureCanvas>(null);
   const [saving, setSaving] = useState(false);
   const [hasSig, setHasSig] = useState(false);
+  const { user } = useAuth();
+  const { fullName } = useUserProfile();
 
   useEffect(() => {
     setHasSig(!!existingSignatureUrl);
@@ -50,31 +54,36 @@ export function QCSignaturePad({
 
       const { data: urlData } = supabase.storage.from("signatures").getPublicUrl(path);
       const url = urlData.publicUrl + "?t=" + Date.now();
+      const signedAt = new Date().toISOString();
+      const signerName = fullName || "QC Inspector";
 
-      // Persist to DB
+      // Persist to DB with full traceability
       await supabase
         .from("production_orders")
         .update({
           qc_signature_url: url,
+          qc_signed_at: signedAt,
+          qc_signer_name: signerName,
+          qc_signer_id: user?.id || null,
           qc_checklist: {
             design_verified: true,
             material_specs_confirmed: true,
             wiring_test_passed: true,
             final_sign_cleaned: true,
-            qc_signature: inspectorName,
-            qc_date: new Date().toISOString().split("T")[0],
+            qc_signature: signerName,
+            qc_date: signedAt.split("T")[0],
           },
         } as any)
         .eq("id", orderId);
 
-      onSignatureSaved(url);
+      onSignatureSaved(url, signerName, signedAt);
       setHasSig(true);
     } catch (e: any) {
       console.error("Signature save error:", e);
     } finally {
       setSaving(false);
     }
-  }, [orderId, companyId, inspectorName, onSignatureSaved]);
+  }, [orderId, companyId, user, fullName, onSignatureSaved]);
 
   if (!allQcPassed) {
     return (

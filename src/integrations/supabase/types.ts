@@ -230,7 +230,7 @@ export type Database = {
       installations: {
         Row: {
           client: string
-          company_id: string | null
+          company_id: string
           created_at: string
           id: string
           location: string | null
@@ -245,7 +245,7 @@ export type Database = {
         }
         Insert: {
           client: string
-          company_id?: string | null
+          company_id: string
           created_at?: string
           id?: string
           location?: string | null
@@ -260,7 +260,7 @@ export type Database = {
         }
         Update: {
           client?: string
-          company_id?: string | null
+          company_id?: string
           created_at?: string
           id?: string
           location?: string | null
@@ -439,7 +439,7 @@ export type Database = {
           assigned_to_user_id: string | null
           client_id: string | null
           company: string | null
-          company_id: string | null
+          company_id: string
           created_at: string
           created_by_user_id: string | null
           deleted_at: string | null
@@ -462,7 +462,7 @@ export type Database = {
           assigned_to_user_id?: string | null
           client_id?: string | null
           company?: string | null
-          company_id?: string | null
+          company_id: string
           created_at?: string
           created_by_user_id?: string | null
           deleted_at?: string | null
@@ -485,7 +485,7 @@ export type Database = {
           assigned_to_user_id?: string | null
           client_id?: string | null
           company?: string | null
-          company_id?: string | null
+          company_id?: string
           created_at?: string
           created_by_user_id?: string | null
           deleted_at?: string | null
@@ -562,7 +562,22 @@ export type Database = {
           type?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notifications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       operation_templates: {
         Row: {
@@ -724,7 +739,7 @@ export type Database = {
           blueprint_url: string | null
           client: string
           client_id: string | null
-          company_id: string | null
+          company_id: string
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
@@ -747,7 +762,11 @@ export type Database = {
           project_name: string | null
           proposal_id: string | null
           qc_checklist: Json | null
+          qc_checksum: string | null
           qc_signature_url: string | null
+          qc_signed_at: string | null
+          qc_signer_id: string | null
+          qc_signer_name: string | null
           responsible_staff: Json | null
           returns_material_spec: string | null
           site_address: string | null
@@ -765,7 +784,7 @@ export type Database = {
           blueprint_url?: string | null
           client: string
           client_id?: string | null
-          company_id?: string | null
+          company_id: string
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -788,7 +807,11 @@ export type Database = {
           project_name?: string | null
           proposal_id?: string | null
           qc_checklist?: Json | null
+          qc_checksum?: string | null
           qc_signature_url?: string | null
+          qc_signed_at?: string | null
+          qc_signer_id?: string | null
+          qc_signer_name?: string | null
           responsible_staff?: Json | null
           returns_material_spec?: string | null
           site_address?: string | null
@@ -806,7 +829,7 @@ export type Database = {
           blueprint_url?: string | null
           client?: string
           client_id?: string | null
-          company_id?: string | null
+          company_id?: string
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -829,7 +852,11 @@ export type Database = {
           project_name?: string | null
           proposal_id?: string | null
           qc_checklist?: Json | null
+          qc_checksum?: string | null
           qc_signature_url?: string | null
+          qc_signed_at?: string | null
+          qc_signer_id?: string | null
+          qc_signer_name?: string | null
           responsible_staff?: Json | null
           returns_material_spec?: string | null
           site_address?: string | null
@@ -874,6 +901,13 @@ export type Database = {
             columns: ["proposal_id"]
             isOneToOne: false
             referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_orders_qc_signer_id_fkey"
+            columns: ["qc_signer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -987,6 +1021,7 @@ export type Database = {
           client_id: string | null
           company_id: string
           created_at: string
+          deleted_at: string | null
           folder_full_path: string | null
           folder_relative_path: string | null
           id: string
@@ -1001,6 +1036,7 @@ export type Database = {
           client_id?: string | null
           company_id: string
           created_at?: string
+          deleted_at?: string | null
           folder_full_path?: string | null
           folder_relative_path?: string | null
           id?: string
@@ -1015,6 +1051,7 @@ export type Database = {
           client_id?: string | null
           company_id?: string
           created_at?: string
+          deleted_at?: string | null
           folder_full_path?: string | null
           folder_relative_path?: string | null
           id?: string
@@ -1171,7 +1208,7 @@ export type Database = {
       }
       team_allocations: {
         Row: {
-          company_id: string | null
+          company_id: string
           created_at: string
           id: string
           installation_id: string | null
@@ -1179,7 +1216,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          company_id?: string | null
+          company_id: string
           created_at?: string
           id?: string
           installation_id?: string | null
@@ -1187,7 +1224,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          company_id?: string | null
+          company_id?: string
           created_at?: string
           id?: string
           installation_id?: string | null
@@ -1220,7 +1257,7 @@ export type Database = {
       }
       team_members: {
         Row: {
-          company_id: string | null
+          company_id: string
           created_at: string
           email: string | null
           id: string
@@ -1230,7 +1267,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          company_id?: string | null
+          company_id: string
           created_at?: string
           email?: string | null
           id?: string
@@ -1240,7 +1277,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          company_id?: string | null
+          company_id?: string
           created_at?: string
           email?: string | null
           id?: string
@@ -1391,7 +1428,22 @@ export type Database = {
           xp_today?: number | null
           xp_total?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "worker_stats_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "worker_stats_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -132,6 +132,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [localBlueprintUrl, setLocalBlueprintUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+  const [qcSignerName, setQcSignerName] = useState<string | null>(null);
+  const [qcSignedAt, setQcSignedAt] = useState<string | null>(null);
 
   // Form state
   const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
@@ -177,6 +179,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setProjectName(raw.project_name || order.project || "");
     setLocalBlueprintUrl(order.blueprintUrl || null);
     setSignatureUrl((order as any).qc_signature_url || null);
+    setQcSignerName((order as any).qc_signer_name || null);
+    setQcSignedAt((order as any).qc_signed_at || null);
   }, [order]);
 
   // Realtime subscription for live updates
@@ -676,15 +680,24 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                     allQcPassed={allQcPassed}
                     existingSignatureUrl={signatureUrl}
                     inspectorName={qcChecklist.qc_signature || ""}
-                    onSignatureSaved={(url) => {
+                    onSignatureSaved={(url, signerName, signedAt) => {
                       setSignatureUrl(url);
+                      setQcSignerName(signerName);
+                      setQcSignedAt(signedAt);
                       setQcChecklist(prev => ({
                         ...prev,
-                        qc_signature: prev.qc_signature || "QC Inspector",
+                        qc_signature: signerName || prev.qc_signature || "QC Inspector",
                         qc_date: new Date().toISOString().split("T")[0],
                       }));
                     }}
                   />
+
+                  {/* Signature traceability info */}
+                  {signatureUrl && qcSignerName && (
+                    <div style={{ fontSize: 9, color: "#555", marginTop: 2, fontStyle: "italic" }}>
+                      Signed by {qcSignerName} · {qcSignedAt ? new Date(qcSignedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—"}
+                    </div>
+                  )}
 
                   {/* Status indicator */}
                   {allQcPassed && (
