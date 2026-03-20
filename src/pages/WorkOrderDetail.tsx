@@ -909,3 +909,18 @@ function ReadField({ label, value, mono, dim, children }: { label: string; value
     </div>
   );
 }
+
+function DetailRow({ label, value, mono, dim, children }: { label: string; value?: string; mono?: boolean; dim?: boolean; children?: React.ReactNode }) {
+  return (
+    <div className="flex items-baseline justify-between gap-3" style={{ paddingBottom: 10, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+      <span className="text-[11px] uppercase tracking-wide shrink-0" style={{ color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", minWidth: 90 }}>
+        {label}
+      </span>
+      {children || (
+        <span className={`text-[13px] text-right break-words ${mono ? "font-mono" : ""} ${dim ? "text-zinc-600" : "text-foreground"}`}>
+          {value}
+        </span>
+      )}
+    </div>
+  );
+}
