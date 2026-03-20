@@ -219,6 +219,40 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     return () => { supabase.removeChannel(channel); };
   }, [isOpen, order?.id]);
 
+  // Load POI photos
+  useEffect(() => {
+    if (!isOpen || !order) return;
+    const loadPhotos = async () => {
+      const { data } = await supabase
+        .from("poi_photos")
+        .select("id, public_url, uploaded_by_name, uploaded_at")
+        .eq("production_order_id", order.id)
+        .order("uploaded_at", { ascending: true });
+      setPoiPhotos(data || []);
+    };
+    loadPhotos();
+  }, [isOpen, order?.id]);
+
+  const generatePOIToken = useCallback(async () => {
+    if (!order || generatingPoi) return;
+    setGeneratingPoi(true);
+    try {
+      const token = crypto.randomUUID();
+      const exp = new Date();
+      exp.setHours(exp.getHours() + 72);
+      await supabase
+        .from("production_orders")
+        .update({ poi_token: token, poi_token_exp: exp.toISOString(), poi_token_used: false })
+        .eq("id", order.id);
+      const url = `${window.location.origin}/poi/${order.id}?token=${token}`;
+      await navigator.clipboard.writeText(url);
+      toast({ title: "POI Link Copied", description: "Link valid for 72 hours. Share with the installer." });
+    } catch {
+      toast({ title: "Error", description: "Failed to generate POI link.", variant: "destructive" });
+    }
+    setGeneratingPoi(false);
+  }, [order, generatingPoi, toast]);
+
   const woNumber = useMemo(() => {
     if (!order) return "";
     return (order as any).wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
