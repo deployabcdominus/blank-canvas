@@ -138,6 +138,18 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [poiPhotos, setPoiPhotos] = useState<Array<{ id: string; public_url: string | null; uploaded_by_name: string | null; uploaded_at: string | null }>>([]);
   const [poiLightbox, setPoiLightbox] = useState<string | null>(null);
   const [generatingPoi, setGeneratingPoi] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
+  // Editable fields snapshot for cancel
+  const [editSnapshot, setEditSnapshot] = useState<{
+    client: string; projectName: string; estimatedDelivery: string;
+    priority: string; notes: string; siteAddress: string;
+    contactName: string; contactPhone: string; contactEmail: string;
+  } | null>(null);
+  const [editClient, setEditClient] = useState("");
+  const [editEstimatedDelivery, setEditEstimatedDelivery] = useState("");
+  const [editPriority, setEditPriority] = useState("");
+  const [editNotes, setEditNotes] = useState("");
 
   // Form state
   const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
