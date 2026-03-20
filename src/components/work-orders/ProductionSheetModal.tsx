@@ -272,6 +272,64 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setGeneratingPoi(false);
   }, [order, generatingPoi, toast]);
 
+  const enterEditMode = useCallback(() => {
+    setEditSnapshot({
+      client: editClient,
+      projectName,
+      estimatedDelivery: editEstimatedDelivery,
+      priority: editPriority,
+      notes: editNotes,
+      siteAddress,
+      contactName,
+      contactPhone,
+      contactEmail,
+    });
+    setEditMode(true);
+  }, [editClient, projectName, editEstimatedDelivery, editPriority, editNotes, siteAddress, contactName, contactPhone, contactEmail]);
+
+  const cancelEditMode = useCallback(() => {
+    if (editSnapshot) {
+      setEditClient(editSnapshot.client);
+      setProjectName(editSnapshot.projectName);
+      setEditEstimatedDelivery(editSnapshot.estimatedDelivery);
+      setEditPriority(editSnapshot.priority);
+      setEditNotes(editSnapshot.notes);
+      setSiteAddress(editSnapshot.siteAddress);
+      setContactName(editSnapshot.contactName);
+      setContactPhone(editSnapshot.contactPhone);
+      setContactEmail(editSnapshot.contactEmail);
+    }
+    setEditMode(false);
+    setEditSnapshot(null);
+  }, [editSnapshot]);
+
+  const saveEditMode = useCallback(async () => {
+    if (!order) return;
+    setEditSaving(true);
+    try {
+      const { error } = await supabase.from("production_orders").update({
+        client: editClient,
+        project_name: projectName,
+        estimated_delivery: editEstimatedDelivery || null,
+        priority: editPriority,
+        notes: editNotes || null,
+        site_address: siteAddress,
+        contact_name: contactName,
+        contact_phone: contactPhone,
+        contact_email: contactEmail,
+      } as any).eq("id", order.id);
+      if (error) throw error;
+      toast({ title: "Work order updated" });
+      setEditMode(false);
+      setEditSnapshot(null);
+      onRefreshOrder?.();
+    } catch (e: any) {
+      toast({ title: "Error saving", description: e.message, variant: "destructive" });
+    } finally {
+      setEditSaving(false);
+    }
+  }, [order, editClient, projectName, editEstimatedDelivery, editPriority, editNotes, siteAddress, contactName, contactPhone, contactEmail, toast, onRefreshOrder]);
+
   const woNumber = useMemo(() => {
     if (!order) return "";
     return (order as any).wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
