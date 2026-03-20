@@ -41,6 +41,7 @@ import MobileTechnicianView from "./components/work-orders/MobileTechnicianView"
 import AuditLog from "./pages/AuditLog";
 import LeadsRecycleBin from "./pages/LeadsRecycleBin";
 import ProposalApproval from "./pages/ProposalApproval";
+import POIPage from "./pages/POIPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
