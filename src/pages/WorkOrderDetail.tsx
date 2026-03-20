@@ -289,7 +289,6 @@ export default function WorkOrderDetail() {
       const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
       if (uploadErr) throw uploadErr;
       const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
-      const raw = order as any;
       const existing: string[] = Array.isArray(order.mockup_urls) ? order.mockup_urls : [];
       const updated = [...existing, urlData.publicUrl];
       await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
