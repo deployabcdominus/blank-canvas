@@ -117,6 +117,15 @@ export default function WorkOrderDetail() {
   // Operators for step assignment
   const [operators, setOperators] = useState<Array<{ id: string; name: string }>>([]);
 
+  // Design workspace state
+  const [designNotes, setDesignNotes] = useState("");
+  const [designNotesSaved, setDesignNotesSaved] = useState(false);
+  const [mockupUploading, setMockupUploading] = useState(false);
+  const [additionalMockupUploading, setAdditionalMockupUploading] = useState(false);
+  const [fullscreenImg, setFullscreenImg] = useState<{ url: string; index: number } | null>(null);
+  const mockupInputRef = useRef<HTMLInputElement>(null);
+  const additionalMockupInputRef = useRef<HTMLInputElement>(null);
+
   // Load order data into local state
   useEffect(() => {
     if (!order) return;
