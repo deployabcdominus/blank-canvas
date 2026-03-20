@@ -5,6 +5,7 @@ import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
   MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
   FileText, AlertCircle, Upload, Trash2, QrCode, Image, ExternalLink,
+  Pencil,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -137,6 +138,18 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [poiPhotos, setPoiPhotos] = useState<Array<{ id: string; public_url: string | null; uploaded_by_name: string | null; uploaded_at: string | null }>>([]);
   const [poiLightbox, setPoiLightbox] = useState<string | null>(null);
   const [generatingPoi, setGeneratingPoi] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
+  // Editable fields snapshot for cancel
+  const [editSnapshot, setEditSnapshot] = useState<{
+    client: string; projectName: string; estimatedDelivery: string;
+    priority: string; notes: string; siteAddress: string;
+    contactName: string; contactPhone: string; contactEmail: string;
+  } | null>(null);
+  const [editClient, setEditClient] = useState("");
+  const [editEstimatedDelivery, setEditEstimatedDelivery] = useState("");
+  const [editPriority, setEditPriority] = useState("");
+  const [editNotes, setEditNotes] = useState("");
 
   // Form state
   const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
@@ -184,6 +197,12 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setSignatureUrl((order as any).qc_signature_url || null);
     setQcSignerName((order as any).qc_signer_name || null);
     setQcSignedAt((order as any).qc_signed_at || null);
+    // Init editable fields
+    setEditClient(order.client || "");
+    setEditEstimatedDelivery(raw.estimated_delivery || order.estimatedCompletion || "");
+    setEditPriority(order.priority || "media");
+    setEditNotes(order.notes || "");
+    setEditMode(false);
   }, [order]);
 
   // Realtime subscription for live updates
@@ -252,6 +271,64 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     }
     setGeneratingPoi(false);
   }, [order, generatingPoi, toast]);
+
+  const enterEditMode = useCallback(() => {
+    setEditSnapshot({
+      client: editClient,
+      projectName,
+      estimatedDelivery: editEstimatedDelivery,
+      priority: editPriority,
+      notes: editNotes,
+      siteAddress,
+      contactName,
+      contactPhone,
+      contactEmail,
+    });
+    setEditMode(true);
+  }, [editClient, projectName, editEstimatedDelivery, editPriority, editNotes, siteAddress, contactName, contactPhone, contactEmail]);
+
+  const cancelEditMode = useCallback(() => {
+    if (editSnapshot) {
+      setEditClient(editSnapshot.client);
+      setProjectName(editSnapshot.projectName);
+      setEditEstimatedDelivery(editSnapshot.estimatedDelivery);
+      setEditPriority(editSnapshot.priority);
+      setEditNotes(editSnapshot.notes);
+      setSiteAddress(editSnapshot.siteAddress);
+      setContactName(editSnapshot.contactName);
+      setContactPhone(editSnapshot.contactPhone);
+      setContactEmail(editSnapshot.contactEmail);
+    }
+    setEditMode(false);
+    setEditSnapshot(null);
+  }, [editSnapshot]);
+
+  const saveEditMode = useCallback(async () => {
+    if (!order) return;
+    setEditSaving(true);
+    try {
+      const { error } = await supabase.from("production_orders").update({
+        client: editClient,
+        project_name: projectName,
+        estimated_delivery: editEstimatedDelivery || null,
+        priority: editPriority,
+        notes: editNotes || null,
+        site_address: siteAddress,
+        contact_name: contactName,
+        contact_phone: contactPhone,
+        contact_email: contactEmail,
+      } as any).eq("id", order.id);
+      if (error) throw error;
+      toast({ title: "Work order updated" });
+      setEditMode(false);
+      setEditSnapshot(null);
+      onRefreshOrder?.();
+    } catch (e: any) {
+      toast({ title: "Error saving", description: e.message, variant: "destructive" });
+    } finally {
+      setEditSaving(false);
+    }
+  }, [order, editClient, projectName, editEstimatedDelivery, editPriority, editNotes, siteAddress, contactName, contactPhone, contactEmail, toast, onRefreshOrder]);
 
   const woNumber = useMemo(() => {
     if (!order) return "";
@@ -379,6 +456,109 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] w-[1200px] max-h-[95vh] p-0 gap-0 bg-zinc-900/95 backdrop-blur-2xl border-white/[0.08] rounded-2xl flex flex-col overflow-hidden">
+
+        {/* ── Edit Toolbar (outside paper) ── */}
+        <div data-print-hide className="shrink-0 flex items-center justify-between px-6 py-3 border-b border-white/[0.06] bg-zinc-950/80">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-bold text-foreground">{woNumber}</span>
+            <Badge
+              className="text-[10px] font-bold border-0"
+              style={{
+                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                color: "white",
+              }}
+            >
+              {order.status.toUpperCase()}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            {!editMode ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={enterEditMode}
+                className="text-xs h-7 gap-1.5"
+                style={{ borderColor: "rgba(139,92,246,0.4)", color: "#8b5cf6" }}
+              >
+                <Pencil className="w-3 h-3" />
+                Edit
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={cancelEditMode}
+                  className="text-xs h-7"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={saveEditMode}
+                  disabled={editSaving}
+                  className="text-xs h-7"
+                  style={{ background: "#8b5cf6", color: "white" }}
+                >
+                  {editSaving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                  Save Changes
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* ── Edit Panel (collapsible, only in edit mode) ── */}
+        {editMode && (
+          <div data-print-hide className="shrink-0 px-6 py-4 border-b border-white/[0.06] bg-zinc-900/60">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Client</label>
+                <Input value={editClient} onChange={e => setEditClient(e.target.value)} className="h-8 text-xs" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Project Name</label>
+                <Input value={projectName} onChange={e => setProjectName(e.target.value)} className="h-8 text-xs" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Estimated Delivery</label>
+                <Input type="date" value={editEstimatedDelivery} onChange={e => setEditEstimatedDelivery(e.target.value)} className="h-8 text-xs" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Priority</label>
+                <Select value={editPriority} onValueChange={setEditPriority}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="baja">Low</SelectItem>
+                    <SelectItem value="media">Medium</SelectItem>
+                    <SelectItem value="alta">High</SelectItem>
+                    <SelectItem value="urgente">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Site Address</label>
+                <Input value={siteAddress} onChange={e => setSiteAddress(e.target.value)} className="h-8 text-xs" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Contact Name</label>
+                <Input value={contactName} onChange={e => setContactName(e.target.value)} className="h-8 text-xs" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Contact Phone</label>
+                <Input value={contactPhone} onChange={e => setContactPhone(e.target.value)} className="h-8 text-xs" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Contact Email</label>
+                <Input value={contactEmail} onChange={e => setContactEmail(e.target.value)} className="h-8 text-xs" />
+              </div>
+              <div className="space-y-1 sm:col-span-2 lg:col-span-1">
+                <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Notes</label>
+                <Input value={editNotes} onChange={e => setEditNotes(e.target.value)} className="h-8 text-xs" placeholder="Internal notes..." />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── A4 Paper simulation ── */}
         <div className="flex-1 overflow-auto p-4 sm:p-6" style={{ background: "hsl(240 5% 12%)" }}>
