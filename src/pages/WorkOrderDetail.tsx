@@ -301,7 +301,6 @@ export default function WorkOrderDetail() {
   // Remove additional mockup
   const removeAdditionalMockup = useCallback(async (urlToRemove: string) => {
     if (!order) return;
-    const raw = order as any;
     const existing: string[] = Array.isArray(order.mockup_urls) ? order.mockup_urls : [];
     const updated = existing.filter(u => u !== urlToRemove);
     await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
