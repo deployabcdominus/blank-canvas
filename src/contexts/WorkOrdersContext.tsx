@@ -45,6 +45,11 @@ export interface WorkOrder {
   contact_email?: string;
   site_address?: string;
   project_name?: string;
+  // POI & QC fields
+  poi_token_used?: boolean;
+  poi_completed_at?: string | null;
+  qc_signature_url?: string | null;
+  product_type?: string | null;
 }
 
 // Backward-compatible alias
