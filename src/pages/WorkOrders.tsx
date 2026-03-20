@@ -39,7 +39,7 @@ const STATUS_OPTIONS = [
 const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders, updateOrder, deleteOrder } = useWorkOrders();
+  const { orders, clearOrders, updateOrder, deleteOrder, refreshOrders } = useWorkOrders();
   const { canEdit, canDelete, isAdmin } = useUserRole();
 
   const [search, setSearch] = useState("");
