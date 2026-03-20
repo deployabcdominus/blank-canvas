@@ -250,6 +250,76 @@ export default function WorkOrderDetail() {
     qcChecklist.wiring_test_passed && qcChecklist.final_sign_cleaned,
   [qcChecklist]);
 
+  // Design notes auto-save
+  const handleDesignNotesBlur = useCallback(async () => {
+    if (!order) return;
+    const raw = order as any;
+    if (designNotes === (raw.design_notes || "")) return;
+    try {
+      await supabase.from("production_orders").update({ design_notes: designNotes } as any).eq("id", order.id);
+      setDesignNotesSaved(true);
+      setTimeout(() => setDesignNotesSaved(false), 2000);
+    } catch { toast.error("Failed to save design notes"); }
+  }, [order, designNotes]);
+
+  // Mockup upload
+  const handleMockupUpload = useCallback(async (file: File) => {
+    if (!order || !companyId) return;
+    setMockupUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `${companyId}/${order.id}/mockup-${Date.now()}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
+      if (uploadErr) throw uploadErr;
+      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+      await supabase.from("production_orders").update({ blueprint_url: urlData.publicUrl } as any).eq("id", order.id);
+      toast.success("Mockup uploaded");
+      refreshOrders();
+    } catch (e: any) { toast.error(e.message || "Upload failed"); }
+    setMockupUploading(false);
+  }, [order, companyId, refreshOrders]);
+
+  // Additional mockup upload
+  const handleAdditionalMockupUpload = useCallback(async (file: File) => {
+    if (!order || !companyId) return;
+    setAdditionalMockupUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `${companyId}/${order.id}/extra-${Date.now()}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
+      if (uploadErr) throw uploadErr;
+      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+      const raw = order as any;
+      const existing: string[] = Array.isArray(raw.mockup_urls) ? raw.mockup_urls : [];
+      const updated = [...existing, urlData.publicUrl];
+      await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
+      toast.success("Additional mockup added");
+      refreshOrders();
+    } catch (e: any) { toast.error(e.message || "Upload failed"); }
+    setAdditionalMockupUploading(false);
+  }, [order, companyId, refreshOrders]);
+
+  // Remove additional mockup
+  const removeAdditionalMockup = useCallback(async (urlToRemove: string) => {
+    if (!order) return;
+    const raw = order as any;
+    const existing: string[] = Array.isArray(raw.mockup_urls) ? raw.mockup_urls : [];
+    const updated = existing.filter(u => u !== urlToRemove);
+    await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
+    toast.success("Mockup removed");
+    refreshOrders();
+  }, [order, refreshOrders]);
+
+  // All images for fullscreen navigation
+  const allImages = useMemo(() => {
+    if (!order) return [];
+    const raw = order as any;
+    const imgs: string[] = [];
+    if (raw.blueprint_url) imgs.push(raw.blueprint_url);
+    if (Array.isArray(raw.mockup_urls)) imgs.push(...raw.mockup_urls);
+    return imgs;
+  }, [order]);
+
   if (!order) {
     return (
       <PageTransition><ResponsiveLayout>
