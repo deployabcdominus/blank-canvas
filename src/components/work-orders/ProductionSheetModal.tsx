@@ -5,6 +5,7 @@ import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
   MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
   FileText, AlertCircle, Upload, Trash2, QrCode, Image, ExternalLink,
+  Pencil,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
