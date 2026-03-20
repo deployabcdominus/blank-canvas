@@ -137,6 +137,9 @@ const mapRow = (row: any): WorkOrder => ({
   poi_completed_at: row.poi_completed_at || null,
   qc_signature_url: row.qc_signature_url || null,
   product_type: row.product_type || null,
+  // Design workspace fields
+  mockup_urls: Array.isArray(row.mockup_urls) ? row.mockup_urls : [],
+  design_notes: row.design_notes || '',
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
