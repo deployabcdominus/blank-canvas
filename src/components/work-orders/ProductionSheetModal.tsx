@@ -680,15 +680,24 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                     allQcPassed={allQcPassed}
                     existingSignatureUrl={signatureUrl}
                     inspectorName={qcChecklist.qc_signature || ""}
-                    onSignatureSaved={(url) => {
+                    onSignatureSaved={(url, signerName, signedAt) => {
                       setSignatureUrl(url);
+                      setQcSignerName(signerName);
+                      setQcSignedAt(signedAt);
                       setQcChecklist(prev => ({
                         ...prev,
-                        qc_signature: prev.qc_signature || "QC Inspector",
+                        qc_signature: signerName || prev.qc_signature || "QC Inspector",
                         qc_date: new Date().toISOString().split("T")[0],
                       }));
                     }}
                   />
+
+                  {/* Signature traceability info */}
+                  {signatureUrl && qcSignerName && (
+                    <div style={{ fontSize: 9, color: "#555", marginTop: 2, fontStyle: "italic" }}>
+                      Signed by {qcSignerName} · {qcSignedAt ? new Date(qcSignedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—"}
+                    </div>
+                  )}
 
                   {/* Status indicator */}
                   {allQcPassed && (
