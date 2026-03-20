@@ -41,6 +41,7 @@ import MobileTechnicianView from "./components/work-orders/MobileTechnicianView"
 import AuditLog from "./pages/AuditLog";
 import LeadsRecycleBin from "./pages/LeadsRecycleBin";
 import ProposalApproval from "./pages/ProposalApproval";
+import POIPage from "./pages/POIPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,6 +74,7 @@ const App = () => (
                 <Route path="/register" element={<Register />} />
                 <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
                 <Route path="/p/:proposalId" element={<ProposalApproval />} />
+                <Route path="/poi/:orderId" element={<POIPage />} />
                 {/* Superadmin — no tenant providers needed */}
                 <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
                 <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

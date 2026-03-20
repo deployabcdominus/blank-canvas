@@ -731,6 +731,69 @@ export type Database = {
         }
         Relationships: []
       }
+      poi_photos: {
+        Row: {
+          caption: string | null
+          company_id: string
+          created_at: string | null
+          file_size_bytes: number | null
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          mime_type: string | null
+          production_order_id: string
+          public_url: string | null
+          storage_path: string
+          uploaded_at: string | null
+          uploaded_by_name: string | null
+        }
+        Insert: {
+          caption?: string | null
+          company_id: string
+          created_at?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          mime_type?: string | null
+          production_order_id: string
+          public_url?: string | null
+          storage_path: string
+          uploaded_at?: string | null
+          uploaded_by_name?: string | null
+        }
+        Update: {
+          caption?: string | null
+          company_id?: string
+          created_at?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          mime_type?: string | null
+          production_order_id?: string
+          public_url?: string | null
+          storage_path?: string
+          uploaded_at?: string | null
+          uploaded_by_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poi_photos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poi_photos_production_order_id_fkey"
+            columns: ["production_order_id"]
+            isOneToOne: false
+            referencedRelation: "production_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       production_orders: {
         Row: {
           annotations: Json | null
@@ -753,6 +816,10 @@ export type Database = {
           materials: Json | null
           notes: string | null
           owner_user_id: string | null
+          poi_completed_at: string | null
+          poi_token: string | null
+          poi_token_exp: string | null
+          poi_token_used: boolean | null
           power_supply_spec: string | null
           priority: string | null
           product_type: string | null
@@ -798,6 +865,10 @@ export type Database = {
           materials?: Json | null
           notes?: string | null
           owner_user_id?: string | null
+          poi_completed_at?: string | null
+          poi_token?: string | null
+          poi_token_exp?: string | null
+          poi_token_used?: boolean | null
           power_supply_spec?: string | null
           priority?: string | null
           product_type?: string | null
@@ -843,6 +914,10 @@ export type Database = {
           materials?: Json | null
           notes?: string | null
           owner_user_id?: string | null
+          poi_completed_at?: string | null
+          poi_token?: string | null
+          poi_token_exp?: string | null
+          poi_token_used?: boolean | null
           power_supply_spec?: string | null
           priority?: string | null
           product_type?: string | null
@@ -1512,6 +1587,18 @@ export type Database = {
       recalc_project_progress: {
         Args: { p_project_id: string }
         Returns: undefined
+      }
+      validate_poi_token: {
+        Args: { p_token: string }
+        Returns: {
+          client: string
+          company_id: string
+          order_id: string
+          project_name: string
+          token_expired: boolean
+          token_valid: boolean
+          wo_number: string
+        }[]
       }
       validate_purchase_by_token: {
         Args: { p_access_token: string }
