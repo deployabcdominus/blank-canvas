@@ -179,7 +179,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setProjectName(raw.project_name || order.project || "");
     setLocalBlueprintUrl(order.blueprintUrl || null);
     setSignatureUrl((order as any).qc_signature_url || null);
-  }, [order]);
+    setQcSignerName((order as any).qc_signer_name || null);
+    setQcSignedAt((order as any).qc_signed_at || null);
 
   // Realtime subscription for live updates
   useEffect(() => {
