@@ -181,6 +181,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setSignatureUrl((order as any).qc_signature_url || null);
     setQcSignerName((order as any).qc_signer_name || null);
     setQcSignedAt((order as any).qc_signed_at || null);
+  }, [order]);
 
   // Realtime subscription for live updates
   useEffect(() => {
