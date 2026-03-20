@@ -807,6 +807,7 @@ export type Database = {
           contact_name: string | null
           contact_phone: string | null
           created_at: string
+          design_notes: string | null
           end_date: string | null
           estimated_delivery: string | null
           face_material_spec: string | null
@@ -814,6 +815,7 @@ export type Database = {
           installer_company_id: string | null
           led_mfg_spec: string | null
           materials: Json | null
+          mockup_urls: Json | null
           notes: string | null
           owner_user_id: string | null
           poi_completed_at: string | null
@@ -856,6 +858,7 @@ export type Database = {
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
+          design_notes?: string | null
           end_date?: string | null
           estimated_delivery?: string | null
           face_material_spec?: string | null
@@ -863,6 +866,7 @@ export type Database = {
           installer_company_id?: string | null
           led_mfg_spec?: string | null
           materials?: Json | null
+          mockup_urls?: Json | null
           notes?: string | null
           owner_user_id?: string | null
           poi_completed_at?: string | null
@@ -905,6 +909,7 @@ export type Database = {
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
+          design_notes?: string | null
           end_date?: string | null
           estimated_delivery?: string | null
           face_material_spec?: string | null
@@ -912,6 +917,7 @@ export type Database = {
           installer_company_id?: string | null
           led_mfg_spec?: string | null
           materials?: Json | null
+          mockup_urls?: Json | null
           notes?: string | null
           owner_user_id?: string | null
           poi_completed_at?: string | null
