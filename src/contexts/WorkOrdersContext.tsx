@@ -50,6 +50,9 @@ export interface WorkOrder {
   poi_completed_at?: string | null;
   qc_signature_url?: string | null;
   product_type?: string | null;
+  // Design workspace fields
+  mockup_urls?: string[];
+  design_notes?: string;
 }
 
 // Backward-compatible alias
