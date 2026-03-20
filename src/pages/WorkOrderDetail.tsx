@@ -419,6 +419,146 @@ export default function WorkOrderDetail() {
             {/* LEFT COL – 60% (3/5) */}
             <div className="lg:col-span-3 space-y-4">
 
+              {/* ═══ DESIGN WORKSPACE ═══ */}
+              <SectionCard>
+                <div className="mb-1">
+                  <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Design Workspace</h2>
+                  <p className="text-xs text-muted-foreground -mt-3 mb-4">Mockup, blueprint & reference files</p>
+                </div>
+
+                {/* Main mockup area */}
+                {raw.blueprint_url ? (
+                  <div className="relative group mb-4">
+                    <div className="rounded-lg overflow-hidden" style={{ background: "rgba(0,0,0,0.3)" }}>
+                      <img
+                        src={raw.blueprint_url}
+                        alt="Mockup"
+                        className="w-full object-contain cursor-pointer"
+                        style={{ maxHeight: 400 }}
+                        onClick={() => setFullscreenImg({ url: raw.blueprint_url, index: 0 })}
+                      />
+                    </div>
+                    <Badge className="absolute top-3 left-3 bg-violet-500/30 text-violet-200 border-0 text-[10px]">Mockup</Badge>
+                    <button
+                      onClick={() => setFullscreenImg({ url: raw.blueprint_url, index: 0 })}
+                      className="absolute top-3 right-3 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ background: "rgba(0,0,0,0.6)" }}
+                    >
+                      <Maximize2 className="w-4 h-4 text-white" />
+                    </button>
+                    {canEdit && (
+                      <Button variant="outline" size="sm" className="mt-2 text-xs text-muted-foreground" onClick={() => mockupInputRef.current?.click()}>
+                        Replace mockup
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    className="flex flex-col items-center justify-center gap-3 cursor-pointer mb-4"
+                    style={{ border: "2px dashed rgba(139,92,246,0.3)", borderRadius: 8, height: 200 }}
+                    onClick={() => mockupInputRef.current?.click()}
+                  >
+                    {mockupUploading ? (
+                      <Loader2 className="w-10 h-10 animate-spin" style={{ color: "#8b5cf6" }} />
+                    ) : (
+                      <>
+                        <Upload className="w-10 h-10" style={{ color: "#8b5cf6" }} />
+                        <p className="text-sm text-foreground font-medium">Upload mockup or render</p>
+                        <p className="text-xs text-muted-foreground">PNG, JPG, PDF · Max 10MB</p>
+                        <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white text-xs">Browse files</Button>
+                      </>
+                    )}
+                  </div>
+                )}
+                <input
+                  ref={mockupInputRef}
+                  type="file"
+                  accept="image/*,.pdf"
+                  className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleMockupUpload(f); e.target.value = ""; }}
+                />
+
+                {/* 2 columns: additional mockups + design notes */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Additional mockups */}
+                  <div>
+                    <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground mb-2">Additional Mockups</p>
+                    <div className="grid grid-cols-3 gap-1.5 mb-2">
+                      {(Array.isArray(raw.mockup_urls) ? raw.mockup_urls : []).map((url: string, i: number) => (
+                        <div key={i} className="relative group/thumb">
+                          <img
+                            src={url}
+                            alt={`Mockup ${i + 1}`}
+                            className="w-full h-16 object-cover rounded cursor-pointer border border-white/[0.08]"
+                            onClick={() => setFullscreenImg({ url, index: (raw.blueprint_url ? i + 1 : i) })}
+                          />
+                          {canEdit && (
+                            <button
+                              onClick={() => removeAdditionalMockup(url)}
+                              className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity"
+                              style={{ background: "rgba(239,68,68,0.9)" }}
+                            >
+                              <X className="w-2.5 h-2.5 text-white" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {canEdit && (
+                      <>
+                        <button
+                          onClick={() => additionalMockupInputRef.current?.click()}
+                          className="w-full flex items-center justify-center gap-1.5 py-2 rounded text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          style={{ border: "1px dashed rgba(139,92,246,0.25)" }}
+                          disabled={additionalMockupUploading}
+                        >
+                          {additionalMockupUploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+                          Add mockup
+                        </button>
+                        <input
+                          ref={additionalMockupInputRef}
+                          type="file"
+                          accept="image/*,.pdf"
+                          className="hidden"
+                          onChange={e => { const f = e.target.files?.[0]; if (f) handleAdditionalMockupUpload(f); e.target.value = ""; }}
+                        />
+                      </>
+                    )}
+                  </div>
+
+                  {/* Design notes */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground">Design Notes</p>
+                      {designNotesSaved && <span className="text-[10px] font-medium" style={{ color: "#4ade80" }}>Saved ✓</span>}
+                    </div>
+                    <Textarea
+                      value={designNotes}
+                      onChange={e => setDesignNotes(e.target.value)}
+                      onBlur={handleDesignNotesBlur}
+                      placeholder="Notes for the production team..."
+                      className="min-h-[100px] text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                  {raw.blueprint_url ? (
+                    <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px]">Mockup ready</Badge>
+                  ) : (
+                    <Badge variant="outline" className="border-zinc-700 text-zinc-500 text-[10px]">No mockup uploaded</Badge>
+                  )}
+                  <button
+                    onClick={() => setSheetOpen(true)}
+                    className="text-xs font-medium transition-colors hover:opacity-80"
+                    style={{ color: "rgba(139,92,246,0.8)" }}
+                  >
+                    View in Production Sheet →
+                  </button>
+                </div>
+              </SectionCard>
+
               {/* Progress & Timeline */}
               <SectionCard>
                 <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Production Progress</h2>
