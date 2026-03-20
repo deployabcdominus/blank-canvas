@@ -108,8 +108,6 @@ export default function WorkOrderDetail() {
   // POI photos
   const [poiPhotos, setPoiPhotos] = useState<Array<{ id: string; public_url: string | null; uploaded_by_name: string | null }>>([]);
 
-  // Production sheet modal
-  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Profile lookup for assignee
   const [assigneeName, setAssigneeName] = useState<string | null>(null);
