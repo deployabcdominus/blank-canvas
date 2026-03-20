@@ -764,6 +764,79 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
           </div>
         </div>
 
+        {/* ── POI Gallery (outside paper, not printable) ── */}
+        <div data-print-hide className="px-6 py-4 border-t border-white/[0.06]">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Image className="w-4 h-4" style={{ color: "#8b5cf6" }} />
+              Installation Photos
+            </h3>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={generatePOIToken}
+              disabled={generatingPoi}
+              className="text-xs h-7 gap-1.5"
+              style={{ borderColor: "rgba(139,92,246,0.4)", color: "#8b5cf6" }}
+            >
+              {generatingPoi ? <Loader2 className="w-3 h-3 animate-spin" /> : <QrCode className="w-3 h-3" />}
+              Generate POI Link
+            </Button>
+          </div>
+
+          {poiPhotos.length === 0 && !(order as any)?.poi_token_used ? (
+            <p className="text-xs text-muted-foreground">No photos yet. Share the POI link with the installer.</p>
+          ) : (
+            <>
+              {(order as any)?.poi_token_used && (
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: "rgba(16,185,129,0.15)", color: "#10b981" }}>
+                    ✓ Installation Documented
+                  </span>
+                  {(order as any)?.poi_completed_at && (
+                    <span className="text-[10px] text-muted-foreground">
+                      {format(new Date((order as any).poi_completed_at), "MMM dd, yyyy HH:mm")}
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {poiPhotos.map(photo => (
+                  <button
+                    key={photo.id}
+                    onClick={() => setPoiLightbox(photo.public_url)}
+                    className="relative rounded-lg overflow-hidden aspect-square group"
+                    style={{ background: "rgba(255,255,255,0.03)" }}
+                  >
+                    <img src={photo.public_url || ""} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <ExternalLink className="w-4 h-4 text-white" />
+                    </div>
+                    {photo.uploaded_by_name && (
+                      <span className="absolute bottom-1 left-1 text-[9px] text-white/80 bg-black/50 px-1 rounded">
+                        {photo.uploaded_by_name}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* POI Lightbox */}
+        {poiLightbox && (
+          <div
+            className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
+            onClick={() => setPoiLightbox(null)}
+          >
+            <button className="absolute top-4 right-4 text-white" onClick={() => setPoiLightbox(null)}>
+              <X className="w-6 h-6" />
+            </button>
+            <img src={poiLightbox} alt="" className="max-w-full max-h-full object-contain rounded-lg" />
+          </div>
+        )}
+
         {/* ── Footer Actions (outside paper) ── */}
         <div data-print-hide className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md">
           <Button variant="outline" size="sm" onClick={onClose} className="text-xs border-white/[0.1] text-muted-foreground h-8">
