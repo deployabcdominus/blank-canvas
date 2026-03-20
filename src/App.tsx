@@ -43,7 +43,7 @@ import AuditLog from "./pages/AuditLog";
 import LeadsRecycleBin from "./pages/LeadsRecycleBin";
 import ProposalApproval from "./pages/ProposalApproval";
 import POIPage from "./pages/POIPage";
-
+import PrintPage from "./pages/PrintPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -117,6 +117,7 @@ const App = () => {
                     <Route path="/proposals" element={<Proposals />} />
                     <Route path="/work-orders" element={<WorkOrders />} />
                     <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
+                    <Route path="/print/:orderId" element={<PrintPage />} />
                     <Route path="/payments" element={<Payments />} />
                     <Route path="/installation" element={<Installation />} />
                     <Route path="/map-hub" element={<MapHub />} />

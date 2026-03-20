@@ -29,7 +29,7 @@ import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { QCSignaturePad } from "@/components/work-orders/QCSignaturePad";
-import { ProductionSheetModal } from "@/components/work-orders/ProductionSheetModal";
+
 
 /* ── Status config ── */
 const STATUS_OPTIONS = [
@@ -108,8 +108,6 @@ export default function WorkOrderDetail() {
   // POI photos
   const [poiPhotos, setPoiPhotos] = useState<Array<{ id: string; public_url: string | null; uploaded_by_name: string | null }>>([]);
 
-  // Production sheet modal
-  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Profile lookup for assignee
   const [assigneeName, setAssigneeName] = useState<string | null>(null);
@@ -401,7 +399,7 @@ export default function WorkOrderDetail() {
                   </Button>
                 </>
               )}
-              <Button variant="outline" size="sm" onClick={() => setSheetOpen(true)} className="text-muted-foreground">
+              <Button variant="outline" size="sm" onClick={() => window.open(`/print/${order.id}`, '_blank')} className="text-muted-foreground">
                 <Printer className="w-3.5 h-3.5 mr-1.5" /> Print / PDF
               </Button>
               <Button variant="outline" size="sm" onClick={generatePOI} className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10">
@@ -548,7 +546,7 @@ export default function WorkOrderDetail() {
                     <Badge variant="outline" className="border-zinc-700 text-zinc-500 text-[10px]">No mockup uploaded</Badge>
                   )}
                   <button
-                    onClick={() => setSheetOpen(true)}
+                    onClick={() => window.open(`/print/${order.id}`, '_blank')}
                     className="text-xs font-medium transition-colors hover:opacity-80"
                     style={{ color: "rgba(139,92,246,0.8)" }}
                   >
@@ -831,13 +829,6 @@ export default function WorkOrderDetail() {
           </div>
         </div>
 
-        {/* Production Sheet modal — reuse existing */}
-        <ProductionSheetModal
-          order={sheetOpen ? order : null}
-          isOpen={sheetOpen}
-          onClose={() => setSheetOpen(false)}
-          onRefreshOrder={refreshOrders}
-        />
 
         {/* Fullscreen image viewer */}
         {fullscreenImg && (
