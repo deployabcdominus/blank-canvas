@@ -150,7 +150,10 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const deleteProject = async (id: string) => {
-    const { error } = await (supabase as any).from('projects').delete().eq('id', id);
+    const { error } = await (supabase as any)
+      .from('projects')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id);
     if (error) {
       if (error.message?.includes('órdenes de trabajo activas')) {
         throw new Error('No se puede eliminar: este proyecto tiene órdenes de trabajo activas. Complete o cancele las órdenes primero.');
