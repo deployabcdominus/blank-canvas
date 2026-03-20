@@ -140,6 +140,7 @@ export default function WorkOrderDetail() {
     setSignatureUrl(raw.qc_signature_url || null);
     setQcSignerName(raw.qc_signer_name || null);
     setQcSignedAt(raw.qc_signed_at || null);
+    setDesignNotes(raw.design_notes || "");
   }, [order]);
 
   // Load assignee name
