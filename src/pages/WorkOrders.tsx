@@ -295,6 +295,7 @@ const WorkOrders = () => {
           order={sheetOrder}
           isOpen={!!sheetOrder}
           onClose={() => setSheetOrder(null)}
+          onRefreshOrder={() => { const { refreshOrders } = useWorkOrders; }}
         />
 
         {/* Clear ALL */}
