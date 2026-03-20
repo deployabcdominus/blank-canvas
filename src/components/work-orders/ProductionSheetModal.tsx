@@ -134,6 +134,9 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
   const [qcSignerName, setQcSignerName] = useState<string | null>(null);
   const [qcSignedAt, setQcSignedAt] = useState<string | null>(null);
+  const [poiPhotos, setPoiPhotos] = useState<Array<{ id: string; public_url: string | null; uploaded_by_name: string | null; uploaded_at: string | null }>>([]);
+  const [poiLightbox, setPoiLightbox] = useState<string | null>(null);
+  const [generatingPoi, setGeneratingPoi] = useState(false);
 
   // Form state
   const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
