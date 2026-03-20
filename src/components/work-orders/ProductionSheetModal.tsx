@@ -132,6 +132,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [localBlueprintUrl, setLocalBlueprintUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+  const [qcSignerName, setQcSignerName] = useState<string | null>(null);
+  const [qcSignedAt, setQcSignedAt] = useState<string | null>(null);
 
   // Form state
   const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
