@@ -54,9 +54,8 @@ export const productionGroup: NavGroup = {
   groupLabel: "Producción",
   icon: FolderKanban,
   items: [
-    { icon: FolderKanban, label: "Proyectos", labelKey: "projects", path: "/projects", roles: ['admin', 'sales', 'operations', 'member'] },
-    { icon: ClipboardList, label: "Órdenes de Trabajo", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
-    { icon: Building, label: "Subcontratistas", labelKey: "installerCompanies", path: "/installer-companies", roles: ['admin', 'operations'] },
+    { icon: ClipboardList, label: "Work Orders", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
+    { icon: Building, label: "Partners", labelKey: "installerCompanies", path: "/installer-companies", roles: ['admin', 'operations'] },
   ],
 };
 

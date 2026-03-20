@@ -132,6 +132,11 @@ const mapRow = (row: any): WorkOrder => ({
   contact_email: row.contact_email || '',
   site_address: row.site_address || '',
   project_name: row.project_name || '',
+  // POI & QC fields
+  poi_token_used: row.poi_token_used || false,
+  poi_completed_at: row.poi_completed_at || null,
+  qc_signature_url: row.qc_signature_url || null,
+  product_type: row.product_type || null,
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
