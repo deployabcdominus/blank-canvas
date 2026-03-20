@@ -548,7 +548,7 @@ export default function WorkOrderDetail() {
                     <Badge variant="outline" className="border-zinc-700 text-zinc-500 text-[10px]">No mockup uploaded</Badge>
                   )}
                   <button
-                    onClick={() => setSheetOpen(true)}
+                    onClick={() => window.open(`/print/${order.id}`, '_blank')}
                     className="text-xs font-medium transition-colors hover:opacity-80"
                     style={{ color: "rgba(139,92,246,0.8)" }}
                   >
