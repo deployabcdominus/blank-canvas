@@ -43,7 +43,7 @@ import AuditLog from "./pages/AuditLog";
 import LeadsRecycleBin from "./pages/LeadsRecycleBin";
 import ProposalApproval from "./pages/ProposalApproval";
 import POIPage from "./pages/POIPage";
-
+import PrintPage from "./pages/PrintPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
