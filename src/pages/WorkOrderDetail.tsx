@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
 import {
   ChevronLeft, Pencil, Printer, QrCode, Calendar, User, Save,
   CheckCircle, ShieldCheck, Circle, Loader2, Clock, X, Wrench,
+  Upload, Maximize2, Plus, Trash2, ChevronRight, ChevronLeftIcon,
 } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
@@ -116,6 +117,15 @@ export default function WorkOrderDetail() {
   // Operators for step assignment
   const [operators, setOperators] = useState<Array<{ id: string; name: string }>>([]);
 
+  // Design workspace state
+  const [designNotes, setDesignNotes] = useState("");
+  const [designNotesSaved, setDesignNotesSaved] = useState(false);
+  const [mockupUploading, setMockupUploading] = useState(false);
+  const [additionalMockupUploading, setAdditionalMockupUploading] = useState(false);
+  const [fullscreenImg, setFullscreenImg] = useState<{ url: string; index: number } | null>(null);
+  const mockupInputRef = useRef<HTMLInputElement>(null);
+  const additionalMockupInputRef = useRef<HTMLInputElement>(null);
+
   // Load order data into local state
   useEffect(() => {
     if (!order) return;
@@ -130,6 +140,7 @@ export default function WorkOrderDetail() {
     setSignatureUrl(raw.qc_signature_url || null);
     setQcSignerName(raw.qc_signer_name || null);
     setQcSignedAt(raw.qc_signed_at || null);
+    setDesignNotes(raw.design_notes || "");
   }, [order]);
 
   // Load assignee name
@@ -239,6 +250,76 @@ export default function WorkOrderDetail() {
     qcChecklist.wiring_test_passed && qcChecklist.final_sign_cleaned,
   [qcChecklist]);
 
+  // Design notes auto-save
+  const handleDesignNotesBlur = useCallback(async () => {
+    if (!order) return;
+    const raw = order as any;
+    if (designNotes === (raw.design_notes || "")) return;
+    try {
+      await supabase.from("production_orders").update({ design_notes: designNotes } as any).eq("id", order.id);
+      setDesignNotesSaved(true);
+      setTimeout(() => setDesignNotesSaved(false), 2000);
+    } catch { toast.error("Failed to save design notes"); }
+  }, [order, designNotes]);
+
+  // Mockup upload
+  const handleMockupUpload = useCallback(async (file: File) => {
+    if (!order || !companyId) return;
+    setMockupUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `${companyId}/${order.id}/mockup-${Date.now()}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
+      if (uploadErr) throw uploadErr;
+      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+      await supabase.from("production_orders").update({ blueprint_url: urlData.publicUrl } as any).eq("id", order.id);
+      toast.success("Mockup uploaded");
+      refreshOrders();
+    } catch (e: any) { toast.error(e.message || "Upload failed"); }
+    setMockupUploading(false);
+  }, [order, companyId, refreshOrders]);
+
+  // Additional mockup upload
+  const handleAdditionalMockupUpload = useCallback(async (file: File) => {
+    if (!order || !companyId) return;
+    setAdditionalMockupUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `${companyId}/${order.id}/extra-${Date.now()}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
+      if (uploadErr) throw uploadErr;
+      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+      const raw = order as any;
+      const existing: string[] = Array.isArray(raw.mockup_urls) ? raw.mockup_urls : [];
+      const updated = [...existing, urlData.publicUrl];
+      await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
+      toast.success("Additional mockup added");
+      refreshOrders();
+    } catch (e: any) { toast.error(e.message || "Upload failed"); }
+    setAdditionalMockupUploading(false);
+  }, [order, companyId, refreshOrders]);
+
+  // Remove additional mockup
+  const removeAdditionalMockup = useCallback(async (urlToRemove: string) => {
+    if (!order) return;
+    const raw = order as any;
+    const existing: string[] = Array.isArray(raw.mockup_urls) ? raw.mockup_urls : [];
+    const updated = existing.filter(u => u !== urlToRemove);
+    await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
+    toast.success("Mockup removed");
+    refreshOrders();
+  }, [order, refreshOrders]);
+
+  // All images for fullscreen navigation
+  const allImages = useMemo(() => {
+    if (!order) return [];
+    const raw = order as any;
+    const imgs: string[] = [];
+    if (raw.blueprint_url) imgs.push(raw.blueprint_url);
+    if (Array.isArray(raw.mockup_urls)) imgs.push(...raw.mockup_urls);
+    return imgs;
+  }, [order]);
+
   if (!order) {
     return (
       <PageTransition><ResponsiveLayout>
@@ -337,6 +418,146 @@ export default function WorkOrderDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
             {/* LEFT COL – 60% (3/5) */}
             <div className="lg:col-span-3 space-y-4">
+
+              {/* ═══ DESIGN WORKSPACE ═══ */}
+              <SectionCard>
+                <div className="mb-1">
+                  <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Design Workspace</h2>
+                  <p className="text-xs text-muted-foreground -mt-3 mb-4">Mockup, blueprint & reference files</p>
+                </div>
+
+                {/* Main mockup area */}
+                {raw.blueprint_url ? (
+                  <div className="relative group mb-4">
+                    <div className="rounded-lg overflow-hidden" style={{ background: "rgba(0,0,0,0.3)" }}>
+                      <img
+                        src={raw.blueprint_url}
+                        alt="Mockup"
+                        className="w-full object-contain cursor-pointer"
+                        style={{ maxHeight: 400 }}
+                        onClick={() => setFullscreenImg({ url: raw.blueprint_url, index: 0 })}
+                      />
+                    </div>
+                    <Badge className="absolute top-3 left-3 bg-violet-500/30 text-violet-200 border-0 text-[10px]">Mockup</Badge>
+                    <button
+                      onClick={() => setFullscreenImg({ url: raw.blueprint_url, index: 0 })}
+                      className="absolute top-3 right-3 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ background: "rgba(0,0,0,0.6)" }}
+                    >
+                      <Maximize2 className="w-4 h-4 text-white" />
+                    </button>
+                    {canEdit && (
+                      <Button variant="outline" size="sm" className="mt-2 text-xs text-muted-foreground" onClick={() => mockupInputRef.current?.click()}>
+                        Replace mockup
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    className="flex flex-col items-center justify-center gap-3 cursor-pointer mb-4"
+                    style={{ border: "2px dashed rgba(139,92,246,0.3)", borderRadius: 8, height: 200 }}
+                    onClick={() => mockupInputRef.current?.click()}
+                  >
+                    {mockupUploading ? (
+                      <Loader2 className="w-10 h-10 animate-spin" style={{ color: "#8b5cf6" }} />
+                    ) : (
+                      <>
+                        <Upload className="w-10 h-10" style={{ color: "#8b5cf6" }} />
+                        <p className="text-sm text-foreground font-medium">Upload mockup or render</p>
+                        <p className="text-xs text-muted-foreground">PNG, JPG, PDF · Max 10MB</p>
+                        <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white text-xs">Browse files</Button>
+                      </>
+                    )}
+                  </div>
+                )}
+                <input
+                  ref={mockupInputRef}
+                  type="file"
+                  accept="image/*,.pdf"
+                  className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleMockupUpload(f); e.target.value = ""; }}
+                />
+
+                {/* 2 columns: additional mockups + design notes */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Additional mockups */}
+                  <div>
+                    <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground mb-2">Additional Mockups</p>
+                    <div className="grid grid-cols-3 gap-1.5 mb-2">
+                      {(Array.isArray(raw.mockup_urls) ? raw.mockup_urls : []).map((url: string, i: number) => (
+                        <div key={i} className="relative group/thumb">
+                          <img
+                            src={url}
+                            alt={`Mockup ${i + 1}`}
+                            className="w-full h-16 object-cover rounded cursor-pointer border border-white/[0.08]"
+                            onClick={() => setFullscreenImg({ url, index: (raw.blueprint_url ? i + 1 : i) })}
+                          />
+                          {canEdit && (
+                            <button
+                              onClick={() => removeAdditionalMockup(url)}
+                              className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity"
+                              style={{ background: "rgba(239,68,68,0.9)" }}
+                            >
+                              <X className="w-2.5 h-2.5 text-white" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {canEdit && (
+                      <>
+                        <button
+                          onClick={() => additionalMockupInputRef.current?.click()}
+                          className="w-full flex items-center justify-center gap-1.5 py-2 rounded text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          style={{ border: "1px dashed rgba(139,92,246,0.25)" }}
+                          disabled={additionalMockupUploading}
+                        >
+                          {additionalMockupUploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+                          Add mockup
+                        </button>
+                        <input
+                          ref={additionalMockupInputRef}
+                          type="file"
+                          accept="image/*,.pdf"
+                          className="hidden"
+                          onChange={e => { const f = e.target.files?.[0]; if (f) handleAdditionalMockupUpload(f); e.target.value = ""; }}
+                        />
+                      </>
+                    )}
+                  </div>
+
+                  {/* Design notes */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground">Design Notes</p>
+                      {designNotesSaved && <span className="text-[10px] font-medium" style={{ color: "#4ade80" }}>Saved ✓</span>}
+                    </div>
+                    <Textarea
+                      value={designNotes}
+                      onChange={e => setDesignNotes(e.target.value)}
+                      onBlur={handleDesignNotesBlur}
+                      placeholder="Notes for the production team..."
+                      className="min-h-[100px] text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                  {raw.blueprint_url ? (
+                    <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px]">Mockup ready</Badge>
+                  ) : (
+                    <Badge variant="outline" className="border-zinc-700 text-zinc-500 text-[10px]">No mockup uploaded</Badge>
+                  )}
+                  <button
+                    onClick={() => setSheetOpen(true)}
+                    className="text-xs font-medium transition-colors hover:opacity-80"
+                    style={{ color: "rgba(139,92,246,0.8)" }}
+                  >
+                    View in Production Sheet →
+                  </button>
+                </div>
+              </SectionCard>
 
               {/* Progress & Timeline */}
               <SectionCard>
@@ -619,6 +840,50 @@ export default function WorkOrderDetail() {
           onClose={() => setSheetOpen(false)}
           onRefreshOrder={refreshOrders}
         />
+
+        {/* Fullscreen image viewer */}
+        {fullscreenImg && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ background: "rgba(0,0,0,0.92)" }}
+            onClick={() => setFullscreenImg(null)}
+            onKeyDown={e => {
+              if (e.key === "Escape") setFullscreenImg(null);
+              if (e.key === "ArrowRight" && fullscreenImg.index < allImages.length - 1)
+                setFullscreenImg({ url: allImages[fullscreenImg.index + 1], index: fullscreenImg.index + 1 });
+              if (e.key === "ArrowLeft" && fullscreenImg.index > 0)
+                setFullscreenImg({ url: allImages[fullscreenImg.index - 1], index: fullscreenImg.index - 1 });
+            }}
+            tabIndex={0}
+            ref={el => el?.focus()}
+          >
+            <button className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors" onClick={() => setFullscreenImg(null)}>
+              <X className="w-6 h-6 text-white" />
+            </button>
+            {allImages.length > 1 && fullscreenImg.index > 0 && (
+              <button
+                className="absolute left-4 p-2 rounded-full hover:bg-white/10 transition-colors"
+                onClick={e => { e.stopPropagation(); setFullscreenImg({ url: allImages[fullscreenImg.index - 1], index: fullscreenImg.index - 1 }); }}
+              >
+                <ChevronLeftIcon className="w-8 h-8 text-white" />
+              </button>
+            )}
+            {allImages.length > 1 && fullscreenImg.index < allImages.length - 1 && (
+              <button
+                className="absolute right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
+                onClick={e => { e.stopPropagation(); setFullscreenImg({ url: allImages[fullscreenImg.index + 1], index: fullscreenImg.index + 1 }); }}
+              >
+                <ChevronRight className="w-8 h-8 text-white" />
+              </button>
+            )}
+            <img
+              src={fullscreenImg.url}
+              alt="Fullscreen mockup"
+              className="max-w-[90vw] max-h-[90vh] object-contain"
+              onClick={e => e.stopPropagation()}
+            />
+          </div>
+        )}
       </ResponsiveLayout>
     </PageTransition>
   );
