@@ -829,13 +829,6 @@ export default function WorkOrderDetail() {
           </div>
         </div>
 
-        {/* Production Sheet modal — reuse existing */}
-        <ProductionSheetModal
-          order={sheetOpen ? order : null}
-          isOpen={sheetOpen}
-          onClose={() => setSheetOpen(false)}
-          onRefreshOrder={refreshOrders}
-        />
 
         {/* Fullscreen image viewer */}
         {fullscreenImg && (
