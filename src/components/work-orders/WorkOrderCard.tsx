@@ -43,6 +43,7 @@ function formatDelivery(date: string | null | undefined): string | null {
 export function WorkOrderCard({
   order, index, assigneeName, onOpen, onGeneratePOI, onPrintSheet, onDelete, canDelete = false,
 }: Props) {
+  const navigate = useNavigate();
   const statusKey = order.poi_token_used ? "installed" : order.status;
   const status = STATUS_CONFIG[statusKey] || STATUS_CONFIG["Pendiente"];
   const woLabel = order.wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
@@ -55,7 +56,7 @@ export function WorkOrderCard({
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
-      onClick={() => onOpen?.(order)}
+      onClick={() => navigate(`/work-orders/${order.id}`)}
       className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col"
       style={{
         background: "rgba(255,255,255,0.03)",

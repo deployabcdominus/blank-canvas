@@ -116,6 +116,7 @@ const App = () => {
                     <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
                     <Route path="/proposals" element={<Proposals />} />
                     <Route path="/work-orders" element={<WorkOrders />} />
+                    <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
                     <Route path="/payments" element={<Payments />} />
                     <Route path="/installation" element={<Installation />} />
                     <Route path="/map-hub" element={<MapHub />} />
