@@ -294,7 +294,7 @@ export default function WorkOrderDetail() {
       const updated = [...existing, urlData.publicUrl];
       await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
       toast.success("Additional mockup added");
-      refreshOrders();
+      await refreshOrders();
     } catch (e: any) { toast.error(e.message || "Upload failed"); }
     setAdditionalMockupUploading(false);
   }, [order, companyId, refreshOrders]);
