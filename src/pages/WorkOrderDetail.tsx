@@ -140,7 +140,7 @@ export default function WorkOrderDetail() {
     setSignatureUrl(raw.qc_signature_url || null);
     setQcSignerName(raw.qc_signer_name || null);
     setQcSignedAt(raw.qc_signed_at || null);
-    setDesignNotes(raw.design_notes || "");
+    setDesignNotes(order.design_notes || "");
   }, [order]);
 
   // Load assignee name
@@ -254,7 +254,7 @@ export default function WorkOrderDetail() {
   const handleDesignNotesBlur = useCallback(async () => {
     if (!order) return;
     const raw = order as any;
-    if (designNotes === (raw.design_notes || "")) return;
+    if (designNotes === (order.design_notes || "")) return;
     try {
       await supabase.from("production_orders").update({ design_notes: designNotes } as any).eq("id", order.id);
       setDesignNotesSaved(true);
@@ -274,7 +274,7 @@ export default function WorkOrderDetail() {
       const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
       await supabase.from("production_orders").update({ blueprint_url: urlData.publicUrl } as any).eq("id", order.id);
       toast.success("Mockup uploaded");
-      refreshOrders();
+      await refreshOrders();
     } catch (e: any) { toast.error(e.message || "Upload failed"); }
     setMockupUploading(false);
   }, [order, companyId, refreshOrders]);
@@ -289,12 +289,11 @@ export default function WorkOrderDetail() {
       const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
       if (uploadErr) throw uploadErr;
       const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
-      const raw = order as any;
-      const existing: string[] = Array.isArray(raw.mockup_urls) ? raw.mockup_urls : [];
+      const existing: string[] = Array.isArray(order.mockup_urls) ? order.mockup_urls : [];
       const updated = [...existing, urlData.publicUrl];
       await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
       toast.success("Additional mockup added");
-      refreshOrders();
+      await refreshOrders();
     } catch (e: any) { toast.error(e.message || "Upload failed"); }
     setAdditionalMockupUploading(false);
   }, [order, companyId, refreshOrders]);
@@ -302,12 +301,11 @@ export default function WorkOrderDetail() {
   // Remove additional mockup
   const removeAdditionalMockup = useCallback(async (urlToRemove: string) => {
     if (!order) return;
-    const raw = order as any;
-    const existing: string[] = Array.isArray(raw.mockup_urls) ? raw.mockup_urls : [];
+    const existing: string[] = Array.isArray(order.mockup_urls) ? order.mockup_urls : [];
     const updated = existing.filter(u => u !== urlToRemove);
     await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
     toast.success("Mockup removed");
-    refreshOrders();
+    await refreshOrders();
   }, [order, refreshOrders]);
 
   // All images for fullscreen navigation
@@ -315,8 +313,8 @@ export default function WorkOrderDetail() {
     if (!order) return [];
     const raw = order as any;
     const imgs: string[] = [];
-    if (raw.blueprint_url) imgs.push(raw.blueprint_url);
-    if (Array.isArray(raw.mockup_urls)) imgs.push(...raw.mockup_urls);
+    if (order.blueprintUrl) imgs.push(order.blueprintUrl);
+    if (Array.isArray(order.mockup_urls)) imgs.push(...order.mockup_urls);
     return imgs;
   }, [order]);
 
@@ -427,20 +425,20 @@ export default function WorkOrderDetail() {
                 </div>
 
                 {/* Main mockup area */}
-                {raw.blueprint_url ? (
+                {order.blueprintUrl ? (
                   <div className="relative group mb-4">
                     <div className="rounded-lg overflow-hidden" style={{ background: "rgba(0,0,0,0.3)" }}>
                       <img
-                        src={raw.blueprint_url}
+                        src={order.blueprintUrl}
                         alt="Mockup"
                         className="w-full object-contain cursor-pointer"
                         style={{ maxHeight: 400 }}
-                        onClick={() => setFullscreenImg({ url: raw.blueprint_url, index: 0 })}
+                        onClick={() => setFullscreenImg({ url: order.blueprintUrl, index: 0 })}
                       />
                     </div>
                     <Badge className="absolute top-3 left-3 bg-violet-500/30 text-violet-200 border-0 text-[10px]">Mockup</Badge>
                     <button
-                      onClick={() => setFullscreenImg({ url: raw.blueprint_url, index: 0 })}
+                      onClick={() => setFullscreenImg({ url: order.blueprintUrl, index: 0 })}
                       className="absolute top-3 right-3 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
                       style={{ background: "rgba(0,0,0,0.6)" }}
                     >
@@ -484,13 +482,13 @@ export default function WorkOrderDetail() {
                   <div>
                     <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground mb-2">Additional Mockups</p>
                     <div className="grid grid-cols-3 gap-1.5 mb-2">
-                      {(Array.isArray(raw.mockup_urls) ? raw.mockup_urls : []).map((url: string, i: number) => (
+                      {(Array.isArray(order.mockup_urls) ? order.mockup_urls : []).map((url: string, i: number) => (
                         <div key={i} className="relative group/thumb">
                           <img
                             src={url}
                             alt={`Mockup ${i + 1}`}
                             className="w-full h-16 object-cover rounded cursor-pointer border border-white/[0.08]"
-                            onClick={() => setFullscreenImg({ url, index: (raw.blueprint_url ? i + 1 : i) })}
+                            onClick={() => setFullscreenImg({ url, index: (order.blueprintUrl ? i + 1 : i) })}
                           />
                           {canEdit && (
                             <button
@@ -544,7 +542,7 @@ export default function WorkOrderDetail() {
 
                 {/* Footer */}
                 <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                  {raw.blueprint_url ? (
+                  {order.blueprintUrl ? (
                     <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px]">Mockup ready</Badge>
                   ) : (
                     <Badge variant="outline" className="border-zinc-700 text-zinc-500 text-[10px]">No mockup uploaded</Badge>
