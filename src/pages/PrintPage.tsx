@@ -8,7 +8,7 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useCompany } from "@/hooks/useCompany";
+// Removed useCompany hook; company will be loaded directly from Supabase
 
 /* ── Constants ── */
 const STAFF_ROLES = [
@@ -44,21 +44,30 @@ const STATUS_MAP: Record<string, string> = {
 
 export default function PrintPage() {
   const { orderId } = useParams<{ orderId: string }>();
-  const { company } = useCompany();
   const [order, setOrder] = useState<any>(null);
+  const [company, setCompany] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!orderId) return;
-    supabase
-      .from("production_orders")
-      .select("*")
-      .eq("id", orderId)
-      .maybeSingle()
-      .then(({ data }) => {
-        setOrder(data);
-        setLoading(false);
-      });
+    const loadData = async () => {
+      const { data: orderData } = await supabase
+        .from("production_orders")
+        .select("*")
+        .eq("id", orderId)
+        .maybeSingle();
+      setOrder(orderData);
+      if (orderData?.company_id) {
+        const { data: companyData } = await supabase
+          .from("companies")
+          .select("id, name, logo_url, brand_color")
+          .eq("id", orderData.company_id)
+          .maybeSingle();
+        setCompany(companyData);
+      }
+      setLoading(false);
+    };
+    loadData();
   }, [orderId]);
 
   // Auto-print after render
