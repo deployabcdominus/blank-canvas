@@ -7,17 +7,25 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  MoreHorizontal, Eye, Printer, QrCode, Calendar, User, Wrench,
+  MoreHorizontal, Eye, Printer, QrCode, Calendar, User, Tag,
   CheckCircle, ShieldCheck, Trash2,
 } from "lucide-react";
 import { format } from "date-fns";
 
-const STATUS_CONFIG: Record<string, { bg: string; text: string; label: string }> = {
-  "Pendiente":          { bg: "bg-zinc-500/20", text: "text-zinc-400", label: "Pending" },
-  "En Progreso":        { bg: "bg-blue-500/20", text: "text-blue-400", label: "In Production" },
-  "Control de Calidad": { bg: "bg-amber-500/20", text: "text-amber-400", label: "QC" },
-  "Completada":         { bg: "bg-emerald-500/20", text: "text-emerald-400", label: "Ready" },
-  "installed":          { bg: "bg-violet-500/20", text: "text-white", label: "Installed" },
+const STATUS_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
+  // Pendiente → gray
+  "Pendiente":          { bg: "rgba(107,114,128,0.12)", color: "#6b7280", label: "Pendiente" },
+  // En Progreso / En Producción → blue
+  "En Progreso":        { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: "En Producción" },
+  "En Producción":      { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: "En Producción" },
+  // Control de Calidad → yellow
+  "Control de Calidad": { bg: "rgba(245,158,11,0.12)", color: "#f59e0b", label: "QC" },
+  // Completada / Listo → green
+  "Completada":         { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: "Listo" },
+  "Listo":              { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: "Listo" },
+  // Installed / Instalado → purple
+  "installed":          { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: "Instalado" },
+  "Instalado":         { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: "Instalado" },
 };
 
 interface Props {
