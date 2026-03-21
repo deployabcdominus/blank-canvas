@@ -18,7 +18,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, Shield, Settings, ChevronRight } from "lucide-react";
+import { LogOut, User, Shield, Settings, ChevronRight, Recycle } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
@@ -71,13 +71,24 @@ export const Sidebar = () => {
 
       {/* Build i18n-aware groups */}
       {(() => {
-        const localizedGroups = tenantGroups.map((g, i) => ({
+        let localizedGroups = tenantGroups.map((g, i) => ({
           ...g,
           groupLabel: i === 0 ? t.nav.principal
             : i === 1 ? t.nav.crmSales
             : i === 2 ? t.nav.production
             : t.nav.administration,
         }));
+        // Inject Papelera item into Administration group for admins
+        if (isAdmin && localizedGroups[3]) {
+          const adminGroup = localizedGroups[3];
+          const recycleItem = {
+            path: "/leads/recycle-bin",
+            label: "Papelera",
+            icon: Recycle,
+            roles: ["admin", "superadmin"],
+          } as any;
+          localizedGroups = localizedGroups.map((g, idx) => idx === 3 ? { ...g, items: [...g.items, recycleItem] } : g);
+        }
         return isSuperadmin ? (
           <SidebarPlatformNav
             items={platformItems}

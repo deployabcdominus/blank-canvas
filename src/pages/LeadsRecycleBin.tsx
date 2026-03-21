@@ -160,6 +160,24 @@ const LeadsRecycleBin = () => {
               </Badge>
             </div>
             <p className="text-muted-foreground text-sm">Leads eliminados que pueden ser restaurados o eliminados permanentemente.</p>
+
+            {/* Tab switcher */}
+            <div className="mt-3 inline-flex rounded-lg overflow-hidden border border-transparent">
+              <button
+                onClick={() => setActiveTab('leads')}
+                className={`px-3 py-1 text-sm font-semibold ${activeTab === 'leads' ? 'text-violet-300' : 'text-zinc-500 hover:text-zinc-300'}`}
+                style={activeTab === 'leads' ? { background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.18)' } : {}}
+              >
+                Leads
+              </button>
+              <button
+                onClick={() => setActiveTab('projects')}
+                className={`px-3 py-1 text-sm font-semibold ${activeTab === 'projects' ? 'text-violet-300' : 'text-zinc-500 hover:text-zinc-300'}`}
+                style={activeTab === 'projects' ? { background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.18)' } : {}}
+              >
+                Projects
+              </button>
+            </div>
           </div>
 
           {/* Retention notice */}
@@ -170,69 +188,133 @@ const LeadsRecycleBin = () => {
             </p>
           </div>
 
-          {loading ? (
-            <div className="text-center py-12 text-muted-foreground">Cargando...</div>
-          ) : deletedLeads.length === 0 ? (
-            <div className="text-center py-16">
-              <Recycle className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-              <h3 className="text-lg font-semibold mb-2 text-muted-foreground">La papelera está vacía</h3>
-              <p className="text-sm text-muted-foreground/60">No hay leads eliminados para mostrar.</p>
-            </div>
+          {activeTab === 'leads' ? (
+            loading ? (
+              <div className="text-center py-12 text-muted-foreground">Cargando...</div>
+            ) : deletedLeads.length === 0 ? (
+              <div className="text-center py-16">
+                <Recycle className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
+                <h3 className="text-lg font-semibold mb-2 text-muted-foreground">La papelera está vacía</h3>
+                <p className="text-sm text-muted-foreground/60">No hay leads eliminados para mostrar.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <AnimatePresence>
+                  {deletedLeads.map((lead, i) => (
+                    <motion.div
+                      key={lead.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -40 }}
+                      transition={{ delay: i * 0.03 }}
+                      className="flex items-center gap-4 p-4 rounded-xl border border-white/[0.06] bg-zinc-900/60 backdrop-blur-sm group hover:border-violet-500/20 transition-all"
+                    >
+                      {/* Logo */}
+                      <div className="w-10 h-10 rounded-lg border border-white/[0.06] bg-white/[0.03] flex items-center justify-center shrink-0">
+                        {lead.logoUrl ? (
+                          <img src={lead.logoUrl} alt="" className="w-10 h-10 rounded-lg object-contain" />
+                        ) : (
+                          <span className="text-sm font-bold text-zinc-500">{lead.company?.charAt(0)?.toUpperCase() || "?"}</span>
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm truncate text-zinc-200">{lead.company || lead.name}</h4>
+                        <p className="text-xs text-zinc-500 truncate">{lead.name} · {lead.service}</p>
+                      </div>
+
+                      {/* Status */}
+                      <Badge variant="outline" className="bg-rose-500/10 text-rose-400 border-rose-500/20 text-[10px] shrink-0">
+                        Eliminado
+                      </Badge>
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 px-3 text-xs border-violet-500/20 text-violet-400 hover:bg-violet-500/10"
+                          onClick={() => handleRestore(lead.id)}
+                        >
+                          <Undo2 className="w-3.5 h-3.5 mr-1.5" /> Restaurar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 px-3 text-xs border-rose-500/20 text-rose-400 hover:bg-rose-500/10"
+                          onClick={() => setConfirmDeleteId(lead.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Eliminar
+                        </Button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )
           ) : (
-            <div className="space-y-3">
-              <AnimatePresence>
-                {deletedLeads.map((lead, i) => (
-                  <motion.div
-                    key={lead.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -40 }}
-                    transition={{ delay: i * 0.03 }}
-                    className="flex items-center gap-4 p-4 rounded-xl border border-white/[0.06] bg-zinc-900/60 backdrop-blur-sm group hover:border-violet-500/20 transition-all"
-                  >
-                    {/* Logo */}
-                    <div className="w-10 h-10 rounded-lg border border-white/[0.06] bg-white/[0.03] flex items-center justify-center shrink-0">
-                      {lead.logoUrl ? (
-                        <img src={lead.logoUrl} alt="" className="w-10 h-10 rounded-lg object-contain" />
-                      ) : (
-                        <span className="text-sm font-bold text-zinc-500">{lead.company?.charAt(0)?.toUpperCase() || "?"}</span>
-                      )}
-                    </div>
+            // Projects tab
+            loadingProjects ? (
+              <div className="text-center py-12 text-muted-foreground">Cargando proyectos...</div>
+            ) : deletedProjects.length === 0 ? (
+              <div className="text-center py-16">
+                <Building2 className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
+                <h3 className="text-lg font-semibold mb-2 text-muted-foreground">No hay proyectos eliminados</h3>
+                <p className="text-sm text-muted-foreground/60">Los proyectos eliminados aparecerán aquí.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <AnimatePresence>
+                  {deletedProjects.map((proj, i) => (
+                    <motion.div
+                      key={proj.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -40 }}
+                      transition={{ delay: i * 0.03 }}
+                      className="flex items-center gap-4 p-4 rounded-xl border border-white/[0.06] bg-zinc-900/60 backdrop-blur-sm group hover:border-violet-500/20 transition-all"
+                    >
+                      {/* Avatar */}
+                      <div className="w-10 h-10 rounded-lg border border-white/[0.06] bg-white/[0.03] flex items-center justify-center shrink-0">
+                        <Building2 className="w-6 h-6 text-zinc-400" />
+                      </div>
 
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm truncate text-zinc-200">{lead.company || lead.name}</h4>
-                      <p className="text-xs text-zinc-500 truncate">{lead.name} · {lead.service}</p>
-                    </div>
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm truncate text-zinc-200">{proj.project_name}</h4>
+                        <p className="text-xs text-zinc-500 truncate">Eliminado hace {formatDistanceToNow(new Date(proj.deleted_at), { locale: es })}</p>
+                      </div>
 
-                    {/* Status */}
-                    <Badge variant="outline" className="bg-rose-500/10 text-rose-400 border-rose-500/20 text-[10px] shrink-0">
-                      Eliminado
-                    </Badge>
+                      {/* Status badge */}
+                      <Badge variant="outline" className="bg-zinc-700/10 text-zinc-200 border-zinc-700/20 text-[10px] shrink-0">
+                        {proj.status}
+                      </Badge>
 
-                    {/* Actions */}
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 px-3 text-xs border-violet-500/20 text-violet-400 hover:bg-violet-500/10"
-                        onClick={() => handleRestore(lead.id)}
-                      >
-                        <Undo2 className="w-3.5 h-3.5 mr-1.5" /> Restaurar
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 px-3 text-xs border-rose-500/20 text-rose-400 hover:bg-rose-500/10"
-                        onClick={() => setConfirmDeleteId(lead.id)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Eliminar
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 px-3 text-xs border-violet-500/20 text-violet-400 hover:bg-violet-500/10"
+                          onClick={() => handleRestoreProject(proj.id)}
+                        >
+                          <Undo2 className="w-3.5 h-3.5 mr-1.5" /> Restaurar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 px-3 text-xs border-rose-500/20 text-rose-400 hover:bg-rose-500/10"
+                          onClick={() => setConfirmProjectDeleteId(proj.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Eliminar
+                        </Button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )
           )}
 
           {/* Permanent delete confirmation */}
@@ -247,6 +329,24 @@ const LeadsRecycleBin = () => {
               <AlertDialogFooter>
                 <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancelar</AlertDialogCancel>
                 <AlertDialogAction onClick={handlePermanentDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Eliminar para siempre
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* Permanent delete confirmation (projects) */}
+          <AlertDialog open={!!confirmProjectDeleteId} onOpenChange={(open) => !open && setConfirmProjectDeleteId(null)}>
+            <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-lg">⚠️ Eliminación permanente</AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400">
+                  Esta acción eliminará el proyecto de forma <strong className="text-zinc-200">irreversible</strong>. No podrá ser recuperado.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handlePermanentDeleteProject} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                   Eliminar para siempre
                 </AlertDialogAction>
               </AlertDialogFooter>

@@ -292,7 +292,8 @@ Deno.serve(async (req) => {
       }
       await adminClient.from("proposals").delete().eq("company_id", companyId);
       await adminClient.from("leads").delete().eq("company_id", companyId);
-      await adminClient.from("projects").delete().eq("company_id", companyId);
+      // Soft-delete projects instead of hard delete
+      await adminClient.from("projects").update({ deleted_at: new Date().toISOString() }).eq("company_id", companyId);
       await adminClient.from("clients").delete().eq("company_id", companyId);
       await adminClient.from("invitations").delete().eq("company_id", companyId);
       await adminClient.from("purchases").delete().eq("company_id", companyId);
