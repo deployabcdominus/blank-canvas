@@ -14,7 +14,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Undo2, Trash2, Menu, AlertTriangle, Recycle } from "lucide-react";
+import { ArrowLeft, Undo2, Trash2, Menu, AlertTriangle, Recycle, Building2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
@@ -26,8 +27,12 @@ const LeadsRecycleBin = () => {
   const { isAdmin } = useUserRole();
   const [deletedLeads, setDeletedLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"leads" | "projects">("leads");
+  const [deletedProjects, setDeletedProjects] = useState<any[]>([]);
+  const [loadingProjects, setLoadingProjects] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmProjectDeleteId, setConfirmProjectDeleteId] = useState<string | null>(null);
 
   const isMobile = breakpoint === "mobile";
   const isTablet = breakpoint === "tablet";
@@ -44,7 +49,24 @@ const LeadsRecycleBin = () => {
     setLoading(false);
   }, [fetchDeletedLeads]);
 
+  const loadDeletedProjects = useCallback(async () => {
+    setLoadingProjects(true);
+    try {
+      const { data } = await supabase
+        .from('projects')
+        .select('id, project_name, status, deleted_at, client_id, company_id')
+        .not('deleted_at', 'is', null)
+        .order('deleted_at', { ascending: false });
+      setDeletedProjects(data || []);
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "No se pudieron cargar los proyectos eliminados.", variant: "destructive" });
+    }
+    setLoadingProjects(false);
+  }, []);
+
   useEffect(() => { loadDeleted(); }, [loadDeleted]);
+  useEffect(() => { if (activeTab === 'projects') loadDeletedProjects(); }, [activeTab, loadDeletedProjects]);
 
   const handleRestore = async (id: string) => {
     try {
@@ -67,6 +89,30 @@ const LeadsRecycleBin = () => {
       toast({ title: "Error", description: "No se pudo eliminar el lead.", variant: "destructive" });
     }
     setConfirmDeleteId(null);
+  };
+
+  const handleRestoreProject = async (id: string) => {
+    try {
+      const { error } = await supabase.from('projects').update({ deleted_at: null }).eq('id', id);
+      if (error) throw error;
+      setDeletedProjects(prev => prev.filter(p => p.id !== id));
+      toast({ title: "Proyecto restaurado", description: "El proyecto fue devuelto." });
+    } catch {
+      toast({ title: "Error", description: "No se pudo restaurar el proyecto.", variant: "destructive" });
+    }
+  };
+
+  const handlePermanentDeleteProject = async () => {
+    if (!confirmProjectDeleteId) return;
+    try {
+      const { error } = await supabase.from('projects').delete().eq('id', confirmProjectDeleteId);
+      if (error) throw error;
+      setDeletedProjects(prev => prev.filter(p => p.id !== confirmProjectDeleteId));
+      toast({ title: "Proyecto eliminado permanentemente" });
+    } catch {
+      toast({ title: "Error", description: "No se pudo eliminar el proyecto.", variant: "destructive" });
+    }
+    setConfirmProjectDeleteId(null);
   };
 
   if (!isAdmin) {
