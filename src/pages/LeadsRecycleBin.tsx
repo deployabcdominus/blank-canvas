@@ -18,7 +18,7 @@ import { ArrowLeft, Undo2, Trash2, Menu, AlertTriangle, Recycle, Building2 } fro
 import { supabase } from "@/integrations/supabase/client";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { formatDistanceToNow } from "date-fns";
-import { es } from "date-fns/locale";
+import { es } from "date-fns/locale/es";
 
 const LeadsRecycleBin = () => {
   const navigate = useNavigate();
