@@ -18,7 +18,7 @@ import { ArrowLeft, Undo2, Trash2, Menu, AlertTriangle, Recycle, Building2 } fro
 import { supabase } from "@/integrations/supabase/client";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { formatDistanceToNow } from "date-fns";
-import { es } from "date-fns/locale/es";
+import { es } from "date-fns/locale";
 
 const LeadsRecycleBin = () => {
   const navigate = useNavigate();
@@ -155,7 +155,7 @@ const LeadsRecycleBin = () => {
             <div className="flex items-center gap-3 mb-1">
               <Recycle className="w-6 h-6 text-violet-400" />
               <h1 className={`${isMobile ? "text-xl" : "text-2xl"} font-bold`}>Papelera de Reciclaje</h1>
-              <Badge variant="outline" className="bg-violet-500/10 text-violet-400 border-violet-500/20">
+              <Badge variant="destructive" className="text-[10px] shrink-0 bg-rose-500/10 text-rose-400 border-rose-500/20">
                 {deletedLeads.length}
               </Badge>
             </div>
