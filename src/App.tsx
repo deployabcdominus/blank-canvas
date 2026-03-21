@@ -44,6 +44,7 @@ import LeadsRecycleBin from "./pages/LeadsRecycleBin";
 import ProposalApproval from "./pages/ProposalApproval";
 import POIPage from "./pages/POIPage";
 import PrintPage from "./pages/PrintPage";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -54,10 +55,11 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  // POI and proposal-approval routes must render completely outside AuthProvider
+  // These routes must render completely outside AuthProvider
   // to avoid Supabase auth-bridge redirect on anonymous access
   const isPOIRoute = window.location.pathname.startsWith("/poi/");
   const isProposalRoute = window.location.pathname.startsWith("/p/");
+  const isPrintRoute = window.location.pathname.startsWith("/print/");
 
   if (isPOIRoute) {
     return (
@@ -74,6 +76,16 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/p/:proposalId" element={<ProposalApproval />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
+  if (isPrintRoute) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/print/:orderId" element={<PrintPage />} />
         </Routes>
       </BrowserRouter>
     );
@@ -102,6 +114,7 @@ const App = () => {
                   <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
                   <Route path="/p/:proposalId" element={<ProposalApproval />} />
                   <Route path="/poi/:orderId" element={<POIPage />} />
+
                   {/* Superadmin — no tenant providers needed */}
                   <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
                   <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
@@ -117,7 +130,6 @@ const App = () => {
                     <Route path="/proposals" element={<Proposals />} />
                     <Route path="/work-orders" element={<WorkOrders />} />
                     <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
-                    <Route path="/print/:orderId" element={<PrintPage />} />
                     <Route path="/payments" element={<Payments />} />
                     <Route path="/installation" element={<Installation />} />
                     <Route path="/map-hub" element={<MapHub />} />
