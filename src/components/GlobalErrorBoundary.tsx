@@ -35,60 +35,45 @@ export class GlobalErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center p-6"
-          style={{ background: "hsl(0 0% 2%)" }}>
+        <div className="min-h-screen flex items-center justify-center p-6 bg-background">
           <div className="max-w-md w-full text-center space-y-6">
-            {/* Icon */}
-            <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center"
-              style={{ background: "hsl(25 95% 53% / 0.12)", border: "1px solid hsl(25 95% 53% / 0.25)" }}>
-              <AlertTriangle className="w-8 h-8" style={{ color: "hsl(25 95% 53%)" }} />
+
+            <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center bg-destructive/10 border border-destructive/25">
+              <AlertTriangle className="w-8 h-8 text-destructive" />
             </div>
 
-            {/* Title */}
             <div>
-              <h1 className="text-xl font-bold" style={{ color: "hsl(0 0% 95%)" }}>
+              <h1 className="text-xl font-bold text-foreground">
                 Algo salió mal
               </h1>
-              <p className="mt-2 text-sm leading-relaxed" style={{ color: "hsl(0 0% 55%)" }}>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 Ha ocurrido un error inesperado. Tu información está segura.
               </p>
             </div>
 
-            {/* Error detail (dev only) */}
             {import.meta.env.DEV && this.state.error && (
-              <div className="rounded-lg p-3 text-left text-xs font-mono break-all"
-                style={{ background: "hsl(0 0% 7%)", border: "1px solid hsl(0 0% 100% / 0.06)", color: "hsl(0 72% 51%)" }}>
+              <div className="rounded-lg p-3 text-left text-xs font-mono break-all bg-muted border border-border text-destructive">
                 {this.state.error.message}
               </div>
             )}
 
-            {/* Actions */}
             <div className="flex gap-3 justify-center">
               <button
                 onClick={this.handleGoHome}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
-                style={{
-                  background: "hsl(0 0% 10%)",
-                  color: "hsl(0 0% 80%)",
-                  border: "1px solid hsl(0 0% 100% / 0.08)",
-                }}
+                className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors bg-muted text-muted-foreground border border-border hover:bg-muted/80"
               >
                 Ir al inicio
               </button>
               <button
                 onClick={this.handleReload}
-                className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
-                style={{
-                  background: "hsl(25 95% 53%)",
-                  color: "white",
-                }}
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 <RefreshCw className="w-4 h-4" />
                 Recargar
               </button>
             </div>
 
-            <p className="text-xs" style={{ color: "hsl(0 0% 35%)" }}>
+            <p className="text-xs text-muted-foreground/60">
               Si el problema persiste, contacta a soporte.
             </p>
           </div>
