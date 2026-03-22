@@ -49,8 +49,8 @@ const Dashboard = () => {
     const inProgress = orders.filter(o => ["Pendiente", "En Producción", "QC", "En Progreso"].includes(o.status)).length;
     const awaitingDelivery = orders.filter(o => o.status === "Listo").length;
     const completedThisMonth = orders.filter(o => {
-      if (o.status === "Instalado" && o.createdAt) {
-        try { return isThisMonth(new Date(o.createdAt)); } catch { return false; }
+      if (o.status === "Instalado" && o.startDate) {
+        try { return isThisMonth(new Date(o.startDate)); } catch { return false; }
       }
       return false;
     }).length;
