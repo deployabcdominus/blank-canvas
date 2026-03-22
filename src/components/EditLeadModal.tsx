@@ -508,13 +508,13 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-1 rounded-md text-violet-500 hover:text-violet-300 hover:bg-violet-500/10 transition-colors"
-                                aria-label="Ver PDF de propuesta"
+                                aria-label={t.editLeadModal.viewPdfAriaLabel}
                               >
                                 <FileText className="w-3.5 h-3.5" />
                               </a>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="text-xs">
-                              Ver términos y detalles de la propuesta aprobada
+                              {t.editLeadModal.viewPdfTooltip}
                             </TooltipContent>
                           </Tooltip>
                         )}
@@ -524,7 +524,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                 )}
                 {editing && (
                   <>
-                    <FieldRow icon={Globe} label="Fuente" value={source} editing>
+                    <FieldRow icon={Globe} label={t.editLeadModal.sourceLabel} value={source} editing>
                       <Select value={source} onValueChange={setSource}>
                         <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                         <SelectContent>
@@ -532,7 +532,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                         </SelectContent>
                       </Select>
                     </FieldRow>
-                    <FieldRow icon={Tag} label="Estado" value={status} editing>
+                    <FieldRow icon={Tag} label={t.editLeadModal.statusLabel} value={status} editing>
                       <Select value={status} onValueChange={setStatus}>
                         <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                         <SelectContent>
@@ -546,14 +546,14 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
             </GlassCard>
 
             {/* Notes Card with Voice Input */}
-            <GlassCard title="Notas Internas" icon={StickyNote}>
+            <GlassCard title={t.editLeadModal.notesTitle} icon={StickyNote}>
               {editing ? (
                 <div className="space-y-2">
                   <div className="relative">
                     <Textarea
                       value={notes}
                       onChange={e => { setNotes(e.target.value); }}
-                      placeholder={speechToText.isListening ? "Escuchando..." : "Agrega notas sobre este lead..."}
+                      placeholder={speechToText.isListening ? t.editLeadModal.notesListening : t.editLeadModal.notesPlaceholder}
                       className={`min-h-[80px] resize-none text-sm pr-12 ${editRing} ${speechToText.isListening ? 'border-violet-500/40' : ''}`}
                     />
                     {/* Mic button */}
@@ -566,7 +566,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                             ? 'bg-violet-600 border-violet-500 text-white shadow-[0_0_16px_-2px_rgba(139,92,246,0.5)] animate-pulse'
                             : 'bg-white/[0.05] border-white/[0.1] text-zinc-500 hover:text-violet-400 hover:border-violet-500/30 hover:bg-violet-500/10'
                         }`}
-                        aria-label={speechToText.isListening ? "Detener dictado" : "Dictar nota por voz"}
+                        aria-label={speechToText.isListening ? t.editLeadModal.stopDictation : t.editLeadModal.startDictation}
                       >
                         {speechToText.isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                       </button>
@@ -580,13 +580,13 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                   )}
                   {isDictated && (
                     <p className="text-[10px] text-zinc-600 flex items-center gap-1 px-1">
-                      <Mic className="w-3 h-3" /> Dictado por voz
+                      <Mic className="w-3 h-3" /> {t.editLeadModal.dictatedByVoice}
                     </p>
                   )}
                 </div>
               ) : (
                 <p className="text-sm text-zinc-400 whitespace-pre-wrap leading-relaxed">
-                  {notes || "Sin notas"}
+                  {notes || t.editLeadModal.noNotes}
                 </p>
               )}
             </GlassCard>
