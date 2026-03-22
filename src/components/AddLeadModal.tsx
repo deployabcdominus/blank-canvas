@@ -14,6 +14,7 @@ import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const leadFormSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
@@ -34,6 +35,7 @@ interface AddLeadModalProps {
 }
 
 export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) => {
+  const { t } = useLanguage();
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
   const resolvedServices = catalogServices.length > 0
@@ -65,7 +67,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      toast({ title: "Formato inválido", description: "Seleccione una imagen.", variant: "destructive" });
+      toast({ title: t.addLeadModal.toastInvalidFormat, description: t.addLeadModal.toastInvalidFormatDesc, variant: "destructive" });
       return;
     }
     try {
@@ -73,7 +75,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
       setLogoFile(compressed);
       setLogoPreview(URL.createObjectURL(compressed));
     } catch {
-      toast({ title: "Error al procesar imagen", variant: "destructive" });
+      toast({ title: t.addLeadModal.toastImageError, variant: "destructive" });
     }
   };
 
@@ -104,13 +106,13 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
       removeLogo();
       onClose();
       toast({
-        title: "¡Lead agregado con éxito!",
-        description: `${data.name} fue agregado a la lista de leads.`
+        title: t.addLeadModal.toastSuccess,
+        description: t.addLeadModal.toastSuccessDesc.replace("{{name}}", data.name)
       });
     } catch (error) {
       toast({
-        title: "Error al agregar lead",
-        description: "Intente nuevamente.",
+        title: t.addLeadModal.toastError,
+        description: t.addLeadModal.toastErrorDesc,
         variant: "destructive"
       });
     } finally {
@@ -124,7 +126,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Agregar Nuevo Lead</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">{t.addLeadModal.title}</DialogTitle>
         </DialogHeader>
         
         <Form {...form}>
@@ -132,15 +134,15 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nombre *</FormLabel>
-                  <FormControl><Input placeholder="Nombre completo" className="min-h-[44px]" {...field} /></FormControl>
+                  <FormLabel>{t.addLeadModal.nameLabel}</FormLabel>
+                  <FormControl><Input placeholder={t.addLeadModal.namePlaceholder} className="min-h-[44px]" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="company" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nombre de la Empresa *</FormLabel>
-                  <FormControl><Input placeholder="Razón social o nombre comercial" className="min-h-[44px]" {...field} /></FormControl>
+                  <FormLabel>{t.addLeadModal.companyLabel}</FormLabel>
+                  <FormControl><Input placeholder={t.addLeadModal.companyPlaceholder} className="min-h-[44px]" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -149,9 +151,9 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField control={form.control} name="phone" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Teléfono *</FormLabel>
+                  <FormLabel>{t.addLeadModal.phoneLabel}</FormLabel>
                   <FormControl>
-                    <Input type="tel" placeholder="(11) 99999-9999" className="min-h-[44px]" {...field}
+                    <Input type="tel" placeholder={t.addLeadModal.phonePlaceholder} className="min-h-[44px]" {...field}
                       onChange={(e) => { field.onChange(formatPhone(e.target.value)); }} />
                   </FormControl>
                   <FormMessage />
@@ -159,8 +161,8 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
               )} />
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email *</FormLabel>
-                  <FormControl><Input type="email" placeholder="email@ejemplo.com" className="min-h-[44px]" {...field} /></FormControl>
+                  <FormLabel>{t.addLeadModal.emailLabel}</FormLabel>
+                  <FormControl><Input type="email" placeholder={t.addLeadModal.emailPlaceholder} className="min-h-[44px]" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -168,7 +170,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
 
             {/* Logo upload */}
             <div className="space-y-2">
-              <FormLabel>Logotipo de la Empresa (opcional)</FormLabel>
+              <FormLabel>{t.addLeadModal.logoLabel}</FormLabel>
               <div className="flex items-center gap-4">
                 {logoPreview ? (
                   <div className="relative">
@@ -187,17 +189,17 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
                   </button>
                 )}
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
-                <p className="text-xs text-muted-foreground">JPG, PNG. Máx 2MB.</p>
+                <p className="text-xs text-muted-foreground">{t.addLeadModal.logoHint}</p>
               </div>
             </div>
 
             <FormField control={form.control} name="signType" render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo de Servicio *</FormLabel>
+                <FormLabel>{t.addLeadModal.serviceLabel}</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className="min-h-[44px]">
-                      <SelectValue placeholder="Seleccione el tipo de servicio" />
+                      <SelectValue placeholder={t.addLeadModal.servicePlaceholder} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -212,9 +214,9 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
 
             <FormField control={form.control} name="address" render={({ field }) => (
               <FormItem>
-                <FormLabel>Dirección del Cliente *</FormLabel>
+                <FormLabel>{t.addLeadModal.addressLabel}</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Calle, número, barrio, ciudad, código postal" className="min-h-[80px] resize-none" {...field} />
+                  <Textarea placeholder={t.addLeadModal.addressPlaceholder} className="min-h-[80px] resize-none" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -222,18 +224,18 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
 
             <FormField control={form.control} name="website" render={({ field }) => (
               <FormItem>
-                <FormLabel>Sitio Web (opcional)</FormLabel>
-                <FormControl><Input type="url" placeholder="https://www.ejemplo.com" className="min-h-[44px]" {...field} /></FormControl>
+                <FormLabel>{t.addLeadModal.websiteLabel}</FormLabel>
+                <FormControl><Input type="url" placeholder={t.addLeadModal.websitePlaceholder} className="min-h-[44px]" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
 
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button type="button" variant="outline" onClick={handleClose} className="min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
-                Cancelar
+                {t.addLeadModal.cancel}
               </Button>
               <Button type="submit" className="min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
-                {isLoading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Guardando...</>) : "Guardar Lead"}
+                {isLoading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t.addLeadModal.saving}</>) : t.addLeadModal.save}
               </Button>
             </div>
           </form>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -57,7 +58,9 @@ const FieldRow = ({ icon: Icon, label, value, editing, actionHref, children }: {
   editing: boolean;
   actionHref?: string;
   children?: React.ReactNode;
-}) => (
+}) => {
+  const { t } = useLanguage();
+  return (
   <div className="flex items-start gap-3 py-2 group/field">
     <Icon className="w-4 h-4 text-zinc-600 mt-0.5 flex-shrink-0" />
     <div className="flex-1 min-w-0">
@@ -73,9 +76,9 @@ const FieldRow = ({ icon: Icon, label, value, editing, actionHref, children }: {
           )}
           {value && !editing && (
             <button
-              onClick={() => { navigator.clipboard.writeText(value); toast({ title: "Copiado" }); }}
+              onClick={() => { navigator.clipboard.writeText(value); toast({ title: t.editLeadModal.copiedToast }); }}
               className="opacity-0 group-hover/field:opacity-100 transition-opacity p-0.5"
-              aria-label="Copiar"
+              aria-label={t.editLeadModal.copyAriaLabel}
             >
               <Copy className="w-3 h-3 text-zinc-600 hover:text-zinc-300" />
             </button>
@@ -84,7 +87,8 @@ const FieldRow = ({ icon: Icon, label, value, editing, actionHref, children }: {
       )}
     </div>
   </div>
-);
+  );
+};
 
 /* ─── Activity Timeline Item ─── */
 interface ActivityEvent {
@@ -103,17 +107,18 @@ const ACTIVITY_ICONS: Record<string, React.ElementType> = {
 };
 
 const ActivityItem = ({ event, isLast }: { event: ActivityEvent; isLast: boolean }) => {
+  const { t } = useLanguage();
   const Icon = ACTIVITY_ICONS[event.action] || Clock;
   const date = new Date(event.created_at);
   const timeStr = date.toLocaleDateString('es', { day: '2-digit', month: 'short' }) + ' · ' + date.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
 
   const getLabel = () => {
     switch (event.action) {
-      case 'creado': return 'Lead creado';
-      case 'editado': return 'Lead editado';
+      case 'creado': return t.editLeadModal.activityCreated;
+      case 'editado': return t.editLeadModal.activityEdited;
       case 'cambio_estado': {
         const d = event.details as any;
-        return d?.after ? `Estado → ${d.after}` : 'Estado actualizado';
+        return d?.after ? t.editLeadModal.activityStatusChanged.replace("{{status}}", d.after) : t.editLeadModal.activityStatusUpdated;
       }
       default: return event.action;
     }
@@ -130,13 +135,14 @@ const ActivityItem = ({ event, isLast }: { event: ActivityEvent; isLast: boolean
       </div>
       <div className="pb-4 min-w-0">
         <p className="text-xs text-zinc-300 font-medium">{getLabel()}</p>
-        <p className="text-[10px] text-zinc-600 mt-0.5">{timeStr} — {event.user_name || 'Sistema'}</p>
+        <p className="text-[10px] text-zinc-600 mt-0.5">{timeStr} — {event.user_name || t.editLeadModal.systemLabel}</p>
       </div>
     </div>
   );
 };
 
 export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }: EditLeadModalProps) => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { updateLead, leads, setLeads } = useLeads();
   const { addProposal, proposals } = useProposals();
@@ -219,7 +225,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      toast({ title: "Formato inválido", description: "Seleccione una imagen." });
+      toast({ title: t.editLeadModal.toastInvalidFormat, description: t.editLeadModal.toastInvalidFormatDesc });
       return;
     }
     try {
@@ -228,7 +234,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       if (logoPreview && !logoPreview.startsWith('http')) URL.revokeObjectURL(logoPreview);
       setLogoPreview(URL.createObjectURL(compressed));
     } catch {
-      toast({ title: "Error al procesar imagen" });
+      toast({ title: t.editLeadModal.toastImageError });
     }
   };
 
@@ -257,11 +263,11 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       };
       if (logoUrl !== undefined) updates.logoUrl = logoUrl;
       await updateLead(lead.id, updates);
-      toast({ title: "Lead actualizado" });
+      toast({ title: t.editLeadModal.toastUpdated });
       setEditing(false);
       fetchActivity(lead.id);
     } catch {
-      toast({ title: "Error al actualizar", variant: "destructive" });
+      toast({ title: t.editLeadModal.toastUpdateError, variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -270,7 +276,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const handleAdvanceInPanel = async () => {
     if (!lead) return;
     if (lead.status === 'Convertido' || lead.clientId) {
-      toast({ title: "Lead ya convertido", variant: "destructive" });
+      toast({ title: t.editLeadModal.toastAlreadyConverted, variant: "destructive" });
       return;
     }
     setAdvancing(true);
@@ -299,10 +305,10 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
         .limit(1)
         .maybeSingle();
       setCreatedProposalId(newProp?.id || null);
-      toast({ title: "¡Propuesta creada!", description: "Puedes verla directamente desde aquí." });
+      toast({ title: t.editLeadModal.toastProposalCreated, description: t.editLeadModal.toastProposalCreatedDesc });
       fetchActivity(lead.id);
     } catch {
-      toast({ title: "Error al crear propuesta", variant: "destructive" });
+      toast({ title: t.editLeadModal.toastProposalError, variant: "destructive" });
     } finally {
       setAdvancing(false);
     }
@@ -313,11 +319,11 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
     try {
       const { error } = await supabase.from("leads").delete().eq("id", lead.id);
       if (error) throw error;
-      toast({ title: "Lead eliminado" });
+      toast({ title: t.editLeadModal.toastDeleted });
       setLeads(leads.filter(l => l.id !== lead.id));
       onClose();
     } catch {
-      toast({ title: "Error al eliminar", variant: "destructive" });
+      toast({ title: t.editLeadModal.toastDeleteError, variant: "destructive" });
     }
   };
 
@@ -387,11 +393,11 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                     value={company}
                     onChange={e => setCompany(e.target.value)}
                     className={`text-xl font-extrabold h-auto py-1 px-2 bg-transparent border-transparent ${editRing}`}
-                    placeholder="Empresa"
+                    placeholder={t.editLeadModal.companyPlaceholder}
                   />
                 ) : (
                   <h2 className="text-2xl font-extrabold tracking-tight text-zinc-100 truncate">
-                    {company || "Sin empresa"}
+                    {company || t.editLeadModal.noCompany}
                   </h2>
                 )}
                 {editing ? (
@@ -399,7 +405,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                     value={name}
                     onChange={e => setName(e.target.value)}
                     className={`text-sm h-auto py-0.5 px-2 mt-0.5 bg-transparent border-transparent text-zinc-400 ${editRing}`}
-                    placeholder="Nombre del contacto"
+                    placeholder={t.editLeadModal.contactPlaceholder}
                   />
                 ) : (
                   <p className="text-sm text-zinc-400 truncate mt-0.5">{name}</p>
@@ -414,7 +420,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                     </Badge>
                   )}
                   <span className="text-[10px] text-zinc-600 ml-auto">
-                    hace {lead.daysAgo}d
+                    {t.editLeadModal.daysAgo.replace("{{n}}", String(lead.daysAgo))}
                   </span>
                 </div>
               </div>
@@ -437,27 +443,27 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
           <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
 
             {/* Contact Details Card */}
-            <GlassCard title="Información de Contacto" icon={Phone}>
+            <GlassCard title={t.editLeadModal.contactInfoTitle} icon={Phone}>
               <div className="space-y-0">
-                <FieldRow icon={Phone} label="Teléfono" value={phone} editing={editing} actionHref={phone ? `tel:${phone}` : undefined}>
+                <FieldRow icon={Phone} label={t.editLeadModal.phoneLabel} value={phone} editing={editing} actionHref={phone ? `tel:${phone}` : undefined}>
                   <Input value={phone} onChange={e => setPhone(e.target.value)} className={`h-8 text-sm ${editRing}`} />
                 </FieldRow>
-                <FieldRow icon={Mail} label="Email" value={email} editing={editing} actionHref={email ? `mailto:${email}` : undefined}>
+                <FieldRow icon={Mail} label={t.editLeadModal.emailLabel} value={email} editing={editing} actionHref={email ? `mailto:${email}` : undefined}>
                   <Input value={email} onChange={e => setEmail(e.target.value)} className={`h-8 text-sm ${editRing}`} />
                 </FieldRow>
-                <FieldRow icon={MapPin} label="Ubicación" value={location} editing={editing}>
+                <FieldRow icon={MapPin} label={t.editLeadModal.locationLabel} value={location} editing={editing}>
                   <Input value={location} onChange={e => setLocation(e.target.value)} className={`h-8 text-sm ${editRing}`} />
                 </FieldRow>
                 {lead.website && !editing && (
-                  <FieldRow icon={Globe} label="Website" value={lead.website} editing={false} actionHref={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`} />
+                  <FieldRow icon={Globe} label={t.editLeadModal.websiteLabel} value={lead.website} editing={false} actionHref={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`} />
                 )}
               </div>
             </GlassCard>
 
             {/* Project Specs Card */}
-            <GlassCard title="Especificaciones del Proyecto" icon={Briefcase}>
+            <GlassCard title={t.editLeadModal.projectSpecsTitle} icon={Briefcase}>
               <div className="space-y-0">
-                <FieldRow icon={Tag} label="Servicio" value={service} editing={editing}>
+                <FieldRow icon={Tag} label={t.editLeadModal.serviceLabel} value={service} editing={editing}>
                   <Select value={service} onValueChange={setService}>
                     <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                     <SelectContent>
@@ -466,31 +472,31 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                   </Select>
                 </FieldRow>
                 {editing ? (
-                  <FieldRow icon={TrendingUp} label="Valor Estimado" value={value} editing>
+                  <FieldRow icon={TrendingUp} label={t.editLeadModal.estimatedValueLabel} value={value} editing>
                     <Input value={value} onChange={e => setValue(e.target.value)} placeholder="$0.00" className={`h-8 text-sm ${editRing}`} />
                   </FieldRow>
                 ) : (
                   <div className="flex items-start gap-3 py-2">
                     <TrendingUp className="w-4 h-4 text-zinc-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-0.5">Valor</p>
+                      <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-0.5">{t.editLeadModal.valueLabel}</p>
                       <div className="flex items-center gap-2">
                         <p className="text-sm text-zinc-200 font-medium">
                           {(() => {
                             const proposalVal = linkedProposal?.approvedTotal ?? linkedProposal?.value;
                             return proposalVal != null
                               ? `$${proposalVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
-                              : value || "Por definir";
+                              : value || t.editLeadModal.toBeDefined;
                           })()}
                         </p>
                         {linkedProposal?.status === 'Aprobada' && (
                           <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            Aprobado
+                            {t.editLeadModal.approved}
                           </span>
                         )}
                         {linkedProposal && linkedProposal.status !== 'Aprobada' && (
                           <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-md bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
-                            Propuesta
+                            {t.editLeadModal.proposal}
                           </span>
                         )}
                         {/* PDF shortcut */}
