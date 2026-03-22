@@ -10,17 +10,10 @@ import {
   Search, ArrowUpDown, Filter, LayoutGrid, List, X, ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export type SortKey = "newest" | "oldest" | "priority" | "targetDate" | "status";
 export type ViewMode = "cards" | "list";
-
-const SORT_LABELS: Record<SortKey, string> = {
-  newest: "Más recientes",
-  oldest: "Más antiguas",
-  priority: "Prioridad",
-  targetDate: "Fecha objetivo",
-  status: "Estado",
-};
 
 const STATUS_OPTIONS = [
   "Materiales Pedidos",
@@ -28,6 +21,13 @@ const STATUS_OPTIONS = [
   "Control de Calidad",
   "Producido",
 ];
+
+const STATUS_LABELS_EN: Record<string, string> = {
+  "Materiales Pedidos": "Materials Ordered",
+  "En Producción": "In Production",
+  "Control de Calidad": "Quality Control",
+  "Producido": "Produced",
+};
 
 interface ProductionControlBarProps {
   search: string;
@@ -56,6 +56,16 @@ export function ProductionControlBar({
   totalItems, showing,
 }: ProductionControlBarProps) {
   const [showFilters, setShowFilters] = useState(false);
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
+
+  const SORT_LABELS: Record<SortKey, string> = {
+    newest: isEn ? "Newest" : "Más recientes",
+    oldest: isEn ? "Oldest" : "Más antiguas",
+    priority: isEn ? "Priority" : "Prioridad",
+    targetDate: isEn ? "Target date" : "Fecha objetivo",
+    status: isEn ? "Status" : "Estado",
+  };
   const hasFilters = statusFilter.length > 0 || dateFrom || dateTo;
 
   const toggleStatus = (s: string) => {
@@ -81,7 +91,7 @@ export function ProductionControlBar({
           <Input
             value={search}
             onChange={e => onSearchChange(e.target.value)}
-            placeholder="Buscar por cliente, proyecto..."
+            placeholder={isEn ? "Search by client, project..." : "Buscar por cliente, proyecto..."}
             className="pl-10 glass h-9 text-sm"
           />
         </div>
@@ -112,7 +122,7 @@ export function ProductionControlBar({
           onClick={() => setShowFilters(!showFilters)}
         >
           <Filter className="w-3.5 h-3.5" />
-          Filtros
+          {isEn ? "Filters" : "Filtros"}
           {hasFilters && (
             <Badge className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px] bg-primary text-primary-foreground">
               {statusFilter.length + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0)}
@@ -144,17 +154,17 @@ export function ProductionControlBar({
       {showFilters && (
         <div className="glass-card p-4 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Filtros</span>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isEn ? "Filters" : "Filtros"}</span>
             {hasFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs h-6 px-2 gap-1">
-                <X className="w-3 h-3" /> Limpiar
+                <X className="w-3 h-3" /> {isEn ? "Clear" : "Limpiar"}
               </Button>
             )}
           </div>
 
           {/* Status chips */}
           <div>
-            <span className="text-xs text-muted-foreground mb-1.5 block">Estado</span>
+            <span className="text-xs text-muted-foreground mb-1.5 block">{isEn ? "Status" : "Estado"}</span>
             <div className="flex flex-wrap gap-1.5">
               {STATUS_OPTIONS.map(s => (
                 <button
@@ -167,7 +177,7 @@ export function ProductionControlBar({
                       : "bg-muted/20 text-muted-foreground border-border/20 hover:bg-muted/40"
                   )}
                 >
-                  {s}
+                  {isEn ? (STATUS_LABELS_EN[s] ?? s) : s}
                 </button>
               ))}
             </div>
@@ -175,8 +185,8 @@ export function ProductionControlBar({
 
           {/* Date range */}
           <div className="flex gap-3 items-end">
-            <DateField label="Desde" value={dateFrom} onChange={onDateFromChange} compact />
-            <DateField label="Hasta" value={dateTo} onChange={onDateToChange} compact />
+            <DateField label={isEn ? "From" : "Desde"} value={dateFrom} onChange={onDateFromChange} compact />
+            <DateField label={isEn ? "To" : "Hasta"} value={dateTo} onChange={onDateToChange} compact />
           </div>
         </div>
       )}

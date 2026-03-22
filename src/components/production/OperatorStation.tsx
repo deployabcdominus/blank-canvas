@@ -6,13 +6,14 @@ import { useWorkerStats } from "@/hooks/useProductionSteps";
 import { Check, Flame, Zap, Filter, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/LanguageContext";
 
-const DEPARTMENTS = [
-  { value: "all", label: "Todos", icon: "🏭" },
+const getDepartments = (isEn: boolean) => [
+  { value: "all", label: isEn ? "All" : "Todos", icon: "🏭" },
   { value: "cnc", label: "CNC", icon: "⚙️" },
-  { value: "electrical", label: "Eléctrico", icon: "⚡" },
-  { value: "graphics", label: "Gráficos", icon: "🎨" },
-  { value: "qa", label: "Calidad", icon: "✅" },
+  { value: "electrical", label: isEn ? "Electrical" : "Eléctrico", icon: "⚡" },
+  { value: "graphics", label: isEn ? "Graphics" : "Gráficos", icon: "🎨" },
+  { value: "qa", label: isEn ? "Quality" : "Calidad", icon: "✅" },
   { value: "general", label: "General", icon: "📋" },
 ];
 
@@ -23,12 +24,12 @@ const PRIORITY_BADGE: Record<string, string> = {
   baja: "bg-muted text-muted-foreground border-border",
 };
 
-const TOASTS = [
-  { emoji: "🔥", msg: "¡Imparable! El admin ya lo vio en el dashboard" },
-  { emoji: "💪", msg: "¡Tarea aplastada! El taller te necesita" },
-  { emoji: "⚡", msg: "¡Rapidísimo! ¿Eres humano o robot?" },
-  { emoji: "🏆", msg: "¡Un paso más al almuerzo gratis del viernes!" },
-  { emoji: "🎯", msg: "¡Perfecto! Sin errores, así se hace" },
+const getToasts = (isEn: boolean) => [
+  { emoji: "🔥", msg: isEn ? "Unstoppable! The admin already saw it on the dashboard" : "¡Imparable! El admin ya lo vio en el dashboard" },
+  { emoji: "💪", msg: isEn ? "Task crushed! The workshop needs you" : "¡Tarea aplastada! El taller te necesita" },
+  { emoji: "⚡", msg: isEn ? "Lightning fast! Are you human or robot?" : "¡Rapidísimo! ¿Eres humano o robot?" },
+  { emoji: "🏆", msg: isEn ? "One step closer to Friday's free lunch!" : "¡Un paso más al almuerzo gratis del viernes!" },
+  { emoji: "🎯", msg: isEn ? "Perfect! No errors, that's how it's done" : "¡Perfecto! Sin errores, así se hace" },
 ];
 
 function Confetti({ active }: { active: boolean }) {
@@ -61,6 +62,10 @@ function Confetti({ active }: { active: boolean }) {
 export default function OperatorStation() {
   const { companyId } = useUserRole();
   const { user } = useAuth();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
+  const DEPARTMENTS = getDepartments(isEn);
+  const TOASTS = getToasts(isEn);
   const stats = useWorkerStats();
   const [tasks, setTasks] = useState<any[]>([]);
   const [department, setDepartment] = useState("all");
@@ -141,7 +146,9 @@ export default function OperatorStation() {
       const today = now.split("T")[0];
       const ex = existing as any;
       const isNewDay = ex?.last_activity_date !== today;
-      const LEVEL_TITLES = ["Aprendiz", "Operario", "Técnico", "Especialista", "Experto", "Maestro", "Leyenda"];
+      const LEVEL_TITLES = isEn
+        ? ["Apprentice", "Operator", "Technician", "Specialist", "Expert", "Master", "Legend"]
+        : ["Aprendiz", "Operario", "Técnico", "Especialista", "Experto", "Maestro", "Leyenda"];
       const newXpTotal = (ex?.xp_total || 0) + 90;
       const newLevel = Math.min(6, Math.floor(newXpTotal / 500));
       await supabase.from("worker_stats" as any).upsert({
@@ -175,13 +182,13 @@ export default function OperatorStation() {
       <div className="rounded-2xl bg-card/80 backdrop-blur-xl border border-border p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-2xl font-black text-foreground">¡Buenas, {userName}! 🤙</h1>
+            <h1 className="text-2xl font-black text-foreground">{isEn ? `Hey, ${userName}! 🤙` : `¡Buenas, ${userName}! 🤙`}</h1>
             <div className="flex gap-2 mt-2 flex-wrap">
               <span className="text-xs font-bold bg-primary/10 text-primary px-3 py-1 rounded-full">
-                Nivel {stats?.level ?? 1} · {stats?.level_title ?? "Aprendiz"}
+                {isEn ? "Level" : "Nivel"} {stats?.level ?? 1} · {stats?.level_title ?? (isEn ? "Apprentice" : "Aprendiz")}
               </span>
               <span className="text-xs font-bold bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full">
-                {stats?.tasks_today ?? 0} hoy ✅
+                {stats?.tasks_today ?? 0} {isEn ? "today ✅" : "hoy ✅"}
               </span>
             </div>
           </div>
@@ -189,7 +196,7 @@ export default function OperatorStation() {
             <div className="text-2xl font-black text-amber-400 flex items-center gap-1">
               <Flame size={20} /> {stats?.streak_days ?? 0}
             </div>
-            <div className="text-[10px] font-bold text-amber-500/70 uppercase">racha</div>
+            <div className="text-[10px] font-bold text-amber-500/70 uppercase">{isEn ? "streak" : "racha"}</div>
           </div>
         </div>
         <div>
@@ -224,8 +231,10 @@ export default function OperatorStation() {
       <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
         <Filter size={14} />
         {filtered.length === 0
-          ? "🎉 ¡Todo listo! Eres el MVP 🏆"
-          : `${filtered.length} tarea${filtered.length !== 1 ? "s" : ""} pendiente${filtered.length !== 1 ? "s" : ""}`}
+          ? (isEn ? "🎉 All done! You're the MVP 🏆" : "🎉 ¡Todo listo! Eres el MVP 🏆")
+          : isEn
+            ? `${filtered.length} pending task${filtered.length !== 1 ? "s" : ""}`
+            : `${filtered.length} tarea${filtered.length !== 1 ? "s" : ""} pendiente${filtered.length !== 1 ? "s" : ""}`}
       </div>
 
       {/* Task Cards */}
@@ -281,14 +290,14 @@ export default function OperatorStation() {
               onClick={() => completeTask(task.id)}
               className="w-full py-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-black text-xl flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/25 transition-all duration-150"
             >
-              <Check size={24} /> ¡COMPLETADO!
+              <Check size={24} /> {isEn ? "COMPLETED!" : "¡COMPLETADO!"}
             </button>
           ) : (
             <button
               onClick={() => startTask(task.id)}
               className="w-full py-5 rounded-xl bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-black text-xl flex items-center justify-center gap-3 shadow-lg shadow-primary/25 transition-all duration-150"
             >
-              ▶️ EMPEZAR
+              ▶️ {isEn ? "START" : "EMPEZAR"}
             </button>
           )}
         </div>
@@ -297,8 +306,8 @@ export default function OperatorStation() {
       {filtered.length === 0 && tasks.length === 0 && (
         <div className="text-center py-12 space-y-2">
           <div className="text-5xl">☕</div>
-          <div className="text-lg font-bold text-foreground">No tienes tareas asignadas</div>
-          <div className="text-sm text-muted-foreground">Habla con tu admin para que te asigne etapas</div>
+          <div className="text-lg font-bold text-foreground">{isEn ? "You have no assigned tasks" : "No tienes tareas asignadas"}</div>
+          <div className="text-sm text-muted-foreground">{isEn ? "Talk to your admin to get stages assigned to you" : "Habla con tu admin para que te asigne etapas"}</div>
         </div>
       )}
     </div>
