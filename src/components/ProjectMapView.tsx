@@ -18,15 +18,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { addYears, format, isPast } from "date-fns";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 // ── Status config ──
-const STATUS_COLORS: Record<string, { fill: string; stroke: string; label: string; glow: string }> = {
-  Lead:         { fill: "#6B7280", stroke: "#9CA3AF", label: "Lead",         glow: "rgba(107,114,128,0.4)" },
-  Proposal:     { fill: "#6B7280", stroke: "#9CA3AF", label: "Propuesta",    glow: "rgba(107,114,128,0.4)" },
-  Production:   { fill: "#F59E0B", stroke: "#FBBF24", label: "Producción",   glow: "rgba(245,158,11,0.5)" },
-  Installation: { fill: "#F59E0B", stroke: "#FBBF24", label: "Instalación",  glow: "rgba(245,158,11,0.5)" },
-  Completed:    { fill: "#10B981", stroke: "#34D399", label: "Instalado",    glow: "rgba(16,185,129,0.5)" },
-  Maintenance:  { fill: "#EF4444", stroke: "#F87171", label: "Mantenimiento",glow: "rgba(239,68,68,0.5)" },
+const STATUS_COLORS: Record<string, { fill: string; stroke: string; labelKey: string; glow: string }> = {
+  Lead:         { fill: "#6B7280", stroke: "#9CA3AF", labelKey: "Lead",         glow: "rgba(107,114,128,0.4)" },
+  Proposal:     { fill: "#6B7280", stroke: "#9CA3AF", labelKey: "Proposal",     glow: "rgba(107,114,128,0.4)" },
+  Production:   { fill: "#F59E0B", stroke: "#FBBF24", labelKey: "Production",   glow: "rgba(245,158,11,0.5)" },
+  Installation: { fill: "#F59E0B", stroke: "#FBBF24", labelKey: "Installation", glow: "rgba(245,158,11,0.5)" },
+  Completed:    { fill: "#10B981", stroke: "#34D399", labelKey: "Completed",    glow: "rgba(16,185,129,0.5)" },
+  Maintenance:  { fill: "#EF4444", stroke: "#F87171", labelKey: "Maintenance",  glow: "rgba(239,68,68,0.5)" },
 };
 
 const getStatusCfg = (status: string) => STATUS_COLORS[status] || STATUS_COLORS.Lead;
@@ -60,7 +61,7 @@ function BoundsTracker({ onBoundsChange }: { onBoundsChange: (bounds: LatLngBoun
   return null;
 }
 
-function ComplianceInfo({ address, installDate }: { address: string; installDate?: string }) {
+function ComplianceInfo({ address, installDate, tc }: { address: string; installDate?: string; tc: any }) {
   const municipality = getMunicipality(address);
   const needsPermit = municipality === "Miami-Dade" || municipality === "Miami";
   const warrantyEnd = installDate ? addYears(new Date(installDate), 2) : null;
@@ -69,21 +70,21 @@ function ComplianceInfo({ address, installDate }: { address: string; installDate
   return (
     <div className="mt-3 pt-3 border-t border-border/20 space-y-2">
       <p className="text-[11px] font-semibold text-white/60 uppercase tracking-wider flex items-center gap-1">
-        <Shield className="w-3 h-3" /> Cumplimiento Normativo
+        <Shield className="w-3 h-3" /> {tc.compliance.title}
       </p>
       <div className="flex items-start gap-2">
         <AlertTriangle className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${needsPermit ? "text-amber-400" : "text-green-400"}`} />
         <p className="text-xs text-white/70">
           {needsPermit
-            ? `Requiere permisos especiales de ${municipality} County`
-            : "No requiere permisos especiales en esta jurisdicción"}
+            ? tc.compliance.requiresPermit.replace("{{municipality}}", municipality)
+            : tc.compliance.noPermit}
         </p>
       </div>
       {warrantyEnd && (
         <div className="flex items-start gap-2">
           <Calendar className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${warrantyExpired ? "text-destructive" : "text-green-400"}`} />
           <p className="text-xs text-white/70">
-            Garantía: {warrantyExpired ? "Expirada" : "Vigente"} — {format(warrantyEnd, "dd/MM/yyyy")}
+            {tc.compliance.warranty}: {warrantyExpired ? tc.compliance.expired : tc.compliance.active} — {format(warrantyEnd, "dd/MM/yyyy")}
           </p>
         </div>
       )}
@@ -92,10 +93,15 @@ function ComplianceInfo({ address, installDate }: { address: string; installDate
 }
 
 export const ProjectMapView = () => {
+  const { t } = useLanguage();
+  const tc = t.projectMap;
   const { projects } = useProjects();
   const { installations } = useInstallations();
   const { payments } = usePayments();
   const { proposals } = useProposals();
+
+  const getStatusLabel = (key: string) =>
+    key === "Lead" ? "Lead" : (tc.statusLabels as any)[key] ?? key;
 
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -177,10 +183,10 @@ export const ProjectMapView = () => {
     <div className="flex flex-col h-[calc(100vh-220px)] rounded-xl overflow-hidden border border-border/20">
       {/* Filters bar */}
       <div className="px-4 py-3 border-b border-border/20 flex items-center justify-between shrink-0 bg-background/50">
-        <p className="text-sm text-muted-foreground">Vista geográfica de proyectos</p>
+        <p className="text-sm text-muted-foreground">{tc.subtitle}</p>
         <Button variant="outline" size="sm" onClick={() => setFiltersOpen(!filtersOpen)} className="gap-2">
           <Filter className="w-4 h-4" />
-          Filtros
+          {tc.filtersButton}
           {filtersOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
         </Button>
       </div>
@@ -196,42 +202,42 @@ export const ProjectMapView = () => {
           >
             <div className="px-4 py-3 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs">Estado</Label>
+                <Label className="text-xs">{tc.filters.status}</Label>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
                   <SelectTrigger className="bg-muted/30 h-9 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    {Object.entries(STATUS_COLORS).map(([key, cfg]) => (
-                      <SelectItem key={key} value={key}>{cfg.label}</SelectItem>
+                    <SelectItem value="all">{tc.filters.all}</SelectItem>
+                    {Object.entries(STATUS_COLORS).map(([key]) => (
+                      <SelectItem key={key} value={key}>{getStatusLabel(key)}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs">Municipio</Label>
+                <Label className="text-xs">{tc.filters.municipality}</Label>
                 <Select value={filterMunicipality} onValueChange={setFilterMunicipality}>
                   <SelectTrigger className="bg-muted/30 h-9 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
+                    <SelectItem value="all">{tc.filters.all}</SelectItem>
                     <SelectItem value="Miami">Miami</SelectItem>
                     <SelectItem value="Miami-Dade">Miami-Dade</SelectItem>
                     <SelectItem value="Miami Beach">Miami Beach</SelectItem>
-                    <SelectItem value="Otro">Otro</SelectItem>
+                    <SelectItem value="Otro">{tc.filters.other}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs">Tipo</Label>
+                <Label className="text-xs">{tc.filters.type}</Label>
                 <Select value={filterType} onValueChange={setFilterType}>
                   <SelectTrigger className="bg-muted/30 h-9 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
+                    <SelectItem value="all">{tc.filters.all}</SelectItem>
                     <SelectItem value="Monument">Monument</SelectItem>
                     <SelectItem value="Wall Sign">Wall Sign</SelectItem>
                     <SelectItem value="Channel Letters">Channel Letters</SelectItem>
                     <SelectItem value="LED">LED</SelectItem>
                     <SelectItem value="Banner">Banner</SelectItem>
-                    <SelectItem value="Otro">Otro</SelectItem>
+                    <SelectItem value="Otro">{tc.filters.other}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -267,16 +273,16 @@ export const ProjectMapView = () => {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <p className="font-bold text-sm text-white/90">{project.projectName}</p>
-                          <p className="text-xs text-white/50">{project.clientName || "Sin cliente"}</p>
+                          <p className="text-xs text-white/50">{project.clientName || tc.popup.noClient}</p>
                         </div>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold" style={{ background: cfg.fill + "30", color: cfg.stroke }}>{cfg.label}</span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold" style={{ background: cfg.fill + "30", color: cfg.stroke }}>{getStatusLabel(project.status)}</span>
                       </div>
                       <div className="space-y-1 text-xs text-white/60">
-                        <p className="flex items-center gap-1.5"><MapPin className="w-3 h-3" />{project.installAddress || "Sin dirección"}</p>
-                        <p className="flex items-center gap-1.5"><Layers className="w-3 h-3" />Tipo: {project.projectType}</p>
-                        <p className="flex items-center gap-1.5"><Building2 className="w-3 h-3" />Municipio: {project.municipality}</p>
+                        <p className="flex items-center gap-1.5"><MapPin className="w-3 h-3" />{project.installAddress || tc.popup.noAddress}</p>
+                        <p className="flex items-center gap-1.5"><Layers className="w-3 h-3" />{tc.popup.type}: {project.projectType}</p>
+                        <p className="flex items-center gap-1.5"><Building2 className="w-3 h-3" />{tc.popup.municipality}: {project.municipality}</p>
                       </div>
-                      <ComplianceInfo address={project.installAddress} installDate={getInstallDate(project)} />
+                      <ComplianceInfo address={project.installAddress} installDate={getInstallDate(project)} tc={tc} />
                     </div>
                   </Popup>
                 </CircleMarker>
@@ -286,12 +292,12 @@ export const ProjectMapView = () => {
 
           {/* Legend */}
           <div className="absolute bottom-4 left-4 z-[1000] p-3 rounded-xl backdrop-blur-2xl border border-border/20" style={{ background: "rgba(15,18,30,0.8)" }}>
-            <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2 font-semibold">Leyenda</p>
+            <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2 font-semibold">{tc.legend}</p>
             <div className="space-y-1.5">
               {Object.entries(STATUS_COLORS).map(([key, cfg]) => (
                 <div key={key} className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ background: cfg.fill, boxShadow: `0 0 6px ${cfg.glow}` }} />
-                  <span className="text-[11px] text-white/60">{cfg.label}</span>
+                  <span className="text-[11px] text-white/60">{getStatusLabel(key)}</span>
                 </div>
               ))}
             </div>
@@ -303,28 +309,28 @@ export const ProjectMapView = () => {
           <ScrollArea className="flex-1">
             <div className="p-4 space-y-5">
               <div>
-                <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Área visible</h3>
+                <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">{tc.stats.visibleArea}</h3>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="p-3 rounded-xl border border-border/20" style={{ background: "rgba(255,255,255,0.03)" }}>
-                    <p className="text-[11px] text-white/40">Proyectos</p>
+                    <p className="text-[11px] text-white/40">{tc.stats.projects}</p>
                     <p className="text-xl font-bold text-white/90">{stats.total}</p>
                   </div>
                   <div className="p-3 rounded-xl border border-border/20" style={{ background: "rgba(255,255,255,0.03)" }}>
-                    <p className="text-[11px] text-white/40">Facturado</p>
+                    <p className="text-[11px] text-white/40">{tc.stats.billed}</p>
                     <p className="text-lg font-bold text-white/90">${stats.totalValue.toLocaleString("en-US")}</p>
                   </div>
                 </div>
                 {stats.totalPaid > 0 && (
                   <div className="mt-2 p-3 rounded-xl border border-border/20" style={{ background: "rgba(255,255,255,0.03)" }}>
                     <div className="flex justify-between text-xs">
-                      <span className="text-white/40">Cobrado</span>
+                      <span className="text-white/40">{tc.stats.collected}</span>
                       <span className="text-green-400 font-semibold">${stats.totalPaid.toLocaleString("en-US")}</span>
                     </div>
                   </div>
                 )}
               </div>
               <div>
-                <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Por estado</h3>
+                <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">{tc.stats.byStatus}</h3>
                 <div className="space-y-2">
                   {Object.entries(stats.byStatus).map(([status, count]) => {
                     const cfg = getStatusCfg(status);
@@ -332,18 +338,18 @@ export const ProjectMapView = () => {
                       <div key={status} className="flex items-center justify-between px-3 py-2 rounded-lg border border-border/10" style={{ background: "rgba(255,255,255,0.02)" }}>
                         <div className="flex items-center gap-2">
                           <div className="w-2.5 h-2.5 rounded-full" style={{ background: cfg.fill, boxShadow: `0 0 6px ${cfg.glow}` }} />
-                          <span className="text-xs text-white/70">{cfg.label}</span>
+                          <span className="text-xs text-white/70">{getStatusLabel(status)}</span>
                         </div>
                         <span className="text-xs font-bold text-white/80">{count}</span>
                       </div>
                     );
                   })}
-                  {Object.keys(stats.byStatus).length === 0 && <p className="text-xs text-white/30 text-center py-4">Sin proyectos en esta área</p>}
+                  {Object.keys(stats.byStatus).length === 0 && <p className="text-xs text-white/30 text-center py-4">{tc.stats.noProjects}</p>}
                 </div>
               </div>
               <div>
                 <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                  <BarChart3 className="w-3.5 h-3.5" /> Por tipo
+                  <BarChart3 className="w-3.5 h-3.5" /> {tc.stats.byType}
                 </h3>
                 <div className="space-y-2">
                   {Object.entries(stats.byType).map(([type, count]) => (
@@ -352,7 +358,7 @@ export const ProjectMapView = () => {
                       <Badge variant="secondary" className="text-[10px] px-2 py-0">{count}</Badge>
                     </div>
                   ))}
-                  {Object.keys(stats.byType).length === 0 && <p className="text-xs text-white/30 text-center py-4">Sin datos</p>}
+                  {Object.keys(stats.byType).length === 0 && <p className="text-xs text-white/30 text-center py-4">{tc.stats.noData}</p>}
                 </div>
               </div>
             </div>

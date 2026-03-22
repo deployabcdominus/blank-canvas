@@ -558,6 +558,51 @@ export const es: TranslationKeys = {
     },
   },
 
+  /* ── Project Map ── */
+  projectMap: {
+    subtitle: "Vista geográfica de proyectos",
+    filtersButton: "Filtros",
+    filters: {
+      status: "Estado",
+      municipality: "Municipio",
+      type: "Tipo",
+      all: "Todos",
+      other: "Otro",
+    },
+    statusLabels: {
+      Proposal: "Propuesta",
+      Production: "Producción",
+      Installation: "Instalación",
+      Completed: "Instalado",
+      Maintenance: "Mantenimiento",
+    },
+    popup: {
+      noClient: "Sin cliente",
+      noAddress: "Sin dirección",
+      type: "Tipo",
+      municipality: "Municipio",
+    },
+    compliance: {
+      title: "Cumplimiento Normativo",
+      requiresPermit: "Requiere permisos especiales de {{municipality}} County",
+      noPermit: "No requiere permisos especiales en esta jurisdicción",
+      warranty: "Garantía",
+      expired: "Expirada",
+      active: "Vigente",
+    },
+    legend: "Leyenda",
+    stats: {
+      visibleArea: "Área visible",
+      projects: "Proyectos",
+      billed: "Facturado",
+      collected: "Cobrado",
+      byStatus: "Por estado",
+      byType: "Por tipo",
+      noProjects: "Sin proyectos en esta área",
+      noData: "Sin datos",
+    },
+  },
+
   /* ── Weekly Report ── */
   weeklyReport: {
     title: "Rendimiento Semanal",

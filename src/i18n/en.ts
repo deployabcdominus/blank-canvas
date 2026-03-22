@@ -556,6 +556,51 @@ export const en = {
     },
   },
 
+  /* ── Project Map ── */
+  projectMap: {
+    subtitle: "Geographic project view",
+    filtersButton: "Filters",
+    filters: {
+      status: "Status",
+      municipality: "Municipality",
+      type: "Type",
+      all: "All",
+      other: "Other",
+    },
+    statusLabels: {
+      Proposal: "Proposal",
+      Production: "Production",
+      Installation: "Installation",
+      Completed: "Installed",
+      Maintenance: "Maintenance",
+    },
+    popup: {
+      noClient: "No client",
+      noAddress: "No address",
+      type: "Type",
+      municipality: "Municipality",
+    },
+    compliance: {
+      title: "Regulatory Compliance",
+      requiresPermit: "Requires special permits from {{municipality}} County",
+      noPermit: "No special permits required in this jurisdiction",
+      warranty: "Warranty",
+      expired: "Expired",
+      active: "Active",
+    },
+    legend: "Legend",
+    stats: {
+      visibleArea: "Visible Area",
+      projects: "Projects",
+      billed: "Billed",
+      collected: "Collected",
+      byStatus: "By Status",
+      byType: "By Type",
+      noProjects: "No projects in this area",
+      noData: "No data",
+    },
+  },
+
   /* ── Weekly Report ── */
   weeklyReport: {
     title: "Weekly Performance",
