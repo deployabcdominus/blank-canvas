@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   MoreHorizontal, Eye, Printer, QrCode, Calendar, User, Tag,
-  CheckCircle, ShieldCheck, Trash2,
+  CheckCircle, ShieldCheck, Trash2, Wrench,
 } from "lucide-react";
 import { format } from "date-fns";
 
