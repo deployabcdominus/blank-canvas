@@ -77,8 +77,8 @@ const Dashboard = () => {
           <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-xl px-5 py-3">
             <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-amber-300">Contexto de Negocio Desactivado</p>
-              <p className="text-xs text-amber-400/80">Tus datos no se poblarán hasta que estés vinculado a una empresa. Contacta al soporte o al administrador.</p>
+              <p className="text-sm font-semibold text-amber-300">{t.dashboard.noCompanyTitle}</p>
+              <p className="text-xs text-amber-400/80">{t.dashboard.noCompanyDesc}</p>
             </div>
           </div>
         )}
@@ -103,7 +103,7 @@ const Dashboard = () => {
 
         <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
           {stats.map((stat, index) => (
-            <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? "Sin acceso" : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} />
+            <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} />
           ))}
         </div>
 

@@ -258,6 +258,9 @@ export const es: TranslationKeys = {
     thisMonth: "Este mes",
     welcomeBack: "¡Bienvenido de vuelta",
     projectsToday: "Mira lo que está pasando con tus proyectos hoy.",
+    noCompanyTitle: "Contexto de Negocio Desactivado",
+    noCompanyDesc: "Tus datos no se poblarán hasta que estés vinculado a una empresa. Contacta al soporte o al administrador.",
+    noAccess: "Sin acceso",
   },
 
   /* ── Industry labels (bilingual) ── */

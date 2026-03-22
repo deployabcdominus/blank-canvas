@@ -256,6 +256,9 @@ export const en = {
     thisMonth: "This month",
     welcomeBack: "Welcome back",
     projectsToday: "See what's happening with your projects today.",
+    noCompanyTitle: "Business Context Disabled",
+    noCompanyDesc: "Your data will not populate until you are linked to a company. Contact support or your administrator.",
+    noAccess: "No access",
   },
 
   /* ── Industry labels (bilingual) ── */
