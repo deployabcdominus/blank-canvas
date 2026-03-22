@@ -11,6 +11,7 @@ import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface PlanDef {
   tier: PlanTier;
@@ -23,82 +24,59 @@ interface PlanDef {
   priceId: string;
 }
 
-const PLANS: PlanDef[] = [
-  {
-    tier: "start",
-    name: "Start",
-    tagline: "Auto-empleados / Freelance",
-    price: "$29",
-    icon: Zap,
-    recommended: false,
-    priceId: STRIPE_TIERS.start.price_id,
-    features: [
-      "CRM + Gestión Manual",
-      "Hasta 3 usuarios",
-      "Etiquetas estándar",
-      "Subida de archivos",
-      "Seguridad básica",
-    ],
-  },
-  {
-    tier: "pro",
-    name: "Pro",
-    tagline: "Pequeñas y Medianas Empresas",
-    price: "$79",
-    icon: Sparkles,
-    recommended: true,
-    priceId: STRIPE_TIERS.pro.price_id,
-    features: [
-      "Todo en Start, más:",
-      "Portal de firma digital",
-      "Generador de Mockups",
-      "Automatización avanzada",
-      "Diccionarios personalizados",
-      "Backup diario",
-      "Hasta 15 usuarios",
-    ],
-  },
-  {
-    tier: "elite",
-    name: "Elite",
-    tagline: "Empresas con múltiples equipos",
-    price: "$149",
-    icon: Crown,
-    recommended: false,
-    priceId: STRIPE_TIERS.elite.price_id,
-    features: [
-      "Todo en Pro, más:",
-      "Planos y Anotaciones Pro",
-      "Campos ilimitados",
-      "Subcontratistas / Logística",
-      "API y Webhooks",
-      "Audit Logs completos",
-      "Usuarios ilimitados",
-      "Soporte prioritario",
-    ],
-  },
-];
-
 export const PricingSection = () => {
   const { planTier } = usePlanAccess();
   const { session } = useAuth();
-  const { subscriptionStatus, subscriptionEnd, checkSubscription } = useSubscription();
+  const { subscriptionStatus, checkSubscription } = useSubscription();
   const { toast } = useToast();
+  const { t } = useLanguage();
+  const s = t.settings.subscription;
   const [searchParams, setSearchParams] = useSearchParams();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [loadingPortal, setLoadingPortal] = useState(false);
+
+  const PLANS: PlanDef[] = [
+    {
+      tier: "start",
+      name: "Start",
+      tagline: s.plans.start.tagline,
+      price: "$29",
+      icon: Zap,
+      recommended: false,
+      priceId: STRIPE_TIERS.start.price_id,
+      features: s.plans.start.features as string[],
+    },
+    {
+      tier: "pro",
+      name: "Pro",
+      tagline: s.plans.pro.tagline,
+      price: "$79",
+      icon: Sparkles,
+      recommended: true,
+      priceId: STRIPE_TIERS.pro.price_id,
+      features: s.plans.pro.features as string[],
+    },
+    {
+      tier: "elite",
+      name: "Elite",
+      tagline: s.plans.elite.tagline,
+      price: "$149",
+      icon: Crown,
+      recommended: false,
+      priceId: STRIPE_TIERS.elite.price_id,
+      features: s.plans.elite.features as string[],
+    },
+  ];
 
   // Handle Stripe redirect success
   useEffect(() => {
     const stripeResult = searchParams.get("stripe");
     if (stripeResult === "success") {
       toast({
-        title: "🎉 ¡Gracias por confiar en nosotros!",
-        description: `Tu plan ya está activo. Disfruta de todas las funciones.`,
+        title: s.toastSuccess,
+        description: s.toastSuccessDesc,
       });
-      // Refresh subscription state
       checkSubscription();
-      // Clean URL
       searchParams.delete("stripe");
       setSearchParams(searchParams, { replace: true });
     } else if (stripeResult === "cancel") {
@@ -109,7 +87,7 @@ export const PricingSection = () => {
 
   const handleCheckout = async (priceId: string, tier: string) => {
     if (!session?.access_token) {
-      toast({ title: "Error", description: "Debes iniciar sesión", variant: "destructive" });
+      toast({ title: "Error", description: s.toastLoginRequired, variant: "destructive" });
       return;
     }
     setLoadingTier(tier);
@@ -123,7 +101,7 @@ export const PricingSection = () => {
         window.open(data.url, "_blank");
       }
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "No se pudo iniciar el pago", variant: "destructive" });
+      toast({ title: "Error", description: err.message || s.toastCheckoutError, variant: "destructive" });
     } finally {
       setLoadingTier(null);
     }
@@ -141,7 +119,7 @@ export const PricingSection = () => {
         window.open(data.url, "_blank");
       }
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "No se pudo abrir el portal", variant: "destructive" });
+      toast({ title: "Error", description: err.message || s.toastPortalError, variant: "destructive" });
     } finally {
       setLoadingPortal(false);
     }
@@ -152,15 +130,15 @@ export const PricingSection = () => {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Tu Suscripción</h2>
+        <h2 className="text-2xl font-bold mb-2">{s.sectionTitle}</h2>
         <p className="text-muted-foreground text-sm">
-          Plan actual:{" "}
+          {s.currentPlan}{" "}
           <Badge variant="outline" className="ml-1 border-primary/30 text-primary font-semibold">
             {planTier.charAt(0).toUpperCase() + planTier.slice(1)}
           </Badge>
           {subscriptionStatus === "past_due" && (
             <Badge variant="destructive" className="ml-2 text-xs">
-              Pago Pendiente
+              {s.pastDueBadge}
             </Badge>
           )}
         </p>
@@ -176,12 +154,8 @@ export const PricingSection = () => {
           <div className="flex items-start gap-3">
             <CreditCard className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-medium text-amber-200">
-                Tu suscripción tiene un pago pendiente
-              </p>
-              <p className="text-xs text-amber-200/70 mt-1">
-                Por favor, actualiza tu método de pago para evitar la suspensión del servicio.
-              </p>
+              <p className="text-sm font-medium text-amber-200">{s.pastDueTitle}</p>
+              <p className="text-xs text-amber-200/70 mt-1">{s.pastDueDesc}</p>
               <Button
                 size="sm"
                 variant="outline"
@@ -190,7 +164,7 @@ export const PricingSection = () => {
                 className="mt-3 border-amber-500/30 text-amber-300 hover:bg-amber-500/10"
               >
                 {loadingPortal ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : <ExternalLink className="w-3 h-3 mr-2" />}
-                Actualizar Método de Pago
+                {s.updatePayment}
               </Button>
             </div>
           </div>
@@ -207,7 +181,7 @@ export const PricingSection = () => {
             className="border-white/[0.08] hover:bg-white/[0.04]"
           >
             {loadingPortal ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ExternalLink className="w-4 h-4 mr-2" />}
-            Gestionar Suscripción (Facturas, Método de Pago)
+            {s.managePortal}
           </Button>
         </div>
       )}
@@ -249,12 +223,12 @@ export const PricingSection = () => {
                         <h3 className="font-semibold">{plan.name}</h3>
                         {isRecommended && (
                           <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px] px-1.5 py-0">
-                            Recomendado
+                            {s.recommended}
                           </Badge>
                         )}
                         {isCurrent && (
                           <Badge variant="outline" className="border-primary/30 text-primary text-[10px] px-1.5 py-0">
-                            Actual
+                            {s.current}
                           </Badge>
                         )}
                       </div>
@@ -264,7 +238,7 @@ export const PricingSection = () => {
 
                   <div className="mb-5">
                     <span className="text-3xl font-bold">{plan.price}</span>
-                    <span className="text-sm text-muted-foreground">/mes</span>
+                    <span className="text-sm text-muted-foreground">{s.perMonth}</span>
                   </div>
 
                   <ul className="space-y-2.5 flex-1 mb-6">
@@ -281,7 +255,7 @@ export const PricingSection = () => {
 
                   {isCurrent ? (
                     <Button variant="outline" disabled className="w-full border-primary/20">
-                      Plan Actual
+                      {s.currentPlanButton}
                     </Button>
                   ) : (
                     <Button
@@ -294,9 +268,7 @@ export const PricingSection = () => {
                       onClick={() => handleCheckout(plan.priceId, plan.tier)}
                       disabled={isLoading}
                     >
-                      {isLoading ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : null}
+                      {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                       {PLANS.findIndex(p => p.tier === plan.tier) < PLANS.findIndex(p => p.tier === planTier) ? "Downgrade" : "Upgrade"}
                     </Button>
                   )}
