@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { motion } from "framer-motion";
 import { useBreakpoint } from "@/hooks/use-mobile";
 import { Lead } from "@/contexts/LeadsContext";
@@ -45,13 +46,7 @@ interface PipelineKanbanProps {
 
 // -- Helpers --
 
-const COLUMNS: { key: KanbanColumn; label: string; icon: React.ElementType; bgClass: string; iconClass: string; borderAccent: string }[] = [
-  { key: "leads", label: "Leads", icon: Users, bgClass: "bg-mint/20", iconClass: "text-mint-foreground", borderAccent: "border-l-mint-foreground/50" },
-  { key: "propuesta", label: "Propuesta", icon: FileText, bgClass: "bg-soft-blue/20", iconClass: "text-soft-blue-foreground", borderAccent: "border-l-soft-blue-foreground/50" },
-  { key: "work-orders", label: "Órdenes de Trabajo", icon: ClipboardList, bgClass: "bg-lavender/20", iconClass: "text-lavender-foreground", borderAccent: "border-l-lavender-foreground/50" },
-  { key: "entrega", label: "Entrega", icon: MapPin, bgClass: "bg-amber-50 dark:bg-amber-900/20", iconClass: "text-amber-700 dark:text-amber-300", borderAccent: "border-l-amber-600/50" },
-  { key: "completado", label: "Completado", icon: CheckCircle2, bgClass: "bg-pale-pink/20", iconClass: "text-pale-pink-foreground", borderAccent: "border-l-pale-pink-foreground/50" },
-];
+type ColumnDef = { key: KanbanColumn; label: string; icon: React.ElementType; bgClass: string; iconClass: string; borderAccent: string };
 
 function daysAgoFromDate(dateStr?: string | null): number {
   if (!dateStr) return 0;
@@ -75,9 +70,18 @@ const statusBadgeColor = (column: KanbanColumn) => {
 // -- Component --
 
 export const PipelineKanban = ({ leads, proposals, orders, installations, activeFilter }: PipelineKanbanProps) => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const breakpoint = useBreakpoint();
   const isMobile = breakpoint === "mobile";
+
+  const COLUMNS = useMemo<ColumnDef[]>(() => [
+    { key: "leads", label: t.pipelineKanban.cols.leads, icon: Users, bgClass: "bg-mint/20", iconClass: "text-mint-foreground", borderAccent: "border-l-mint-foreground/50" },
+    { key: "propuesta", label: t.pipelineKanban.cols.propuesta, icon: FileText, bgClass: "bg-soft-blue/20", iconClass: "text-soft-blue-foreground", borderAccent: "border-l-soft-blue-foreground/50" },
+    { key: "work-orders", label: t.pipelineKanban.cols.orders, icon: ClipboardList, bgClass: "bg-lavender/20", iconClass: "text-lavender-foreground", borderAccent: "border-l-lavender-foreground/50" },
+    { key: "entrega", label: t.pipelineKanban.cols.entrega, icon: MapPin, bgClass: "bg-amber-50 dark:bg-amber-900/20", iconClass: "text-amber-700 dark:text-amber-300", borderAccent: "border-l-amber-600/50" },
+    { key: "completado", label: t.pipelineKanban.cols.completado, icon: CheckCircle2, bgClass: "bg-pale-pink/20", iconClass: "text-pale-pink-foreground", borderAccent: "border-l-pale-pink-foreground/50" },
+  ], [t]);
 
   const cards = useMemo(() => {
     const result: PipelineCard[] = [];
