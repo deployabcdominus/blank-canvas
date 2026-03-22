@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useIndustryLabels } from "@/hooks/useIndustryLabels";
+import { useLanguage } from "@/i18n/LanguageContext";
 import {
   Bell, CheckCheck, ExternalLink, DollarSign, Clock, User,
   FileText, Wrench, AlertTriangle, Sparkles, Archive
@@ -76,6 +77,7 @@ export const NotificationBell = () => {
   const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const labels = useIndustryLabels();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("recent");
 
@@ -101,12 +103,16 @@ export const NotificationBell = () => {
   const formatTime = (d: string) => {
     const diff = Date.now() - new Date(d).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "Ahora";
+    if (mins < 1) return t.notificationBell.timeNow;
     if (mins < 60) return `${mins}m`;
     const hrs = Math.floor(mins / 60);
     if (hrs < 24) return `${hrs}h`;
     return `${Math.floor(hrs / 24)}d`;
   };
+
+  const ariaLabel = unreadCount > 0
+    ? t.notificationBell.ariaLabelUnread.replace("{{n}}", String(unreadCount))
+    : t.notificationBell.ariaLabel;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -115,7 +121,7 @@ export const NotificationBell = () => {
           variant="ghost"
           size="icon"
           className="relative h-10 w-10 hover:bg-white/10"
-          aria-label={`Notificaciones${unreadCount > 0 ? ` (${unreadCount} sin leer)` : ""}`}
+          aria-label={ariaLabel}
         >
           <Bell className="w-5 h-5" />
           {unreadCount > 0 && (
@@ -139,7 +145,7 @@ export const NotificationBell = () => {
         {/* Header */}
         <div className="px-4 pt-4 pb-3 border-b border-white/[0.06]">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-foreground">Notificaciones</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t.notificationBell.title}</h3>
             {unreadCount > 0 && (
               <Button
                 variant="ghost"
@@ -148,28 +154,28 @@ export const NotificationBell = () => {
                 className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
               >
                 <CheckCheck className="w-3.5 h-3.5 mr-1" />
-                Marcar todas
+                {t.notificationBell.markAll}
               </Button>
             )}
           </div>
 
           {/* Tabs */}
           <div className="flex gap-1 p-0.5 rounded-xl bg-white/[0.04]">
-            {(["recent", "archived"] as Tab[]).map(t => (
+            {(["recent", "archived"] as Tab[]).map(tabKey => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
+                key={tabKey}
+                onClick={() => setTab(tabKey)}
                 className={cn(
                   "flex-1 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5",
-                  tab === t
+                  tab === tabKey
                     ? "bg-white/[0.08] text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground/80"
                 )}
               >
-                {t === "recent" ? (
+                {tabKey === "recent" ? (
                   <>
                     <Bell className="w-3 h-3" />
-                    Recientes
+                    {t.notificationBell.tabRecent}
                     {recentNotifications.length > 0 && (
                       <span className="ml-0.5 text-[10px] bg-orange-500/20 text-orange-400 px-1.5 rounded-full font-semibold">
                         {recentNotifications.length}
@@ -179,7 +185,7 @@ export const NotificationBell = () => {
                 ) : (
                   <>
                     <Archive className="w-3 h-3" />
-                    Archivadas
+                    {t.notificationBell.tabArchived}
                   </>
                 )}
               </button>
@@ -202,13 +208,13 @@ export const NotificationBell = () => {
                   {tab === "recent" ? (
                     <>
                       <Bell className="w-8 h-8 mb-2 opacity-20" />
-                      <p className="text-sm">Todo al día</p>
-                      <p className="text-xs mt-1 opacity-60">No hay notificaciones pendientes</p>
+                      <p className="text-sm">{t.notificationBell.emptyRecent}</p>
+                      <p className="text-xs mt-1 opacity-60">{t.notificationBell.emptyRecentSub}</p>
                     </>
                   ) : (
                     <>
                       <Archive className="w-8 h-8 mb-2 opacity-20" />
-                      <p className="text-sm">Sin archivadas</p>
+                      <p className="text-sm">{t.notificationBell.emptyArchived}</p>
                     </>
                   )}
                 </div>
