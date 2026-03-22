@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useRef } from 'react';
+import { useLanguage } from "@/i18n/LanguageContext";
 import { DateField } from "@/components/ui/date-field";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -82,6 +83,7 @@ const CHECKLIST_ITEMS = [
 
 // ── Print View Component ──
 const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
+  const { t } = useLanguage();
   const printRef = useRef<HTMLDivElement>(null);
   const handlePrint = () => window.print();
 
@@ -103,20 +105,20 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
       ...order.checklist.map((c: any) => `  ${c.checked ? '☑' : '☐'} ${c.label}`),
     ].filter(Boolean).join('\n');
     navigator.clipboard.writeText(lines);
-    sonnerToast.success('Resumen copiado al portapapeles');
+    sonnerToast.success(t.newWorkOrderModal.toastCopied);
   };
 
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-[800px] max-h-[90vh] p-0 bg-background/90 backdrop-blur-2xl border border-white/[0.08] flex flex-col">
         <div className="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
-          <DialogTitle className="text-lg font-semibold">Orden de Servicio</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">{t.newWorkOrderModal.printTitle}</DialogTitle>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={handleCopyText} className="gap-1.5 text-xs border-white/[0.1]">
-              <Copy className="w-3.5 h-3.5" /> WhatsApp
+              <Copy className="w-3.5 h-3.5" /> {t.newWorkOrderModal.printWhatsapp}
             </Button>
             <Button size="sm" onClick={handlePrint} className="gap-1.5 text-xs">
-              <Printer className="w-3.5 h-3.5" /> Imprimir
+              <Printer className="w-3.5 h-3.5" /> {t.newWorkOrderModal.printPrint}
             </Button>
           </div>
         </div>
@@ -124,8 +126,8 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
           <div ref={printRef} className="px-8 py-6 space-y-6 print-order">
             <div className="flex justify-between items-start border-b border-white/[0.06] pb-4">
               <div>
-                <h2 className="text-xl font-bold">Orden de Servicio</h2>
-                <p className="text-sm text-muted-foreground">Fecha: {new Date().toLocaleDateString('es-ES')}</p>
+                <h2 className="text-xl font-bold">{t.newWorkOrderModal.printTitle}</h2>
+                <p className="text-sm text-muted-foreground">{t.newWorkOrderModal.printDate} {new Date().toLocaleDateString('es-ES')}</p>
               </div>
               <Badge className={order.priority === 'Urgente' ? 'bg-destructive/20 text-destructive' : 'bg-muted'}>
                 {order.priority}
@@ -133,30 +135,30 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Cliente</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.newWorkOrderModal.printClient}</p>
                 <p className="font-semibold">{order.client}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Proyecto</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.newWorkOrderModal.printProject}</p>
                 <p className="font-semibold">{order.project}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Servicio</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.newWorkOrderModal.printService}</p>
                 <p>{order.serviceType}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Fecha objetivo</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.newWorkOrderModal.printTargetDate}</p>
                 <p>{order.targetDate || '—'}</p>
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">Recursos</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">{t.newWorkOrderModal.printResources}</h3>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.08]">
-                    <th className="text-left py-2 text-muted-foreground font-medium">Recurso</th>
-                    <th className="text-center py-2 text-muted-foreground font-medium w-20">Cant.</th>
-                    <th className="text-center py-2 text-muted-foreground font-medium w-16">Unidad</th>
+                    <th className="text-left py-2 text-muted-foreground font-medium">{t.newWorkOrderModal.printResource}</th>
+                    <th className="text-center py-2 text-muted-foreground font-medium w-20">{t.newWorkOrderModal.printQty}</th>
+                    <th className="text-center py-2 text-muted-foreground font-medium w-16">{t.newWorkOrderModal.printUnit}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -172,18 +174,18 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             </div>
             {(order.width || order.height) && (
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">Medidas</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">{t.newWorkOrderModal.printDimensions}</h3>
                 <p>{order.width || '—'}" × {order.height || '—'}" × {order.depth || '—'}" (pulgadas)</p>
               </div>
             )}
             {order.notes && (
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">Notas</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">{t.newWorkOrderModal.printNotes}</h3>
                 <p className="text-sm whitespace-pre-wrap">{order.notes}</p>
               </div>
             )}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">Checklist</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">{t.newWorkOrderModal.printChecklist}</h3>
               <div className="grid grid-cols-3 gap-2">
                 {order.checklist.map((c: any) => (
                   <div key={c.key} className="flex items-center gap-2">
@@ -206,6 +208,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 // MAIN MODAL — Workflow-first Wide Canvas
 // ══════════════════════════════════════════════
 export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useLanguage();
   const { proposals } = useProposals();
   const { addOrder } = useWorkOrders();
   const { toast } = useToast();
@@ -319,9 +322,9 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   });
 
   const validate = () => {
-    if (!clientName) { toast({ title: "Error", description: "Ingrese un cliente.", variant: "destructive" }); return false; }
-    if (!projectName) { toast({ title: "Error", description: "Ingrese el nombre del proyecto.", variant: "destructive" }); return false; }
-    if (selectedMaterials.length === 0) { toast({ title: "Error", description: "Agregue al menos un recurso.", variant: "destructive" }); return false; }
+    if (!clientName) { toast({ title: "Error", description: t.newWorkOrderModal.validationNoClient, variant: "destructive" }); return false; }
+    if (!projectName) { toast({ title: "Error", description: t.newWorkOrderModal.validationNoProject, variant: "destructive" }); return false; }
+    if (selectedMaterials.length === 0) { toast({ title: "Error", description: t.newWorkOrderModal.validationNoMaterials, variant: "destructive" }); return false; }
     return true;
   };
 
@@ -341,7 +344,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
       projectId: null, notes: data.notes || null, priority: data.priority === 'Urgente' ? 'urgente' : 'media',
     });
 
-    sonnerToast.success(`Orden creada para "${data.client}"`);
+    sonnerToast.success(t.newWorkOrderModal.toastCreated.replace("{{client}}", data.client));
 
     if (andView) {
       setPrintOrder(data);
@@ -379,22 +382,22 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                 </div>
                 <div className="min-w-0">
                   <DialogTitle className="text-2xl font-bold tracking-tight text-zinc-100 truncate">
-                    {clientName || 'Nueva Orden de Servicio'}
+                    {clientName || t.newWorkOrderModal.defaultTitle}
                   </DialogTitle>
                   <p className="text-xs text-zinc-400 truncate">
-                    {projectName || 'Configura el contexto del proyecto y las especificaciones técnicas'}
+                    {projectName || t.newWorkOrderModal.defaultSubtitle}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 {selectedMaterials.length > 0 && (
                   <Badge className="bg-primary/15 text-primary border border-primary/20 text-xs">
-                    {selectedMaterials.length} recursos
+                    {t.newWorkOrderModal.resourcesBadge.replace("{{n}}", String(selectedMaterials.length))}
                   </Badge>
                 )}
                 {priority === 'Urgente' && (
                   <Badge className="bg-destructive/15 text-destructive border border-destructive/20 text-xs gap-1">
-                    <Zap className="w-3 h-3" /> Urgente
+                    <Zap className="w-3 h-3" /> {t.newWorkOrderModal.urgentBadge}
                   </Badge>
                 )}
               </div>
@@ -408,15 +411,15 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
             <div className="overflow-y-auto lg:border-r border-white/[0.06] p-6 space-y-5">
               <div>
                 <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 mb-3">
-                  <ClipboardList className="w-3.5 h-3.5" /> Contexto del Proyecto
+                  <ClipboardList className="w-3.5 h-3.5" /> {t.newWorkOrderModal.projectContextTitle}
                 </h3>
                 <div className="space-y-3">
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Empresa / Cliente *</Label>
+                    <Label className="text-xs text-muted-foreground">{t.newWorkOrderModal.clientLabel}</Label>
                     {sentProposals.length > 0 ? (
                       <Select value={selectedClientId} onValueChange={(v) => { setSelectedClientId(v); setCustomClient(''); }}>
                         <SelectTrigger className="bg-white/[0.03] border-white/[0.08] h-9 text-sm">
-                          <SelectValue placeholder="Seleccionar cliente" />
+                          <SelectValue placeholder={t.newWorkOrderModal.selectClientPlaceholder} />
                         </SelectTrigger>
                         <SelectContent>
                           {sentProposals.map(p => (
@@ -431,30 +434,30 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                     <Input
                       value={customClient}
                       onChange={e => { setCustomClient(e.target.value); setSelectedClientId(''); }}
-                      placeholder={sentProposals.length > 0 ? "O escribir nombre directo" : "Nombre del cliente"}
+                      placeholder={sentProposals.length > 0 ? t.newWorkOrderModal.typeDirectly : t.newWorkOrderModal.clientPlaceholder}
                       className="bg-white/[0.03] border-white/[0.08] h-9 text-sm"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Proyecto *</Label>
-                    <Input value={projectName} onChange={e => setProjectName(e.target.value)} placeholder="Nombre del proyecto" className="bg-white/[0.03] border-white/[0.08] h-9 text-sm" />
+                    <Label className="text-xs text-muted-foreground">{t.newWorkOrderModal.projectLabel}</Label>
+                    <Input value={projectName} onChange={e => setProjectName(e.target.value)} placeholder={t.newWorkOrderModal.projectPlaceholder} className="bg-white/[0.03] border-white/[0.08] h-9 text-sm" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label className="text-xs text-muted-foreground">Tipo de servicio</Label>
+                      <Label className="text-xs text-muted-foreground">{t.newWorkOrderModal.serviceTypeLabel}</Label>
                       <Select value={serviceType} onValueChange={setServiceType}>
                         <SelectTrigger className="bg-white/[0.03] border-white/[0.08] h-9 text-sm">
-                          <SelectValue placeholder="Seleccionar" />
+                          <SelectValue placeholder={t.newWorkOrderModal.serviceTypePlaceholder} />
                         </SelectTrigger>
                         <SelectContent>
                           {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                         </SelectContent>
                       </Select>
                     </div>
-                    <DateField label="Fecha objetivo" value={targetDate} onChange={setTargetDate} minDate={new Date()} compact />
+                    <DateField label={t.newWorkOrderModal.targetDateLabel} value={targetDate} onChange={setTargetDate} minDate={new Date()} compact />
                   </div>
                   <div className="flex items-center gap-2">
-                    <Label className="text-xs text-muted-foreground">Prioridad:</Label>
+                    <Label className="text-xs text-muted-foreground">{t.newWorkOrderModal.priorityLabel}</Label>
                     <button
                       onClick={() => setPriority(p => p === 'Normal' ? 'Urgente' : 'Normal')}
                       className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
@@ -464,7 +467,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                       }`}
                     >
                       {priority === 'Urgente' && <Zap className="w-3 h-3 inline mr-1" />}
-                      {priority}
+                      {priority === 'Urgente' ? t.newWorkOrderModal.urgentPriority : t.newWorkOrderModal.normalPriority}
                     </button>
                   </div>
                 </div>
@@ -475,16 +478,16 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
               {/* Notes */}
               <div>
                 <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 mb-3">
-                  <StickyNote className="w-3.5 h-3.5" /> Notas del Proyecto
+                  <StickyNote className="w-3.5 h-3.5" /> {t.newWorkOrderModal.projectNotesTitle}
                 </h3>
-                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Instrucciones, observaciones..." className="bg-white/[0.03] border-white/[0.08] min-h-[80px] resize-none text-sm" />
+                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder={t.newWorkOrderModal.notesPlaceholder} className="bg-white/[0.03] border-white/[0.08] min-h-[80px] resize-none text-sm" />
               </div>
 
               <div className="border-t border-white/[0.06]" />
 
               {/* Checklist */}
               <div>
-                <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Checklist rápido</h3>
+                <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-3">{t.newWorkOrderModal.quickChecklistTitle}</h3>
                 <div className="grid grid-cols-2 gap-1.5">
                   {checklist.map(item => (
                     <button key={item.key} onClick={() => toggleChecklist(item.key)} className={`flex items-center gap-2 px-2.5 py-2 rounded-lg border text-xs transition-colors ${item.checked ? 'bg-primary/10 border-primary/25 text-primary' : 'bg-white/[0.02] border-white/[0.08] text-muted-foreground hover:bg-white/[0.05]'}`}>
@@ -499,8 +502,8 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
 
               {/* Folder path */}
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Carpeta de red</Label>
-                <Input value={folderPath} onChange={e => setFolderPath(e.target.value)} placeholder="\\server\Projects\..." className="bg-white/[0.02] border-white/[0.06] h-8 text-xs font-mono" />
+                <Label className="text-xs text-muted-foreground">{t.newWorkOrderModal.networkFolderLabel}</Label>
+                <Input value={folderPath} onChange={e => setFolderPath(e.target.value)} placeholder={t.newWorkOrderModal.networkFolderPlaceholder} className="bg-white/[0.02] border-white/[0.06] h-8 text-xs font-mono" />
               </div>
             </div>
 
@@ -510,7 +513,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
               {/* Blueprint Drop Zone */}
               <div>
                 <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 mb-3">
-                  <Maximize2 className="w-3.5 h-3.5" /> Plano de Fabricación
+                  <Maximize2 className="w-3.5 h-3.5" /> {t.newWorkOrderModal.blueprintTitle}
                 </h3>
                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleBlueprintSelect} />
                 {blueprintPreview ? (
@@ -519,11 +522,11 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                     <div className="absolute inset-0 bg-zinc-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Button variant="outline" size="sm" onClick={() => setBlueprintFullscreen(true)}
                         className="text-xs border-white/[0.15] bg-zinc-950/70 backdrop-blur-sm h-8">
-                        <Maximize2 className="w-3 h-3 mr-1.5" /> Pantalla completa
+                        <Maximize2 className="w-3 h-3 mr-1.5" /> {t.newWorkOrderModal.fullscreen}
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => { setBlueprintFile(null); setBlueprintPreview(null); }}
                         className="text-xs border-white/[0.15] bg-zinc-950/70 backdrop-blur-sm h-8 text-destructive">
-                        <X className="w-3 h-3 mr-1.5" /> Quitar
+                        <X className="w-3 h-3 mr-1.5" /> {t.newWorkOrderModal.removePlan}
                       </Button>
                     </div>
                   </div>
@@ -535,8 +538,8 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                     className="rounded-xl border-2 border-dashed border-white/[0.1] h-40 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary/30 hover:bg-primary/[0.02] transition-colors"
                   >
                     <Upload className="w-6 h-6 text-muted-foreground" />
-                    <p className="text-xs text-muted-foreground">Arrastra o haz clic para subir</p>
-                    <p className="text-[10px] text-muted-foreground/60">DXF, PNG, JPG, PDF</p>
+                    <p className="text-xs text-muted-foreground">{t.newWorkOrderModal.blueprintDropText}</p>
+                    <p className="text-[10px] text-muted-foreground/60">{t.newWorkOrderModal.blueprintFormats}</p>
                   </div>
                 )}
               </div>
@@ -546,12 +549,12 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
               {/* Dimensions */}
               <div>
                 <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 mb-3">
-                  <Ruler className="w-3.5 h-3.5" /> Medidas (pulgadas)
+                  <Ruler className="w-3.5 h-3.5" /> {t.newWorkOrderModal.dimensionsTitle}
                 </h3>
                 <div className="grid grid-cols-3 gap-2">
-                  <Input value={width} onChange={e => setWidth(e.target.value)} placeholder="Ancho" className="bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
-                  <Input value={height} onChange={e => setHeight(e.target.value)} placeholder="Alto" className="bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
-                  <Input value={depth} onChange={e => setDepth(e.target.value)} placeholder="Prof." className="bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
+                  <Input value={width} onChange={e => setWidth(e.target.value)} placeholder={t.newWorkOrderModal.widthPlaceholder} className="bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
+                  <Input value={height} onChange={e => setHeight(e.target.value)} placeholder={t.newWorkOrderModal.heightPlaceholder} className="bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
+                  <Input value={depth} onChange={e => setDepth(e.target.value)} placeholder={t.newWorkOrderModal.depthPlaceholder} className="bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
                 </div>
               </div>
 
@@ -560,11 +563,11 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
               {/* Material Builder */}
               <div>
                 <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 mb-3">
-                  <Factory className="w-3.5 h-3.5" /> Constructor de Materiales
+                  <Factory className="w-3.5 h-3.5" /> {t.newWorkOrderModal.materialsTitle}
                 </h3>
 
                 {/* Quick-add frequent materials as cards */}
-                <p className="text-[10px] text-muted-foreground mb-2">⚡ Clic para agregar</p>
+                <p className="text-[10px] text-muted-foreground mb-2">{t.newWorkOrderModal.clickToAdd}</p>
                 <div className="grid grid-cols-2 gap-1.5 mb-3">
                   {frequentMaterials.map(mat => {
                     const sel = isSelected(mat.id);
@@ -586,17 +589,17 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                 {/* Extended catalog toggle */}
                 <button onClick={() => setShowAllMaterials(!showAllMaterials)} className="text-xs text-primary hover:underline flex items-center gap-1 mb-2">
                   {showAllMaterials ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  {showAllMaterials ? 'Ocultar catálogo' : 'Buscar otros recursos'}
+                  {showAllMaterials ? t.newWorkOrderModal.hideCatalog : t.newWorkOrderModal.showCatalog}
                 </button>
                 <AnimatePresence>
                   {showAllMaterials && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden space-y-2 mb-3">
                       <div className="relative">
                         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                        <Input value={materialSearch} onChange={e => setMaterialSearch(e.target.value)} placeholder="Buscar recurso..." className="pl-8 bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
+                        <Input value={materialSearch} onChange={e => setMaterialSearch(e.target.value)} placeholder={t.newWorkOrderModal.searchMaterial} className="pl-8 bg-white/[0.03] border-white/[0.08] h-8 text-xs" />
                       </div>
                       <div className="flex flex-wrap gap-1.5">
-                        <button onClick={() => setActiveCategoryFilter(null)} className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-colors ${!activeCategoryFilter ? 'bg-primary/15 text-primary border-primary/20' : 'bg-white/[0.03] text-muted-foreground border-white/[0.08] hover:bg-white/[0.06]'}`}>Todos</button>
+                        <button onClick={() => setActiveCategoryFilter(null)} className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-colors ${!activeCategoryFilter ? 'bg-primary/15 text-primary border-primary/20' : 'bg-white/[0.03] text-muted-foreground border-white/[0.08] hover:bg-white/[0.06]'}`}>{t.newWorkOrderModal.allCategories}</button>
                         {CATEGORIES.map(cat => (
                           <button key={cat} onClick={() => setActiveCategoryFilter(activeCategoryFilter === cat ? null : cat)} className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-colors ${activeCategoryFilter === cat ? 'bg-primary/15 text-primary border-primary/20' : 'bg-white/[0.03] text-muted-foreground border-white/[0.08] hover:bg-white/[0.06]'}`}>{cat}</button>
                         ))}
@@ -621,16 +624,16 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
 
                 {/* Custom material quick-add */}
                 <div className="flex gap-2 mb-3">
-                  <Input value={customMaterialName} onChange={e => setCustomMaterialName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addCustomMaterial()} placeholder="Material personalizado..." className="bg-white/[0.02] border-white/[0.06] h-8 text-xs flex-1" />
+                  <Input value={customMaterialName} onChange={e => setCustomMaterialName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addCustomMaterial()} placeholder={t.newWorkOrderModal.customMaterialPlaceholder} className="bg-white/[0.02] border-white/[0.06] h-8 text-xs flex-1" />
                   <Button size="sm" variant="outline" onClick={addCustomMaterial} className="h-8 px-3 text-xs border-white/[0.1]" disabled={!customMaterialName.trim()}>
-                    <Plus className="w-3 h-3 mr-1" /> Agregar
+                    <Plus className="w-3 h-3 mr-1" /> {t.newWorkOrderModal.addMaterial}
                   </Button>
                 </div>
 
                 {/* Selected materials as block cards */}
                 {selectedMaterials.length > 0 && (
                   <div className="space-y-1.5">
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Seleccionados ({selectedMaterials.length})</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{t.newWorkOrderModal.selectedCount.replace("{{n}}", String(selectedMaterials.length))}</p>
                     <div className="grid grid-cols-1 gap-1.5">
                       {selectedMaterials.map(mat => (
                         <motion.div
@@ -666,13 +669,13 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
           {/* ══ STICKY FOOTER ══ */}
           <div className="shrink-0 px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-xl flex flex-col-reverse sm:flex-row sm:items-center gap-2 z-10">
             <Button variant="ghost" size="sm" onClick={() => { resetForm(); onClose(); }} className="text-xs sm:mr-auto text-muted-foreground hover:text-foreground">
-              Cancelar
+              {t.newWorkOrderModal.cancel}
             </Button>
             <Button variant="outline" size="sm" onClick={() => createOrder(true)} className="text-xs gap-1.5 border-white/[0.1] text-muted-foreground hover:text-foreground">
-              <Printer className="w-3.5 h-3.5" /> Crear y Ver
+              <Printer className="w-3.5 h-3.5" /> {t.newWorkOrderModal.createAndView}
             </Button>
             <Button size="sm" onClick={() => createOrder(false)} className="text-xs gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Save className="w-3.5 h-3.5" /> Enviar a Producción
+              <Save className="w-3.5 h-3.5" /> {t.newWorkOrderModal.sendToProduction}
             </Button>
           </div>
         </DialogContent>

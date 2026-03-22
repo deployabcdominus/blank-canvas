@@ -129,7 +129,7 @@ ${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
                       <div><div className="font-medium">{service.client}</div><div className="text-sm text-muted-foreground">{service.serviceType} - {service.project}</div></div>
                     </SelectItem>
                   )) : (
-                    <div className="p-2 text-sm text-muted-foreground">Ningún servicio disponible para este subcontratista</div>
+                    <div className="p-2 text-sm text-muted-foreground">{t.scheduleInstallationModal.noServicesForContractor}</div>
                   )}
                 </SelectContent>
               </Select>
@@ -139,12 +139,12 @@ ${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-foreground">Fecha *</Label>
+              <Label className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.dateLabel}</Label>
               <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white border-input", !watchedDate && "text-muted-foreground")}>
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {watchedDate ? format(watchedDate, "dd/MM/yyyy", { locale: es }) : "Seleccione una fecha"}
+                    {watchedDate ? format(watchedDate, "dd/MM/yyyy", { locale: es }) : t.scheduleInstallationModal.datePlaceholder}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0 bg-white z-50" align="start">
@@ -154,47 +154,47 @@ ${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
               {errors.date && <p className="text-sm text-destructive">{errors.date.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="time" className="text-sm font-medium text-foreground">Horario *</Label>
+              <Label htmlFor="time" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.timeLabel}</Label>
               <Input id="time" type="time" className="bg-white border-input" {...register("time")} />
               {errors.time && <p className="text-sm text-destructive">{errors.time.message}</p>}
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-sm font-medium text-foreground">Dirección *</Label>
-            <Input id="address" placeholder="Dirección completa de la ejecución" className="bg-white border-input" {...register("address")} />
+            <Label htmlFor="address" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.addressLabel}</Label>
+            <Input id="address" placeholder={t.scheduleInstallationModal.addressPlaceholder} className="bg-white border-input" {...register("address")} />
             {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-medium text-foreground">Contacto en el Lugar (Opcional)</h3>
+            <h3 className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.onSiteContactTitle}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="contactName" className="text-sm font-medium text-foreground">Nombre</Label>
-                <Input id="contactName" placeholder="Nombre del contacto" className="bg-white border-input" {...register("contactName")} />
+                <Label htmlFor="contactName" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.contactNameLabel}</Label>
+                <Input id="contactName" placeholder={t.scheduleInstallationModal.contactNamePlaceholder} className="bg-white border-input" {...register("contactName")} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contactPhone" className="text-sm font-medium text-foreground">Teléfono</Label>
-                <Input id="contactPhone" placeholder="(11) 99999-9999" className="bg-white border-input" {...register("contactPhone")} />
+                <Label htmlFor="contactPhone" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.contactPhoneLabel}</Label>
+                <Input id="contactPhone" placeholder={t.scheduleInstallationModal.contactPhonePlaceholder} className="bg-white border-input" {...register("contactPhone")} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contactEmail" className="text-sm font-medium text-foreground">Email</Label>
-                <Input id="contactEmail" type="email" placeholder="contacto@empresa.com" className="bg-white border-input" {...register("contactEmail")} />
+                <Label htmlFor="contactEmail" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.contactEmailLabel}</Label>
+                <Input id="contactEmail" type="email" placeholder={t.scheduleInstallationModal.contactEmailPlaceholder} className="bg-white border-input" {...register("contactEmail")} />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes" className="text-sm font-medium text-foreground">Observaciones</Label>
-            <Textarea id="notes" placeholder="Información adicional sobre la ejecución..." className="bg-white border-input min-h-[80px]" {...register("notes")} />
+            <Label htmlFor="notes" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.notesLabel}</Label>
+            <Textarea id="notes" placeholder={t.scheduleInstallationModal.notesPlaceholder} className="bg-white border-input min-h-[80px]" {...register("notes")} />
           </div>
 
           <DialogFooter className="flex gap-2">
-            <Button type="button" variant="outline" onClick={onClose} className="bg-white border-input hover:bg-gray-50">Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} className="bg-white border-input hover:bg-gray-50">{t.scheduleInstallationModal.cancel}</Button>
             <Button type="button" variant="outline" onClick={handleShare} className="bg-white border-input hover:bg-gray-50" disabled={!selectedService || !selectedCompany || !watchedDate}>
-              <Copy className="w-4 h-4 mr-2" />Compartir
+              <Copy className="w-4 h-4 mr-2" />{t.scheduleInstallationModal.share}
             </Button>
-            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Agendar Ejecución</Button>
+            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">{t.scheduleInstallationModal.schedule}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

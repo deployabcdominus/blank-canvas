@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +33,7 @@ interface InstallerCompanyModalProps {
 }
 
 export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ isOpen, onClose, company }) => {
+  const { t } = useLanguage();
   const { addCompany, updateCompany } = useInstallerCompanies();
   const fallbackServices = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
@@ -60,7 +62,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
       reader.onload = (e) => { const result = e.target?.result as string; setLogoFile(result); setLogoPreview(result); };
       reader.readAsDataURL(compressedFile);
     } catch (error) {
-      toast({ title: "Error al procesar imagen", description: "No fue posible procesar la imagen. Intente nuevamente.", variant: "destructive" });
+      toast({ title: t.installerCompanyModal.toastImageError, description: t.installerCompanyModal.toastImageErrorDesc, variant: "destructive" });
     }
   };
 
@@ -79,10 +81,10 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
     const companyData = { name: data.name, email: data.email, phone: data.phone, contact: data.contact || "", logoUrl: logoFile || undefined, services: selectedServices };
     if (company) {
       updateCompany(company.id, companyData);
-      toast({ title: "Empresa actualizada", description: "¡Subcontratista actualizado con éxito!" });
+      toast({ title: t.installerCompanyModal.toastUpdated, description: t.installerCompanyModal.toastUpdatedDesc });
     } else {
       addCompany(companyData);
-      toast({ title: "Empresa registrada", description: "¡Subcontratista registrado con éxito!" });
+      toast({ title: t.installerCompanyModal.toastRegistered, description: t.installerCompanyModal.toastRegisteredDesc });
     }
     reset(); setSelectedServices([]); setLogoFile(null); setLogoPreview(null); onClose();
   };
@@ -94,7 +96,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
       <DialogContent className="bg-background border-border/40 shadow-2xl max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-foreground">
-            {company ? "Editar" : "Registrar"} Subcontratista
+            {company ? t.installerCompanyModal.editTitle : t.installerCompanyModal.registerTitle}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -111,40 +113,40 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
             </div>
             <div className="flex flex-col items-center gap-1">
               <Label htmlFor="logo" className="cursor-pointer">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Upload className="w-4 h-4" />Cargar Logotipo</div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Upload className="w-4 h-4" />{t.installerCompanyModal.logoLabel}</div>
               </Label>
               <Input id="logo" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-              <p className="text-xs text-muted-foreground">PNG, JPG hasta 5MB</p>
+              <p className="text-xs text-muted-foreground">{t.installerCompanyModal.logoHint}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-medium text-foreground">Nombre de la Empresa *</Label>
-              <Input id="name" placeholder="Nombre del subcontratista" {...register("name")} />
+              <Label htmlFor="name" className="text-sm font-medium text-foreground">{t.installerCompanyModal.nameLabel}</Label>
+              <Input id="name" placeholder={t.installerCompanyModal.namePlaceholder} {...register("name")} />
               {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">Email Principal *</Label>
-              <Input id="email" type="email" placeholder="contacto@empresa.com" {...register("email")} />
+              <Label htmlFor="email" className="text-sm font-medium text-foreground">{t.installerCompanyModal.emailLabel}</Label>
+              <Input id="email" type="email" placeholder={t.installerCompanyModal.emailPlaceholder} {...register("email")} />
               {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-medium text-foreground">Teléfono Principal *</Label>
-              <Input id="phone" placeholder="(11) 99999-9999" {...register("phone", { onChange: (e) => { e.target.value = formatPhone(e.target.value); } })} />
+              <Label htmlFor="phone" className="text-sm font-medium text-foreground">{t.installerCompanyModal.phoneLabel}</Label>
+              <Input id="phone" placeholder={t.installerCompanyModal.phonePlaceholder} {...register("phone", { onChange: (e) => { e.target.value = formatPhone(e.target.value); } })} />
               {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="contact" className="text-sm font-medium text-foreground">Persona de Contacto</Label>
-              <Input id="contact" placeholder="Nombre del responsable" {...register("contact")} />
+              <Label htmlFor="contact" className="text-sm font-medium text-foreground">{t.installerCompanyModal.contactLabel}</Label>
+              <Input id="contact" placeholder={t.installerCompanyModal.contactPlaceholder} {...register("contact")} />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-foreground">Servicios Ofrecidos *</Label>
+            <Label className="text-sm font-medium text-foreground">{t.installerCompanyModal.servicesLabel}</Label>
             <div className="grid grid-cols-2 gap-2 border border-border rounded-xl p-3 bg-muted/30">
               {serviceTypes.map((service) => (
                 <div key={service} className="flex items-center space-x-2">
@@ -161,8 +163,8 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
           </div>
 
           <DialogFooter className="flex gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
-            <Button type="submit">{company ? "Actualizar" : "Registrar"} Empresa</Button>
+            <Button type="button" variant="outline" onClick={onClose}>{t.installerCompanyModal.cancel}</Button>
+            <Button type="submit">{company ? t.installerCompanyModal.update : t.installerCompanyModal.register}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
