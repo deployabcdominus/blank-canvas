@@ -35,7 +35,8 @@ export default function Settings() {
   const { user } = useAuth();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
   const planLimits = usePlanLimits();
   const { toast } = useToast();
   
@@ -77,8 +78,8 @@ export default function Settings() {
   const handleSave = () => {
     updateSettings(formData);
     toast({
-      title: "Configuración guardada",
-      description: "La configuración se actualizó correctamente.",
+      title: isEn ? "Settings saved" : "Configuración guardada",
+      description: isEn ? "Settings updated successfully." : "La configuración se actualizó correctamente.",
     });
   };
 
@@ -95,9 +96,9 @@ export default function Settings() {
       // Update profiles table
       await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', user.id);
 
-      toast({ title: "Nombre actualizado", description: "Tu nombre se guardó correctamente." });
+      toast({ title: isEn ? "Name updated" : "Nombre actualizado", description: isEn ? "Your name was saved successfully." : "Tu nombre se guardó correctamente." });
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "No se pudo guardar.", variant: "destructive" });
+      toast({ title: "Error", description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
     } finally {
       setSavingName(false);
     }
@@ -113,7 +114,7 @@ export default function Settings() {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       setResetSent(false);
     } else {
-      toast({ title: "Email enviado", description: "Revisa tu correo para cambiar la contraseña." });
+      toast({ title: isEn ? "Email sent" : "Email enviado", description: isEn ? "Check your inbox to change your password." : "Revisa tu correo para cambiar la contraseña." });
     }
   };
 
@@ -319,7 +320,7 @@ export default function Settings() {
                     {t.settings.profile.accountCreated}
                   </Label>
                   <Input
-                    value={user?.created_at ? new Date(user.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : t.settings.profile.notAvailable}
+                    value={user?.created_at ? new Date(user.created_at).toLocaleDateString(isEn ? 'en-US' : 'es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : t.settings.profile.notAvailable}
                     readOnly
                     className="glass bg-muted/50"
                   />
@@ -363,7 +364,7 @@ export default function Settings() {
                               if (!company) return;
                               try {
                                 await supabase.from('companies').update({ logo_url: null }).eq('id', company.id);
-                                toast({ title: "Logo eliminado" });
+                                toast({ title: isEn ? "Logo removed" : "Logo eliminado" });
                                 window.location.reload();
                               } catch { /* noop */ }
                             }}
@@ -398,7 +399,7 @@ export default function Settings() {
                             const file = e.target.files?.[0];
                             if (!file || !company || !user) return;
                             if (file.size > 2 * 1024 * 1024) {
-                              toast({ title: "Error", description: "El archivo es muy grande. Máximo 2MB.", variant: "destructive" });
+                              toast({ title: "Error", description: isEn ? "File is too large. Maximum 2MB." : "El archivo es muy grande. Máximo 2MB.", variant: "destructive" });
                               return;
                             }
                             setUploadingLogo(true);
@@ -410,7 +411,7 @@ export default function Settings() {
                               const { data: urlData } = supabase.storage.from('company-logos').getPublicUrl(path);
                               const logoUrl = urlData.publicUrl + '?t=' + Date.now();
                               await supabase.from('companies').update({ logo_url: logoUrl }).eq('id', company.id);
-                              toast({ title: "Logo actualizado", description: "El logo se guardó correctamente." });
+                              toast({ title: isEn ? "Logo updated" : "Logo actualizado", description: isEn ? "Logo saved successfully." : "El logo se guardó correctamente." });
                               window.location.reload();
                             } catch (err: any) {
                               toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -442,9 +443,9 @@ export default function Settings() {
                       setSavingOrg(true);
                       try {
                         await updateCompanyName(orgName.trim());
-                        toast({ title: "Empresa actualizada", description: "El nombre de la empresa se guardó correctamente." });
+                        toast({ title: isEn ? "Company updated" : "Empresa actualizada", description: isEn ? "Company name saved successfully." : "El nombre de la empresa se guardó correctamente." });
                       } catch (err: any) {
-                        toast({ title: "Error", description: err.message || "No se pudo guardar.", variant: "destructive" });
+                        toast({ title: "Error", description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
                       } finally {
                         setSavingOrg(false);
                       }
@@ -506,7 +507,7 @@ export default function Settings() {
                           enable_network_index: networkEnabled,
                           network_base_path: networkBasePath.trim() || null,
                         });
-                        toast({ title: "Configuración de storage guardada" });
+                        toast({ title: isEn ? "Storage settings saved" : "Configuración de storage guardada" });
                       } catch (err: any) {
                         toast({ title: "Error", description: err.message, variant: "destructive" });
                       } finally { setSavingStorage(false); }
@@ -585,7 +586,7 @@ export default function Settings() {
                         <AlertDialogAction onClick={() => {
                           resetToDefaults();
                           setFormData(settings);
-                          toast({ title: "Configuración restaurada", description: "La configuración fue restaurada a los valores predeterminados." });
+                          toast({ title: isEn ? "Settings restored" : "Configuración restaurada", description: isEn ? "Settings have been restored to defaults." : "La configuración fue restaurada a los valores predeterminados." });
                         }}>
                           {t.settings.config.restore}
                         </AlertDialogAction>
@@ -609,30 +610,30 @@ export default function Settings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <CatalogManager
                   type="lead_service"
-                  title="Servicios"
-                  description="Tipos de trabajo que ofreces. Aparece al crear un lead."
+                  title={isEn ? "Services" : "Servicios"}
+                  description={isEn ? "Types of work you offer. Shown when creating a lead." : "Tipos de trabajo que ofreces. Aparece al crear un lead."}
                 />
                 <CatalogManager
                   type="lead_source"
-                  title="Fuentes de leads"
-                  description="Cómo te encontró el cliente. Aparece al crear un lead."
+                  title={isEn ? "Lead sources" : "Fuentes de leads"}
+                  description={isEn ? "How the client found you. Shown when creating a lead." : "Cómo te encontró el cliente. Aparece al crear un lead."}
                 />
                 <CatalogManager
                   type="lead_status"
-                  title="Estados de leads"
-                  description="Etapas del proceso de venta."
+                  title={isEn ? "Lead statuses" : "Estados de leads"}
+                  description={isEn ? "Stages of the sales process." : "Etapas del proceso de venta."}
                   hasColor
                 />
                 <CatalogManager
                   type="order_status"
-                  title="Estados de órdenes"
-                  description="Etapas del proceso de producción e instalación."
+                  title={isEn ? "Order statuses" : "Estados de órdenes"}
+                  description={isEn ? "Stages of the production and installation process." : "Etapas del proceso de producción e instalación."}
                   hasColor
                 />
                 <CatalogManager
                   type="material_type"
-                  title="Tipos de materiales"
-                  description="Materiales disponibles al armar una propuesta."
+                  title={isEn ? "Material types" : "Tipos de materiales"}
+                  description={isEn ? "Materials available when building a proposal." : "Materiales disponibles al armar una propuesta."}
                 />
               </div>
             </div>
