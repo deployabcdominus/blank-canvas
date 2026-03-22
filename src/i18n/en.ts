@@ -317,6 +317,7 @@ export const en = {
     high: "High",
     medium: "Medium",
     low: "Low",
+    limitReached: "Limit reached — upgrade your plan",
   },
 
   /* ── Settings / Configuration Hub ── */

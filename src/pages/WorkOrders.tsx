@@ -7,6 +7,7 @@ import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { PlanLimitBanner } from "@/components/PlanLimitBanner";
 import { WorkOrderCard } from "@/components/work-orders/WorkOrderCard";
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
@@ -44,6 +45,7 @@ const WorkOrders = () => {
   const { orders, clearOrders, updateOrder, deleteOrder, refreshOrders } = useWorkOrders();
   const { canEdit, canDelete, isAdmin } = useUserRole();
   const limits = usePlanLimits();
+  const { t } = useLanguage();
 
   const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("cards");
@@ -180,7 +182,7 @@ const WorkOrders = () => {
               <Button
                 onClick={() => setIsNewOrderModalOpen(true)}
                 disabled={limits.work_orders.isAtLimit}
-                title={limits.work_orders.isAtLimit ? "Límite alcanzado — upgrade tu plan" : undefined}
+                title={limits.work_orders.isAtLimit ? t.workOrders.limitReached : undefined}
               >
                 <Plus className="w-4 h-4 mr-2" /> New Order
               </Button>

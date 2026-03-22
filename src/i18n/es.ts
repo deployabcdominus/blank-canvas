@@ -319,6 +319,7 @@ export const es: TranslationKeys = {
     high: "Alta",
     medium: "Media",
     low: "Baja",
+    limitReached: "Límite alcanzado — upgrade tu plan",
   },
 
   /* ── Settings / Configuration Hub ── */
