@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   MoreHorizontal, Eye, Printer, QrCode, Calendar, User, Tag,
-  CheckCircle, ShieldCheck, Trash2,
+  CheckCircle, ShieldCheck, Trash2, Wrench,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -85,7 +85,7 @@ export function WorkOrderCard({
       {/* Row 1: Header — Client + Status */}
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-lg font-semibold text-white truncate min-w-0 flex-1">{order.client}</h3>
-        <Badge className={`${status.bg} ${status.text} border-0 text-[10px] shrink-0 font-semibold`}>
+        <Badge className={`border-0 text-[10px] shrink-0 font-semibold`} style={{ background: status.bg, color: status.color }}>
           {status.label}
         </Badge>
       </div>
