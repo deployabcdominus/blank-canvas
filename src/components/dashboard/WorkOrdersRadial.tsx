@@ -3,12 +3,15 @@ import { motion } from "framer-motion";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import { Target } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface WorkOrdersRadialProps {
   orders: WorkOrder[];
 }
 
 export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
+  const { t } = useLanguage();
+  const tc = t.workOrdersRadial;
   const stats = useMemo(() => {
     const total = orders.length || 1;
     const completed = orders.filter(o => o.status === "Completada").length;
@@ -20,7 +23,7 @@ export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
   const pct = Math.round((stats.completed / stats.total) * 100);
 
   const chartData = [
-    { name: "Completado", value: pct, fill: "hsl(25, 95%, 53%)" },
+    { name: tc.completedLabel, value: pct, fill: "hsl(25, 95%, 53%)" },
   ];
 
   return (
@@ -31,7 +34,7 @@ export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
       className="rounded-2xl border border-white/[0.06] bg-zinc-950/40 backdrop-blur-2xl p-5 transition-all duration-300 hover:border-white/[0.12] hover:bg-zinc-950/50 shimmer-hover"
     >
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">Órdenes de Servicio</h3>
+        <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">{tc.title}</h3>
         <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
           <Target className="w-5 h-5 text-primary" strokeWidth={1.5} />
         </div>
@@ -45,22 +48,22 @@ export const WorkOrdersRadial = ({ orders }: WorkOrdersRadialProps) => {
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-[28px] font-semibold text-white">{pct}%</span>
-          <span className="text-xs text-zinc-500">completado</span>
+          <span className="text-xs text-zinc-500">{tc.completedPct}</span>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mt-2">
         <div className="text-center flex flex-col items-center">
           <p className="text-[22px] font-semibold text-emerald-400">{stats.completed}</p>
-          <p className="text-[11px] text-zinc-500">Completadas</p>
+          <p className="text-[11px] text-zinc-500">{tc.completedLabel}</p>
         </div>
         <div className="text-center flex flex-col items-center border-x border-white/[0.04]">
           <p className="text-[22px] font-semibold text-primary">{stats.inProgress}</p>
-          <p className="text-[11px] text-zinc-500">En curso</p>
+          <p className="text-[11px] text-zinc-500">{tc.inProgress}</p>
         </div>
         <div className="text-center flex flex-col items-center">
           <p className="text-[22px] font-semibold text-red-400">{stats.pending}</p>
-          <p className="text-[11px] text-zinc-500">Pendientes</p>
+          <p className="text-[11px] text-zinc-500">{tc.pending}</p>
         </div>
       </div>
     </motion.div>

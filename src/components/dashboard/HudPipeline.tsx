@@ -8,6 +8,7 @@ import { Installation } from "@/contexts/InstallationsContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, FileText, ClipboardList, MapPin, CheckCircle2, AlertTriangle } from "lucide-react";
 import { KanbanColumn } from "@/components/PipelineKanban";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface HudPipelineProps {
   leads: Lead[];
@@ -30,12 +31,12 @@ interface PipelineItem {
   health: "green" | "yellow" | "red";
 }
 
-const COLS = [
-  { key: "leads" as KanbanColumn, label: "Leads", icon: Users, accentVar: "--primary" },
-  { key: "propuesta" as KanbanColumn, label: "Propuesta", icon: FileText, accentVar: "--color-warning" },
-  { key: "work-orders" as KanbanColumn, label: "Órdenes", icon: ClipboardList, accentVar: "--color-info" },
-  { key: "entrega" as KanbanColumn, label: "Entrega", icon: MapPin, accentVar: "--primary" },
-  { key: "completado" as KanbanColumn, label: "Completado", icon: CheckCircle2, accentVar: "--color-success" },
+const COL_KEYS = [
+  { key: "leads" as KanbanColumn, icon: Users, accentVar: "--primary" },
+  { key: "propuesta" as KanbanColumn, icon: FileText, accentVar: "--color-warning" },
+  { key: "work-orders" as KanbanColumn, icon: ClipboardList, accentVar: "--color-info" },
+  { key: "entrega" as KanbanColumn, icon: MapPin, accentVar: "--primary" },
+  { key: "completado" as KanbanColumn, icon: CheckCircle2, accentVar: "--color-success" },
 ];
 
 function daysAgo(dateStr?: string | null): number {
@@ -54,6 +55,16 @@ const healthColor = { green: "hsl(var(--color-success))", yellow: "hsl(var(--col
 
 export const HudPipeline = ({ leads, proposals, orders, installations, activeFilter }: HudPipelineProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const tc = t.hudPipeline;
+
+  const COLS = [
+    { key: "leads" as KanbanColumn, label: "Leads", icon: Users, accentVar: "--primary" },
+    { key: "propuesta" as KanbanColumn, label: tc.cols.proposal, icon: FileText, accentVar: "--color-warning" },
+    { key: "work-orders" as KanbanColumn, label: tc.cols.orders, icon: ClipboardList, accentVar: "--color-info" },
+    { key: "entrega" as KanbanColumn, label: tc.cols.delivery, icon: MapPin, accentVar: "--primary" },
+    { key: "completado" as KanbanColumn, label: tc.cols.completed, icon: CheckCircle2, accentVar: "--color-success" },
+  ];
 
   const cards = useMemo(() => {
     const result: PipelineItem[] = [];
@@ -83,7 +94,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
     installations.forEach(i => {
       const col: KanbanColumn = i.status === "Completed" ? "completado" : "entrega";
       const d = daysAgo(i.scheduledDate);
-      result.push({ id: `i-${i.id}`, column: col, company: i.client, project: i.project, status: i.status === "Scheduled" ? "Agendada" : i.status === "In Progress" ? "En progreso" : "Completada", daysAgo: d, navigateTo: "/installation", health: col === "completado" ? "green" : getHealth(d) });
+      result.push({ id: `i-${i.id}`, column: col, company: i.client, project: i.project, status: i.status === "Scheduled" ? tc.installStatus.scheduled : i.status === "In Progress" ? tc.installStatus.inProgress : tc.installStatus.completed, daysAgo: d, navigateTo: "/installation", health: col === "completado" ? "green" : getHealth(d) });
     });
 
     return result;
@@ -94,8 +105,8 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">Pipeline de Proyectos</h2>
-        {activeFilter && <span className="text-xs text-muted-foreground">Filtrando: {COLS.find(c => c.key === activeFilter)?.label}</span>}
+        <h2 className="text-lg font-bold text-foreground">{tc.title}</h2>
+        {activeFilter && <span className="text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
       </div>
 
       <div className="flex gap-3 overflow-x-auto pb-2">
@@ -119,7 +130,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
                 </div>
                 <div className="space-y-2 min-h-[100px]">
                   {colCards.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground text-xs">Sin proyectos</div>
+                    <div className="text-center py-8 text-muted-foreground text-xs">{tc.noProjects}</div>
                   ) : (
                     colCards.map((card, idx) => (
                       <motion.div
@@ -157,7 +168,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
                             {card.status}
                           </span>
                           {card.value != null && card.value > 0 && <span className="text-[10px] font-bold text-muted-foreground">${card.value.toLocaleString("es-MX")}</span>}
-                          <span className="ml-auto text-[10px] text-muted-foreground/60">{card.daysAgo === 0 ? "hoy" : `${card.daysAgo}d`}</span>
+                          <span className="ml-auto text-[10px] text-muted-foreground/60">{card.daysAgo === 0 ? tc.today : `${card.daysAgo}d`}</span>
                           {card.health === "red" && <AlertTriangle className="w-3 h-3" style={{ color: "hsl(var(--color-danger))" }} />}
                         </div>
                       </motion.div>

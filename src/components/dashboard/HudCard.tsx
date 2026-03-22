@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { AnimatedCounter } from "./AnimatedCounter";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface HudCardProps {
   label: string;
@@ -16,6 +17,7 @@ interface HudCardProps {
 }
 
 export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, noAccess }: HudCardProps) => {
+  const { t } = useLanguage();
   const [glowPulse, setGlowPulse] = useState(false);
   const prevValue = useRef(value);
   const isFirstRender = useRef(true);
@@ -97,7 +99,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           </div>
           {isActive && (
             <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-              Filtrado
+              {t.hudCard.filtered}
             </span>
           )}
         </div>

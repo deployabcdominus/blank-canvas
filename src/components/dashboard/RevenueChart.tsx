@@ -6,6 +6,7 @@ import { Payment } from "@/contexts/PaymentsContext";
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { TrendingUp, AlertCircle } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface RevenueChartProps {
   proposals: Proposal[];
@@ -13,6 +14,8 @@ interface RevenueChartProps {
 }
 
 export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) => {
+  const { t } = useLanguage();
+  const tc = t.revenueChart;
   const data = useMemo(() => {
     const months = [];
     for (let i = 5; i >= 0; i--) {
@@ -65,11 +68,11 @@ export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) =>
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">Flujo de Ingresos</h3>
+          <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">{tc.title}</h3>
           <p className="text-[28px] font-semibold text-white mt-1">
             ${totalReceived.toLocaleString("es-MX")}
           </p>
-          <p className="text-xs font-medium text-zinc-500">Cobrado total</p>
+          <p className="text-xs font-medium text-zinc-500">{tc.collectedTotal}</p>
         </div>
         <div className="text-right space-y-1">
           <div className="p-2 rounded-xl inline-flex bg-primary/10 border border-primary/20">
@@ -78,7 +81,7 @@ export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) =>
           {pendingBalance > 0 && (
             <div className="flex items-center gap-1 text-[11px] text-primary">
               <AlertCircle className="w-3 h-3" />
-              Pendiente: ${pendingBalance.toLocaleString("es-MX")}
+              {tc.pending}: ${pendingBalance.toLocaleString("es-MX")}
             </div>
           )}
         </div>
@@ -111,7 +114,7 @@ export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) =>
               }}
               formatter={(value: number, name: string) => [
                 `$${value.toLocaleString("es-MX")}`,
-                name === "cobrado" ? "Cobrado" : "Propuesto"
+                name === "cobrado" ? tc.collected : tc.proposed
               ]}
             />
             <Area type="monotone" dataKey="cobrado" stroke="hsl(25, 95%, 53%)" strokeWidth={2} fill="url(#orangeGrad)" dot={false} />
@@ -123,11 +126,11 @@ export const RevenueChart = ({ proposals, payments = [] }: RevenueChartProps) =>
       <div className="flex items-center gap-4 mt-3">
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-          <span className="text-xs text-zinc-500">Cobrado</span>
+          <span className="text-xs text-zinc-500">{tc.collected}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(36, 91%, 50%)" }} />
-          <span className="text-xs text-zinc-500">Propuesto</span>
+          <span className="text-xs text-zinc-500">{tc.proposed}</span>
         </div>
       </div>
     </motion.div>

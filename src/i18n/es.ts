@@ -603,6 +603,135 @@ export const es: TranslationKeys = {
     },
   },
 
+  /* ── Dashboard Components ── */
+  hudCard: {
+    filtered: "Filtrado",
+  },
+
+  aiBriefing: {
+    greeting: { morning: "Buenos días", afternoon: "Buenas tardes", evening: "Buenas noches" },
+    todaySummary: "Tu resumen inteligente de hoy · {{date}}",
+    updatedAgo: "Actualizado hace 1 min",
+    aiReadyDesc: "Tu asistente de inteligencia está listo. Necesita conocer tu negocio primero.",
+    steps: {
+      company: "Empresa configurada",
+      clients: "Agrega 3 clientes",
+      proposal: "Crea tu primera propuesta",
+      payment: "Registra un pago",
+    },
+    completeSetup: "Completar configuración",
+    insights: {
+      pipeline: "Pipeline hoy",
+      atRisk: "En riesgo",
+      closingRate: "Tasa de cierre",
+      alert: "Alerta",
+      pipelineValue: "{{value}} en valor",
+      noResponse: "Sin respuesta +7 días",
+      rateDiff: "{{diff}}% vs mes ant.",
+    },
+    alerts: {
+      noAlerts: "Sin alertas urgentes hoy",
+      atRiskMsg: "{{count}} propuesta(s) sin respuesta en +7 días",
+      activeLeadsMsg: "{{count}} leads activos esperando seguimiento",
+    },
+    aiUnavailable: "Asistente de IA no disponible · Verifica la configuración",
+    generateBriefing: "Generar briefing completo con IA",
+    briefingTitle: "Briefing Ejecutivo",
+    briefingDesc: "Análisis generado con IA · {{date}}",
+    copyBriefing: "Copiar briefing",
+    analyzing: "Analizando tu negocio...",
+    failedBriefing: "No se pudo generar el briefing.",
+    toasts: {
+      sessionExpired: "Sesión expirada",
+      sessionExpiredDesc: "Vuelve a iniciar sesión para usar el asistente de IA.",
+      aiNotConfigured: "Asistente no disponible",
+      aiNotConfiguredDesc: "La configuración del servicio de IA necesita revisión. Contacta al administrador.",
+      rateLimited: "Demasiadas solicitudes",
+      rateLimitedDesc: "Espera unos minutos antes de generar otro briefing.",
+      connectionError: "Problema de conexión",
+      connectionErrorDesc: "No se pudo conectar con el asistente. Inténtalo de nuevo más tarde.",
+      copied: "Copiado",
+      copiedDesc: "Briefing copiado al portapapeles",
+    },
+  },
+
+  hudPipeline: {
+    title: "Pipeline de Proyectos",
+    filtering: "Filtrando",
+    noProjects: "Sin proyectos",
+    today: "hoy",
+    cols: {
+      proposal: "Propuesta",
+      orders: "Órdenes",
+      delivery: "Entrega",
+      completed: "Completado",
+    },
+    installStatus: {
+      scheduled: "Agendada",
+      inProgress: "En progreso",
+      completed: "Completada",
+    },
+  },
+
+  revenueChart: {
+    title: "Flujo de Ingresos",
+    collectedTotal: "Cobrado total",
+    pending: "Pendiente",
+    collected: "Cobrado",
+    proposed: "Propuesto",
+  },
+
+  workOrdersRadial: {
+    title: "Órdenes de Servicio",
+    completedPct: "completado",
+    completedLabel: "Completadas",
+    inProgress: "En curso",
+    pending: "Pendientes",
+  },
+
+  geoHeatmap: {
+    title: "Mapa de Instalaciones",
+    active: "activas",
+    completedCount: "completadas",
+    loading: "Cargando ubicaciones…",
+    noLocations: "Sin ubicaciones registradas",
+    noLocationsHint: "Agrega direcciones a tus instalaciones para verlas en el mapa",
+    viewProject: "↗ Ver Proyecto",
+    installStatus: {
+      completed: "Completada",
+      inProgress: "En Progreso",
+      scheduled: "Agendada",
+    },
+  },
+
+  teamActivity: {
+    title: "Actividad del Equipo",
+    viewAll: "Ver todo",
+    noActivity: "Sin actividad reciente",
+    actions: {
+      creado: "creó",
+      editado: "editó",
+      eliminado: "eliminó",
+      cambio_estado: "cambió el estado de",
+      aprobado: "aprobó",
+    },
+    entities: {
+      lead: "lead",
+      cliente: "cliente",
+      propuesta: "propuesta",
+      pago: "pago",
+      orden: "orden",
+    },
+    newEntity: "un nuevo {{entity}}",
+    existingEntity: "el {{entity}}",
+    timeAgo: {
+      now: "ahora",
+      minutes: "hace {{n}} min",
+      hours: "hace {{n}}h",
+      days: "hace {{n}}d",
+    },
+  },
+
   /* ── Weekly Report ── */
   weeklyReport: {
     title: "Rendimiento Semanal",

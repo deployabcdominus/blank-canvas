@@ -14,6 +14,7 @@ import { useProposals } from "@/contexts/ProposalsContext";
 import { usePayments } from "@/contexts/PaymentsContext";
 import { useClients } from "@/contexts/ClientsContext";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format, differenceInDays, subDays, isThisMonth, isAfter } from "date-fns";
 import { es } from "date-fns/locale";
@@ -43,6 +44,8 @@ export function AiBriefing() {
   const { payments } = usePayments();
   const { clients } = useClients();
   const { toast } = useToast();
+  const { t } = useLanguage();
+  const tc = t.aiBriefing;
   const navigate = useNavigate();
 
   const [briefingOpen, setBriefingOpen] = useState(false);
@@ -52,7 +55,7 @@ export function AiBriefing() {
   const now = new Date();
   const firstName = fullName.split(" ")[0];
   const hour = now.getHours();
-  const greeting = hour < 12 ? "Buenos días" : hour < 18 ? "Buenas tardes" : "Buenas noches";
+  const greeting = hour < 12 ? tc.greeting.morning : hour < 18 ? tc.greeting.afternoon : tc.greeting.evening;
   const dateStr = format(now, "EEEE d 'de' MMMM", { locale: es });
 
   const hasEnoughData = proposals.length >= 3 || clients.length >= 2;
@@ -80,11 +83,11 @@ export function AiBriefing() {
     const prevMonthApproved = prevMonthProposals.filter(p => p.status === "Aprobada").length;
     const prevMonthRate = prevMonthProposals.length > 0 ? Math.round((prevMonthApproved / prevMonthProposals.length) * 100) : 0;
 
-    let alertText = "Sin alertas urgentes hoy";
+    let alertText = tc.alerts.noAlerts;
     if (atRisk.length > 0) {
-      alertText = `${atRisk.length} propuesta(s) sin respuesta en +7 días`;
+      alertText = tc.alerts.atRiskMsg.replace("{{count}}", String(atRisk.length));
     } else if (activeLeads.length > 5) {
-      alertText = `${activeLeads.length} leads activos esperando seguimiento`;
+      alertText = tc.alerts.activeLeadsMsg.replace("{{count}}", String(activeLeads.length));
     }
 
     return {
@@ -99,11 +102,11 @@ export function AiBriefing() {
   }, [leads, proposals]);
 
   const steps = useMemo(() => [
-    { label: "Empresa configurada", done: !!company },
-    { label: "Agrega 3 clientes", done: clients.length >= 3 },
-    { label: "Crea tu primera propuesta", done: proposals.length >= 1 },
-    { label: "Registra un pago", done: payments.length >= 1 },
-  ], [company, clients, proposals, payments]);
+    { label: tc.steps.company, done: !!company },
+    { label: tc.steps.clients, done: clients.length >= 3 },
+    { label: tc.steps.proposal, done: proposals.length >= 1 },
+    { label: tc.steps.payment, done: payments.length >= 1 },
+  ], [company, clients, proposals, payments, tc]);
 
   const completedSteps = steps.filter(s => s.done).length;
 
@@ -135,7 +138,7 @@ export function AiBriefing() {
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token;
       if (!accessToken) {
-        toast({ title: "Sesión expirada", description: "Vuelve a iniciar sesión para usar el asistente de IA.", variant: "destructive" });
+        toast({ title: tc.toasts.sessionExpired, description: tc.toasts.sessionExpiredDesc, variant: "destructive" });
         setBriefingOpen(false);
         setBriefingLoading(false);
         return;
@@ -158,22 +161,22 @@ export function AiBriefing() {
         }
 
         if (errorCode === "session_expired") {
-          toast({ title: "Sesión expirada", description: "Vuelve a iniciar sesión para usar el asistente.", variant: "destructive" });
+          toast({ title: tc.toasts.sessionExpired, description: tc.toasts.sessionExpiredDesc, variant: "destructive" });
         } else if (errorCode === "ai_not_configured") {
           setAiUnavailable(true);
-          toast({ title: "Asistente no disponible", description: "La configuración del servicio de IA necesita revisión. Contacta al administrador." });
+          toast({ title: tc.toasts.aiNotConfigured, description: tc.toasts.aiNotConfiguredDesc });
         } else if (errorCode === "rate_limited") {
-          toast({ title: "Demasiadas solicitudes", description: "Espera unos minutos antes de generar otro briefing." });
+          toast({ title: tc.toasts.rateLimited, description: tc.toasts.rateLimitedDesc });
         } else {
-          toast({ title: "Problema de conexión", description: "No se pudo conectar con el asistente. Inténtalo de nuevo más tarde." });
+          toast({ title: tc.toasts.connectionError, description: tc.toasts.connectionErrorDesc });
         }
         setBriefingOpen(false);
         return;
       }
 
-      setBriefingText(response.data?.briefing || "No se pudo generar el briefing.");
+      setBriefingText(response.data?.briefing || tc.failedBriefing);
     } catch {
-      toast({ title: "Problema de conexión", description: "No se pudo conectar con el asistente. Inténtalo de nuevo más tarde." });
+      toast({ title: tc.toasts.connectionError, description: tc.toasts.connectionErrorDesc });
       setBriefingOpen(false);
     } finally {
       setBriefingLoading(false);
@@ -183,10 +186,10 @@ export function AiBriefing() {
   const formatCurrency = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v.toFixed(0)}`;
 
   const insightCards = [
-    { icon: Target, label: "Pipeline hoy", value: String(insights.activeLeads), sub: `${formatCurrency(insights.pipelineValue)} en valor` },
-    { icon: AlertTriangle, label: "En riesgo", value: String(insights.atRiskCount), sub: "Sin respuesta +7 días" },
-    { icon: TrendingUp, label: "Tasa de cierre", value: `${insights.thisMonthRate}%`, sub: `${insights.rateDiff >= 0 ? "+" : ""}${insights.rateDiff}% vs mes ant.` },
-    { icon: Zap, label: "Alerta", value: "", sub: insights.alertText },
+    { icon: Target, label: tc.insights.pipeline, value: String(insights.activeLeads), sub: tc.insights.pipelineValue.replace("{{value}}", formatCurrency(insights.pipelineValue)) },
+    { icon: AlertTriangle, label: tc.insights.atRisk, value: String(insights.atRiskCount), sub: tc.insights.noResponse },
+    { icon: TrendingUp, label: tc.insights.closingRate, value: `${insights.thisMonthRate}%`, sub: tc.insights.rateDiff.replace("{{diff}}", `${insights.rateDiff >= 0 ? "+" : ""}${insights.rateDiff}`) },
+    { icon: Zap, label: tc.insights.alert, value: "", sub: insights.alertText },
   ];
 
   return (
@@ -214,7 +217,7 @@ export function AiBriefing() {
                 <div>
                   <h2 className="font-medium text-lg text-white">{greeting}, {firstName}</h2>
                   <p className="text-xs text-zinc-500">
-                    Tu resumen inteligente de hoy · {dateStr}
+                    {tc.todaySummary.replace("{{date}}", dateStr)}
                   </p>
                 </div>
                 <Badge className="ml-2 text-[10px] px-2 py-0.5 border-0 font-bold bg-primary/15 text-primary">
@@ -222,14 +225,14 @@ export function AiBriefing() {
                 </Badge>
               </div>
               <span className="text-[10px] hidden sm:block text-zinc-600">
-                Actualizado hace 1 min
+                {tc.updatedAgo}
               </span>
             </div>
 
             {!hasEnoughData ? (
               <div className="space-y-4">
                 <p className="text-sm text-zinc-400">
-                  Tu asistente de inteligencia está listo. Necesita conocer tu negocio primero.
+                  {tc.aiReadyDesc}
                 </p>
                 {/* Glass capsule progress bar */}
                 <div className="w-full rounded-full h-2.5 bg-white/[0.04] border border-white/[0.06] overflow-hidden">
@@ -261,7 +264,7 @@ export function AiBriefing() {
                   className="mt-2"
                   onClick={() => navigate("/clients")}
                 >
-                  Completar configuración <ArrowRight className="ml-1 h-4 w-4" />
+                  {tc.completeSetup} <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </div>
             ) : (
@@ -290,7 +293,7 @@ export function AiBriefing() {
 
                 {aiUnavailable ? (
                   <div className="w-full text-center py-2 text-xs text-muted-foreground border border-border/50 rounded-lg">
-                    Asistente de IA no disponible · Verifica la configuración
+                    {tc.aiUnavailable}
                   </div>
                 ) : (
                   <Button
@@ -300,7 +303,7 @@ export function AiBriefing() {
                     className="w-full border border-primary/30 text-primary hover:bg-primary/10 font-medium btn-spring"
                   >
                     <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.5} />
-                    Generar briefing completo con IA
+                    {tc.generateBriefing}
                   </Button>
                 )}
               </div>
@@ -316,23 +319,23 @@ export function AiBriefing() {
             <div className="flex items-center justify-between">
               <SheetTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                Briefing Ejecutivo
+                {tc.briefingTitle}
               </SheetTitle>
               {briefingText && !briefingLoading && (
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(briefingText);
-                    toast({ title: "Copiado", description: "Briefing copiado al portapapeles" });
+                    toast({ title: tc.toasts.copied, description: tc.toasts.copiedDesc });
                   }}
                   className="p-1.5 rounded-lg hover:bg-white/[0.05] transition-colors text-muted-foreground hover:text-foreground"
-                  title="Copiar briefing"
+                  title={tc.copyBriefing}
                 >
                   <Copy size={14} />
                 </button>
               )}
             </div>
             <SheetDescription>
-              Análisis generado con IA · {format(now, "d MMM yyyy", { locale: es })}
+              {tc.briefingDesc.replace("{{date}}", format(now, "d MMM yyyy", { locale: es }))}
             </SheetDescription>
           </SheetHeader>
           <ScrollArea className="mt-4 h-[calc(100vh-140px)] pr-2">
@@ -343,7 +346,7 @@ export function AiBriefing() {
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  Analizando tu negocio...
+                  {tc.analyzing}
                 </motion.p>
                 <div className="h-4 bg-white/[0.06] rounded animate-pulse w-1/3" />
                 <div className="h-3 bg-white/[0.03] rounded animate-pulse w-full" />

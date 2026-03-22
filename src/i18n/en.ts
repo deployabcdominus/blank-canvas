@@ -601,6 +601,135 @@ export const en = {
     },
   },
 
+  /* ── Dashboard Components ── */
+  hudCard: {
+    filtered: "Filtered",
+  },
+
+  aiBriefing: {
+    greeting: { morning: "Good morning", afternoon: "Good afternoon", evening: "Good evening" },
+    todaySummary: "Your intelligent briefing for today · {{date}}",
+    updatedAgo: "Updated 1 min ago",
+    aiReadyDesc: "Your intelligence assistant is ready. It needs to learn about your business first.",
+    steps: {
+      company: "Company configured",
+      clients: "Add 3 clients",
+      proposal: "Create your first proposal",
+      payment: "Record a payment",
+    },
+    completeSetup: "Complete setup",
+    insights: {
+      pipeline: "Pipeline today",
+      atRisk: "At risk",
+      closingRate: "Closing rate",
+      alert: "Alert",
+      pipelineValue: "{{value}} in value",
+      noResponse: "No response +7 days",
+      rateDiff: "{{diff}}% vs prev month",
+    },
+    alerts: {
+      noAlerts: "No urgent alerts today",
+      atRiskMsg: "{{count}} proposal(s) with no response in +7 days",
+      activeLeadsMsg: "{{count}} active leads awaiting follow-up",
+    },
+    aiUnavailable: "AI Assistant unavailable · Check configuration",
+    generateBriefing: "Generate full AI briefing",
+    briefingTitle: "Executive Briefing",
+    briefingDesc: "AI-generated analysis · {{date}}",
+    copyBriefing: "Copy briefing",
+    analyzing: "Analyzing your business...",
+    failedBriefing: "Could not generate the briefing.",
+    toasts: {
+      sessionExpired: "Session expired",
+      sessionExpiredDesc: "Log in again to use the AI assistant.",
+      aiNotConfigured: "AI assistant unavailable",
+      aiNotConfiguredDesc: "AI service configuration needs review. Contact your administrator.",
+      rateLimited: "Too many requests",
+      rateLimitedDesc: "Wait a few minutes before generating another briefing.",
+      connectionError: "Connection error",
+      connectionErrorDesc: "Could not connect to the assistant. Try again later.",
+      copied: "Copied",
+      copiedDesc: "Briefing copied to clipboard",
+    },
+  },
+
+  hudPipeline: {
+    title: "Project Pipeline",
+    filtering: "Filtering",
+    noProjects: "No projects",
+    today: "today",
+    cols: {
+      proposal: "Proposal",
+      orders: "Orders",
+      delivery: "Delivery",
+      completed: "Completed",
+    },
+    installStatus: {
+      scheduled: "Scheduled",
+      inProgress: "In progress",
+      completed: "Completed",
+    },
+  },
+
+  revenueChart: {
+    title: "Revenue Flow",
+    collectedTotal: "Total collected",
+    pending: "Pending",
+    collected: "Collected",
+    proposed: "Proposed",
+  },
+
+  workOrdersRadial: {
+    title: "Service Orders",
+    completedPct: "completed",
+    completedLabel: "Completed",
+    inProgress: "In progress",
+    pending: "Pending",
+  },
+
+  geoHeatmap: {
+    title: "Installations Map",
+    active: "active",
+    completedCount: "completed",
+    loading: "Loading locations…",
+    noLocations: "No locations registered",
+    noLocationsHint: "Add addresses to your installations to see them on the map",
+    viewProject: "↗ View Project",
+    installStatus: {
+      completed: "Completed",
+      inProgress: "In Progress",
+      scheduled: "Scheduled",
+    },
+  },
+
+  teamActivity: {
+    title: "Team Activity",
+    viewAll: "View all",
+    noActivity: "No recent activity",
+    actions: {
+      creado: "created",
+      editado: "edited",
+      eliminado: "deleted",
+      cambio_estado: "changed the status of",
+      aprobado: "approved",
+    },
+    entities: {
+      lead: "lead",
+      cliente: "client",
+      propuesta: "proposal",
+      pago: "payment",
+      orden: "order",
+    },
+    newEntity: "a new {{entity}}",
+    existingEntity: "the {{entity}}",
+    timeAgo: {
+      now: "now",
+      minutes: "{{n}} min ago",
+      hours: "{{n}}h ago",
+      days: "{{n}}d ago",
+    },
+  },
+
   /* ── Weekly Report ── */
   weeklyReport: {
     title: "Weekly Performance",

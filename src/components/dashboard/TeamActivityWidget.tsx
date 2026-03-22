@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Activity } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface AuditEntry {
   id: string;
@@ -14,31 +15,15 @@ interface AuditEntry {
   created_at: string;
 }
 
-const ACTION_LABELS: Record<string, string> = {
-  creado: "creó",
-  editado: "editó",
-  eliminado: "eliminó",
-  cambio_estado: "cambió el estado de",
-  aprobado: "aprobó",
-};
-
-const ENTITY_LABELS: Record<string, string> = {
-  lead: "lead",
-  cliente: "cliente",
-  propuesta: "propuesta",
-  pago: "pago",
-  orden: "orden",
-};
-
-function timeAgo(dateStr: string): string {
+function timeAgoFn(dateStr: string, labels: { now: string; minutes: string; hours: string; days: string }): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "ahora";
-  if (mins < 60) return `hace ${mins} min`;
+  if (mins < 1) return labels.now;
+  if (mins < 60) return labels.minutes.replace("{{n}}", String(mins));
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `hace ${hrs}h`;
+  if (hrs < 24) return labels.hours.replace("{{n}}", String(hrs));
   const days = Math.floor(hrs / 24);
-  return `hace ${days}d`;
+  return labels.days.replace("{{n}}", String(days));
 }
 
 function getInitials(name: string) {
@@ -51,6 +36,8 @@ function getInitials(name: string) {
 }
 
 export function TeamActivityWidget() {
+  const { t } = useLanguage();
+  const tc = t.teamActivity;
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -79,7 +66,7 @@ export function TeamActivityWidget() {
         <div className="flex items-center gap-2">
           <Activity className="w-4 h-4 text-primary" strokeWidth={1.5} />
           <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-[0.08em]">
-            Actividad del Equipo
+            {tc.title}
           </h3>
           <span className="relative flex h-1.5 w-1.5 ml-1">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
@@ -90,7 +77,7 @@ export function TeamActivityWidget() {
           to="/audit-log"
           className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
         >
-          Ver todo
+          {tc.viewAll}
         </Link>
       </div>
 
@@ -107,12 +94,12 @@ export function TeamActivityWidget() {
           ))
         ) : entries.length === 0 ? (
           <p className="text-xs text-zinc-500 text-center py-6">
-            Sin actividad reciente
+            {tc.noActivity}
           </p>
         ) : (
           entries.map((entry, i) => {
-            const verb = ACTION_LABELS[entry.action] || entry.action;
-            const entityType = ENTITY_LABELS[entry.entity_type] || entry.entity_type;
+            const verb = (tc.actions as any)[entry.action] || entry.action;
+            const entityType = (tc.entities as any)[entry.entity_type] || entry.entity_type;
             const isNew = entry.action === "creado";
 
             return (
@@ -132,7 +119,9 @@ export function TeamActivityWidget() {
                         {entry.user_name}
                       </span>{" "}
                       {verb}{" "}
-                      {isNew ? `un nuevo ${entityType}` : `el ${entityType}`}
+                      {isNew
+                        ? tc.newEntity.replace("{{entity}}", entityType)
+                        : tc.existingEntity.replace("{{entity}}", entityType)}
                       {entry.entity_label && (
                         <>
                           :{" "}
@@ -143,7 +132,7 @@ export function TeamActivityWidget() {
                       )}
                     </p>
                     <p className="text-[10px] text-zinc-600 mt-0.5">
-                      {timeAgo(entry.created_at)}
+                      {timeAgoFn(entry.created_at, tc.timeAgo)}
                     </p>
                   </div>
                 </div>

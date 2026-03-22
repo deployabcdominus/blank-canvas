@@ -6,10 +6,11 @@ import { batchGeocode } from "@/hooks/useGeocoding";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 /* ── Status helpers ── */
-const statusLabel = (s: string) =>
-  s === "Completed" ? "Completada" : s === "In Progress" ? "En Progreso" : "Agendada";
+const statusLabel = (s: string, labels: { completed: string; inProgress: string; scheduled: string }) =>
+  s === "Completed" ? labels.completed : s === "In Progress" ? labels.inProgress : labels.scheduled;
 const statusBadge = (s: string) => {
   if (s === "Completed") return "background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.3)";
   if (s === "In Progress") return "background:rgba(249,115,22,0.2);color:#fb923c;border:1px solid rgba(249,115,22,0.3)";
@@ -22,6 +23,8 @@ interface GeoHeatmapProps {
 
 export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const tc = t.geoHeatmap;
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
@@ -114,10 +117,10 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
         <div style="font-family:Inter,system-ui,sans-serif;">
           <p style="font-size:14px;font-weight:600;color:#fff;margin:0 0 2px;">${inst.client}</p>
           ${inst.project ? `<p style="font-size:12px;color:#a1a1aa;margin:0 0 8px;">${inst.project}</p>` : ""}
-          <span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;${statusBadge(inst.status)}">${statusLabel(inst.status)}</span>
+          <span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;${statusBadge(inst.status)}">${statusLabel(inst.status, tc.installStatus)}</span>
           ${inst.address ? `<p style="font-size:11px;color:#71717a;margin:8px 0 0;line-height:1.4;">${inst.address}</p>` : ""}
           <button onclick="window.__signflow_nav_installation && window.__signflow_nav_installation()" style="width:100%;margin-top:10px;padding:6px 0;font-size:12px;color:#f97316;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:8px;cursor:pointer;font-family:inherit;">
-            ↗ Ver Proyecto
+            ${tc.viewProject}
           </button>
         </div>`;
 
@@ -150,8 +153,8 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
     >
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-[0.08em]">Mapa de Instalaciones</h3>
-          <p className="text-xs text-muted-foreground/60 mt-0.5">{activeCount} activas · {completedCount} completadas</p>
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-[0.08em]">{tc.title}</h3>
+          <p className="text-xs text-muted-foreground/60 mt-0.5">{activeCount} {tc.active} · {completedCount} {tc.completedCount}</p>
         </div>
         <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
           <MapPin className="w-5 h-5 text-primary" strokeWidth={1.5} />
@@ -163,7 +166,7 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
           <div className="absolute inset-0 flex items-center justify-center z-[1000] bg-zinc-950/60 backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <Loader2 className="w-4 h-4 text-primary animate-spin" />
-              <p className="text-sm text-muted-foreground">Cargando ubicaciones…</p>
+              <p className="text-sm text-muted-foreground">{tc.loading}</p>
             </div>
           </div>
         )}
@@ -172,8 +175,8 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center p-4 z-[1000]">
             <div className="absolute inset-0 empty-state-pattern opacity-30" />
             <MapPin size={24} className="text-zinc-600" strokeWidth={1.5} />
-            <p className="text-sm font-medium text-zinc-400">Sin ubicaciones registradas</p>
-            <p className="text-xs text-zinc-600">Agrega direcciones a tus instalaciones para verlas en el mapa</p>
+            <p className="text-sm font-medium text-zinc-400">{tc.noLocations}</p>
+            <p className="text-xs text-zinc-600">{tc.noLocationsHint}</p>
           </div>
         )}
 
