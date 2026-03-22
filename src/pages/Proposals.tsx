@@ -16,6 +16,8 @@ import { useClients } from "@/contexts/ClientsContext";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useCompany } from "@/hooks/useCompany";
 import { useUserRole } from "@/hooks/useUserRole";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
+import { PlanLimitBanner } from "@/components/PlanLimitBanner";
 import { logAudit } from "@/lib/audit";
 import { FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -27,6 +29,7 @@ const Proposals = () => {
   const { leads, updateLead } = useLeads();
   const { company } = useCompany();
   const { canEdit, canDelete } = useUserRole();
+  const limits = usePlanLimits();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -204,11 +207,18 @@ const Proposals = () => {
             <p className="text-muted-foreground text-sm">Registro interno de propuestas comerciales</p>
           </div>
           {canEdit && (
-            <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              onClick={() => setIsAddOpen(true)}
+              disabled={limits.proposals.isAtLimit}
+              title={limits.proposals.isAtLimit ? "Límite alcanzado — upgrade tu plan" : undefined}
+              className="btn-glass bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               <Plus className="w-4 h-4 mr-2" /> Nueva Propuesta
             </Button>
           )}
         </div>
+
+        <PlanLimitBanner entity="proposals" />
 
         <ProposalsKPIBar proposals={proposals} />
 

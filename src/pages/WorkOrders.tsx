@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
 import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
+import { PlanLimitBanner } from "@/components/PlanLimitBanner";
 import { WorkOrderCard } from "@/components/work-orders/WorkOrderCard";
 import { WorkOrdersTableView } from "@/components/work-orders/WorkOrdersTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
@@ -41,6 +43,7 @@ const WorkOrders = () => {
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { orders, clearOrders, updateOrder, deleteOrder, refreshOrders } = useWorkOrders();
   const { canEdit, canDelete, isAdmin } = useUserRole();
+  const limits = usePlanLimits();
 
   const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("cards");
@@ -174,12 +177,18 @@ const WorkOrders = () => {
               </Button>
             )}
             {canEdit && (
-              <Button onClick={() => setIsNewOrderModalOpen(true)}>
+              <Button
+                onClick={() => setIsNewOrderModalOpen(true)}
+                disabled={limits.work_orders.isAtLimit}
+                title={limits.work_orders.isAtLimit ? "Límite alcanzado — upgrade tu plan" : undefined}
+              >
                 <Plus className="w-4 h-4 mr-2" /> New Order
               </Button>
             )}
           </div>
         </div>
+
+        <PlanLimitBanner entity="work_orders" />
 
         {orders.length === 0 ? (
           <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,92,246,0.15)" }}>

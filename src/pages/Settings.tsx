@@ -24,6 +24,7 @@ import { CatalogManager } from "@/components/settings/CatalogManager";
 import { useSeedCatalogs } from "@/hooks/useSeedCatalogs";
 import { supabase } from "@/integrations/supabase/client";
 import { PricingSection } from "@/components/settings/PricingSection";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
 
 
 export default function Settings() {
@@ -32,6 +33,7 @@ export default function Settings() {
   const { user } = useAuth();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
+  const planLimits = usePlanLimits();
   const { toast } = useToast();
   
   
@@ -632,7 +634,72 @@ export default function Settings() {
         )}
         {isAdmin && !isSuperadmin && (
           <TabsContent value="suscripcion">
-            <PricingSection />
+            <div className="grid gap-6">
+              {!planLimits.loading && (
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                      <div>
+                        <CardTitle>Uso del plan</CardTitle>
+                        <CardDescription>Consumo actual de recursos en tu cuenta</CardDescription>
+                      </div>
+                      <Badge className="bg-violet-500/20 text-violet-300 border border-violet-500/30 px-3 py-1 text-sm font-semibold">
+                        Plan {planLimits.planName}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    {(
+                      [
+                        { key: "work_orders" as const, label: "Órdenes de trabajo" },
+                        { key: "leads" as const, label: "Leads" },
+                        { key: "users" as const, label: "Usuarios activos" },
+                        { key: "proposals" as const, label: "Propuestas" },
+                      ] as const
+                    ).map(({ key, label }) => {
+                      const lim = planLimits[key];
+                      const pct = lim.isUnlimited ? 0 : Math.min((lim.current / lim.max) * 100, 100);
+                      const barColor = lim.isAtLimit
+                        ? "#ef4444"
+                        : lim.isNearLimit
+                        ? "#f59e0b"
+                        : "#8b5cf6";
+                      return (
+                        <div key={key} className="space-y-1.5">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">{label}</span>
+                            <span className={lim.isAtLimit ? "text-red-400 font-semibold" : lim.isNearLimit ? "text-amber-400 font-semibold" : "text-foreground"}>
+                              {lim.isUnlimited ? "Ilimitado" : `${lim.current} / ${lim.max}`}
+                            </span>
+                          </div>
+                          {!lim.isUnlimited && (
+                            <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all"
+                                style={{ width: `${pct}%`, backgroundColor: barColor }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {planLimits.planName !== "Empresarial" && (
+                      <div className="pt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {}}
+                          className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10"
+                        >
+                          Ver planes de upgrade
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+              <PricingSection />
+            </div>
           </TabsContent>
         )}
       </Tabs>

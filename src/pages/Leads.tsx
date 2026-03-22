@@ -4,6 +4,8 @@ import { useBreakpoint } from "@/hooks/use-mobile";
 import { useLeads, Lead } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
+import { PlanLimitBanner } from "@/components/PlanLimitBanner";
 import { PageTransition } from "@/components/PageTransition";
 import { Sidebar } from "@/components/Sidebar";
 
@@ -34,6 +36,7 @@ const Leads = () => {
   const { leads, addLead, clearLeads, deleteLead, deleteLeads } = useLeads();
   const { proposals, addProposal } = useProposals();
   const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
+  const limits = usePlanLimits();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
@@ -275,6 +278,8 @@ const Leads = () => {
               {canEdit && (
                 <Button
                   onClick={() => setIsAddLeadModalOpen(true)}
+                  disabled={limits.leads.isAtLimit}
+                  title={limits.leads.isAtLimit ? "Límite alcanzado — upgrade tu plan" : undefined}
                   className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
                 >
                   <Plus className="w-4 h-4 mr-2" /> Agregar Lead
@@ -282,6 +287,8 @@ const Leads = () => {
               )}
             </div>
           </div>
+
+          <PlanLimitBanner entity="leads" />
 
           {/* Cards */}
           {filteredLeads.length === 0 ? (
