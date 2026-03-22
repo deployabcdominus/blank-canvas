@@ -6,6 +6,7 @@ import { useProposals } from "@/contexts/ProposalsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
 import { PlanLimitBanner } from "@/components/PlanLimitBanner";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { PageTransition } from "@/components/PageTransition";
 import { Sidebar } from "@/components/Sidebar";
 
@@ -37,6 +38,7 @@ const Leads = () => {
   const { proposals, addProposal } = useProposals();
   const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const limits = usePlanLimits();
+  const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
@@ -70,7 +72,7 @@ const Leads = () => {
         logoUrl: leadData.logoUrl,
       });
     } catch {
-      toast({ title: "Error al guardar lead", description: "Intente nuevamente.", variant: "destructive" });
+      toast({ title: t.leads.toasts.saveError, description: t.leads.toasts.saveErrorDesc, variant: "destructive" });
     }
   };
 
@@ -79,7 +81,7 @@ const Leads = () => {
     if (!lead) return;
 
     if (lead.status === 'Convertido' || lead.clientId) {
-      toast({ title: "Lead ya convertido", description: "Este lead ya fue procesado.", variant: "destructive" });
+      toast({ title: t.leads.toasts.alreadyConverted, description: t.leads.toasts.alreadyConvertedDesc, variant: "destructive" });
       return;
     }
 
@@ -99,7 +101,7 @@ const Leads = () => {
       mockupUrl: null,
     });
 
-    toast({ title: "¡Propuesta creada!", description: "El lead fue avanzado a propuesta. Redirigiendo..." });
+    toast({ title: t.leads.toasts.proposalCreated, description: t.leads.toasts.proposalCreatedDesc });
     setTimeout(() => navigate('/proposals'), 1000);
   };
 
@@ -119,9 +121,9 @@ const Leads = () => {
       await clearLeads();
       setIsConfirmClearOpen(false);
       setSelectedIds(new Set());
-      toast({ title: "Leads eliminados con éxito", description: "Todos los leads fueron removidos del sistema." });
+      toast({ title: t.leads.toasts.cleared, description: t.leads.toasts.clearedDesc });
     } catch {
-      toast({ title: "Error al eliminar", description: "No se pudieron eliminar los leads.", variant: "destructive" });
+      toast({ title: t.leads.toasts.clearError, description: t.leads.toasts.clearErrorDesc, variant: "destructive" });
     }
   };
 
@@ -135,9 +137,9 @@ const Leads = () => {
     try {
       await deleteLead(deleteTargetId);
       setSelectedIds(prev => { const n = new Set(prev); n.delete(deleteTargetId); return n; });
-      toast({ title: "Lead eliminado", description: "El lead fue removido del sistema." });
+      toast({ title: t.leads.toasts.deleted, description: t.leads.toasts.deletedDesc });
     } catch {
-      toast({ title: "Error", description: "No se pudo eliminar el lead.", variant: "destructive" });
+      toast({ title: t.leads.toasts.deleteError, description: t.leads.toasts.deleteErrorDesc, variant: "destructive" });
     }
     setDeleteTargetId(null);
     setIsConfirmDeleteOpen(false);
@@ -147,10 +149,10 @@ const Leads = () => {
     if (selectedIds.size === 0) return;
     try {
       await deleteLeads(Array.from(selectedIds));
-      toast({ title: `${selectedIds.size} lead(s) eliminados`, description: "Los leads seleccionados fueron removidos." });
+      toast({ title: `${selectedIds.size} ${t.leads.toasts.selectedDeleted}`, description: t.leads.toasts.selectedDeletedDesc });
       setSelectedIds(new Set());
     } catch {
-      toast({ title: "Error", description: "No se pudieron eliminar los leads.", variant: "destructive" });
+      toast({ title: t.leads.toasts.deleteError, description: t.leads.toasts.clearErrorDesc, variant: "destructive" });
     }
   };
 
@@ -192,7 +194,7 @@ const Leads = () => {
         >
           {isMobile && (
             <div className="flex items-center gap-3 mb-4">
-              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)} className="hover:bg-white/10 min-h-[44px] min-w-[44px]" aria-label="Abrir menú">
+              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)} className="hover:bg-white/10 min-h-[44px] min-w-[44px]" aria-label={t.leads.openMenuAriaLabel}>
                 <Menu className="w-5 h-5" />
               </Button>
               <h1 className="text-lg font-bold">{FIXED_BRANDING.appName}</h1>
@@ -202,7 +204,7 @@ const Leads = () => {
           {/* Title */}
           <div className={`mb-6 ${isMobile ? 'text-center' : ''}`}>
             <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold mb-1`}>Leads</h1>
-            <p className="text-muted-foreground text-sm">Gestione y haga seguimiento de clientes potenciales</p>
+            <p className="text-muted-foreground text-sm">{t.leads.subtitle}</p>
           </div>
 
           {/* KPIs */}
@@ -214,17 +216,17 @@ const Leads = () => {
               <div className={`relative ${isMobile ? 'w-full' : 'w-72'}`}>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar leads..."
+                  placeholder={t.leads.searchPlaceholder}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-9 pr-10 h-10"
-                  aria-label="Buscar leads"
+                  aria-label={t.leads.searchAriaLabel}
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm("")}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Limpiar búsqueda"
+                    aria-label={t.leads.clearSearchAriaLabel}
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -237,17 +239,17 @@ const Leads = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="todos">{t.leads.filterAll}</SelectItem>
                   {isComercial && (
                     <>
-                      <SelectItem value="mios">Mis leads</SelectItem>
-                      <SelectItem value="asignados">Asignados a mí</SelectItem>
+                      <SelectItem value="mios">{t.leads.filterMine}</SelectItem>
+                      <SelectItem value="asignados">{t.leads.filterAssignedToMe}</SelectItem>
                     </>
                   )}
                   {isAdmin && (
                     <>
-                      <SelectItem value="mios">Creados por mí</SelectItem>
-                      <SelectItem value="sin_asignar">Sin asignar</SelectItem>
+                      <SelectItem value="mios">{t.leads.filterCreatedByMe}</SelectItem>
+                      <SelectItem value="sin_asignar">{t.leads.filterUnassigned}</SelectItem>
                     </>
                   )}
                 </SelectContent>
@@ -260,10 +262,10 @@ const Leads = () => {
                   onClick={() => navigate('/leads/recycle-bin')}
                   variant="outline"
                   className={`min-h-[44px] border-violet-500/20 text-violet-400 hover:bg-violet-500/10 ${isMobile ? '' : ''}`}
-                  title="Papelera de reciclaje"
+                  title={t.leads.recycleBinTitle}
                 >
                   <Recycle className="w-4 h-4" />
-                  {!isMobile && <span className="ml-2">Papelera</span>}
+                  {!isMobile && <span className="ml-2">{t.leads.recycleBin}</span>}
                 </Button>
               )}
               {leads.length > 0 && isAdmin && (
@@ -272,17 +274,17 @@ const Leads = () => {
                   variant="outline"
                   className={`min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
                 >
-                  <Trash2 className="w-4 h-4 mr-2" /> Limpiar
+                  <Trash2 className="w-4 h-4 mr-2" /> {t.leads.clearButton}
                 </Button>
               )}
               {canEdit && (
                 <Button
                   onClick={() => setIsAddLeadModalOpen(true)}
                   disabled={limits.leads.isAtLimit}
-                  title={limits.leads.isAtLimit ? "Límite alcanzado — upgrade tu plan" : undefined}
+                  title={limits.leads.isAtLimit ? t.leads.limitReached : undefined}
                   className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
                 >
-                  <Plus className="w-4 h-4 mr-2" /> Agregar Lead
+                  <Plus className="w-4 h-4 mr-2" /> {t.leads.addLead}
                 </Button>
               )}
             </div>
@@ -294,17 +296,17 @@ const Leads = () => {
           {filteredLeads.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-lg font-semibold mb-2">
-                {searchTerm ? `Ningún lead encontrado para "${searchTerm}"` : 'Ningún lead encontrado'}
+                {searchTerm ? `${t.leads.emptySearch} "${searchTerm}"` : t.leads.emptyDefault}
               </h3>
               <p className="text-muted-foreground mb-4">
-                {searchTerm ? 'Intente usar otros términos de búsqueda.' : 'Comience agregando su primer lead.'}
+                {searchTerm ? t.leads.emptySearchHint : t.leads.emptyDefaultHint}
               </p>
               {searchTerm && (
-                <Button onClick={() => setSearchTerm("")} variant="outline" className="mr-2">Limpiar búsqueda</Button>
+                <Button onClick={() => setSearchTerm("")} variant="outline" className="mr-2">{t.leads.clearSearch}</Button>
               )}
               {canEdit && (
                 <Button onClick={() => setIsAddLeadModalOpen(true)} className="btn-glass bg-mint text-mint-foreground hover:bg-mint-hover">
-                  <Plus className="w-4 h-4 mr-2" /> Agregar Lead
+                  <Plus className="w-4 h-4 mr-2" /> {t.leads.addLead}
                 </Button>
               )}
             </div>
@@ -346,7 +348,7 @@ const Leads = () => {
                 className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/[0.08] bg-zinc-900/90 backdrop-blur-xl shadow-2xl"
               >
                 <span className="text-sm font-medium text-zinc-300">
-                  {selectedIds.size} seleccionado{selectedIds.size > 1 ? 's' : ''}
+                  {selectedIds.size} {t.leads.selectedCount}{selectedIds.size > 1 ? 's' : ''}
                 </span>
                 <Button
                   size="sm"
@@ -354,7 +356,7 @@ const Leads = () => {
                   className="h-8 text-xs"
                   onClick={handleDeleteSelected}
                 >
-                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Eliminar Selección
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> {t.leads.deleteSelection}
                 </Button>
                 <Button
                   size="sm"
@@ -362,7 +364,7 @@ const Leads = () => {
                   className="h-8 text-xs text-zinc-400 hover:text-zinc-100"
                   onClick={() => setSelectedIds(new Set())}
                 >
-                  <XCircle className="w-3.5 h-3.5 mr-1.5" /> Deseleccionar
+                  <XCircle className="w-3.5 h-3.5 mr-1.5" /> {t.leads.deselect}
                 </Button>
               </motion.div>
             )}
@@ -394,15 +396,15 @@ const Leads = () => {
           <AlertDialog open={isConfirmClearOpen} onOpenChange={setIsConfirmClearOpen}>
             <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
               <AlertDialogHeader>
-                <AlertDialogTitle className="text-lg">⚠️ Eliminar todos los leads</AlertDialogTitle>
+                <AlertDialogTitle className="text-lg">⚠️ {t.leads.clearAllTitle}</AlertDialogTitle>
                 <AlertDialogDescription className="text-zinc-400">
-                  ¿Estás seguro de que deseas eliminar <strong className="text-zinc-200">TODOS</strong> los leads ({leads.length} registros)? Esta acción no se puede deshacer.
+                  {t.leads.clearAllDesc} ({leads.length})
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancelar</AlertDialogCancel>
+                <AlertDialogCancel className="border-zinc-700 text-zinc-300">{t.common.cancel}</AlertDialogCancel>
                 <AlertDialogAction onClick={handleClearLeads} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  Sí, eliminar todo
+                  {t.leads.clearAllConfirm}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -412,15 +414,15 @@ const Leads = () => {
           <AlertDialog open={isConfirmDeleteOpen} onOpenChange={setIsConfirmDeleteOpen}>
             <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
               <AlertDialogHeader>
-                <AlertDialogTitle>Eliminar lead</AlertDialogTitle>
+                <AlertDialogTitle>{t.leads.deleteTitle}</AlertDialogTitle>
                 <AlertDialogDescription className="text-zinc-400">
-                  ¿Estás seguro de que deseas eliminar este lead? Esta acción no se puede deshacer.
+                  {t.leads.deleteDesc}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="border-zinc-700 text-zinc-300">Cancelar</AlertDialogCancel>
+                <AlertDialogCancel className="border-zinc-700 text-zinc-300">{t.common.cancel}</AlertDialogCancel>
                 <AlertDialogAction onClick={handleConfirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  Eliminar
+                  {t.common.delete}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
