@@ -162,13 +162,14 @@ export const PipelineKanban = ({ leads, proposals, orders, installations, active
 
 // -- Column --
 interface KanbanColumnViewProps {
-  column: typeof COLUMNS[number];
+  column: ColumnDef;
   cards: PipelineCard[];
   onCardClick: (card: PipelineCard) => void;
   isMobile: boolean;
 }
 
 const KanbanColumnView = ({ column, cards, onCardClick, isMobile }: KanbanColumnViewProps) => {
+  const { t } = useLanguage();
   const Icon = column.icon;
   return (
     <div className="flex-1 min-w-[200px]">
@@ -179,7 +180,7 @@ const KanbanColumnView = ({ column, cards, onCardClick, isMobile }: KanbanColumn
       </div>
       <div className="space-y-2 min-h-[120px]">
         {cards.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground/50 text-xs">Sin proyectos</div>
+          <div className="text-center py-8 text-muted-foreground/50 text-xs">{t.pipelineKanban.noProjects}</div>
         ) : (
           cards.map((card, idx) => (
             <motion.div key={card.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05, duration: 0.3 }} onClick={() => onCardClick(card)} className="glass-card p-3 rounded-xl cursor-pointer hover:scale-[1.02] hover:shadow-lg transition-all duration-200 group">
@@ -198,7 +199,7 @@ const KanbanColumnView = ({ column, cards, onCardClick, isMobile }: KanbanColumn
                 {card.value != null && card.value > 0 && (
                   <span className="text-[10px] font-bold text-foreground/70">${card.value.toLocaleString("es-MX")}</span>
                 )}
-                <span className="ml-auto text-[10px] text-muted-foreground">{card.daysAgo === 0 ? "hoy" : `${card.daysAgo}d`}</span>
+                <span className="ml-auto text-[10px] text-muted-foreground">{card.daysAgo === 0 ? t.pipelineKanban.today : t.pipelineKanban.daysAgo.replace("{{n}}", String(card.daysAgo))}</span>
               </div>
             </motion.div>
           ))
