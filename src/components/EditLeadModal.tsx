@@ -599,7 +599,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
               >
                 <FileText className="w-4 h-4 text-violet-400" />
                 <span className="text-sm text-violet-300 font-medium flex-1 text-left">
-                  {linkedProposal ? `Propuesta: ${linkedProposal.status}` : 'Propuesta creada'}
+                  {linkedProposal ? t.editLeadModal.proposalBannerLabel.replace("{{status}}", linkedProposal.status) : t.editLeadModal.proposalCreated}
                 </span>
                 <ExternalLink className="w-3.5 h-3.5 text-violet-500 group-hover/link:text-violet-300 transition-colors" />
               </button>
@@ -607,7 +607,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
 
             {/* Activity Timeline */}
             {activityEvents.length > 0 && !editing && (
-              <GlassCard title="Historial de Actividad" icon={Clock}>
+              <GlassCard title={t.editLeadModal.activityTitle} icon={Clock}>
                 <div className="mt-1">
                   {activityEvents.map((event, i) => (
                     <ActivityItem key={event.id} event={event} isLast={i === activityEvents.length - 1} />
@@ -623,7 +623,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-destructive/15 text-destructive/60 hover:text-destructive hover:bg-destructive/5 transition-colors text-sm"
               >
                 <Trash2 className="w-4 h-4" />
-                Eliminar lead
+                {t.editLeadModal.deleteLead}
               </button>
             )}
           </div>
