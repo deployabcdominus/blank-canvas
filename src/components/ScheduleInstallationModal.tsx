@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from "@/i18n/LanguageContext";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -41,6 +42,7 @@ interface ScheduleInstallationModalProps {
 }
 
 export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps> = ({ isOpen, onClose, onSchedule }) => {
+  const { t } = useLanguage();
   const { getAvailableForInstallation } = useWorkOrders();
   const { companies } = useInstallerCompanies();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -62,30 +64,31 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
   const onSubmit = (data: FormData) => {
     onSchedule({ ...data, service: selectedService, installerCompany: selectedCompany });
     reset(); onClose();
-    toast({ title: "Ejecución agendada", description: "¡Ejecución agendada con éxito!" });
+    toast({ title: t.scheduleInstallationModal.toastScheduled, description: t.scheduleInstallationModal.toastScheduledDesc });
   };
 
   const handleShare = () => {
     if (!selectedService || !selectedCompany || !watchedDate) return;
+    const tm = t.scheduleInstallationModal;
     const summary = `
-AGENDAMIENTO DE EJECUCIÓN
+${tm.shareSummaryTitle}
 
-Cliente: ${selectedService.client}
-Proyecto: ${selectedService.project}
-Empresa Subcontratista: ${selectedCompany.name}
-Contacto: ${selectedCompany.contact} - ${selectedCompany.phone}
-Fecha: ${format(watchedDate, "dd/MM/yyyy", { locale: es })}
-Horario: ${watch("time") || "No informado"}
-Dirección: ${watch("address") || "No informada"}
+${tm.shareClient} ${selectedService.client}
+${tm.shareProject} ${selectedService.project}
+${tm.shareContractor} ${selectedCompany.name}
+${tm.shareContact} ${selectedCompany.contact} - ${selectedCompany.phone}
+${tm.shareDate} ${format(watchedDate, "dd/MM/yyyy", { locale: es })}
+${tm.shareTime} ${watch("time") || tm.shareNotProvided}
+${tm.shareAddress} ${watch("address") || tm.shareNotProvided}
 
-${watch("contactName") ? `Contacto en el Lugar: ${watch("contactName")}` : ""}
-${watch("contactPhone") ? `Teléfono: ${watch("contactPhone")}` : ""}
-${watch("contactEmail") ? `Email: ${watch("contactEmail")}` : ""}
+${watch("contactName") ? `${tm.shareOnSiteContact} ${watch("contactName")}` : ""}
+${watch("contactPhone") ? `${tm.sharePhone} ${watch("contactPhone")}` : ""}
+${watch("contactEmail") ? `${tm.shareEmail} ${watch("contactEmail")}` : ""}
 
-${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
+${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
     `.trim();
     navigator.clipboard.writeText(summary).then(() => {
-      toast({ title: "¡Información copiada!", description: "Resumen del agendamiento copiado al portapapeles." });
+      toast({ title: tm.toastCopied, description: tm.toastCopiedDesc });
     });
   };
 
@@ -93,19 +96,19 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-white border shadow-lg max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-foreground">Agendar Ejecución</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-foreground">{t.scheduleInstallationModal.title}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="installer" className="text-sm font-medium text-foreground">Subcontratista *</Label>
+                <Label htmlFor="installer" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.contractorLabel}</Label>
                 <Button type="button" variant="ghost" size="sm" className="h-auto p-1 text-muted-foreground hover:text-foreground" onClick={() => navigate("/installer-companies")}>
                   <Settings className="w-4 h-4" />
                 </Button>
               </div>
               <Select onValueChange={(value) => setValue("installerCompanyId", value)}>
-                <SelectTrigger className="bg-white border-input"><SelectValue placeholder="Seleccione la empresa" /></SelectTrigger>
+                <SelectTrigger className="bg-white border-input"><SelectValue placeholder={t.scheduleInstallationModal.contractorPlaceholder} /></SelectTrigger>
                 <SelectContent className="bg-white border shadow-lg z-50">
                   {companies.map((company) => (
                     <SelectItem key={company.id} value={company.id.toString()}>
@@ -117,9 +120,9 @@ ${watch("notes") ? `Observaciones: ${watch("notes")}` : ""}
               {errors.installerCompanyId && <p className="text-sm text-destructive">{errors.installerCompanyId.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="service" className="text-sm font-medium text-foreground">Servicio *</Label>
+              <Label htmlFor="service" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.serviceLabel}</Label>
               <Select onValueChange={(value) => setValue("serviceId", value)}>
-                <SelectTrigger className="bg-white border-input"><SelectValue placeholder="Seleccione el servicio" /></SelectTrigger>
+                <SelectTrigger className="bg-white border-input"><SelectValue placeholder={t.scheduleInstallationModal.servicePlaceholder} /></SelectTrigger>
                 <SelectContent className="bg-white border shadow-lg z-50">
                   {filteredServices.length > 0 ? filteredServices.map((service) => (
                     <SelectItem key={service.id} value={service.id.toString()}>
