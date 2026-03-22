@@ -94,7 +94,7 @@ export const PipelineKanban = ({ leads, proposals, orders, installations, active
       if (leadsWithProposal.has(l.id)) return;
       result.push({
         id: `lead-${l.id}`, column: "leads", company: l.company || l.name,
-        project: l.service || "Sin servicio definido", service: l.service,
+        project: l.service || t.pipelineKanban.noService, service: l.service,
         status: l.status, value: l.value ? parseFloat(l.value.replace(/[^\d.]/g, "")) || undefined : undefined,
         logoUrl: l.logoUrl, daysAgo: l.daysAgo, navigateTo: "/leads",
       });
@@ -125,7 +125,7 @@ export const PipelineKanban = ({ leads, proposals, orders, installations, active
       result.push({
         id: `install-${i.id}`, column: col, company: i.client,
         project: i.project, service: "",
-        status: i.status === "Scheduled" ? "Agendada" : i.status === "In Progress" ? "En progreso" : "Completada",
+        status: i.status === "Scheduled" ? t.pipelineKanban.installStatus.scheduled : i.status === "In Progress" ? t.pipelineKanban.installStatus.inProgress : t.pipelineKanban.installStatus.completed,
         value: undefined, daysAgo: daysAgoFromDate(i.scheduledDate),
         navigateTo: "/installation",
       });
@@ -139,10 +139,10 @@ export const PipelineKanban = ({ leads, proposals, orders, installations, active
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Pipeline de Proyectos</h2>
+        <h2 className="text-xl font-semibold">{t.pipelineKanban.title}</h2>
         {activeFilter && (
           <span className="text-xs text-muted-foreground">
-            Filtrando: {COLUMNS.find(c => c.key === activeFilter)?.label}
+            {t.pipelineKanban.filtering} {COLUMNS.find(c => c.key === activeFilter)?.label}
           </span>
         )}
       </div>
