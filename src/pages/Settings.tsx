@@ -25,6 +25,7 @@ import { useSeedCatalogs } from "@/hooks/useSeedCatalogs";
 import { supabase } from "@/integrations/supabase/client";
 import { PricingSection } from "@/components/settings/PricingSection";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 
 export default function Settings() {
@@ -245,6 +246,24 @@ export default function Settings() {
                     </Badge>
                   </div>
                 )}
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "16px 0",
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                  }}
+                >
+                  <div>
+                    <p style={{ fontSize: "14px", fontWeight: 500 }}>Idioma preferido</p>
+                    <p style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
+                      Cambia el idioma de toda la aplicación
+                    </p>
+                  </div>
+                  <LanguageSwitcher />
+                </div>
 
                 <Separator />
 

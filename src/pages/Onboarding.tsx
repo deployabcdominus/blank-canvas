@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { INDUSTRIES, DEFAULT_SERVICES_BY_INDUSTRY, getIndustryLabels } from "@/lib/industry_config";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 /* ── Preset Engine ── */
 interface IndustryPreset {
@@ -452,6 +453,12 @@ const Onboarding = () => {
     <PageTransition>
       <div className="min-h-screen flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-lg">
+          {/* Top bar with language switcher */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+            <span className="text-sm font-semibold text-muted-foreground">Sign Flow</span>
+            <LanguageSwitcher />
+          </div>
+
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
