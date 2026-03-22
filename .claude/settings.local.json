@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(supabase functions:*)",
+      "Bash(where supabase:*)",
+      "Bash(npx supabase:*)",
+      "Bash(stripe --version)",
+      "Bash(where stripe:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}
