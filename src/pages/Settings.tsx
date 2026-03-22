@@ -4,6 +4,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ export default function Settings() {
   const { user } = useAuth();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
+  const { t } = useLanguage();
   const planLimits = usePlanLimits();
   const { toast } = useToast();
   
@@ -119,50 +121,50 @@ export default function Settings() {
 
   return (
     <ResponsiveLayout
-      title="Configuración"
-      subtitle="Gestione la configuración del sistema"
+      title={t.settings.title}
+      subtitle={t.settings.subtitle}
       icon={SettingsIcon}
     >
       <Tabs value={activeTab} onValueChange={(v) => setSearchParams({ tab: v })} className="w-full">
          <TabsList className="mb-6">
           <TabsTrigger value="perfil">
             <User className="w-4 h-4 mr-2" />
-            Perfil
+            {t.settings.tabs.profile}
           </TabsTrigger>
            {isAdmin && !isSuperadmin && (
             <TabsTrigger value="organizacion">
               <Building2 className="w-4 h-4 mr-2" />
-              Organización
+              {t.settings.tabs.organization}
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
             <TabsTrigger value="storage">
               <FolderOpen className="w-4 h-4 mr-2" />
-              Storage
+              {t.settings.tabs.storage}
             </TabsTrigger>
           )}
            {isAdmin && (
             <TabsTrigger value="configuracion">
               <SettingsIcon className="w-4 h-4 mr-2" />
-              Configuración
+              {t.settings.tabs.configuration}
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
             <TabsTrigger value="catalogos">
               <List className="w-4 h-4 mr-2" />
-              Catálogos
+              {t.settings.tabs.catalogs}
             </TabsTrigger>
           )}
            {isAdmin && !isSuperadmin && (
             <TabsTrigger value="integraciones">
               <Plug className="w-4 h-4 mr-2" />
-              Integraciones
+              {t.settings.tabs.integrations}
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
             <TabsTrigger value="suscripcion">
               <CreditCard className="w-4 h-4 mr-2" />
-              Suscripción
+              {t.settings.tabs.subscription}
             </TabsTrigger>
           )}
         </TabsList>
@@ -171,9 +173,9 @@ export default function Settings() {
           <div className="grid gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Información del Usuario</CardTitle>
+                <CardTitle>{t.settings.profile.title}</CardTitle>
                 <CardDescription>
-                  {isSuperadmin ? 'Datos de tu cuenta de administración de plataforma' : 'Datos de tu cuenta y credenciales de acceso'}
+                  {isSuperadmin ? t.settings.profile.subtitleSuperadmin : t.settings.profile.subtitle}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -183,12 +185,12 @@ export default function Settings() {
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-muted-foreground">
                       <User className="w-4 h-4" />
-                      Nombre completo
+                      {t.settings.profile.fullName}
                     </Label>
-                    <Input 
-                      value={fullName} 
+                    <Input
+                      value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Tu nombre completo"
+                      placeholder={t.settings.profile.fullNamePlaceholder}
                     />
                     <Button
                       size="sm"
@@ -197,7 +199,7 @@ export default function Settings() {
                       className="flex items-center gap-2"
                     >
                       <Save className="w-3 h-3" />
-                      {savingName ? 'Guardando...' : 'Guardar nombre'}
+                      {savingName ? t.settings.profile.saving : t.settings.profile.saveName}
                     </Button>
                   </div>
 
@@ -205,12 +207,12 @@ export default function Settings() {
                     <div className="space-y-2">
                       <Label className="flex items-center gap-2 text-muted-foreground">
                         <Shield className="w-4 h-4" />
-                        Contexto actual
+                        {t.settings.profile.currentContext}
                       </Label>
                       <div className="flex items-center gap-2 h-10">
                         <Badge variant="outline" className="text-sm border-primary/30 text-primary px-3 py-1.5">
                           <Shield className="w-3.5 h-3.5 mr-1.5" />
-                          Plataforma — Superadmin
+                          {t.settings.profile.platformSuperadmin}
                         </Badge>
                       </div>
                     </div>
@@ -218,16 +220,16 @@ export default function Settings() {
                     <div className="space-y-2">
                       <Label className="flex items-center gap-2 text-muted-foreground">
                         <Building2 className="w-4 h-4" />
-                        Empresa
+                        {t.settings.profile.company}
                       </Label>
-                      <Input 
-                        value={company?.name || 'No disponible'} 
-                        readOnly 
+                      <Input
+                        value={company?.name || t.settings.profile.notAvailable}
+                        readOnly
                         className="glass bg-muted/50"
                       />
                       {!isAdmin && (
                         <p className="text-xs text-muted-foreground">
-                          Solo el administrador puede editar el nombre de la empresa.
+                          {t.settings.profile.adminOnlyNote}
                         </p>
                       )}
                     </div>
@@ -239,7 +241,7 @@ export default function Settings() {
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-muted-foreground">
                       <Shield className="w-4 h-4" />
-                      Rol
+                      {t.settings.profile.role}
                     </Label>
                     <Badge className="text-sm px-3 py-1.5 font-bold bg-primary/10 text-primary border border-primary/30 rounded-full">
                       {roleLabel}
@@ -257,9 +259,9 @@ export default function Settings() {
                   }}
                 >
                   <div>
-                    <p style={{ fontSize: "14px", fontWeight: 500 }}>Idioma preferido</p>
+                    <p style={{ fontSize: "14px", fontWeight: 500 }}>{t.settings.profile.preferredLanguage}</p>
                     <p style={{ fontSize: "12px", color: "var(--muted-foreground)" }}>
-                      Cambia el idioma de toda la aplicación
+                      {t.settings.profile.languageSubtitle}
                     </p>
                   </div>
                   <LanguageSwitcher />
@@ -268,28 +270,28 @@ export default function Settings() {
                 <Separator />
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Credenciales de Acceso</h3>
+                  <h3 className="text-lg font-semibold">{t.settings.profile.credentials}</h3>
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-muted-foreground">
                       <Mail className="w-4 h-4" />
-                      Email
+                      {t.common.email}
                     </Label>
-                    <Input 
-                      value={user?.email || 'No disponible'} 
-                      readOnly 
+                    <Input
+                      value={user?.email || t.settings.profile.notAvailable}
+                      readOnly
                       className="glass bg-muted/50"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-muted-foreground">
                       <KeyRound className="w-4 h-4" />
-                      Contraseña
+                      {t.settings.profile.password}
                     </Label>
                     <div className="flex items-center gap-3">
-                      <Input 
+                      <Input
                         type="password"
                         value="••••••••••••"
-                        readOnly 
+                        readOnly
                         className="glass bg-muted/50 max-w-xs"
                       />
                       <Button
@@ -300,11 +302,11 @@ export default function Settings() {
                         className="flex items-center gap-2 whitespace-nowrap"
                       >
                         <KeyRound className="w-3.5 h-3.5" />
-                        {resetSent ? 'Email enviado' : 'Cambiar contraseña'}
+                        {resetSent ? t.settings.profile.emailSent : t.settings.profile.changePassword}
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Se enviará un enlace de restablecimiento a tu correo.
+                      {t.settings.profile.resetPasswordNote}
                     </p>
                   </div>
                 </div>
@@ -314,20 +316,20 @@ export default function Settings() {
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="w-4 h-4" />
-                    Cuenta creada
+                    {t.settings.profile.accountCreated}
                   </Label>
-                  <Input 
-                    value={user?.created_at ? new Date(user.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No disponible'} 
-                    readOnly 
+                  <Input
+                    value={user?.created_at ? new Date(user.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : t.settings.profile.notAvailable}
+                    readOnly
                     className="glass bg-muted/50"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-muted-foreground">ID de usuario</Label>
-                  <Input 
-                    value={user?.id || 'No disponible'} 
-                    readOnly 
+                  <Label className="text-muted-foreground">{t.settings.profile.userId}</Label>
+                  <Input
+                    value={user?.id || t.settings.profile.notAvailable}
+                    readOnly
                     className="glass bg-muted/50 text-xs font-mono"
                   />
                 </div>
@@ -341,15 +343,13 @@ export default function Settings() {
             <div className="grid gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Datos de la Organización</CardTitle>
-                  <CardDescription>
-                    Edita el nombre de tu empresa. Este cambio se refleja para todos los miembros.
-                  </CardDescription>
+                  <CardTitle>{t.settings.org.title}</CardTitle>
+                  <CardDescription>{t.settings.org.subtitle}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Company Logo */}
                   <div className="space-y-3">
-                    <Label>Logo de la empresa</Label>
+                    <Label>{t.settings.org.logo}</Label>
                     <div className="flex items-center gap-4">
                       {company?.logo_url ? (
                         <div className="relative group">
@@ -386,9 +386,9 @@ export default function Settings() {
                           className="flex items-center gap-2"
                         >
                           {uploadingLogo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                          {uploadingLogo ? 'Subiendo...' : company?.logo_url ? 'Cambiar logo' : 'Subir logo'}
+                          {uploadingLogo ? t.settings.org.uploading : company?.logo_url ? t.settings.org.changeLogo : t.settings.org.uploadLogo}
                         </Button>
-                        <p className="text-xs text-muted-foreground mt-1">PNG, JPG. Max 2MB.</p>
+                        <p className="text-xs text-muted-foreground mt-1">{t.settings.org.logoNote}</p>
                         <input
                           id="company-logo-input"
                           type="file"
@@ -428,12 +428,12 @@ export default function Settings() {
 
                   {/* Company Name */}
                   <div className="space-y-2">
-                    <Label htmlFor="org-name">Nombre de la empresa</Label>
+                    <Label htmlFor="org-name">{t.settings.org.companyName}</Label>
                     <Input
                       id="org-name"
                       value={orgName}
                       onChange={(e) => setOrgName(e.target.value)}
-                      placeholder="Nombre de tu empresa"
+                      placeholder={t.settings.org.namePlaceholder}
                     />
                   </div>
                   <Button
@@ -453,7 +453,7 @@ export default function Settings() {
                     className="flex items-center gap-2"
                   >
                     <Save className="w-4 h-4" />
-                    {savingOrg ? 'Guardando...' : 'Guardar'}
+                    {savingOrg ? t.settings.org.saving : t.settings.org.save}
                   </Button>
                 </CardContent>
               </Card>
@@ -467,17 +467,15 @@ export default function Settings() {
             <div className="grid gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Storage / File Index</CardTitle>
-                  <CardDescription>
-                    Configure el índice de carpetas de red para sus proyectos.
-                  </CardDescription>
+                  <CardTitle>{t.settings.storage.title}</CardTitle>
+                  <CardDescription>{t.settings.storage.subtitle}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label>Habilitar índice de carpetas de red</Label>
+                      <Label>{t.settings.storage.enableNetwork}</Label>
                       <p className="text-sm text-muted-foreground">
-                        Permite asociar rutas de carpetas de red a cada proyecto.
+                        {t.settings.storage.enableNetworkDesc}
                       </p>
                     </div>
                     <Switch
@@ -488,14 +486,14 @@ export default function Settings() {
 
                   {networkEnabled && (
                     <div className="space-y-2">
-                      <Label>Ruta base de red (UNC/SMB)</Label>
+                      <Label>{t.settings.storage.networkPath}</Label>
                       <Input
                         value={networkBasePath}
                         onChange={e => setNetworkBasePath(e.target.value)}
                         placeholder="\\dropbox\The Sign Space\Projects\"
                       />
                       <p className="text-xs text-muted-foreground">
-                        Ruta UNC SMB para Windows LAN. Solo referencia. No sube archivos.
+                        {t.settings.storage.networkPathNote}
                       </p>
                     </div>
                   )}
@@ -517,7 +515,7 @@ export default function Settings() {
                     className="flex items-center gap-2"
                   >
                     <Save className="w-4 h-4" />
-                    {savingStorage ? 'Guardando...' : 'Guardar'}
+                    {savingStorage ? t.settings.storage.saving : t.settings.storage.save}
                   </Button>
                 </CardContent>
               </Card>
@@ -530,77 +528,72 @@ export default function Settings() {
             <div className="grid gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Apariencia</CardTitle>
-                <CardDescription>
-                  Configure los efectos visuales
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <Label>Tema</Label>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Moon className="w-4 h-4" />
-                    <span>Modo oscuro permanente</span>
+                  <CardTitle>{t.settings.config.appearanceTitle}</CardTitle>
+                  <CardDescription>{t.settings.config.appearanceSubtitle}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <Label>{t.settings.config.theme}</Label>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Moon className="w-4 h-4" />
+                      <span>{t.settings.config.darkModePermanent}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Efecto Cristal (Glass)</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Activa o desactiva los efectos de cristal translúcido
-                    </p>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>{t.settings.config.glassEffect}</Label>
+                      <p className="text-sm text-muted-foreground">
+                        {t.settings.config.glassEffectDesc}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={formData.glassEffect}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, glassEffect: checked }))}
+                    />
                   </div>
-                  <Switch
-                    checked={formData.glassEffect}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, glassEffect: checked }))}
-                  />
-                </div>
 
-                <Button onClick={handleSave} className="flex items-center gap-2">
-                  <Save className="w-4 h-4" />
-                  Guardar Apariencia
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button onClick={handleSave} className="flex items-center gap-2">
+                    <Save className="w-4 h-4" />
+                    {t.settings.config.saveAppearance}
+                  </Button>
+                </CardContent>
+              </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Restauración</CardTitle>
-                <CardDescription>
-                  Restaure la configuración de apariencia a los valores predeterminados
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="flex items-center gap-2">
-                      <RotateCcw className="w-4 h-4" />
-                      Restaurar Valores Predeterminados
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>¿Restaurar configuración predeterminada?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Esta acción restaurará la configuración de apariencia a los valores predeterminados.
-                        Los datos de negocio no se verán afectados.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => {
-                        resetToDefaults();
-                        setFormData(settings);
-                        toast({ title: "Configuración restaurada", description: "La configuración fue restaurada a los valores predeterminados." });
-                      }}>
-                        Restaurar
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </CardContent>
-            </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t.settings.config.restoreTitle}</CardTitle>
+                  <CardDescription>{t.settings.config.restoreSubtitle}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" className="flex items-center gap-2">
+                        <RotateCcw className="w-4 h-4" />
+                        {t.settings.config.restoreButton}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{t.settings.config.restoreConfirmTitle}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {t.settings.config.restoreConfirmDesc}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{t.common.cancel}</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => {
+                          resetToDefaults();
+                          setFormData(settings);
+                          toast({ title: "Configuración restaurada", description: "La configuración fue restaurada a los valores predeterminados." });
+                        }}>
+                          {t.settings.config.restore}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </CardContent>
+              </Card>
           </div>
           </TabsContent>
         )}
@@ -608,10 +601,9 @@ export default function Settings() {
           <TabsContent value="catalogos">
             <div className="space-y-4">
               <div>
-                <h2 className="text-base font-semibold text-foreground">Catálogos del sistema</h2>
+                <h2 className="text-base font-semibold text-foreground">{t.settings.catalogs.title}</h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Personaliza los valores que aparecen en los formularios de toda la app.
-                  Los cambios aplican inmediatamente para todo tu equipo.
+                  {t.settings.catalogs.subtitle}
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -659,21 +651,21 @@ export default function Settings() {
                   <CardHeader>
                     <div className="flex items-center justify-between flex-wrap gap-3">
                       <div>
-                        <CardTitle>Uso del plan</CardTitle>
-                        <CardDescription>Consumo actual de recursos en tu cuenta</CardDescription>
+                        <CardTitle>{t.settings.planUsage.title}</CardTitle>
+                        <CardDescription>{t.settings.planUsage.subtitle}</CardDescription>
                       </div>
                       <Badge className="bg-violet-500/20 text-violet-300 border border-violet-500/30 px-3 py-1 text-sm font-semibold">
-                        Plan {planLimits.planName}
+                        {t.settings.planUsage.plan} {planLimits.planName}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-5">
                     {(
                       [
-                        { key: "work_orders" as const, label: "Órdenes de trabajo" },
-                        { key: "leads" as const, label: "Leads" },
-                        { key: "users" as const, label: "Usuarios activos" },
-                        { key: "proposals" as const, label: "Propuestas" },
+                        { key: "work_orders" as const, label: t.settings.planUsage.workOrders },
+                        { key: "leads" as const, label: t.settings.planUsage.leads },
+                        { key: "users" as const, label: t.settings.planUsage.users },
+                        { key: "proposals" as const, label: t.settings.planUsage.proposals },
                       ] as const
                     ).map(({ key, label }) => {
                       const lim = planLimits[key];
@@ -688,7 +680,7 @@ export default function Settings() {
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">{label}</span>
                             <span className={lim.isAtLimit ? "text-red-400 font-semibold" : lim.isNearLimit ? "text-amber-400 font-semibold" : "text-foreground"}>
-                              {lim.isUnlimited ? "Ilimitado" : `${lim.current} / ${lim.max}`}
+                              {lim.isUnlimited ? t.settings.planUsage.unlimited : `${lim.current} / ${lim.max}`}
                             </span>
                           </div>
                           {!lim.isUnlimited && (
@@ -710,7 +702,7 @@ export default function Settings() {
                           onClick={() => {}}
                           className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10"
                         >
-                          Ver planes de upgrade
+                          {t.settings.planUsage.upgradeButton}
                         </Button>
                       </div>
                     )}
