@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLeads } from '@/contexts/LeadsContext';
 import { toast } from '@/hooks/use-toast';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface AssignLeadModalProps {
   isOpen: boolean;
@@ -22,6 +23,9 @@ interface CompanyMember {
 }
 
 export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: AssignLeadModalProps) {
+  const { t } = useLanguage();
+  const m = t.assignLeadModal;
+
   const { user } = useAuth();
   const { assignLead } = useLeads();
   const [members, setMembers] = useState<CompanyMember[]>([]);
@@ -55,7 +59,7 @@ export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: As
             .filter((p: any) => p.id !== user.id) // Exclude self
             .map((p: any) => ({
               id: p.id,
-              name: p.full_name || 'Sin nombre',
+              name: p.full_name || m.noName,
               email: '',
             }))
         );
@@ -71,10 +75,13 @@ export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: As
     try {
       const assignTo = selectedMember === 'none' ? null : selectedMember;
       await assignLead(leadId, assignTo);
-      toast({ title: 'Lead asignado', description: assignTo ? 'Lead asignado al comercial.' : 'Asignación removida.' });
+      toast({
+        title: m.successTitle,
+        description: assignTo ? m.successDescAssigned : m.successDescRemoved,
+      });
       onClose();
     } catch (e: any) {
-      toast({ title: 'Error', description: e.message || 'No se pudo asignar el lead.', variant: 'destructive' });
+      toast({ title: m.errorTitle, description: e.message || m.errorDesc, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -84,33 +91,33 @@ export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: As
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Asignar Lead a Comercial</DialogTitle>
+          <DialogTitle>{m.title}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Comercial asignado</Label>
+            <Label>{m.assignedLabel}</Label>
             <Select value={selectedMember} onValueChange={setSelectedMember}>
               <SelectTrigger>
-                <SelectValue placeholder="Seleccionar comercial..." />
+                <SelectValue placeholder={m.selectPlaceholder} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">Sin asignar</SelectItem>
-                {members.map(m => (
-                  <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                <SelectItem value="none">{m.unassigned}</SelectItem>
+                {members.map(member => (
+                  <SelectItem key={member.id} value={member.id}>{member.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
             {members.length === 0 && (
               <p className="text-xs text-muted-foreground">
-                No hay otros miembros en tu empresa. Invita comerciales primero.
+                {m.noMembers}
               </p>
             )}
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button variant="outline" onClick={onClose}>{m.cancel}</Button>
           <Button onClick={handleSave} disabled={loading}>
-            {loading ? 'Guardando...' : 'Guardar'}
+            {loading ? m.saving : m.save}
           </Button>
         </DialogFooter>
       </DialogContent>

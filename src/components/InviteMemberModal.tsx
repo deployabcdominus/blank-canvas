@@ -10,6 +10,7 @@ import { useCompany } from "@/hooks/useCompany";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useEmail } from "@/hooks/useEmail";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Copy, Check, Mail } from "lucide-react";
 
 interface InviteMemberModalProps {
@@ -23,6 +24,7 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
   const { fullName } = useUserProfile();
   const { sendInvitationEmail } = useEmail();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("member");
@@ -53,8 +55,11 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
       setInviteLink(link);
 
       const ROLE_LABELS: Record<string, string> = {
-        admin: "Admin", sales: "Ventas", operations: "Operaciones",
-        member: "Comercial", viewer: "Visor",
+        admin: t.inviteMember.roles.admin,
+        sales: t.inviteMember.roles.sales,
+        operations: t.inviteMember.roles.operations,
+        member: t.inviteMember.roles.member,
+        viewer: t.inviteMember.roles.viewer,
       };
 
       // Fire-and-forget: email never blocks the invitation flow
@@ -66,9 +71,16 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
         inviteUrl: link,
       });
 
-      toast({ title: "Invitación creada", description: `Link de invitación generado para ${email}` });
+      toast({
+        title: t.inviteMember.toastCreatedTitle,
+        description: t.inviteMember.toastCreatedDesc.replace("{{email}}", email),
+      });
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "No se pudo crear la invitación", variant: "destructive" });
+      toast({
+        title: t.inviteMember.toastErrorTitle,
+        description: err.message || t.inviteMember.toastErrorDesc,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -95,55 +107,57 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5" />
-            Invitar Miembro
+            {t.inviteMember.title}
           </DialogTitle>
         </DialogHeader>
 
         {!inviteLink ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Email del invitado *</Label>
+              <Label>{t.inviteMember.emailLabel}</Label>
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="correo@ejemplo.com"
+                placeholder={t.inviteMember.emailPlaceholder}
               />
               <p className="text-xs text-muted-foreground">
-                El invitado solo podrá registrarse con este email exacto.
+                {t.inviteMember.emailHint}
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label>Rol</Label>
+              <Label>{t.inviteMember.roleLabel}</Label>
               <Select value={role} onValueChange={setRole}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="sales">Ventas</SelectItem>
-                  <SelectItem value="operations">Operaciones</SelectItem>
-                  <SelectItem value="member">Comercial</SelectItem>
-                  <SelectItem value="viewer">Visor</SelectItem>
+                  <SelectItem value="admin">{t.inviteMember.roles.admin}</SelectItem>
+                  <SelectItem value="sales">{t.inviteMember.roles.sales}</SelectItem>
+                  <SelectItem value="operations">{t.inviteMember.roles.operations}</SelectItem>
+                  <SelectItem value="member">{t.inviteMember.roles.member}</SelectItem>
+                  <SelectItem value="viewer">{t.inviteMember.roles.viewer}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="flex gap-3 justify-end">
-              <Button variant="outline" onClick={handleClose}>Cancelar</Button>
+              <Button variant="outline" onClick={handleClose}>{t.inviteMember.cancel}</Button>
               <Button
                 onClick={handleInvite}
                 disabled={!email.trim() || isLoading}
               >
-                {isLoading ? "Creando..." : "Generar Invitación"}
+                {isLoading ? t.inviteMember.creating : t.inviteMember.generate}
               </Button>
             </div>
           </div>
         ) : (
           <div className="space-y-4">
             <div className="p-4 rounded-lg bg-muted/50 border">
-              <p className="text-sm font-medium mb-2">Link de invitación para {email}:</p>
+              <p className="text-sm font-medium mb-2">
+                {t.inviteMember.linkLabel.replace("{{email}}", email)}
+              </p>
               <div className="flex items-center gap-2">
                 <Input value={inviteLink} readOnly className="text-xs" />
                 <Button size="icon" variant="outline" onClick={handleCopy}>
@@ -151,10 +165,12 @@ export const InviteMemberModal = ({ isOpen, onClose }: InviteMemberModalProps) =
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Este link expira en 7 días. Compártelo solo con {email}.
+                {t.inviteMember.linkExpiry.replace("{{email}}", email)}
               </p>
             </div>
-            <Button onClick={handleClose} className="w-full" variant="outline">Cerrar</Button>
+            <Button onClick={handleClose} className="w-full" variant="outline">
+              {t.inviteMember.close}
+            </Button>
           </div>
         )}
       </DialogContent>

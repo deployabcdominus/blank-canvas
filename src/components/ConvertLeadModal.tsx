@@ -13,6 +13,7 @@ import { useProposals } from "@/contexts/ProposalsContext";
 import { useLeads, Lead } from "@/contexts/LeadsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ConvertLeadModalProps {
   isOpen: boolean;
@@ -21,6 +22,9 @@ interface ConvertLeadModalProps {
 }
 
 export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProps) => {
+  const { t } = useLanguage();
+  const m = t.convertLeadModal;
+
   const { user } = useAuth();
   const { clients, addClient } = useClients();
   const { addProject } = useProjects();
@@ -41,7 +45,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
     if (!open) onClose();
   };
 
-  // Pre-fill when lead changes  
+  // Pre-fill when lead changes
   const prevLeadId = useState<string | null>(null);
   if (lead && lead.id !== prevLeadId[0]) {
     prevLeadId[1](lead.id);
@@ -59,7 +63,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
       let clientId: string;
 
       if (mode === 'new') {
-        if (!newClientName.trim()) throw new Error('Nombre del cliente requerido');
+        if (!newClientName.trim()) throw new Error(m.clientNameRequired);
         const newClient = await addClient({
           clientName: newClientName.trim(),
           contactName: lead.name || null,
@@ -71,17 +75,17 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
           notes: lead.notes || null,
           logoUrl: lead.logoUrl || null,
         });
-        if (!newClient?.id) throw new Error('Error al crear el cliente: no se recibió ID');
+        if (!newClient?.id) throw new Error(m.errorNoClientId);
         clientId = newClient.id;
       } else {
-        if (!selectedClientId) throw new Error('Seleccione un cliente');
+        if (!selectedClientId) throw new Error(m.selectClientRequired);
         clientId = selectedClientId;
       }
 
       // Step 2: Create project
       const project = await addProject({
         clientId,
-        projectName: projectName.trim() || lead.service || 'Proyecto',
+        projectName: projectName.trim() || lead.service || m.projectFallback,
         installAddress: lead.contact.location || '',
         status: 'Lead',
         ownerUserId: user.id,
@@ -89,7 +93,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         folderRelativePath: null,
         folderFullPath: null,
       });
-      if (!project?.id) throw new Error('Error al crear el proyecto: no se recibió ID');
+      if (!project?.id) throw new Error(m.errorNoProjectId);
 
       // Step 3: Create proposal linked to lead
       try {
@@ -100,7 +104,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
 
         await addProposal({
           client: proposalClientName,
-          project: projectName.trim() || lead.service || 'Proyecto',
+          project: projectName.trim() || lead.service || m.projectFallback,
           value: lead.value ? parseFloat(lead.value) || 0 : 0,
           description: lead.notes || lead.service || '',
           status: 'Borrador',
@@ -115,8 +119,12 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         });
       } catch (proposalErr: any) {
         const msg = proposalErr?.message || 'Error desconocido';
-        toast({ title: "Error al crear propuesta", description: `Detalle: ${msg}. Verifique que todos los campos requeridos estén completos.`, variant: "destructive" });
-        throw new Error(`Fallo en creación de propuesta: ${msg}`);
+        toast({
+          title: m.errorProposalTitle,
+          description: m.errorProposalDesc.replace('{{msg}}', msg),
+          variant: "destructive",
+        });
+        throw new Error(m.errorProposalThrow.replace('{{msg}}', msg));
       }
 
       // Step 4: Mark lead as converted
@@ -126,13 +134,13 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         projectId: project.id,
       } as any);
 
-      toast({ title: "Lead convertido", description: "Cliente, proyecto y propuesta creados exitosamente." });
+      toast({ title: m.successTitle, description: m.successDesc });
       onClose();
 
       // Step 5: Redirect to proposals
       navigate('/proposals');
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: m.errorTitle, description: err.message, variant: "destructive" });
     } finally { setSaving(false); }
   };
 
@@ -140,31 +148,31 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Convertir Lead a Cliente/Proyecto</DialogTitle>
+          <DialogTitle>{m.title}</DialogTitle>
         </DialogHeader>
 
         {isAlreadyConverted ? (
           <Alert variant="destructive" className="border-amber-500/30 bg-amber-500/10">
             <AlertTriangle className="h-4 w-4 text-amber-400" />
             <AlertDescription className="text-amber-300">
-              Este Lead ya ha sido procesado. No es posible convertirlo nuevamente.
+              {m.alreadyConverted}
             </AlertDescription>
           </Alert>
         ) : (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Cliente</Label>
+              <Label>{m.clientLabel}</Label>
               <div className="flex gap-2">
-                <Button variant={mode === 'existing' ? 'default' : 'outline'} size="sm" onClick={() => setMode('existing')}>Existente</Button>
-                <Button variant={mode === 'new' ? 'default' : 'outline'} size="sm" onClick={() => setMode('new')}>Nuevo</Button>
+                <Button variant={mode === 'existing' ? 'default' : 'outline'} size="sm" onClick={() => setMode('existing')}>{m.existingBtn}</Button>
+                <Button variant={mode === 'new' ? 'default' : 'outline'} size="sm" onClick={() => setMode('new')}>{m.newBtn}</Button>
               </div>
             </div>
 
             {mode === 'existing' ? (
               <div className="space-y-2">
-                <Label>Seleccionar cliente</Label>
+                <Label>{m.selectClientLabel}</Label>
                 <Select value={selectedClientId} onValueChange={setSelectedClientId}>
-                  <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={m.selectPlaceholder} /></SelectTrigger>
                   <SelectContent>
                     {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.clientName}</SelectItem>)}
                   </SelectContent>
@@ -172,31 +180,31 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
               </div>
             ) : (
               <div className="space-y-2">
-                <Label>Nombre del nuevo cliente</Label>
-                <Input value={newClientName} onChange={e => setNewClientName(e.target.value)} placeholder="Ej: Acme Corp" />
+                <Label>{m.newClientLabel}</Label>
+                <Input value={newClientName} onChange={e => setNewClientName(e.target.value)} placeholder={m.newClientPlaceholder} />
               </div>
             )}
 
             <div className="space-y-2">
-              <Label>Nombre del proyecto</Label>
+              <Label>{m.projectLabel}</Label>
               <Input value={projectName} onChange={e => setProjectName(e.target.value)} />
             </div>
 
             {lead && (
               <div className="text-xs text-muted-foreground space-y-1">
-                <p>Dirección: {lead.contact.location || '—'}</p>
-                <p>Servicio: {lead.service || '—'}</p>
-                {lead.logoUrl && <p>✓ Logo del lead será transferido al cliente</p>}
+                <p>{m.addressInfo} {lead.contact.location || '—'}</p>
+                <p>{m.serviceInfo} {lead.service || '—'}</p>
+                {lead.logoUrl && <p>{m.logoInfo}</p>}
               </div>
             )}
           </div>
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button variant="outline" onClick={onClose}>{m.cancel}</Button>
           {!isAlreadyConverted && (
             <Button onClick={handleConvert} disabled={saving || (mode === 'existing' ? !selectedClientId : !newClientName.trim())}>
-              {saving ? 'Convirtiendo...' : 'Convertir'}
+              {saving ? m.converting : m.convert}
             </Button>
           )}
         </DialogFooter>

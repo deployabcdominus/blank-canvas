@@ -9,6 +9,7 @@ import { LeadPipelineStepper, getLeadPipelineStage } from "@/components/LeadPipe
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface LeadCardProps {
   lead: Lead;
@@ -47,20 +48,27 @@ function getLeadProposal(leadId: string, proposals: Proposal[]): Proposal | null
   return linked[0] || null;
 }
 
-function getProposalBadge(proposal: Proposal | null) {
-  if (!proposal) return { label: "Sin propuesta", className: "bg-zinc-500/10 text-zinc-500 border-zinc-500/20" };
+type ProposalBadgeKey = 'noneLabel' | 'sentLabel' | 'approvedLabel' | 'rejectedLabel' | 'draftLabel';
+
+function getProposalBadgeKey(proposal: Proposal | null): { key: ProposalBadgeKey; className: string } {
+  if (!proposal) return { key: "noneLabel", className: "bg-zinc-500/10 text-zinc-500 border-zinc-500/20" };
   switch (proposal.status) {
-    case "Enviada externamente": return { label: "Propuesta enviada", className: "bg-sky-500/10 text-sky-400 border-sky-500/20" };
-    case "Aprobada": return { label: "Propuesta aprobada", className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" };
-    case "Rechazada": return { label: "Propuesta rechazada", className: "bg-red-500/10 text-red-400 border-red-500/20" };
-    default: return { label: "Borrador", className: "bg-amber-500/10 text-amber-400 border-amber-500/20" };
+    case "Enviada externamente": return { key: "sentLabel", className: "bg-sky-500/10 text-sky-400 border-sky-500/20" };
+    case "Aprobada": return { key: "approvedLabel", className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" };
+    case "Rechazada": return { key: "rejectedLabel", className: "bg-red-500/10 text-red-400 border-red-500/20" };
+    default: return { key: "draftLabel", className: "bg-amber-500/10 text-amber-400 border-amber-500/20" };
   }
 }
 
 export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect, onAdvance, onAssign, onConvert, onEdit, onDelete, onCardClick, onViewProposal }: LeadCardProps) => {
+  const { t } = useLanguage();
   const linkedProposal = getLeadProposal(lead.id, proposals);
-  const proposalBadge = getProposalBadge(linkedProposal);
+  const proposalBadge = getProposalBadgeKey(linkedProposal);
   const isConverted = lead.status === 'Convertido' || !!lead.clientId;
+
+  const daysAgoText = lead.daysAgo === 1
+    ? t.leadCard.daysAgoSingular.replace("{{n}}", String(lead.daysAgo))
+    : t.leadCard.daysAgoPlural.replace("{{n}}", String(lead.daysAgo));
 
   return (
     <motion.div
@@ -81,7 +89,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
             checked={selected}
             onCheckedChange={(checked) => onSelect(lead.id, !!checked)}
             className="h-4 w-4 border-zinc-600 data-[state=checked]:bg-violet-500 data-[state=checked]:border-violet-500"
-            aria-label={`Seleccionar lead ${lead.company}`}
+            aria-label={t.leadCard.selectAriaLabel.replace("{{company}}", lead.company)}
           />
         </div>
       )}
@@ -118,7 +126,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
                 <button
                   onClick={(e) => e.stopPropagation()}
                   className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/[0.05] text-zinc-500 hover:text-foreground"
-                  aria-label="Acciones del lead"
+                  aria-label={t.leadCard.actionsAriaLabel}
                 >
                   <MoreVertical size={14} />
                 </button>
@@ -126,7 +134,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
               <DropdownMenuContent align="end">
                 {onEdit && (
                   <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(lead); }}>
-                    <Pencil className="w-3.5 h-3.5 mr-2" /> Editar
+                    <Pencil className="w-3.5 h-3.5 mr-2" /> {t.leadCard.edit}
                   </DropdownMenuItem>
                 )}
                 {onDelete && (
@@ -134,7 +142,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
                     className="text-destructive focus:text-destructive"
                     onClick={(e) => { e.stopPropagation(); onDelete(lead.id); }}
                   >
-                    <Trash2 className="w-3.5 h-3.5 mr-2" /> Eliminar
+                    <Trash2 className="w-3.5 h-3.5 mr-2" /> {t.leadCard.delete}
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -152,10 +160,10 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
               ${linkedProposal.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </p>
           ) : (
-            <p className="text-lg font-semibold text-zinc-600">Precio por definir</p>
+            <p className="text-lg font-semibold text-zinc-600">{t.leadCard.priceTbd}</p>
           )}
           <Badge variant="outline" className={`mt-1 text-xs ${proposalBadge.className}`}>
-            {proposalBadge.label}
+            {t.leadCard.proposalStatus[proposalBadge.key]}
           </Badge>
         </div>
 
@@ -190,7 +198,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
       {/* Footer */}
       <div className={`flex items-center justify-between pt-3 border-t border-white/[0.06] ${isMobile ? 'flex-col gap-3' : ''}`} onClick={e => e.stopPropagation()}>
         <span className="text-xs text-zinc-600">
-          hace {lead.daysAgo} día{lead.daysAgo !== 1 ? 's' : ''}
+          {daysAgoText}
         </span>
         <div className="flex items-center gap-2">
           {isConverted ? (
@@ -200,10 +208,10 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
                 size="sm"
                 variant="outline"
                 className="h-9 px-3 text-xs border-violet-500/20 text-violet-400 hover:bg-violet-500/10"
-                aria-label="Ver propuesta de este lead"
+                aria-label={t.leadCard.viewProposalAriaLabel}
               >
                 <Eye className="w-3.5 h-3.5 mr-1" />
-                Ver Propuesta
+                {t.leadCard.viewProposal}
               </Button>
             ) : null
           ) : (
@@ -214,10 +222,10 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
                   size="sm"
                   variant="outline"
                   className="h-8 px-2.5 text-xs"
-                  aria-label="Convertir a Cliente/Proyecto"
+                  aria-label={t.leadCard.convertAriaLabel}
                 >
                   <FolderKanban className="w-3.5 h-3.5 mr-1" />
-                  Convertir
+                  {t.leadCard.convert}
                 </Button>
               )}
               {onAssign && (
@@ -226,19 +234,19 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
                   size="sm"
                   variant="outline"
                   className="h-8 px-2.5 text-xs"
-                  aria-label="Asignar lead"
+                  aria-label={t.leadCard.assignAriaLabel}
                 >
                   <UserPlus className="w-3.5 h-3.5 mr-1" />
-                  Asignar
+                  {t.leadCard.assign}
                 </Button>
               )}
               <Button
                 onClick={() => onAdvance(lead.id)}
                 size="sm"
                 className={`min-h-[36px] font-medium text-xs ${isMobile ? 'w-full' : 'px-3'}`}
-                aria-label={`Avanzar lead de ${lead.name} a propuesta`}
+                aria-label={t.leadCard.advanceAriaLabel.replace("{{name}}", lead.name)}
               >
-                Avanzar a Propuesta
+                {t.leadCard.advanceToProposal}
                 <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
               </Button>
             </>

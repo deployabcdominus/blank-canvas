@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -14,17 +14,16 @@ import type { ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
 import { SmartEntitySearch, type EntityResult } from "@/components/SmartEntitySearch";
+import { useLanguage } from "@/i18n/LanguageContext";
 
-const schema = z.object({
-  project: z.string().min(1, "El proyecto es obligatorio"),
-  value: z.string().min(1, "El monto es obligatorio"),
-  description: z.string().min(1, "La descripción del alcance es obligatoria"),
-  sentMethod: z.string().min(1, "El medio de envío es obligatorio"),
-  status: z.string().min(1, "El estado es obligatorio"),
-  serviceType: z.string().optional(),
-});
-
-type FormData = z.infer<typeof schema>;
+type FormData = {
+  project: string;
+  value: string;
+  description: string;
+  sentMethod: string;
+  status: string;
+  serviceType?: string;
+};
 
 interface AddProposalModalProps {
   isOpen: boolean;
@@ -37,6 +36,18 @@ const SENT_METHODS: SentMethod[] = ['Gmail', 'WhatsApp', 'PDF físico', 'Otro'];
 const STATUSES: ProposalStatus[] = ['Borrador', 'Enviada externamente', 'Aprobada', 'Rechazada'];
 
 export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onClose, onAddProposal, onCreateClient }) => {
+  const { t } = useLanguage();
+  const m = t.addProposalModal;
+
+  const schema = useMemo(() => z.object({
+    project: z.string().min(1, m.projectRequired),
+    value: z.string().min(1, m.amountRequired),
+    description: z.string().min(1, m.descriptionRequired),
+    sentMethod: z.string().min(1, m.sentMethodRequired),
+    status: z.string().min(1, m.statusRequired),
+    serviceType: z.string().optional(),
+  }), [m]);
+
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
   const resolvedServices = catalogServices.length > 0
@@ -53,7 +64,7 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
 
   const onSubmit = async (data: FormData) => {
     if (!selectedEntity) {
-      setEntityError("Debes seleccionar o crear un cliente/lead");
+      setEntityError(m.clientRequired);
       return;
     }
     setEntityError(null);
@@ -70,13 +81,13 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
         leadId: selectedEntity.type === "lead" ? selectedEntity.id : null,
         // If client selected, we still pass lead_id as null (proposals link through leads)
       });
-      toast.success("Propuesta registrada con éxito");
+      toast.success(m.successToast);
       reset();
       setSelectedEntity(null);
       setSentDate(new Date().toISOString().split('T')[0]);
       onClose();
     } catch {
-      toast.error("Error al registrar la propuesta");
+      toast.error(m.errorToast);
     }
   };
 
@@ -102,13 +113,13 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Registrar Propuesta</DialogTitle>
+          <DialogTitle>{m.title}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 sm:col-span-1">
-              <Label>Cliente / Lead *</Label>
+              <Label>{m.clientLeadLabel}</Label>
               <SmartEntitySearch
                 value={selectedEntity}
                 onSelect={(entity) => {
@@ -116,33 +127,33 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
                   setEntityError(null);
                 }}
                 onCreateNew={handleCreateNew}
-                placeholder="Buscar empresa o lead..."
+                placeholder={m.clientPlaceholder}
               />
               {entityError && <p className="text-sm text-destructive mt-1">{entityError}</p>}
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <Label htmlFor="project">Proyecto *</Label>
-              <Input {...register("project")} id="project" placeholder="Nombre del proyecto" />
+              <Label htmlFor="project">{m.projectLabel}</Label>
+              <Input {...register("project")} id="project" placeholder={m.projectPlaceholder} />
               {errors.project && <p className="text-sm text-destructive mt-1">{errors.project.message}</p>}
             </div>
           </div>
 
           <div>
-            <Label htmlFor="value">Monto Total *</Label>
-            <Input {...register("value")} id="value" placeholder="Ej: 3500" />
+            <Label htmlFor="value">{m.amountLabel}</Label>
+            <Input {...register("value")} id="value" placeholder={m.amountPlaceholder} />
             {errors.value && <p className="text-sm text-destructive mt-1">{errors.value.message}</p>}
           </div>
 
           <div>
-            <Label htmlFor="description">Descripción del Alcance *</Label>
-            <Textarea {...register("description")} id="description" placeholder="Detalle el alcance de la propuesta..." className="min-h-[100px]" />
+            <Label htmlFor="description">{m.descriptionLabel}</Label>
+            <Textarea {...register("description")} id="description" placeholder={m.descriptionPlaceholder} className="min-h-[100px]" />
             {errors.description && <p className="text-sm text-destructive mt-1">{errors.description.message}</p>}
           </div>
 
           <div>
-            <Label htmlFor="serviceType">Tipo de Servicio</Label>
+            <Label htmlFor="serviceType">{m.serviceTypeLabel}</Label>
             <Select onValueChange={(v) => setValue("serviceType", v)}>
-              <SelectTrigger><SelectValue placeholder="Seleccione tipo de servicio" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={m.serviceTypePlaceholder} /></SelectTrigger>
               <SelectContent>
                 {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
@@ -151,37 +162,45 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="status">Estado *</Label>
+              <Label htmlFor="status">{m.statusLabel}</Label>
               <Select onValueChange={(v) => setValue("status", v)} defaultValue="Borrador">
-                <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={m.statusPlaceholder} /></SelectTrigger>
                 <SelectContent>
-                  {STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  {STATUSES.map(s => (
+                    <SelectItem key={s} value={s}>
+                      {m.statusLabels[s as keyof typeof m.statusLabels] ?? s}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               {errors.status && <p className="text-sm text-destructive mt-1">{errors.status.message}</p>}
             </div>
             <DateField
-              label="Fecha de Envío"
+              label={m.sentDateLabel}
               value={sentDate}
               onChange={setSentDate}
             />
           </div>
 
           <div>
-            <Label htmlFor="sentMethod">Medio de Envío *</Label>
+            <Label htmlFor="sentMethod">{m.sentMethodLabel}</Label>
             <Select onValueChange={(v) => setValue("sentMethod", v)}>
-              <SelectTrigger><SelectValue placeholder="¿Cómo se envió?" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={m.sentMethodPlaceholder} /></SelectTrigger>
               <SelectContent>
-                {SENT_METHODS.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                {SENT_METHODS.map(method => (
+                  <SelectItem key={method} value={method}>
+                    {m.sentMethodLabels[method as keyof typeof m.sentMethodLabels] ?? method}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             {errors.sentMethod && <p className="text-sm text-destructive mt-1">{errors.sentMethod.message}</p>}
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={handleClose}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={handleClose}>{m.cancel}</Button>
             <Button type="submit" className="bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover">
-              Registrar Propuesta
+              {m.submit}
             </Button>
           </div>
         </form>
