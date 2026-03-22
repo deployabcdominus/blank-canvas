@@ -46,11 +46,11 @@ const Dashboard = () => {
 
   const stats = useMemo(() => {
     const activeLeads = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
-    const inProgress = orders.filter(o => o.status === "En Progreso").length;
-    const awaitingDelivery = installations.filter(i => i.status === "Scheduled").length;
-    const completedThisMonth = installations.filter(i => {
-      if (i.status === "Completed" && i.scheduledDate) {
-        try { return isThisMonth(new Date(i.scheduledDate)); } catch { return false; }
+    const inProgress = orders.filter(o => ["Pendiente", "En Producción", "QC", "En Progreso"].includes(o.status)).length;
+    const awaitingDelivery = orders.filter(o => o.status === "Listo").length;
+    const completedThisMonth = orders.filter(o => {
+      if (o.status === "Instalado" && o.createdAt) {
+        try { return isThisMonth(new Date(o.createdAt)); } catch { return false; }
       }
       return false;
     }).length;
@@ -61,7 +61,7 @@ const Dashboard = () => {
       { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan" },
       { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green" },
     ];
-  }, [leads, orders, installations, t]);
+  }, [leads, orders, t]);
 
   const handleKpiClick = (key: KanbanColumn) => {
     setActiveFilter(prev => (prev === key ? null : key));
