@@ -56,10 +56,10 @@ const Dashboard = () => {
     }).length;
 
     return [
-      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: t.dashboard.noProposal, value: activeLeads, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [3, 5, 2, 7, 4, 6, activeLeads] },
-      { key: "work-orders" as KanbanColumn, label: t.dashboard.inProgress, desc: t.dashboard.ordersInProgress, value: inProgress, icon: ClipboardList, accent: "hud-amber", delta: inProgress > 0 ? 100 : 0, sparkline: [0, 1, 0, 2, 1, 2, inProgress] },
-      { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [1, 2, 3, 1, 2, 3, awaitingDelivery] },
-      { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [2, 1, 3, 2, 4, 2, completedThisMonth] },
+      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: t.dashboard.noProposal, value: activeLeads, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "work-orders" as KanbanColumn, label: t.dashboard.inProgress, desc: t.dashboard.ordersInProgress, value: inProgress, icon: ClipboardList, accent: "hud-amber", delta: 100, sparkline: [0, 0, 0, 0, 1, 0, 1] },
+      { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
     ];
   }, [leads, orders, t]);
 
