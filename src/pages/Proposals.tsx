@@ -16,6 +16,7 @@ import { useClients } from "@/contexts/ClientsContext";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useCompany } from "@/hooks/useCompany";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
 import { PlanLimitBanner } from "@/components/PlanLimitBanner";
 import { logAudit } from "@/lib/audit";
@@ -30,6 +31,7 @@ const Proposals = () => {
   const { company } = useCompany();
   const { canEdit, canDelete } = useUserRole();
   const limits = usePlanLimits();
+  const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -125,7 +127,7 @@ const Proposals = () => {
         startDate: today,
         estimatedCompletion: endDate.toISOString().split('T')[0],
         projectId: null,
-        notes: `Orden generada automáticamente desde propuesta aprobada manualmente.`,
+        notes: t.proposals.toasts.autoOrderNote,
         priority: 'media',
         proposalId: id,
       });
@@ -138,17 +140,17 @@ const Proposals = () => {
       });
 
       await refreshClients();
-      toast.success(`Cliente registrado y Orden de Trabajo generada con éxito para "${clientName}"`);
+      toast.success(`${t.proposals.toasts.clientAndOrderCreated} "${clientName}"`);
     } else {
-      toast.success("Propuesta actualizada");
+      toast.success(t.proposals.toasts.updated);
     }
   };
 
-  const handleDelete = async (id: string) => { await deleteProposal(id); toast.success("Propuesta eliminada"); };
+  const handleDelete = async (id: string) => { await deleteProposal(id); toast.success(t.proposals.toasts.deleted); };
 
   const handleCreateOrder = async (proposal: Proposal) => {
     if (proposal.hasOrder) {
-      toast.error("Esta propuesta ya tiene una Orden de Trabajo asociada.");
+      toast.error(t.proposals.toasts.orderExists);
       return;
     }
     const today = new Date().toISOString().split('T')[0];
@@ -160,7 +162,7 @@ const Proposals = () => {
       projectId: null, notes: null, priority: 'media',
       proposalId: proposal.id,
     });
-    toast.success(`Orden creada para "${proposal.client}"`);
+    toast.success(`${t.proposals.toasts.orderCreated} "${proposal.client}"`);
   };
 
   const openEdit = (p: Proposal) => { setEditingProposal(p); setIsEditOpen(true); };
@@ -195,25 +197,25 @@ const Proposals = () => {
   const safePage = Math.min(page, Math.max(totalPages, 1));
   const paginated = processed.slice((safePage - 1) * pageSize, safePage * pageSize);
   const showing = processed.length > 0
-    ? `Mostrando ${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, processed.length)} de ${processed.length}`
-    : "Sin resultados";
+    ? `${t.proposals.showing} ${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, processed.length)} ${t.proposals.of} ${processed.length}`
+    : t.proposals.noResults;
 
   return (
     <PageTransition>
       <ResponsiveLayout>
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Propuestas</h1>
-            <p className="text-muted-foreground text-sm">Registro interno de propuestas comerciales</p>
+            <h1 className="text-2xl font-bold mb-1">{t.proposals.title}</h1>
+            <p className="text-muted-foreground text-sm">{t.proposals.subtitle}</p>
           </div>
           {canEdit && (
             <Button
               onClick={() => setIsAddOpen(true)}
               disabled={limits.proposals.isAtLimit}
-              title={limits.proposals.isAtLimit ? "Límite alcanzado — upgrade tu plan" : undefined}
+              title={limits.proposals.isAtLimit ? t.proposals.limitReached : undefined}
               className="btn-glass bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              <Plus className="w-4 h-4 mr-2" /> Nueva Propuesta
+              <Plus className="w-4 h-4 mr-2" /> {t.proposals.addProposal}
             </Button>
           )}
         </div>
@@ -235,16 +237,16 @@ const Proposals = () => {
 
         {loading ? (
           <div className="text-center py-12 glass-card">
-            <p className="text-muted-foreground">Cargando propuestas...</p>
+            <p className="text-muted-foreground">{t.proposals.loading}</p>
           </div>
         ) : paginated.length === 0 ? (
           <div className="text-center py-16 glass-card">
             <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">Sin propuestas</h3>
-            <p className="text-muted-foreground mb-4">Registre una propuesta comercial</p>
+            <h3 className="text-lg font-semibold mb-2">{t.proposals.empty}</h3>
+            <p className="text-muted-foreground mb-4">{t.proposals.emptyHint}</p>
             {canEdit && (
               <Button onClick={() => setIsAddOpen(true)} className="btn-glass bg-primary text-primary-foreground hover:bg-primary/90">
-                <Plus className="w-4 h-4 mr-2" /> Nueva Propuesta
+                <Plus className="w-4 h-4 mr-2" /> {t.proposals.addProposal}
               </Button>
             )}
           </div>
