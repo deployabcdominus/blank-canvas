@@ -13,6 +13,7 @@ import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useInstallations } from "@/contexts/InstallationsContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useLanguage } from "@/i18n/LanguageContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +32,8 @@ const Installation = () => {
   const { toast } = useToast();
   const { installations, addInstallation, updateInstallation, clearInstallations } = useInstallations();
   const { canEdit, canDelete } = useUserRole();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
 
   const filteredInstallations = useMemo(() => {
     if (!searchTerm.trim()) return installations;
@@ -67,8 +70,8 @@ const Installation = () => {
   const handleMarkAsInstalled = async (installationId: string) => {
     await updateInstallation(installationId, { status: "Completed" });
     toast({
-      title: "Ejecución completada",
-      description: "La ejecución fue marcada como completada con éxito.",
+      title: isEn ? "Execution completed" : "Ejecución completada",
+      description: isEn ? "The execution was marked as completed successfully." : "La ejecución fue marcada como completada con éxito.",
     });
   };
 
@@ -76,8 +79,8 @@ const Installation = () => {
     await clearInstallations();
     setIsClearDialogOpen(false);
     toast({
-      title: "Ejecuciones eliminadas",
-      description: "Todas las ejecuciones fueron eliminadas con éxito.",
+      title: isEn ? "Executions deleted" : "Ejecuciones eliminadas",
+      description: isEn ? "All executions were deleted successfully." : "Todas las ejecuciones fueron eliminadas con éxito.",
     });
   };
 
@@ -96,7 +99,18 @@ const Installation = () => {
   };
 
   const handleShareInstallation = (installation: any) => {
-    const summary = `
+    const summary = isEn ? `
+EXECUTION - ${installation.status.toUpperCase()}
+
+Client: ${installation.client}
+Project: ${installation.project}
+Address: ${installation.address}
+Date: ${installation.scheduledDate}
+Time: ${installation.scheduledTime}
+Technician: ${installation.technician}
+
+${installation.notes ? `Notes: ${installation.notes}` : ''}
+    `.trim() : `
 EJECUCIÓN - ${installation.status.toUpperCase()}
 
 Cliente: ${installation.client}
@@ -111,8 +125,8 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
 
     navigator.clipboard.writeText(summary).then(() => {
       toast({
-        title: "¡Información copiada!",
-        description: "Los detalles de la ejecución fueron copiados al portapapeles.",
+        title: isEn ? "Information copied!" : "¡Información copiada!",
+        description: isEn ? "The execution details were copied to the clipboard." : "Los detalles de la ejecución fueron copiados al portapapeles.",
       });
     });
   };
@@ -138,7 +152,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   className="btn-glass bg-pale-pink text-pale-pink-foreground hover:bg-pale-pink-hover"
                 >
                   <Calendar className="w-4 h-4 mr-2" />
-                  Agendar Ejecución
+                  {isEn ? "Schedule Execution" : "Agendar Ejecución"}
                 </Button>
               )}
             </div>
@@ -148,7 +162,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar ejecuciones por cliente, proyecto, dirección, técnico o estado..."
+                placeholder={isEn ? "Search executions by client, project, address, technician or status..." : "Buscar ejecuciones por cliente, proyecto, dirección, técnico o estado..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="glass pl-10"
@@ -160,11 +174,11 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
             {filteredInstallations.length === 0 ? (
               <div className="glass-card p-8 text-center">
                 <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Ninguna ejecución encontrada</h3>
+                <h3 className="text-lg font-medium mb-2">{isEn ? "No executions found" : "Ninguna ejecución encontrada"}</h3>
                 <p className="text-muted-foreground">
-                  {searchTerm.trim() 
-                    ? "Intente ajustar los términos de búsqueda"
-                    : "Ninguna ejecución ha sido agendada aún"
+                  {searchTerm.trim()
+                    ? (isEn ? "Try adjusting the search terms" : "Intente ajustar los términos de búsqueda")
+                    : (isEn ? "No executions have been scheduled yet" : "Ninguna ejecución ha sido agendada aún")
                   }
                 </p>
               </div>
@@ -234,18 +248,18 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                   {installation.status === "In Progress" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="location" className="text-sm font-medium">Ubicación Final</Label>
+                        <Label htmlFor="location" className="text-sm font-medium">{isEn ? "Final Location" : "Ubicación Final"}</Label>
                         <Input
                           id="location"
-                          placeholder="Detalles exactos de la ubicación"
+                          placeholder={isEn ? "Exact location details" : "Detalles exactos de la ubicación"}
                           className="glass mt-2"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="completion-notes" className="text-sm font-medium">Notas de Finalización</Label>
+                        <Label htmlFor="completion-notes" className="text-sm font-medium">{isEn ? "Completion Notes" : "Notas de Finalización"}</Label>
                         <Input
                           id="completion-notes"
-                          placeholder="Notas finales u observaciones"
+                          placeholder={isEn ? "Final notes or observations" : "Notas finales u observaciones"}
                           className="glass mt-2"
                         />
                       </div>
@@ -255,7 +269,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
 
                 <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
                   <div className="text-xs text-muted-foreground">
-                    {installation.status === "Completed" ? "Completada" : "Última actualización"} hace 1 hora
+                    {installation.status === "Completed" ? (isEn ? "Completed" : "Completada") : (isEn ? "Last update" : "Última actualización")} {isEn ? "1 hour ago" : "hace 1 hora"}
                   </div>
                   <div className="flex gap-2">
                     <Button
@@ -265,7 +279,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                       className="btn-glass"
                     >
                       <Share2 className="w-4 h-4 mr-2" />
-                      Compartir
+                      {isEn ? "Share" : "Compartir"}
                     </Button>
                     {installation.status === "In Progress" && (
                       <Button 
@@ -293,15 +307,15 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
         <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
+              <AlertDialogTitle>{isEn ? "Are you sure?" : "¿Está seguro?"}</AlertDialogTitle>
               <AlertDialogDescription>
-                Esto eliminará todas las ejecuciones. Esta acción no se puede deshacer.
+                {isEn ? "This will delete all executions. This action cannot be undone." : "Esto eliminará todas las ejecuciones. Esta acción no se puede deshacer."}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel>{isEn ? "Cancel" : "Cancelar"}</AlertDialogCancel>
               <AlertDialogAction onClick={handleClearInstallations}>
-                Sí, limpiar ejecuciones
+                {isEn ? "Yes, clear executions" : "Sí, limpiar ejecuciones"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

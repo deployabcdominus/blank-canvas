@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { Loader2, UserPlus, Eye, EyeOff, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 type InvitationData = {
   id: string;
@@ -25,6 +26,8 @@ const Invite = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
   const token = searchParams.get("token");
 
   const [loading, setLoading] = useState(true);
@@ -39,7 +42,7 @@ const Invite = () => {
   useEffect(() => {
     const validate = async () => {
       if (!token) {
-        setError("Token de invitación no proporcionado.");
+        setError(isEn ? "Invitation token not provided." : "Token de invitación no proporcionado.");
         setLoading(false);
         return;
       }
@@ -49,19 +52,19 @@ const Invite = () => {
         .maybeSingle();
 
       if (fetchError || !data) {
-        setError("Invitación inválida o no encontrada.");
+        setError(isEn ? "Invalid or not found invitation." : "Invitación inválida o no encontrada.");
         setLoading(false);
         return;
       }
 
       if (data.accepted_at) {
-        setError("Esta invitación ya fue utilizada.");
+        setError(isEn ? "This invitation has already been used." : "Esta invitación ya fue utilizada.");
         setLoading(false);
         return;
       }
 
       if (new Date(data.expires_at) < new Date()) {
-        setError("Esta invitación ha expirado. Solicita una nueva al administrador.");
+        setError(isEn ? "This invitation has expired. Request a new one from the administrator." : "Esta invitación ha expirado. Solicita una nueva al administrador.");
         setLoading(false);
         return;
       }
@@ -81,8 +84,9 @@ const Invite = () => {
     const inviteEmail = invitation.email.toLowerCase();
 
     if (userEmail !== inviteEmail) {
-      setError(
-        `Esta invitación fue enviada a ${invitation.email}. Debes iniciar sesión con ese correo exacto. Estás conectado como ${user.email}.`
+      setError(isEn
+        ? `This invitation was sent to ${invitation.email}. You must sign in with that exact email. You are signed in as ${user.email}.`
+        : `Esta invitación fue enviada a ${invitation.email}. Debes iniciar sesión con ese correo exacto. Estás conectado como ${user.email}.`
       );
       return;
     }
@@ -100,14 +104,14 @@ const Invite = () => {
         body: { token: invitation.token },
       });
 
-      if (fnError) throw new Error(fnError.message || "Error al aceptar la invitación");
+      if (fnError) throw new Error(fnError.message || (isEn ? "Error accepting the invitation" : "Error al aceptar la invitación"));
       if (data?.error) throw new Error(data.error);
 
-      toast({ title: "¡Bienvenido!", description: "Te has unido al equipo exitosamente." });
+      toast({ title: isEn ? "Welcome!" : "¡Bienvenido!", description: isEn ? "You have joined the team successfully." : "Te has unido al equipo exitosamente." });
       navigate("/dashboard");
     } catch (err: any) {
-      const msg = err.message || "Error desconocido";
-      setError("Error al aceptar la invitación: " + msg);
+      const msg = err.message || (isEn ? "Unknown error" : "Error desconocido");
+      setError((isEn ? "Error accepting the invitation: " : "Error al aceptar la invitación: ") + msg);
       toast({ title: "Error", description: msg, variant: "destructive" });
     }
   };

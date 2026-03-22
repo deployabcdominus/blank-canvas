@@ -16,10 +16,13 @@ import { InstallerCompanyModal } from "@/components/InstallerCompanyModal";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const InstallerCompanies = () => {
   const { companies, deleteCompany } = useInstallerCompanies();
   const { canEdit, canDelete } = useUserRole();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
@@ -41,14 +44,14 @@ const InstallerCompanies = () => {
       deleteCompany(id);
       setCompanyToDelete(null);
       toast({
-        title: "Empresa eliminada",
-        description: "Subcontratista eliminado con éxito.",
+        title: isEn ? "Company deleted" : "Empresa eliminada",
+        description: isEn ? "Subcontractor deleted successfully." : "Subcontratista eliminado con éxito.",
       });
     } catch (error) {
       setCompanyToDelete(null);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "No fue posible eliminar la empresa",
+        description: error instanceof Error ? error.message : (isEn ? "Could not delete the company" : "No fue posible eliminar la empresa"),
         variant: "destructive"
       });
     }
@@ -86,7 +89,7 @@ const InstallerCompanies = () => {
           <div className="flex items-center gap-2 mb-6">
             <Search className="w-5 h-5 text-muted-foreground" />
             <Input
-              placeholder="Buscar por nombre, email o teléfono..."
+              placeholder={isEn ? "Search by name, email or phone..." : "Buscar por nombre, email o teléfono..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-white border-input"
@@ -98,10 +101,10 @@ const InstallerCompanies = () => {
               <TableHeader>
                 <TableRow className="bg-muted/50">
                   <TableHead className="w-16">Logo</TableHead>
-                  <TableHead>Nombre de la Empresa</TableHead>
+                  <TableHead>{isEn ? "Company Name" : "Nombre de la Empresa"}</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Teléfono</TableHead>
-                  <TableHead className="w-24">Acciones</TableHead>
+                  <TableHead>{isEn ? "Phone" : "Teléfono"}</TableHead>
+                  <TableHead className="w-24">{isEn ? "Actions" : "Acciones"}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -148,7 +151,7 @@ const InstallerCompanies = () => {
             
             {filteredCompanies.length === 0 && (
               <div className="p-8 text-center text-muted-foreground">
-                {searchTerm ? "Ninguna empresa encontrada." : "Ninguna empresa registrada aún."}
+                {searchTerm ? (isEn ? "No company found." : "Ninguna empresa encontrada.") : (isEn ? "No companies registered yet." : "Ninguna empresa registrada aún.")}
               </div>
             )}
           </div>
@@ -160,18 +163,18 @@ const InstallerCompanies = () => {
       <AlertDialog open={companyToDelete !== null} onOpenChange={(open) => !open && setCompanyToDelete(null)}>
         <AlertDialogContent className="bg-white border shadow-lg">
           <AlertDialogHeader>
-            <AlertDialogTitle>Eliminar Empresa</AlertDialogTitle>
+            <AlertDialogTitle>{isEn ? "Delete Company" : "Eliminar Empresa"}</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Está seguro de que desea eliminar este subcontratista? Esta acción no se puede deshacer.
+              {isEn ? "Are you sure you want to delete this subcontractor? This action cannot be undone." : "¿Está seguro de que desea eliminar este subcontratista? Esta acción no se puede deshacer."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-white border-input hover:bg-gray-50">Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white border-input hover:bg-gray-50">{isEn ? "Cancel" : "Cancelar"}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => companyToDelete && handleDelete(companyToDelete)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Eliminar
+              {isEn ? "Delete" : "Eliminar"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
