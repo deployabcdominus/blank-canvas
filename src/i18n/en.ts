@@ -336,12 +336,28 @@ export const en = {
   /* ── Proposals page ── */
   proposals: {
     title: "Proposals",
+    subtitle: "Internal commercial proposals register",
     addProposal: "New Proposal",
     draft: "Draft",
     sent: "Sent",
     approved: "Approved",
     rejected: "Rejected",
     searchPlaceholder: "Search proposals...",
+    limitReached: "Limit reached — upgrade your plan",
+    loading: "Loading proposals...",
+    empty: "No proposals",
+    emptyHint: "Register a commercial proposal",
+    showing: "Showing",
+    of: "of",
+    noResults: "No results",
+    toasts: {
+      updated: "Proposal updated",
+      deleted: "Proposal deleted",
+      orderCreated: "Order created for",
+      orderExists: "This proposal already has an associated Work Order.",
+      clientAndOrderCreated: "Client registered and Work Order created successfully for",
+      autoOrderNote: "Order automatically generated from manually approved proposal.",
+    },
   },
 
   /* ── Work Orders ── */

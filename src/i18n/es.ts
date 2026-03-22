@@ -338,12 +338,28 @@ export const es: TranslationKeys = {
   /* ── Proposals page ── */
   proposals: {
     title: "Propuestas",
+    subtitle: "Registro interno de propuestas comerciales",
     addProposal: "Nueva Propuesta",
     draft: "Borrador",
     sent: "Enviada",
     approved: "Aprobada",
     rejected: "Rechazada",
     searchPlaceholder: "Buscar propuestas...",
+    limitReached: "Límite alcanzado — upgrade tu plan",
+    loading: "Cargando propuestas...",
+    empty: "Sin propuestas",
+    emptyHint: "Registre una propuesta comercial",
+    showing: "Mostrando",
+    of: "de",
+    noResults: "Sin resultados",
+    toasts: {
+      updated: "Propuesta actualizada",
+      deleted: "Propuesta eliminada",
+      orderCreated: "Orden creada para",
+      orderExists: "Esta propuesta ya tiene una Orden de Trabajo asociada.",
+      clientAndOrderCreated: "Cliente registrado y Orden de Trabajo generada con éxito para",
+      autoOrderNote: "Orden generada automáticamente desde propuesta aprobada manualmente.",
+    },
   },
 
   /* ── Work Orders ── */
