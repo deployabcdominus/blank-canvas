@@ -4,6 +4,7 @@ import { useCatalog } from "@/hooks/useCatalog";
 import { useClients, Client } from "@/contexts/ClientsContext";
 import { useProjects } from "@/contexts/ProjectsContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ const emptyForm = { clientName: '', contactName: '', primaryEmail: '', primaryPh
 const PAGE_SIZE = 12;
 
 export default function Clients() {
+  const { t } = useLanguage();
   const { clients, loading, addClient, updateClient, deleteClient } = useClients();
   const { projects } = useProjects();
   const { canDelete, canEdit } = useUserRole();
@@ -115,11 +117,11 @@ export default function Clients() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      toast({ title: "Formato inválido", description: "Seleccione una imagen.", variant: "destructive" });
+      toast({ title: t.clients.toasts.invalidFormat, description: t.clients.toasts.invalidFormatDesc, variant: "destructive" });
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      toast({ title: "Archivo muy grande", description: "Máximo 2MB.", variant: "destructive" });
+      toast({ title: t.clients.toasts.fileTooLarge, description: t.clients.toasts.fileTooLargeDesc, variant: "destructive" });
       return;
     }
     try {
@@ -129,7 +131,7 @@ export default function Clients() {
       setLogoPreview(URL.createObjectURL(compressed));
     } catch (err) {
       console.error('Logo compress error:', err);
-      toast({ title: "Error al procesar imagen", variant: "destructive" });
+      toast({ title: t.clients.toasts.imageError, variant: "destructive" });
     }
   };
 
@@ -167,7 +169,7 @@ export default function Clients() {
         };
         if (logoUrl !== undefined) updates.logoUrl = logoUrl;
         await updateClient(editingClient.id, updates);
-        toast({ title: "Cliente actualizado" });
+        toast({ title: t.clients.toasts.updated });
       } else {
         await addClient({
           clientName: form.clientName.trim(),
@@ -180,7 +182,7 @@ export default function Clients() {
           notes: form.notes.trim() || null,
           logoUrl: logoUrl || null,
         });
-        toast({ title: "Cliente creado" });
+        toast({ title: t.clients.toasts.created });
       }
       resetLogoState();
       setModalOpen(false);
@@ -194,7 +196,7 @@ export default function Clients() {
     if (!deleteId) return;
     try {
       await deleteClient(deleteId);
-      toast({ title: "Cliente eliminado" });
+      toast({ title: t.clients.toasts.deleted });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
@@ -202,14 +204,14 @@ export default function Clients() {
   };
 
   return (
-    <ResponsiveLayout title="Clientes" subtitle="Gestione sus clientes" icon={Users}>
+    <ResponsiveLayout title={t.clients.title} subtitle={t.clients.subtitle} icon={Users}>
       {/* KPI Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Total Clientes', value: clients.length, icon: Users, iconBg: 'rgba(255,255,255,0.04)', iconColor: 'hsl(25,95%,53%)' },
-          { label: 'Clientes Activos', value: activeClients, icon: TrendingUp, iconBg: 'rgba(22,163,74,0.10)', iconColor: '#16A34A' },
-          { label: 'Total Proyectos', value: totalProjects, icon: FolderOpen, iconBg: 'rgba(255,255,255,0.04)', iconColor: 'hsl(0,0%,55%)' },
-          { label: 'Prom. Proy/Cliente', value: clients.length ? (totalProjects / clients.length).toFixed(1) : '0', icon: TrendingUp, iconBg: 'rgba(217,119,6,0.10)', iconColor: '#D97706' },
+          { label: t.clients.kpi.total, value: clients.length, icon: Users, iconBg: 'rgba(255,255,255,0.04)', iconColor: 'hsl(25,95%,53%)' },
+          { label: t.clients.kpi.active, value: activeClients, icon: TrendingUp, iconBg: 'rgba(22,163,74,0.10)', iconColor: '#16A34A' },
+          { label: t.clients.kpi.projects, value: totalProjects, icon: FolderOpen, iconBg: 'rgba(255,255,255,0.04)', iconColor: 'hsl(0,0%,55%)' },
+          { label: t.clients.kpi.avgProjects, value: clients.length ? (totalProjects / clients.length).toFixed(1) : '0', icon: TrendingUp, iconBg: 'rgba(217,119,6,0.10)', iconColor: '#D97706' },
          ].map((kpi, i) => (
           <motion.div key={kpi.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
             <Card className="kpi-card card-interactive glass-card">
@@ -231,7 +233,7 @@ export default function Clients() {
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Buscar clientes..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 pr-10" />
+          <Input placeholder={t.clients.searchPlaceholder} value={search} onChange={e => setSearch(e.target.value)} className="pl-9 pr-10" />
           {search && (
             <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
               <X className="h-4 w-4" />
@@ -260,7 +262,7 @@ export default function Clients() {
 
         {canEdit && (
           <Button onClick={openNew} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-md hover:shadow-lg transition-all btn-spring rounded-[10px]">
-            <Plus className="w-4 h-4 mr-2" /> Nuevo Cliente
+            <Plus className="w-4 h-4 mr-2" /> {t.clients.addClient}
           </Button>
         )}
       </div>
@@ -273,9 +275,9 @@ export default function Clients() {
       ) : sorted.length === 0 ? (
         <div className="text-center py-16 empty-state-pattern rounded-xl">
           <Users className="w-12 h-12 text-primary/40 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">{search ? 'Sin resultados' : 'No hay clientes'}</h3>
-          <p className="text-muted-foreground mb-6 text-sm">{search ? 'Intente otros términos.' : 'Cree su primer cliente para comenzar.'}</p>
-          {!search && <Button onClick={openNew} size="lg"><Plus className="w-4 h-4 mr-2" /> Nuevo Cliente</Button>}
+          <h3 className="text-lg font-semibold mb-2">{search ? t.clients.emptySearch : t.clients.emptyDefault}</h3>
+          <p className="text-muted-foreground mb-6 text-sm">{search ? t.clients.emptySearchHint : t.clients.emptyDefaultHint}</p>
+          {!search && <Button onClick={openNew} size="lg"><Plus className="w-4 h-4 mr-2" /> {t.clients.addClient}</Button>}
         </div>
       ) : (
         <AnimatePresence mode="wait">
@@ -326,7 +328,7 @@ export default function Clients() {
       {/* Add/Edit Modal with Logo Upload */}
       <Dialog open={modalOpen} onOpenChange={(open) => { if (!open) { resetLogoState(); } setModalOpen(open); }}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="text-lg font-semibold">{editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle className="text-lg font-semibold">{editingClient ? t.clients.modal.editTitle : t.clients.modal.newTitle}</DialogTitle></DialogHeader>
           <div className="space-y-5">
             {/* Avatar/Logo Upload */}
             <div className="flex flex-col items-center gap-3">
@@ -350,54 +352,54 @@ export default function Clients() {
                 </button>
               </div>
               <input ref={fileInputRef} type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
-              <p className="text-[11px] text-muted-foreground">JPG, PNG. Máx 2MB</p>
+              <p className="text-[11px] text-muted-foreground">{t.clients.form.logoHint}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Empresa (Razón Social) *</Label>
-                <Input value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} placeholder="Nombre de la empresa" className="min-h-[44px]" />
+                <Label>{t.clients.form.company}</Label>
+                <Input value={form.clientName} onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} placeholder={t.clients.form.companyPlaceholder} className="min-h-[44px]" />
               </div>
               <div className="space-y-2">
-                <Label>Persona de contacto</Label>
-                <Input value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} placeholder="Nombre completo" className="min-h-[44px]" />
+                <Label>{t.clients.form.contact}</Label>
+                <Input value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))} placeholder={t.clients.form.contactPlaceholder} className="min-h-[44px]" />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Teléfono</Label>
-                <Input value={form.primaryPhone} onChange={e => setForm(f => ({ ...f, primaryPhone: e.target.value }))} placeholder="(11) 99999-9999" className="min-h-[44px]" />
+                <Label>{t.clients.form.phone}</Label>
+                <Input value={form.primaryPhone} onChange={e => setForm(f => ({ ...f, primaryPhone: e.target.value }))} placeholder={t.clients.form.phonePlaceholder} className="min-h-[44px]" />
               </div>
               <div className="space-y-2">
-                <Label>Email</Label>
-                <Input type="email" value={form.primaryEmail} onChange={e => setForm(f => ({ ...f, primaryEmail: e.target.value }))} placeholder="email@ejemplo.com" className="min-h-[44px]" />
+                <Label>{t.clients.form.email}</Label>
+                <Input type="email" value={form.primaryEmail} onChange={e => setForm(f => ({ ...f, primaryEmail: e.target.value }))} placeholder={t.clients.form.emailPlaceholder} className="min-h-[44px]" />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Tipo de Servicio</Label>
+              <Label>{t.clients.form.serviceType}</Label>
               <Select value={form.serviceType} onValueChange={v => setForm(f => ({ ...f, serviceType: v }))}>
-                <SelectTrigger className="min-h-[44px]"><SelectValue placeholder="Seleccione un servicio" /></SelectTrigger>
+                <SelectTrigger className="min-h-[44px]"><SelectValue placeholder={t.clients.form.serviceTypePlaceholder} /></SelectTrigger>
                 <SelectContent>
                   {catalogServices.map(s => <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Dirección</Label>
-              <Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Calle, número, ciudad" className="min-h-[44px]" />
+              <Label>{t.clients.form.address}</Label>
+              <Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder={t.clients.form.addressPlaceholder} className="min-h-[44px]" />
             </div>
             <div className="space-y-2">
-              <Label>Sitio Web</Label>
-              <Input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://www.ejemplo.com" className="min-h-[44px]" />
+              <Label>{t.clients.form.website}</Label>
+              <Input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder={t.clients.form.websitePlaceholder} className="min-h-[44px]" />
             </div>
             <div className="space-y-2">
-              <Label>Notas</Label>
+              <Label>{t.clients.form.notes}</Label>
               <Textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={3} />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { resetLogoState(); setModalOpen(false); }}>Cancelar</Button>
-            <Button onClick={handleSave} disabled={saving || !form.clientName.trim()}>{saving ? 'Guardando...' : 'Guardar'}</Button>
+            <Button variant="outline" onClick={() => { resetLogoState(); setModalOpen(false); }}>{t.clients.cancel}</Button>
+            <Button onClick={handleSave} disabled={saving || !form.clientName.trim()}>{saving ? t.clients.saving : t.clients.save}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -406,12 +408,12 @@ export default function Clients() {
       <AlertDialog open={!!deleteId} onOpenChange={open => { if (!open) setDeleteId(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar este cliente?</AlertDialogTitle>
-            <AlertDialogDescription>Esta acción también eliminará los proyectos asociados. No se puede deshacer.</AlertDialogDescription>
+            <AlertDialogTitle>{t.clients.deleteDialog.title}</AlertDialogTitle>
+            <AlertDialogDescription>{t.clients.deleteDialog.description}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Eliminar</AlertDialogAction>
+            <AlertDialogCancel>{t.clients.deleteDialog.cancel}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>{t.clients.deleteDialog.confirm}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
