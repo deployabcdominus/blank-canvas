@@ -3,6 +3,7 @@ import { Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { usePlanAccess, type PlanTier } from "@/hooks/usePlanAccess";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface FeatureGuardProps {
   /** The feature key to check */
@@ -21,6 +22,8 @@ const PLAN_LABELS: Record<PlanTier, string> = {
 export const FeatureGuard = ({ feature, children, message }: FeatureGuardProps) => {
   const { canAccess, requiredPlan } = usePlanAccess();
   const navigate = useNavigate();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
 
   if (canAccess(feature)) {
     return <>{children}</>;
@@ -57,10 +60,10 @@ export const FeatureGuard = ({ feature, children, message }: FeatureGuardProps) 
             </div>
 
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              Función Premium
+              {isEn ? "Premium Feature" : "Función Premium"}
             </h3>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              {message || "Esta función está disponible en planes superiores. Actualiza tu suscripción para desbloquearla."}
+              {message || (isEn ? "This feature is available on higher plans. Upgrade your subscription to unlock it." : "Esta función está disponible en planes superiores. Actualiza tu suscripción para desbloquearla.")}
             </p>
 
             <Button
@@ -68,7 +71,7 @@ export const FeatureGuard = ({ feature, children, message }: FeatureGuardProps) 
               className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white border-0 shadow-[0_4px_16px_rgba(251,146,60,0.3)]"
             >
               <Sparkles className="w-4 h-4 mr-2" strokeWidth={1.5} />
-              Desbloquear en Plan {PLAN_LABELS[minPlan]}
+              {isEn ? `Unlock with Plan ${PLAN_LABELS[minPlan]}` : `Desbloquear en Plan ${PLAN_LABELS[minPlan]}`}
             </Button>
           </motion.div>
         </div>

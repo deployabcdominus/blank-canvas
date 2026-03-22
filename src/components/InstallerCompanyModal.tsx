@@ -16,15 +16,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCatalog } from "@/hooks/useCatalog";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 
-const formSchema = z.object({
-  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  email: z.string().email("Email inválido"),
-  phone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos"),
+const makeFormSchema = (isEn: boolean) => z.object({
+  name: z.string().min(2, isEn ? "Name must be at least 2 characters" : "El nombre debe tener al menos 2 caracteres"),
+  email: z.string().email(isEn ? "Invalid email" : "Email inválido"),
+  phone: z.string().min(10, isEn ? "Phone must be at least 10 digits" : "El teléfono debe tener al menos 10 dígitos"),
   contact: z.string().optional(),
-  services: z.array(z.string()).min(1, "Seleccione al menos un servicio")
+  services: z.array(z.string()).min(1, isEn ? "Select at least one service" : "Seleccione al menos un servicio")
 });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<ReturnType<typeof makeFormSchema>>;
 
 interface InstallerCompanyModalProps {
   isOpen: boolean;
@@ -33,7 +33,9 @@ interface InstallerCompanyModalProps {
 }
 
 export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ isOpen, onClose, company }) => {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
+  const formSchema = makeFormSchema(isEn);
   const { addCompany, updateCompany } = useInstallerCompanies();
   const fallbackServices = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");

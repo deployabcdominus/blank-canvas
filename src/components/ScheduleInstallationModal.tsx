@@ -21,19 +21,19 @@ import { toast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 
-const formSchema = z.object({
-  serviceId: z.string().min(1, "Seleccione un servicio"),
-  installerCompanyId: z.string().min(1, "Seleccione un subcontratista"),
-  date: z.date({ required_error: "Seleccione una fecha" }),
-  time: z.string().min(1, "Informe el horario"),
-  address: z.string().min(1, "La dirección es obligatoria"),
+const makeFormSchema = (isEn: boolean) => z.object({
+  serviceId: z.string().min(1, isEn ? "Select a service" : "Seleccione un servicio"),
+  installerCompanyId: z.string().min(1, isEn ? "Select a subcontractor" : "Seleccione un subcontratista"),
+  date: z.date({ required_error: isEn ? "Select a date" : "Seleccione una fecha" }),
+  time: z.string().min(1, isEn ? "Enter the time" : "Informe el horario"),
+  address: z.string().min(1, isEn ? "Address is required" : "La dirección es obligatoria"),
   contactName: z.string().optional(),
   contactPhone: z.string().optional(),
   contactEmail: z.string().optional(),
   notes: z.string().optional(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<ReturnType<typeof makeFormSchema>>;
 
 interface ScheduleInstallationModalProps {
   isOpen: boolean;
@@ -42,7 +42,9 @@ interface ScheduleInstallationModalProps {
 }
 
 export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps> = ({ isOpen, onClose, onSchedule }) => {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
+  const formSchema = makeFormSchema(isEn);
   const { getAvailableForInstallation } = useWorkOrders();
   const { companies } = useInstallerCompanies();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);

@@ -29,6 +29,7 @@ import { useCatalog } from "@/hooks/useCatalog";
 import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { BlueprintAnnotator, type Annotation } from "./BlueprintAnnotator";
 import { TechnicalSheet, type TechnicalDetails } from "./TechnicalSheet";
@@ -91,6 +92,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const { isAdmin, companyId } = useUserRole();
   const { items: statuses } = useCatalog("order_status");
   const { toast } = useToast();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
   const { templates, applyTemplate } = useOperationTemplates();
 
   const [editing, setEditing] = useState(startInEditMode);
@@ -287,10 +290,10 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         materials,
         technicalDetails,
       });
-      toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
+      toast({ title: isEn ? "PDF generated" : "PDF generado", description: isEn ? "The production sheet was downloaded." : "La hoja de producción fue descargada." });
     } catch (err) {
       console.error(err);
-      toast({ title: "Error al generar PDF", variant: "destructive" });
+      toast({ title: isEn ? "Error generating PDF" : "Error al generar PDF", variant: "destructive" });
     } finally {
       setGeneratingPdf(false);
     }

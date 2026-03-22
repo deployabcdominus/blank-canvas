@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { WorkOrder } from "@/contexts/WorkOrdersContext";
@@ -48,12 +49,23 @@ function formatDelivery(date: string | null | undefined): string | null {
   }
 }
 
+const STATUS_LABELS_EN: Record<string, string> = {
+  "Pendiente": "Pending",
+  "En Producción": "In Production",
+  "QC": "QC",
+  "Listo": "Ready",
+  "Instalado": "Installed",
+};
+
 export function WorkOrderCard({
   order, index, assigneeName, onOpen, onGeneratePOI, onPrintSheet, onDelete, canDelete = false,
 }: Props) {
   const navigate = useNavigate();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
   const statusKey = order.poi_token_used ? "installed" : order.status;
   const status = STATUS_CONFIG[statusKey] || STATUS_CONFIG["Pendiente"];
+  const statusLabel = isEn ? (STATUS_LABELS_EN[status.label] ?? status.label) : status.label;
   const woLabel = order.wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
   const deliveryDate = order.estimatedDelivery || order.estimatedCompletion;
   const formattedDelivery = formatDelivery(deliveryDate);
@@ -86,7 +98,7 @@ export function WorkOrderCard({
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-lg font-semibold text-white truncate min-w-0 flex-1">{order.client}</h3>
         <Badge className={`border-0 text-[10px] shrink-0 font-semibold`} style={{ background: status.bg, color: status.color }}>
-          {status.label}
+          {statusLabel}
         </Badge>
       </div>
 

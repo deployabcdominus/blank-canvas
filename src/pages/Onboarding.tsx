@@ -17,6 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { INDUSTRIES, DEFAULT_SERVICES_BY_INDUSTRY, getIndustryLabels } from "@/lib/industry_config";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 /* ── Preset Engine ── */
 interface IndustryPreset {
@@ -25,7 +26,7 @@ interface IndustryPreset {
   highlightFields: string[];
 }
 
-const INDUSTRY_PRESETS: Record<string, IndustryPreset> = {
+const INDUSTRY_PRESETS_ES: Record<string, IndustryPreset> = {
   "Servicios IT y Software": {
     suggestedPlan: "Pro",
     planReason: "Recomendado para gestión de SLAs y tickets",
@@ -48,6 +49,29 @@ const INDUSTRY_PRESETS: Record<string, IndustryPreset> = {
   },
 };
 
+const INDUSTRY_PRESETS_EN: Record<string, IndustryPreset> = {
+  "Servicios IT y Software": {
+    suggestedPlan: "Pro",
+    planReason: "Recommended for SLA and ticket management",
+    highlightFields: ["IP", "Technical Priority", "SLA"],
+  },
+  "Señalética y Publicidad": {
+    suggestedPlan: "Start",
+    planReason: "Ideal for production orders and measurements",
+    highlightFields: ["Width", "Height", "Depth"],
+  },
+  "Climatización y HVAC": {
+    suggestedPlan: "Pro",
+    planReason: "Ideal for technical service with SLA and tracking",
+    highlightFields: ["BTU", "Pressure", "Refrigerant"],
+  },
+  "Mantenimiento y Reformas": {
+    suggestedPlan: "Start",
+    planReason: "Perfect for work orders and field operations",
+    highlightFields: ["Measurements", "Work Type", "Inspection"],
+  },
+};
+
 const TOTAL_STEPS = 4;
 
 const stepVariants = {
@@ -59,6 +83,8 @@ const stepVariants = {
 const Onboarding = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
   const [currentStep, setCurrentStep] = useState(1);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,16 +100,17 @@ const Onboarding = () => {
   const [newServiceInput, setNewServiceInput] = useState("");
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
+  const INDUSTRY_PRESETS = isEn ? INDUSTRY_PRESETS_EN : INDUSTRY_PRESETS_ES;
   const preset = INDUSTRY_PRESETS[formData.industry] || null;
   const labels = getIndustryLabels(formData.industry || null);
 
   const colorOptions = [
-    { name: "Azul Suave", value: "soft-blue", hex: "#5B9BD5" },
-    { name: "Menta", value: "mint", hex: "#4ECDC4" },
-    { name: "Lavanda", value: "lavender", hex: "#9B8EC4" },
-    { name: "Rosa", value: "rose", hex: "#E8778B" },
-    { name: "Naranja", value: "orange", hex: "#F59E0B" },
-    { name: "Verde", value: "green", hex: "#22C55E" },
+    { name: isEn ? "Soft Blue" : "Azul Suave", value: "soft-blue", hex: "#5B9BD5" },
+    { name: isEn ? "Mint" : "Menta", value: "mint", hex: "#4ECDC4" },
+    { name: isEn ? "Lavender" : "Lavanda", value: "lavender", hex: "#9B8EC4" },
+    { name: isEn ? "Rose" : "Rosa", value: "rose", hex: "#E8778B" },
+    { name: isEn ? "Orange" : "Naranja", value: "orange", hex: "#F59E0B" },
+    { name: isEn ? "Green" : "Verde", value: "green", hex: "#22C55E" },
   ];
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +134,7 @@ const Onboarding = () => {
     const trimmed = newServiceInput.trim();
     if (!trimmed) return;
     if (serviceTypes.includes(trimmed)) {
-      toast({ title: "Ya existe", description: "Este servicio ya está en la lista.", variant: "destructive" });
+      toast({ title: isEn ? "Already exists" : "Ya existe", description: isEn ? "This service is already in the list." : "Este servicio ya está en la lista.", variant: "destructive" });
       return;
     }
     setServiceTypes(prev => [...prev, trimmed]);
@@ -144,7 +171,7 @@ const Onboarding = () => {
 
     // Final step — complete onboarding
     if (!user) {
-      toast({ title: "Error", description: "Usuario no autenticado", variant: "destructive" });
+      toast({ title: "Error", description: isEn ? "User not authenticated" : "Usuario no autenticado", variant: "destructive" });
       return;
     }
 
@@ -153,7 +180,7 @@ const Onboarding = () => {
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError || !authData?.user) {
         await supabase.auth.signOut();
-        toast({ title: "Sesión expirada", description: "Tu sesión ha expirado. Por favor inicia sesión nuevamente.", variant: "destructive" });
+        toast({ title: isEn ? "Session expired" : "Sesión expirada", description: isEn ? "Your session has expired. Please sign in again." : "Tu sesión ha expirado. Por favor inicia sesión nuevamente.", variant: "destructive" });
         navigate("/login");
         return;
       }
@@ -228,7 +255,7 @@ const Onboarding = () => {
         if (insertError) {
           if (insertError.message?.includes("foreign key") || insertError.code === "23503") {
             await supabase.auth.signOut();
-            toast({ title: "Error de cuenta", description: "Tu cuenta tiene un problema. Por favor regístrate nuevamente.", variant: "destructive" });
+            toast({ title: isEn ? "Account error" : "Error de cuenta", description: isEn ? "Your account has an issue. Please register again." : "Tu cuenta tiene un problema. Por favor regístrate nuevamente.", variant: "destructive" });
             navigate("/register");
             return;
           }
@@ -268,7 +295,7 @@ const Onboarding = () => {
       setShowSuccess(true);
     } catch (error: any) {
       if (import.meta.env.DEV) console.error("Error completing onboarding:", error);
-      toast({ title: "Error", description: error.message || "Error al guardar configuración", variant: "destructive" });
+      toast({ title: "Error", description: error.message || (isEn ? "Error saving configuration" : "Error al guardar configuración"), variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -283,29 +310,29 @@ const Onboarding = () => {
       {
         id: "branding",
         icon: Palette,
-        title: "Personaliza tu identidad",
-        description: `Sube tu logo y ajusta los colores de marca`,
+        title: isEn ? "Customize your identity" : "Personaliza tu identidad",
+        description: isEn ? "Upload your logo and adjust brand colors" : "Sube tu logo y ajusta los colores de marca",
         link: "/settings?tab=apariencia",
       },
       {
         id: "catalog",
         icon: FileText,
-        title: "Revisa tu catálogo",
-        description: `Ajusta los precios y servicios de ${industryLabel}`,
+        title: isEn ? "Review your catalog" : "Revisa tu catálogo",
+        description: isEn ? `Adjust prices and services for ${industryLabel}` : `Ajusta los precios y servicios de ${industryLabel}`,
         link: "/settings?tab=catalogo",
       },
       {
         id: "team",
         icon: Users,
-        title: "Invita a tu equipo",
-        description: "Añade técnicos, vendedores o colaboradores",
+        title: isEn ? "Invite your team" : "Invita a tu equipo",
+        description: isEn ? "Add technicians, salespeople, or collaborators" : "Añade técnicos, vendedores o colaboradores",
         link: "/team-management",
       },
       {
         id: "first-lead",
         icon: Zap,
-        title: "Crea tu primer Lead",
-        description: "Prueba el flujo completo con un lead de ejemplo",
+        title: isEn ? "Create your first Lead" : "Crea tu primer Lead",
+        description: isEn ? "Test the full flow with a sample lead" : "Prueba el flujo completo con un lead de ejemplo",
         link: "/leads",
       },
     ];
@@ -336,7 +363,7 @@ const Onboarding = () => {
                 transition={{ delay: 0.3 }}
                 className="text-2xl sm:text-3xl font-semibold mb-3"
               >
-                ¡Tu espacio de trabajo está listo, {userName}!
+                {isEn ? `Your workspace is ready, ${userName}!` : `¡Tu espacio de trabajo está listo, ${userName}!`}
               </motion.h1>
 
               <motion.p
@@ -345,9 +372,9 @@ const Onboarding = () => {
                 transition={{ delay: 0.4 }}
                 className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto"
               >
-                Hemos configurado los cimientos para tu negocio de{" "}
-                <span className="text-foreground font-medium">{industryLabel}</span>.
-                Solo faltan unos toques finales para empezar a operar.
+                {isEn ? "We've set up the foundation for your " : "Hemos configurado los cimientos para tu negocio de"}{" "}
+                <span className="text-foreground font-medium">{industryLabel}</span>
+                {isEn ? " business. Just a few final touches to start operating." : ". Solo faltan unos toques finales para empezar a operar."}
               </motion.p>
             </motion.div>
 
@@ -398,11 +425,11 @@ const Onboarding = () => {
                         }}
                         className="shrink-0 text-xs text-orange-400 hover:text-orange-300 hover:bg-orange-500/10"
                       >
-                        Ir ahora
+                        {isEn ? "Go now" : "Ir ahora"}
                         <ArrowRight className="w-3.5 h-3.5 ml-1" />
                       </Button>
                     ) : (
-                      <span className="shrink-0 text-xs text-green-400 font-medium">Listo ✓</span>
+                      <span className="shrink-0 text-xs text-green-400 font-medium">{isEn ? "Done ✓" : "Listo ✓"}</span>
                     )}
                   </motion.div>
                 );
@@ -424,12 +451,12 @@ const Onboarding = () => {
                 {/* Glow effect */}
                 <span className="absolute inset-0 bg-gradient-to-r from-orange-400/0 via-white/20 to-orange-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <span className="relative flex items-center gap-2">
-                  Ir al Dashboard Principal
+                  {isEn ? "Go to Main Dashboard" : "Ir al Dashboard Principal"}
                   <ArrowRight className="w-5 h-5" strokeWidth={1.5} />
                 </span>
               </Button>
               <p className="text-xs text-muted-foreground mt-3">
-                Puedes completar estas tareas en cualquier momento
+                {isEn ? "You can complete these tasks at any time" : "Puedes completar estas tareas en cualquier momento"}
               </p>
             </motion.div>
           </div>
@@ -440,10 +467,10 @@ const Onboarding = () => {
 
   /* ── Step titles ── */
   const stepMeta = [
-    { title: "Tu Industria", subtitle: "¿A qué se dedica tu negocio?", icon: Building },
-    { title: "Identidad", subtitle: "Nombre y logo de tu empresa", icon: Upload },
-    { title: "Marca", subtitle: "Elige un color que te represente", icon: Sparkles },
-    { title: "Servicios", subtitle: "Define lo que ofreces", icon: Briefcase },
+    { title: isEn ? "Your Industry" : "Tu Industria", subtitle: isEn ? "What does your business do?" : "¿A qué se dedica tu negocio?", icon: Building },
+    { title: isEn ? "Identity" : "Identidad", subtitle: isEn ? "Company name and logo" : "Nombre y logo de tu empresa", icon: Upload },
+    { title: isEn ? "Brand" : "Marca", subtitle: isEn ? "Choose a color that represents you" : "Elige un color que te represente", icon: Sparkles },
+    { title: isEn ? "Services" : "Servicios", subtitle: isEn ? "Define what you offer" : "Define lo que ofreces", icon: Briefcase },
   ];
 
   const current = stepMeta[currentStep - 1];
@@ -466,7 +493,7 @@ const Onboarding = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
-            <h1 className="text-3xl font-bold mb-2">Configura SignFlow</h1>
+            <h1 className="text-3xl font-bold mb-2">{isEn ? "Set up SignFlow" : "Configura SignFlow"}</h1>
             <p className="text-sm text-muted-foreground">
               {currentStep} de {TOTAL_STEPS} — {current.title}
             </p>
@@ -572,7 +599,7 @@ const Onboarding = () => {
                       className="p-3 rounded-xl border border-orange-500/10 bg-orange-500/[0.04] text-center"
                     >
                       <p className="text-xs text-muted-foreground">
-                        <span className="text-orange-400 font-medium">💡 Plan sugerido: {preset.suggestedPlan}</span>
+                        <span className="text-orange-400 font-medium">💡 {isEn ? "Suggested plan" : "Plan sugerido"}: {preset.suggestedPlan}</span>
                         {" — "}{preset.planReason}
                       </p>
                     </motion.div>
@@ -589,10 +616,10 @@ const Onboarding = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="companyName" className="text-sm">Nombre de la Empresa *</Label>
+                    <Label htmlFor="companyName" className="text-sm">{isEn ? "Company Name *" : "Nombre de la Empresa *"}</Label>
                     <Input
                       id="companyName"
-                      placeholder="Ingresa el nombre de tu empresa"
+                      placeholder={isEn ? "Enter your company name" : "Ingresa el nombre de tu empresa"}
                       value={formData.companyName}
                       onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
                       className="bg-white/[0.04] border-white/[0.08] focus:border-orange-500/40"
@@ -600,7 +627,7 @@ const Onboarding = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-sm">Logo de la Empresa *</Label>
+                    <Label className="text-sm">{isEn ? "Company Logo *" : "Logo de la Empresa *"}</Label>
                     <input type="file" id="logo-upload" accept="image/*" onChange={handleLogoUpload} className="hidden" />
                     {logoPreview ? (
                       <div className="flex items-center gap-4">
@@ -611,7 +638,7 @@ const Onboarding = () => {
                           onClick={() => { setLogoPreview(null); setFormData(prev => ({ ...prev, logo: null })); }}
                           className="text-muted-foreground hover:text-destructive text-xs"
                         >
-                          <X className="w-3.5 h-3.5 mr-1" /> Eliminar
+                          <X className="w-3.5 h-3.5 mr-1" /> {isEn ? "Remove" : "Eliminar"}
                         </Button>
                       </div>
                     ) : (
@@ -620,7 +647,7 @@ const Onboarding = () => {
                         className="flex flex-col items-center gap-2 p-6 rounded-2xl border-2 border-dashed border-white/[0.08] hover:border-orange-500/20 cursor-pointer transition-colors"
                       >
                         <Upload className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
-                        <p className="text-sm text-muted-foreground">Haz clic o arrastra tu logo</p>
+                        <p className="text-sm text-muted-foreground">{isEn ? "Click or drag your logo here" : "Haz clic o arrastra tu logo"}</p>
                       </label>
                     )}
                   </div>
@@ -665,7 +692,7 @@ const Onboarding = () => {
                     <CurrentIcon className="w-10 h-10 mx-auto mb-3 text-orange-400" strokeWidth={1.5} />
                     <h2 className="text-lg font-semibold">{current.subtitle}</h2>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Estos se usarán en {labels.leads}, {labels.workOrders} y más
+                      {isEn ? `These will be used in ${labels.leads}, ${labels.workOrders}, and more` : `Estos se usarán en ${labels.leads}, ${labels.workOrders} y más`}
                     </p>
                   </div>
 
@@ -679,7 +706,7 @@ const Onboarding = () => {
                       </Badge>
                     ))}
                     {serviceTypes.length === 0 && (
-                      <p className="text-xs text-muted-foreground italic">Agrega al menos un servicio</p>
+                      <p className="text-xs text-muted-foreground italic">{isEn ? "Add at least one service" : "Agrega al menos un servicio"}</p>
                     )}
                   </div>
 
@@ -688,7 +715,7 @@ const Onboarding = () => {
                       value={newServiceInput}
                       onChange={e => setNewServiceInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addService(); } }}
-                      placeholder="Escribe un servicio..."
+                      placeholder={isEn ? "Type a service..." : "Escribe un servicio..."}
                       className="flex-1 bg-white/[0.04] border-white/[0.08] focus:border-orange-500/40"
                     />
                     <Button
@@ -702,7 +729,7 @@ const Onboarding = () => {
                   </div>
 
                   <p className="text-[11px] text-muted-foreground">
-                    Puedes editar esta lista después en Configuración → Organización
+                    {isEn ? "You can edit this list later in Settings → Organization" : "Puedes editar esta lista después en Configuración → Organización"}
                   </p>
                 </motion.div>
               )}
@@ -722,7 +749,7 @@ const Onboarding = () => {
                 className="text-muted-foreground hover:text-foreground"
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
-                Atrás
+                {isEn ? "Back" : "Atrás"}
               </Button>
 
               <Button
@@ -731,10 +758,10 @@ const Onboarding = () => {
                 className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white border-0 shadow-[0_4px_16px_rgba(251,146,60,0.3)] px-6"
               >
                 {isLoading
-                  ? "Guardando..."
+                  ? (isEn ? "Saving..." : "Guardando...")
                   : currentStep === TOTAL_STEPS
-                    ? "Completar"
-                    : "Siguiente"}
+                    ? (isEn ? "Complete" : "Completar")
+                    : (isEn ? "Next" : "Siguiente")}
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </motion.div>

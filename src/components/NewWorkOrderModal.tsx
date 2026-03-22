@@ -72,36 +72,47 @@ const MATERIALS_DB = [
 
 const CATEGORIES = ['Vinyl', 'Acrílico', 'Aluminio', 'LED', 'Tornillería', 'Impresión', 'Otros'] as const;
 
-const CHECKLIST_ITEMS = [
-  { key: 'design', label: 'Diseño aprobado' },
-  { key: 'material', label: 'Material listo' },
-  { key: 'cutting', label: 'Corte/CNC' },
-  { key: 'assembly', label: 'Ensamble' },
-  { key: 'finishing', label: 'Acabado' },
+const CATEGORY_LABELS: Record<string, { en: string; es: string }> = {
+  'Vinyl': { en: 'Vinyl', es: 'Vinyl' },
+  'Acrílico': { en: 'Acrylic', es: 'Acrílico' },
+  'Aluminio': { en: 'Aluminum', es: 'Aluminio' },
+  'LED': { en: 'LED', es: 'LED' },
+  'Tornillería': { en: 'Hardware', es: 'Tornillería' },
+  'Impresión': { en: 'Printing', es: 'Impresión' },
+  'Otros': { en: 'Other', es: 'Otros' },
+};
+
+const getChecklistItems = (isEn: boolean) => [
+  { key: 'design', label: isEn ? 'Approved design' : 'Diseño aprobado' },
+  { key: 'material', label: isEn ? 'Material ready' : 'Material listo' },
+  { key: 'cutting', label: isEn ? 'Cut/CNC' : 'Corte/CNC' },
+  { key: 'assembly', label: isEn ? 'Assembly' : 'Ensamble' },
+  { key: 'finishing', label: isEn ? 'Finishing' : 'Acabado' },
   { key: 'qc', label: 'QC' },
 ];
 
 // ── Print View Component ──
 const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
   const printRef = useRef<HTMLDivElement>(null);
   const handlePrint = () => window.print();
 
   const handleCopyText = () => {
     const lines = [
-      `📋 ORDEN DE SERVICIO`,
-      `Cliente: ${order.client}`,
-      `Proyecto: ${order.project}`,
-      `Fecha: ${new Date().toLocaleDateString('es-ES')}`,
-      `Prioridad: ${order.priority}`,
+      isEn ? `📋 SERVICE ORDER` : `📋 ORDEN DE SERVICIO`,
+      `${isEn ? 'Client' : 'Cliente'}: ${order.client}`,
+      `${isEn ? 'Project' : 'Proyecto'}: ${order.project}`,
+      `${isEn ? 'Date' : 'Fecha'}: ${new Date().toLocaleDateString(isEn ? 'en-US' : 'es-ES')}`,
+      `${isEn ? 'Priority' : 'Prioridad'}: ${order.priority}`,
       '',
-      '📦 RECURSOS:',
+      isEn ? '📦 RESOURCES:' : '📦 RECURSOS:',
       ...order.materials.map((m: OrderMaterial) => `  • ${m.name} — ${m.quantity} ${m.unit}`),
       '',
-      order.width || order.height ? `📐 MEDIDAS: ${order.width || '-'}" × ${order.height || '-'}" × ${order.depth || '-'}"` : '',
-      order.notes ? `📝 NOTAS: ${order.notes}` : '',
+      order.width || order.height ? `📐 ${isEn ? 'DIMENSIONS' : 'MEDIDAS'}: ${order.width || '-'}" × ${order.height || '-'}" × ${order.depth || '-'}"` : '',
+      order.notes ? `📝 ${isEn ? 'NOTES' : 'NOTAS'}: ${order.notes}` : '',
       '',
-      '✅ CHECKLIST:',
+      isEn ? '✅ CHECKLIST:' : '✅ CHECKLIST:',
       ...order.checklist.map((c: any) => `  ${c.checked ? '☑' : '☐'} ${c.label}`),
     ].filter(Boolean).join('\n');
     navigator.clipboard.writeText(lines);
@@ -127,7 +138,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             <div className="flex justify-between items-start border-b border-white/[0.06] pb-4">
               <div>
                 <h2 className="text-xl font-bold">{t.newWorkOrderModal.printTitle}</h2>
-                <p className="text-sm text-muted-foreground">{t.newWorkOrderModal.printDate} {new Date().toLocaleDateString('es-ES')}</p>
+                <p className="text-sm text-muted-foreground">{t.newWorkOrderModal.printDate} {new Date().toLocaleDateString(isEn ? 'en-US' : 'es-ES')}</p>
               </div>
               <Badge className={order.priority === 'Urgente' ? 'bg-destructive/20 text-destructive' : 'bg-muted'}>
                 {order.priority}
@@ -175,7 +186,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             {(order.width || order.height) && (
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">{t.newWorkOrderModal.printDimensions}</h3>
-                <p>{order.width || '—'}" × {order.height || '—'}" × {order.depth || '—'}" (pulgadas)</p>
+                <p>{order.width || '—'}" × {order.height || '—'}" × {order.depth || '—'}" ({isEn ? 'inches' : 'pulgadas'})</p>
               </div>
             )}
             {order.notes && (
@@ -208,7 +219,8 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 // MAIN MODAL — Workflow-first Wide Canvas
 // ══════════════════════════════════════════════
 export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, onClose }) => {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
   const { proposals } = useProposals();
   const { addOrder } = useWorkOrders();
   const { toast } = useToast();
@@ -234,7 +246,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   const [depth, setDepth] = useState('');
   const [notes, setNotes] = useState('');
   const [folderPath, setFolderPath] = useState('');
-  const [checklist, setChecklist] = useState(CHECKLIST_ITEMS.map(c => ({ ...c, checked: false })));
+  const [checklist, setChecklist] = useState(() => getChecklistItems(isEn).map(c => ({ ...c, checked: false })));
 
   const [blueprintFile, setBlueprintFile] = useState<File | null>(null);
   const [blueprintPreview, setBlueprintPreview] = useState<string | null>(null);
@@ -360,7 +372,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
     setSelectedMaterials([]); setMaterialSearch(''); setActiveCategoryFilter(null);
     setCustomMaterialName(''); setShowAllMaterials(false);
     setWidth(''); setHeight(''); setDepth(''); setNotes(''); setFolderPath('');
-    setChecklist(CHECKLIST_ITEMS.map(c => ({ ...c, checked: false })));
+    setChecklist(getChecklistItems(isEn).map(c => ({ ...c, checked: false })));
     setBlueprintFile(null); setBlueprintPreview(null);
   };
 
@@ -601,7 +613,7 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
                       <div className="flex flex-wrap gap-1.5">
                         <button onClick={() => setActiveCategoryFilter(null)} className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-colors ${!activeCategoryFilter ? 'bg-primary/15 text-primary border-primary/20' : 'bg-white/[0.03] text-muted-foreground border-white/[0.08] hover:bg-white/[0.06]'}`}>{t.newWorkOrderModal.allCategories}</button>
                         {CATEGORIES.map(cat => (
-                          <button key={cat} onClick={() => setActiveCategoryFilter(activeCategoryFilter === cat ? null : cat)} className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-colors ${activeCategoryFilter === cat ? 'bg-primary/15 text-primary border-primary/20' : 'bg-white/[0.03] text-muted-foreground border-white/[0.08] hover:bg-white/[0.06]'}`}>{cat}</button>
+                          <button key={cat} onClick={() => setActiveCategoryFilter(activeCategoryFilter === cat ? null : cat)} className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-colors ${activeCategoryFilter === cat ? 'bg-primary/15 text-primary border-primary/20' : 'bg-white/[0.03] text-muted-foreground border-white/[0.08] hover:bg-white/[0.06]'}`}>{isEn ? CATEGORY_LABELS[cat].en : CATEGORY_LABELS[cat].es}</button>
                         ))}
                       </div>
                       <div className="max-h-36 overflow-y-auto space-y-1 pr-1">

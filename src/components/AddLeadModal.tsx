@@ -16,17 +16,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-const leadFormSchema = z.object({
-  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  company: z.string().min(2, "El nombre de la empresa debe tener al menos 2 caracteres"),
-  phone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos"),
-  email: z.string().email("El email debe tener un formato válido"),
-  signType: z.string().min(1, "Seleccione un tipo de servicio"),
-  address: z.string().min(10, "La dirección debe tener al menos 10 caracteres"),
-  website: z.string().url("El sitio web debe tener un formato válido").optional().or(z.literal(""))
+const makeLeadFormSchema = (isEn: boolean) => z.object({
+  name: z.string().min(2, isEn ? "Name must be at least 2 characters" : "El nombre debe tener al menos 2 caracteres"),
+  company: z.string().min(2, isEn ? "Company name must be at least 2 characters" : "El nombre de la empresa debe tener al menos 2 caracteres"),
+  phone: z.string().min(10, isEn ? "Phone must be at least 10 digits" : "El teléfono debe tener al menos 10 dígitos"),
+  email: z.string().email(isEn ? "Email must have a valid format" : "El email debe tener un formato válido"),
+  signType: z.string().min(1, isEn ? "Select a service type" : "Seleccione un tipo de servicio"),
+  address: z.string().min(10, isEn ? "Address must be at least 10 characters" : "La dirección debe tener al menos 10 caracteres"),
+  website: z.string().url(isEn ? "Website must have a valid format" : "El sitio web debe tener un formato válido").optional().or(z.literal(""))
 });
 
-type LeadFormData = z.infer<typeof leadFormSchema>;
+type LeadFormData = z.infer<ReturnType<typeof makeLeadFormSchema>>;
 
 interface AddLeadModalProps {
   isOpen: boolean;
@@ -35,7 +35,9 @@ interface AddLeadModalProps {
 }
 
 export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) => {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
+  const leadFormSchema = makeLeadFormSchema(isEn);
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
   const resolvedServices = catalogServices.length > 0

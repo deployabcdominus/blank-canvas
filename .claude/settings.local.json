@@ -6,7 +6,17 @@
       "Bash(npx supabase:*)",
       "Bash(stripe --version)",
       "Bash(where stripe:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(grep -v \"^.*//.*$\")",
+      "Bash(grep -rn [áéíóúñÁÉÍÓÚÑ] C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/ --include=*.tsx -l)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Bash(__NEW_LINE_2db393c489420d8a__ grep:*)",
+      "Bash(__NEW_LINE_2db393c489420d8a__ done:*)",
+      "Bash(grep -n \"\"[^\"\"]*[áéíóúñÁÉÍÓÚÑ][^\"\"]*\"\" C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/GracePeriodBanner.tsx)",
+      "Bash(grep -n \"\"[^\"\"]*[áéíóúñÁÉÍÓÚÑ][^\"\"]*\"\" C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/Header.tsx C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/MobileMenu.tsx C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/Sidebar.tsx)",
+      "Bash(grep -n \"\"[^\"\"]*[áéíóúñÁÉÍÓÚÑ][^\"\"]*\"\" C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/work-orders/EditWorkOrderModal.tsx C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/work-orders/WorkOrderCard.tsx C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/LeadPipelineStepper.tsx)",
+      "Bash(grep -n \"\"[^\"\"]*[áéíóúñÁÉÍÓÚÑ][^\"\"]*\"\" C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/production/OperatorStation.tsx C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/production/ProductionControlBar.tsx C:/Users/Montero/Documents/GitHub/blank-canvas/src/components/proposals/ProposalPDF.tsx)"
     ]
   }
 }

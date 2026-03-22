@@ -19,12 +19,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const LeadsRecycleBin = () => {
   const navigate = useNavigate();
   const breakpoint = useBreakpoint();
   const { fetchDeletedLeads, restoreLead, permanentDeleteLead, refreshLeads } = useLeads();
   const { isAdmin } = useUserRole();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
   const [deletedLeads, setDeletedLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"leads" | "projects">("leads");
@@ -44,7 +47,7 @@ const LeadsRecycleBin = () => {
       const data = await fetchDeletedLeads();
       setDeletedLeads(data);
     } catch {
-      toast({ title: "Error", description: "No se pudieron cargar los leads eliminados.", variant: "destructive" });
+      toast({ title: "Error", description: isEn ? "Could not load deleted leads." : "No se pudieron cargar los leads eliminados.", variant: "destructive" });
     }
     setLoading(false);
   }, [fetchDeletedLeads]);
@@ -60,7 +63,7 @@ const LeadsRecycleBin = () => {
       setDeletedProjects(data || []);
     } catch (e) {
       console.error(e);
-      toast({ title: "Error", description: "No se pudieron cargar los proyectos eliminados.", variant: "destructive" });
+      toast({ title: "Error", description: isEn ? "Could not load deleted projects." : "No se pudieron cargar los proyectos eliminados.", variant: "destructive" });
     }
     setLoadingProjects(false);
   }, []);
@@ -73,9 +76,9 @@ const LeadsRecycleBin = () => {
       await restoreLead(id);
       setDeletedLeads(prev => prev.filter(l => l.id !== id));
       await refreshLeads();
-      toast({ title: "Lead restaurado", description: "El lead fue devuelto a la lista activa." });
+      toast({ title: isEn ? "Lead restored" : "Lead restaurado", description: isEn ? "The lead was returned to the active list." : "El lead fue devuelto a la lista activa." });
     } catch {
-      toast({ title: "Error", description: "No se pudo restaurar el lead.", variant: "destructive" });
+      toast({ title: "Error", description: isEn ? "Could not restore lead." : "No se pudo restaurar el lead.", variant: "destructive" });
     }
   };
 
@@ -84,9 +87,9 @@ const LeadsRecycleBin = () => {
     try {
       await permanentDeleteLead(confirmDeleteId);
       setDeletedLeads(prev => prev.filter(l => l.id !== confirmDeleteId));
-      toast({ title: "Eliminado permanentemente", description: "El lead fue eliminado de forma irreversible." });
+      toast({ title: isEn ? "Permanently deleted" : "Eliminado permanentemente", description: isEn ? "The lead was irreversibly deleted." : "El lead fue eliminado de forma irreversible." });
     } catch {
-      toast({ title: "Error", description: "No se pudo eliminar el lead.", variant: "destructive" });
+      toast({ title: "Error", description: isEn ? "Could not delete lead." : "No se pudo eliminar el lead.", variant: "destructive" });
     }
     setConfirmDeleteId(null);
   };
@@ -96,9 +99,9 @@ const LeadsRecycleBin = () => {
       const { error } = await supabase.from('projects').update({ deleted_at: null }).eq('id', id);
       if (error) throw error;
       setDeletedProjects(prev => prev.filter(p => p.id !== id));
-      toast({ title: "Proyecto restaurado", description: "El proyecto fue devuelto." });
+      toast({ title: isEn ? "Project restored" : "Proyecto restaurado", description: isEn ? "The project was returned to the active list." : "El proyecto fue devuelto." });
     } catch {
-      toast({ title: "Error", description: "No se pudo restaurar el proyecto.", variant: "destructive" });
+      toast({ title: "Error", description: isEn ? "Could not restore project." : "No se pudo restaurar el proyecto.", variant: "destructive" });
     }
   };
 
@@ -108,9 +111,9 @@ const LeadsRecycleBin = () => {
       const { error } = await supabase.from('projects').delete().eq('id', confirmProjectDeleteId);
       if (error) throw error;
       setDeletedProjects(prev => prev.filter(p => p.id !== confirmProjectDeleteId));
-      toast({ title: "Proyecto eliminado permanentemente" });
+      toast({ title: isEn ? "Project permanently deleted" : "Proyecto eliminado permanentemente" });
     } catch {
-      toast({ title: "Error", description: "No se pudo eliminar el proyecto.", variant: "destructive" });
+      toast({ title: "Error", description: isEn ? "Could not delete project." : "No se pudo eliminar el proyecto.", variant: "destructive" });
     }
     setConfirmProjectDeleteId(null);
   };
@@ -121,7 +124,7 @@ const LeadsRecycleBin = () => {
         <div className="flex min-h-screen">
           <Sidebar />
           <main className="flex-1 p-6 flex items-center justify-center" style={{ marginLeft: `${sidebarWidth}px` }}>
-            <p className="text-muted-foreground">No tienes permisos para acceder a esta sección.</p>
+            <p className="text-muted-foreground">{isEn ? "You do not have permission to access this section." : "No tienes permisos para acceder a esta sección."}</p>
           </main>
         </div>
       </PageTransition>

@@ -4,6 +4,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanAccess } from "@/hooks/usePlanAccess";
 import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -44,6 +45,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { canAccess } = usePlanAccess();
   const location = useLocation();
   const navigate = useNavigate();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
 
   // Imperative redirect when route changes and role is already loaded
   useEffect(() => {
@@ -60,8 +63,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     for (const [routePrefix, feature] of Object.entries(ROUTE_PLAN_MAP)) {
       if (location.pathname.startsWith(routePrefix) && !canAccess(feature)) {
         toast({
-          title: "Función Premium",
-          description: "Tu plan actual no incluye esta función. Actualiza tu suscripción para acceder.",
+          title: isEn ? "Premium Feature" : "Función Premium",
+          description: isEn ? "Your current plan does not include this feature. Upgrade your subscription to access it." : "Tu plan actual no incluye esta función. Actualiza tu suscripción para acceder.",
           variant: "destructive",
         });
         navigate('/settings?tab=suscripcion', { replace: true });
