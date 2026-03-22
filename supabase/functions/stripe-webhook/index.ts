@@ -39,7 +39,6 @@ serve(async (req) => {
 
   const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
-  // Verify Stripe signature
   const signature = req.headers.get("stripe-signature");
   if (!signature) {
     logStep("ERROR - No stripe-signature header");
@@ -59,105 +58,77 @@ serve(async (req) => {
   try {
     switch (event.type) {
 
-      // ── Plan activado al completar checkout ──
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const customerId = session.customer as string;
         const customerEmail = session.customer_details?.email;
         logStep("checkout.session.completed", { customerId, customerEmail });
-
         if (!customerEmail) break;
-
-        const subscriptions = await stripe.subscriptions.list({
-          customer: customerId,
-          limit: 1,
-        });
-
+        const subscriptions = await stripe.subscriptions.list({ customer: customerId, limit: 1 });
         if (subscriptions.data.length === 0) break;
-
         const sub = subscriptions.data[0];
         const productId = sub.items.data[0]?.price?.product as string;
         const tier = PRODUCT_TIER_MAP[productId] || "start";
         const subscriptionEnd = new Date(sub.current_period_end * 1000).toISOString();
-
         await updateCompanyByEmail(supabaseAdmin, customerEmail, {
           plan_id: tier,
           subscription_status: "active",
           stripe_customer_id: customerId,
           subscription_end_date: subscriptionEnd,
         });
-
         logStep("Plan activated", { email: customerEmail, tier });
         break;
       }
 
-      // ── Pago mensual exitoso — renueva acceso ──
       case "invoice.paid": {
         const invoice = event.data.object as Stripe.Invoice;
         const customerId = invoice.customer as string;
         logStep("invoice.paid", { customerId });
-
         const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
         const email = customer.email;
         if (!email) break;
-
-        const subscriptions = await stripe.subscriptions.list({
-          customer: customerId,
-          limit: 1,
-        });
-
+        const subscriptions = await stripe.subscriptions.list({ customer: customerId, limit: 1 });
         if (subscriptions.data.length === 0) break;
-
         const sub = subscriptions.data[0];
         const productId = sub.items.data[0]?.price?.product as string;
         const tier = PRODUCT_TIER_MAP[productId] || "start";
         const subscriptionEnd = new Date(sub.current_period_end * 1000).toISOString();
-
         await updateCompanyByEmail(supabaseAdmin, email, {
           plan_id: tier,
           subscription_status: "active",
           stripe_customer_id: customerId,
           subscription_end_date: subscriptionEnd,
         });
-
         logStep("Subscription renewed", { email, tier, subscriptionEnd });
         break;
       }
 
-      // ── Pago fallido — restringe acceso ──
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
         const customerId = invoice.customer as string;
         logStep("invoice.payment_failed", { customerId });
-
         const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
         const email = customer.email;
         if (!email) break;
-
         await updateCompanyByEmail(supabaseAdmin, email, {
           subscription_status: "past_due",
         });
-
         logStep("Subscription marked past_due", { email });
         break;
       }
 
-      // ── Suscripción cancelada — revoca acceso ──
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
         logStep("customer.subscription.deleted", { customerId });
-
         const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
         const email = customer.email;
         if (!email) break;
-
         await updateCompanyByEmail(supabaseAdmin, email, {
           subscription_status: "canceled",
           plan_id: "start",
           subscription_end_date: new Date().toISOString(),
         });
-
         logStep("Subscription canceled", { email });
         break;
       }
@@ -180,7 +151,6 @@ serve(async (req) => {
   }
 });
 
-// ── Helper: busca company por email del owner y actualiza ──
 async function updateCompanyByEmail(
   supabase: ReturnType<typeof createClient>,
   email: string,
@@ -192,61 +162,26 @@ async function updateCompanyByEmail(
     console.log(`[STRIPE-WEBHOOK] No user found for email: ${email}`);
     return;
   }
-
   const { data: profile } = await supabase
     .from("profiles")
     .select("company_id")
     .eq("id", matchedUser.id)
     .maybeSingle();
-
   if (!profile?.company_id) {
     console.log(`[STRIPE-WEBHOOK] No company found for user: ${email}`);
     return;
   }
-
   const { data: company } = await supabase
     .from("companies")
     .select("billing_type")
     .eq("id", profile.company_id)
     .maybeSingle();
-
   if (company?.billing_type === "manual_admin") {
     console.log(`[STRIPE-WEBHOOK] Skipping — manual_admin billing`);
     return;
   }
-
   await supabase
     .from("companies")
     .update(updates)
     .eq("id", profile.company_id);
 }
-```
-
----
-
-Guarda el archivo. Luego haz commit en GitHub Desktop:
-- Summary: `feat: stripe-webhook Edge Function for subscription lifecycle`
-- **Commit to main** → **Push origin**
-
----
-
-## Paso siguiente — configurar en Stripe
-
-Después del push necesitas hacer 2 cosas en Stripe Dashboard:
-
-**1.** Ve a **Stripe → Developers → Webhooks → Add endpoint**
-
-URL:
-```
-https://[tu-proyecto].supabase.co/functions/v1/stripe-webhook
-```
-
-**2.** Selecciona estos 4 eventos:
-- `checkout.session.completed`
-- `invoice.paid`
-- `invoice.payment_failed`
-- `customer.subscription.deleted`
-
-**3.** Copia el **Webhook Secret** que Stripe genera y agrégalo en Supabase → **Edge Functions → Secrets**:
-```
-STRIPE_WEBHOOK_SECRET = whsec_xxxxx
