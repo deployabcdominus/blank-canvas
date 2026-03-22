@@ -41,10 +41,21 @@ export function usePlanLimits(): PlanLimits {
 
       const planName = company?.plan_id || "Inicial";
 
+      const PLAN_ID_MAP: Record<string, string> = {
+        "start": "Inicial",
+        "pro": "Profesional",
+        "elite": "Empresarial",
+        "Inicial": "Inicial",
+        "Profesional": "Profesional",
+        "Empresarial": "Empresarial",
+      };
+
+      const resolvedPlanName = PLAN_ID_MAP[planName] || "Inicial";
+
       const { data: plan } = await supabase
         .from("plans")
         .select("features, name")
-        .eq("name", planName)
+        .eq("name", resolvedPlanName)
         .single();
 
       const features = (plan?.features as any) || {};
