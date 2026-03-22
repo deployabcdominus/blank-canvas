@@ -633,23 +633,23 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
             {editing ? (
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setEditing(false)} className="flex-1 h-11" disabled={saving}>
-                  Cancelar
+                  {t.editLeadModal.cancel}
                 </Button>
                 <Button onClick={handleSave} className="flex-1 h-11 btn-violet" disabled={saving}>
-                  {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Guardando...</> : "Guardar cambios"}
+                  {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t.editLeadModal.saving}</> : t.editLeadModal.saveChanges}
                 </Button>
               </div>
             ) : advancing ? (
               <div className="flex items-center justify-center gap-3 h-11 text-violet-300">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm font-medium">Creando propuesta...</span>
+                <span className="text-sm font-medium">{t.editLeadModal.creatingProposal}</span>
               </div>
             ) : !isConverted && !hasProposal ? (
               <Button
                 onClick={handleAdvanceInPanel}
                 className="w-full h-11 bg-gradient-to-r from-violet-600/25 to-violet-500/15 text-violet-300 border border-violet-500/20 hover:from-violet-600/35 hover:to-violet-500/25 hover:text-violet-200 transition-all"
               >
-                Avanzar a Propuesta
+                {t.editLeadModal.advanceToProposal}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             ) : hasProposal ? (
@@ -659,7 +659,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                 className="w-full h-11 border-violet-500/20 text-violet-400 hover:bg-violet-500/10"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                Ver Propuesta
+                {t.editLeadModal.viewProposal}
               </Button>
             ) : null}
           </div>
@@ -669,15 +669,15 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar este lead?</AlertDialogTitle>
+            <AlertDialogTitle>{t.editLeadModal.deleteDialogTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              Se eliminará permanentemente "{lead.name}". Esta acción no se puede deshacer.
+              {t.editLeadModal.deleteDialogDesc.replace("{{name}}", lead.name)}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>{t.editLeadModal.deleteDialogCancel}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Eliminar
+              {t.editLeadModal.deleteDialogConfirm}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
