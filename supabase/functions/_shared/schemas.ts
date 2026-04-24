@@ -47,3 +47,18 @@ export const ManageUserSchema = z.object({
   companyId: z.string().uuid().optional(),
   role: UserRoleSchema.optional(),
 });
+
+export const EmailPayloadSchema = z.object({
+  type: z.enum(["invitation", "order_status", "proposal_sent"]),
+  to: z.string().email("Destinatario inválido"),
+  data: z.record(z.string(), z.string().or(z.number())),
+});
+
+export const AiBriefingSchema = z.object({
+  businessData: z.record(z.string(), z.any()),
+});
+
+export const ApproveProposalSchema = z.object({
+  proposalId: z.string().uuid("ID de propuesta inválido"),
+  notes: SanitizedString.optional(),
+});
