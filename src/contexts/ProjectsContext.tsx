@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
+import { ProjectsService } from '@/services/projects.service';
 
 export type ProjectStatus = 'Lead' | 'Proposal' | 'Production' | 'Installation' | 'Completed';
 
@@ -76,11 +77,12 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const fetchProjects = useCallback(async () => {
     if (!user) { setProjects([]); setLoading(false); return; }
-    const { data, error } = await (supabase as any)
-      .from('projects')
-      .select('id, company_id, client_id, project_name, install_address, status, owner_user_id, assigned_to_user_id, folder_relative_path, folder_full_path, created_at, updated_at, clients!projects_client_id_fkey(client_name), leads!leads_project_id_fkey(name, company)')
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false });
+    
+    const companyId = await resolveCompanyId(user.id);
+    if (!companyId) return;
+
+    const { data, error } = await ProjectsService.getAll(companyId);
+    
     if (error) console.error('Error loading projects:', error);
     else setProjects((data || []).map(mapRow));
     setLoading(false);
@@ -114,21 +116,19 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const addProject = async (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'companyId' | 'clientName'>): Promise<Project> => {
     const companyId = await getCompanyId();
     if (!companyId) throw new Error('No company found');
-    const { data, error } = await (supabase as any)
-      .from('projects')
-      .insert({
-        company_id: companyId,
-        client_id: project.clientId,
-        project_name: project.projectName,
-        install_address: project.installAddress,
-        status: project.status,
-        owner_user_id: project.ownerUserId,
-        assigned_to_user_id: project.assignedToUserId,
-        folder_relative_path: project.folderRelativePath,
-        folder_full_path: project.folderFullPath,
-      })
-      .select('*, clients!projects_client_id_fkey(client_name)')
-      .single();
+    
+    const { data, error } = await ProjectsService.create({
+      company_id: companyId,
+      client_id: project.clientId,
+      project_name: project.projectName,
+      install_address: project.installAddress,
+      status: project.status,
+      owner_user_id: project.ownerUserId,
+      assigned_to_user_id: project.assignedToUserId,
+      folder_relative_path: project.folderRelativePath,
+      folder_full_path: project.folderFullPath,
+    });
+    
     if (error) throw error;
     const newProject = mapRow(data);
     setProjects(prev => [newProject, ...prev]);
@@ -144,16 +144,14 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     if (updates.folderRelativePath !== undefined) dbUpdates.folder_relative_path = updates.folderRelativePath;
     if (updates.folderFullPath !== undefined) dbUpdates.folder_full_path = updates.folderFullPath;
     if (updates.clientId !== undefined) dbUpdates.client_id = updates.clientId;
-    const { error } = await (supabase as any).from('projects').update(dbUpdates).eq('id', id);
+    
+    const { error } = await ProjectsService.update(id, dbUpdates);
     if (error) throw error;
     setProjects(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
   };
 
   const deleteProject = async (id: string) => {
-    const { error } = await (supabase as any)
-      .from('projects')
-      .update({ deleted_at: new Date().toISOString() })
-      .eq('id', id);
+    const { error } = await ProjectsService.softDelete(id);
     if (error) {
       if (error.message?.includes('órdenes de trabajo activas')) {
         throw new Error('No se puede eliminar: este proyecto tiene órdenes de trabajo activas. Complete o cancele las órdenes primero.');
