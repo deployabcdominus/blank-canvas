@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logAudit } from '@/lib/audit';
 import { resolveCompanyId } from '@/lib/resolve-company';
+import { LeadsService, LeadRow } from '@/services/leads.service';
 
 export interface Lead {
   id: string;
@@ -105,17 +105,22 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
 
+  const getCompanyId = async (): Promise<string | null> => {
+    if (!user) return null;
+    return resolveCompanyId(user.id);
+  };
+
   const fetchPage = useCallback(async (pageNum: number, append = false) => {
     if (!user) { setLeads([]); setLoading(false); return; }
-    const from = pageNum * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
+    
+    const companyId = await getCompanyId();
+    if (!companyId) {
+      setLeads([]);
+      setLoading(false);
+      return;
+    }
 
-    const { data, error, count } = await supabase
-      .from('leads')
-      .select('id, name, company, service, status, phone, email, location, value, source, notes, website, logo_url, company_id, created_by_user_id, assigned_to_user_id, client_id, project_id, created_at, clients!leads_client_id_fkey(client_name, contact_name, primary_phone, primary_email, address, website, logo_url)', { count: 'exact' })
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false })
-      .range(from, to);
+    const { data, error, count } = await LeadsService.getAll(companyId, pageNum, PAGE_SIZE);
 
     if (error) {
       if (import.meta.env.DEV) console.error('Error loading leads:', error);
@@ -140,35 +145,27 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     await fetchPage(nextPage, true);
   }, [page, fetchPage]);
 
-  const getCompanyId = async (): Promise<string | null> => {
-    if (!user) return null;
-    return resolveCompanyId(user.id);
-  };
-
   const addLead = async (lead: Omit<Lead, 'id'>) => {
     if (!user) return;
 
     const companyId = await getCompanyId();
+    if (!companyId) return;
 
-    const { data, error } = await supabase
-      .from('leads')
-      .insert({
-        user_id: user.id,
-        company_id: companyId,
-        created_by_user_id: user.id,
-        name: lead.name,
-        company: lead.company,
-        service: lead.service,
-        status: lead.status,
-        phone: lead.contact.phone,
-        email: lead.contact.email,
-        location: lead.contact.location,
-        value: lead.value,
-        website: lead.website,
-        logo_url: lead.logoUrl
-      } as any)
-      .select()
-      .single();
+    const { data, error } = await LeadsService.create({
+      user_id: user.id,
+      company_id: companyId,
+      created_by_user_id: user.id,
+      name: lead.name,
+      company: lead.company,
+      service: lead.service,
+      status: lead.status,
+      phone: lead.contact.phone,
+      email: lead.contact.email,
+      location: lead.contact.location,
+      value: lead.value,
+      website: lead.website,
+      logo_url: lead.logoUrl
+    });
 
     if (error) {
       if (import.meta.env.DEV) console.error('Error adding lead:', error);
@@ -185,6 +182,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
   const updateLead = async (id: string, updates: Partial<Lead>) => {
     if (!user) return;
+    
     const dbUpdates: any = {};
     if (updates.name !== undefined) dbUpdates.name = updates.name;
     if (updates.company !== undefined) dbUpdates.company = updates.company;
@@ -196,26 +194,32 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (updates.logoUrl !== undefined) dbUpdates.logo_url = updates.logoUrl;
     if ((updates as any).clientId !== undefined) dbUpdates.client_id = (updates as any).clientId;
     if ((updates as any).projectId !== undefined) dbUpdates.project_id = (updates as any).projectId;
+    
     if (updates.contact) {
       if (updates.contact.phone !== undefined) dbUpdates.phone = updates.contact.phone;
       if (updates.contact.email !== undefined) dbUpdates.email = updates.contact.email;
       if (updates.contact.location !== undefined) dbUpdates.location = updates.contact.location;
     }
 
-    const { error } = await supabase.from('leads').update(dbUpdates).eq('id', id);
+    const { error } = await LeadsService.update(id, dbUpdates);
     if (error) throw error;
+    
     const lead = leads.find(l => l.id === id);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, ...updates } : l));
+    
     const auditAction = updates.status ? 'cambio_estado' as const : 'editado' as const;
-    logAudit({ action: auditAction, entityType: 'lead', entityId: id, entityLabel: lead?.name, details: updates.status ? { before: lead?.status, after: updates.status } : dbUpdates });
+    logAudit({ 
+      action: auditAction, 
+      entityType: 'lead', 
+      entityId: id, 
+      entityLabel: lead?.name, 
+      details: updates.status ? { before: lead?.status, after: updates.status } : dbUpdates 
+    });
   };
 
   const assignLead = async (leadId: string, assignedToUserId: string | null) => {
     if (!user) return;
-    const { error } = await supabase
-      .from('leads')
-      .update({ assigned_to_user_id: assignedToUserId } as any)
-      .eq('id', leadId);
+    const { error } = await LeadsService.update(leadId, { assigned_to_user_id: assignedToUserId });
     if (error) throw error;
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, assignedToUserId: assignedToUserId || undefined } : l));
   };
@@ -223,7 +227,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   const deleteLead = async (id: string) => {
     if (!user) return;
     const lead = leads.find(l => l.id === id);
-    const { error } = await supabase.from('leads').update({ deleted_at: new Date().toISOString() } as any).eq('id', id);
+    const { error } = await LeadsService.softDelete(id);
     if (error) throw error;
     setLeads(prev => prev.filter(l => l.id !== id));
     setTotalCount(prev => prev - 1);
@@ -232,7 +236,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
   const deleteLeads = async (ids: string[]) => {
     if (!user || ids.length === 0) return;
-    const { error } = await supabase.from('leads').update({ deleted_at: new Date().toISOString() } as any).in('id', ids);
+    const { error } = await LeadsService.softDeleteBatch(ids);
     if (error) throw error;
     setLeads(prev => prev.filter(l => !ids.includes(l.id)));
     setTotalCount(prev => prev - ids.length);
@@ -242,14 +246,9 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   const clearLeads = async () => {
     if (!user) return;
     const companyId = await getCompanyId();
-    const filterCol = companyId ? 'company_id' : 'user_id';
-    const filterVal = companyId || user.id;
+    if (!companyId) return;
 
-    const { error } = await supabase
-      .from('leads')
-      .update({ deleted_at: new Date().toISOString() } as any)
-      .eq(filterCol, filterVal)
-      .is('deleted_at', null);
+    const { error } = await LeadsService.clearAll(companyId);
 
     if (error) throw error;
     setLeads([]);
@@ -258,34 +257,30 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
   const restoreLead = async (id: string) => {
     if (!user) return;
-    const { error } = await supabase.from('leads').update({ deleted_at: null } as any).eq('id', id);
+    const { error } = await LeadsService.restore(id);
     if (error) throw error;
-    // Refresh to pick it up
-    await refreshLeadsInternal();
+    await refreshLeads();
   };
 
   const permanentDeleteLead = async (id: string) => {
     if (!user) return;
-    const { error } = await supabase.from('leads').delete().eq('id', id);
+    const { error } = await LeadsService.permanentDelete(id);
     if (error) throw error;
   };
 
   const fetchDeletedLeads = async (): Promise<Lead[]> => {
-    const { data, error } = await supabase
-      .from('leads')
-      .select('id, name, company, service, status, phone, email, location, value, source, notes, website, logo_url, company_id, created_by_user_id, assigned_to_user_id, client_id, project_id, created_at, deleted_at')
-      .not('deleted_at', 'is', null)
-      .order('deleted_at', { ascending: false });
+    const companyId = await getCompanyId();
+    if (!companyId) return [];
+
+    const { data, error } = await LeadsService.getDeleted(companyId);
     if (error) throw error;
     return (data || []).map(mapRow);
   };
 
-  const refreshLeadsInternal = useCallback(async () => {
+  const refreshLeads = useCallback(async () => {
     setPage(0);
     await fetchPage(0);
   }, [fetchPage]);
-
-  const refreshLeads = refreshLeadsInternal;
 
   return (
     <LeadsContext.Provider value={{ leads, setLeads, addLead, updateLead, assignLead, deleteLead, deleteLeads, clearLeads, restoreLead, permanentDeleteLead, fetchDeletedLeads, refreshLeads, loading, totalCount, hasMore, loadMore }}>
