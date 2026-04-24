@@ -174,7 +174,9 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
   const addOrder = async (order: Omit<WorkOrder, 'id' | 'companyId' | 'ownerUserId'>) => {
     if (!user) throw new Error('Not authenticated');
     const companyId = await getCompanyId();
-    const { data, error } = await supabase.from('production_orders').insert({
+    if (!companyId) return;
+
+    const { data, error } = await WorkOrdersService.create({
       user_id: user.id,
       company_id: companyId,
       owner_user_id: user.id,
@@ -192,7 +194,8 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       proposal_id: order.proposalId || null,
       assigned_to_user_id: order.assignedToUserId || null,
       installer_company_id: order.installerCompanyId || null,
-    }).select().single();
+    });
+
     if (error) throw error;
     logAudit({ action: 'creado', entityType: 'orden_produccion', entityId: data?.id, entityLabel: order.client });
     await fetchOrders();
