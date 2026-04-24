@@ -71,7 +71,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         return;
       }
     }
-  }, [location.pathname, role, roleLoading, isSuperadmin, navigate, canAccess]);
+  }, [location.pathname, role, roleLoading, isSuperadmin, navigate, canAccess, isEn]);
 
   // 1. Wait for auth
   if (authLoading) {
