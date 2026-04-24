@@ -93,8 +93,8 @@ const MacBookMockup = () => {
   const { t } = useLanguage();
   const m = t.landing.mockup;
   return (
-    <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "1600px" }}>
-      <div className="absolute -inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(124,58,237,0.12),transparent_60%)] pointer-events-none" />
+    <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "100rem" }}>
+      <div className="absolute -inset-[10vw] sm:-inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(124,58,237,0.12),transparent_60%)] pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 70, rotateX: 12 }}
         animate={{ opacity: 1, y: 0, rotateX: 4 }}
@@ -102,10 +102,10 @@ const MacBookMockup = () => {
         className="relative"
       >
         <div
-          className="relative rounded-t-[16px] border border-white/[0.08] bg-zinc-900/80 overflow-hidden"
+          className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] border border-white/[0.08] bg-zinc-900/80 overflow-hidden"
           style={{
             boxShadow:
-              "0 4px 8px rgba(0,0,0,0.4), 0 20px 50px rgba(0,0,0,0.6), 0 60px 140px -20px rgba(0,0,0,0.8), 0 0 100px -30px rgba(124,58,237,0.12), inset 0 1px 0 rgba(255,255,255,0.05)",
+              "0 0.25rem 0.5rem rgba(0,0,0,0.4), 0 1.25rem 3.125rem rgba(0,0,0,0.6), 0 3.75rem 8.75rem -1.25rem rgba(0,0,0,0.8), 0 0 6.25rem -1.875rem rgba(124,58,237,0.12), inset 0 0.0625rem 0 rgba(255,255,255,0.05)",
             aspectRatio: "16/9",
           }}
         >
@@ -372,20 +372,20 @@ const Index = () => {
 
         {/* ── Background layers ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-          <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "64px 64px" }} />
-          <div className="absolute -top-[25%] -left-[15%] w-[1000px] h-[1000px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)", filter: "blur(180px)" }} />
-          <div className="absolute -bottom-[25%] -right-[15%] w-[900px] h-[900px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)", filter: "blur(180px)" }} />
-          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] opacity-[0.06]" style={{ background: "radial-gradient(ellipse at center, #f97316, transparent 55%)", filter: "blur(180px)" }} />
+          <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "4rem 4rem" }} />
+          <div className="absolute -top-[25%] -left-[15%] w-[60vw] h-[60vw] max-w-[1000px] max-h-[1000px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)", filter: "blur(11.25rem)" }} />
+          <div className="absolute -bottom-[25%] -right-[15%] w-[55vw] h-[55vw] max-w-[900px] max-h-[900px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)", filter: "blur(11.25rem)" }} />
+          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[45vw] h-[30vw] max-w-[700px] max-h-[500px] opacity-[0.06]" style={{ background: "radial-gradient(ellipse at center, #f97316, transparent 55%)", filter: "blur(11.25rem)" }} />
         </div>
 
         {/* ═══════════ HEADER ═══════════ */}
         <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]" : "bg-transparent"}`}>
           <div className="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 py-3">
-            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[44px]" aria-label="SignFlow - Home">
-              <div className="flex-shrink-0 w-[34px] h-[34px] sm:w-[40px] sm:h-[40px] md:w-[44px] md:h-[44px] overflow-hidden">
+            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[2.75rem]" aria-label="SignFlow - Home">
+              <div className="flex-shrink-0 w-[2.125rem] h-[2.125rem] sm:w-[2.5rem] sm:h-[2.5rem] md:w-[2.75rem] md:h-[2.75rem] overflow-hidden">
                 <img src={brandLogoSrc} alt="SignFlow" className="block w-full h-full object-contain scale-[1.15]" draggable={false} />
               </div>
-              <span className="font-bold tracking-[-0.03em] text-[17px] sm:text-[19px] md:text-[21px] text-zinc-100">SignFlow</span>
+              <span className="font-bold tracking-[-0.03em] text-[1.0625rem] sm:text-[1.1875rem] md:text-[1.3125rem] text-zinc-100">SignFlow</span>
             </a>
 
             <nav className="hidden md:flex items-center gap-10 text-[13px] font-medium text-zinc-500">
