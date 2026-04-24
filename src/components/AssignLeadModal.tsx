@@ -51,13 +51,13 @@ export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: As
       const { data: companyProfiles } = await supabase
         .from('profiles')
         .select('id, full_name')
-        .eq('company_id', profile.company_id) as any;
+        .eq('company_id', profile.company_id);
 
       if (companyProfiles) {
         setMembers(
           companyProfiles
-            .filter((p: any) => p.id !== user.id) // Exclude self
-            .map((p: any) => ({
+            .filter((p) => p.id !== user.id) // Exclude self
+            .map((p) => ({
               id: p.id,
               name: p.full_name || m.noName,
               email: '',
@@ -67,7 +67,7 @@ export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: As
     };
 
     fetchMembers();
-  }, [isOpen, user, currentAssignee]);
+  }, [isOpen, user, currentAssignee, m.noName]);
 
   const handleSave = async () => {
     if (!leadId) return;
@@ -80,8 +80,9 @@ export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: As
         description: assignTo ? m.successDescAssigned : m.successDescRemoved,
       });
       onClose();
-    } catch (e: any) {
-      toast({ title: m.errorTitle, description: e.message || m.errorDesc, variant: 'destructive' });
+    } catch (e: unknown) {
+      const error = e as Error;
+      toast({ title: m.errorTitle, description: error.message || m.errorDesc, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
