@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logAudit } from '@/lib/audit';
 import { resolveCompanyId } from '@/lib/resolve-company';
+import { WorkOrdersService } from '@/services/work-orders.service';
 
 export interface WorkOrder {
   id: string;
@@ -157,10 +158,12 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
 
   const fetchOrders = useCallback(async () => {
     if (!user) { setOrders([]); setLoading(false); return; }
-    const { data, error } = await supabase
-      .from('production_orders')
-      .select('id, client, project, status, progress, materials, start_date, end_date, company_id, owner_user_id, project_id, proposal_id, notes, priority, estimated_delivery, assigned_to_user_id, installer_company_id, blueprint_url, annotations, technical_details, created_at, face_material_spec, returns_material_spec, backs_material_spec, trim_cap_spec, led_mfg_spec, power_supply_spec, responsible_staff, qc_checklist, wo_number, contact_name, contact_phone, contact_email, site_address, project_name, poi_token_used, poi_completed_at, qc_signature_url, product_type, mockup_urls, design_notes')
-      .order('created_at', { ascending: false });
+    
+    const companyId = await resolveCompanyId(user.id);
+    if (!companyId) return;
+
+    const { data, error } = await WorkOrdersService.getAll(companyId);
+    
     if (error) console.error('Error loading work orders:', error);
     else setOrders((data || []).map(mapRow));
     setLoading(false);
@@ -212,8 +215,10 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.blueprintUrl !== undefined) dbUpdates.blueprint_url = updates.blueprintUrl;
     if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations;
     if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails;
-    const { error } = await supabase.from('production_orders').update(dbUpdates as any).eq('id', id);
+    
+    const { error } = await WorkOrdersService.update(id, dbUpdates as any);
     if (error) throw error;
+    
     const order = orders.find(o => o.id === id);
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
     const auditAction = updates.status ? 'cambio_estado' as const : 'editado' as const;
@@ -222,7 +227,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
 
   const deleteOrder = async (id: string) => {
     const order = orders.find(o => o.id === id);
-    const { error } = await supabase.from('production_orders').delete().eq('id', id);
+    const { error } = await WorkOrdersService.delete(id);
     if (error) throw error;
     setOrders(prev => prev.filter(o => o.id !== id));
     logAudit({ action: 'eliminado', entityType: 'orden_produccion', entityId: id, entityLabel: order?.client });
@@ -237,7 +242,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
   const clearOrders = async () => {
     const companyId = await getCompanyId();
     if (companyId) {
-      const { error } = await supabase.from('production_orders').delete().eq('company_id', companyId);
+      const { error } = await WorkOrdersService.deleteByCompany(companyId);
       if (error) throw error;
     }
     setOrders([]);
