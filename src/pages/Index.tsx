@@ -381,11 +381,11 @@ const Index = () => {
         {/* ═══════════ HEADER ═══════════ */}
         <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]" : "bg-transparent"}`}>
           <div className="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 py-3">
-            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[44px]" aria-label="SignFlow - Home">
-              <div className="flex-shrink-0 w-[34px] h-[34px] sm:w-[40px] sm:h-[40px] md:w-[44px] md:h-[44px] overflow-hidden">
+            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[2.75rem]" aria-label="SignFlow - Home">
+              <div className="flex-shrink-0 w-[2.125rem] h-[2.125rem] sm:w-[2.5rem] sm:h-[2.5rem] md:w-[2.75rem] md:h-[2.75rem] overflow-hidden">
                 <img src={brandLogoSrc} alt="SignFlow" className="block w-full h-full object-contain scale-[1.15]" draggable={false} />
               </div>
-              <span className="font-bold tracking-[-0.03em] text-[17px] sm:text-[19px] md:text-[21px] text-zinc-100">SignFlow</span>
+              <span className="font-bold tracking-[-0.03em] text-[1.0625rem] sm:text-[1.1875rem] md:text-[1.3125rem] text-zinc-100">SignFlow</span>
             </a>
 
             <nav className="hidden md:flex items-center gap-10 text-[13px] font-medium text-zinc-500">
