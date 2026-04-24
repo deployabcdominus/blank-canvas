@@ -1,11 +1,23 @@
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
+/**
+ * Sanitiza un string eliminando etiquetas HTML y scripts
+ */
+const sanitizeString = (val: string) => {
+  if (!val) return val;
+  return val
+    .replace(/<[^>]*>?/gm, "") // Eliminar etiquetas HTML
+    .trim();
+};
+
+export const SanitizedString = z.string().transform(sanitizeString);
+
 export const UserRoleSchema = z.enum(["superadmin", "admin", "operations", "installer", "viewer"]);
 
 export const CreateUserSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  fullName: z.string().min(2, "Nombre demasiado corto"),
+  fullName: SanitizedString.pipe(z.string().min(2, "Nombre demasiado corto")),
   companyId: z.string().uuid("ID de empresa inválido"),
   role: UserRoleSchema,
 });
@@ -31,7 +43,7 @@ export const ManageUserSchema = z.object({
   userIds: z.array(z.string().uuid()).optional(),
   email: z.string().email().optional(),
   password: z.string().min(8).optional(),
-  fullName: z.string().min(2).optional(),
+  fullName: SanitizedString.pipe(z.string().min(2)).optional(),
   companyId: z.string().uuid().optional(),
   role: UserRoleSchema.optional(),
 });
