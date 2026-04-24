@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { ManageUserSchema } from "../_shared/schemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,7 +28,19 @@ Deno.serve(async (req) => {
     });
 
     const body = await req.json();
-    const { action, userId, userIds, email, password, fullName, companyId, role } = body;
+    const result = ManageUserSchema.safeParse(body);
+
+    if (!result.success) {
+      return new Response(JSON.stringify({ 
+        error: "Validación fallida", 
+        details: result.error.format() 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { action, userId, userIds, email, password, fullName, companyId, role } = result.data;
 
     const { data: { user: caller }, error: authError } = await callerClient.auth.getUser();
     if (authError) console.error("Auth error:", authError.message);
