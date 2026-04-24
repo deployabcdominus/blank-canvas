@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { DateField } from "@/components/ui/date-field";
 import { toast } from "sonner";
-import type { ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
+import type { Proposal, ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
 import { SmartEntitySearch, type EntityResult } from "@/components/SmartEntitySearch";
@@ -28,7 +28,7 @@ type FormData = {
 interface AddProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddProposal: (proposal: any) => Promise<void>;
+  onAddProposal: (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder' | 'updatedAt' | 'lead' | 'approvedTotal' | 'approvedAt' | 'mockupUrl'>) => Promise<void>;
   onCreateClient?: (name: string) => void;
 }
 

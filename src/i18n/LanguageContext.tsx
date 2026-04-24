@@ -47,7 +47,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       .eq("id", user.id)
       .maybeSingle()
       .then(({ data }) => {
-        const pref = (data as any)?.language_preference as string | null;
+        const pref = data?.language_preference;
         if (pref === "en" || pref === "es") {
           setLocaleState(pref);
           localStorage.setItem("sf_lang", pref);
@@ -65,7 +65,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       if (user) {
         supabase
           .from("profiles")
-          .update({ language_preference: newLocale } as any)
+          .update({ language_preference: newLocale })
           .eq("id", user.id)
           .then();
       }

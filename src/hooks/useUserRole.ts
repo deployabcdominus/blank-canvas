@@ -67,7 +67,7 @@ export function useUserRole(): UserRoleData {
         setRole(resolvedRole);
         setCompanyId(profileResult.data?.company_id || null);
       } catch (e) {
-        console.error('Error loading user role:', e);
+        // Silent error handling for roles
       } finally {
         setLoading(false);
       }
