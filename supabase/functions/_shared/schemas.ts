@@ -65,7 +65,5 @@ export const ApproveProposalSchema = z.object({
 });
 
 export const AcceptInvitationSchema = z.object({
-  invitationId: z.string().uuid("ID de invitación inválido"),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  fullName: SanitizedString.pipe(z.string().min(2, "Nombre demasiado corto")),
+  token: z.string().min(1, "Token es requerido"),
 });
