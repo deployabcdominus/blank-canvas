@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logAudit } from '@/lib/audit';
 import { resolveCompanyId } from '@/lib/resolve-company';
+import { ProposalsService } from '@/services/proposals.service';
 
 export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
 export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
@@ -100,22 +101,18 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
   const fetchProposals = async () => {
     if (!user) { setProposals([]); setLoading(false); return; }
     try {
-      // Fetch proposals and existing order links in parallel
-      const [proposalsRes, ordersRes] = await Promise.all([
-        supabase
-          .from('proposals')
-          .select('id, client, project, value, description, status, sent_date, sent_method, created_at, updated_at, lead_id, approved_total, approved_at, approval_token, mockup_url, leads!proposals_lead_id_fkey(name, company, logo_url, client_id, clients!leads_client_id_fkey(client_name, contact_name, primary_phone, primary_email, logo_url))')
-          .order('created_at', { ascending: false }) as any,
-        supabase
-          .from('production_orders')
-          .select('proposal_id')
-          .not('proposal_id', 'is', null),
-      ]);
-      if (proposalsRes.error) throw proposalsRes.error;
+      const companyId = await resolveCompanyId(user.id);
+      if (!companyId) return;
+
+      const { proposals: rawProposals, orders, error } = await ProposalsService.getAll(companyId);
+      
+      if (error) throw error;
+      
       const orderProposalIds = new Set<string>(
-        (ordersRes.data || []).map((o: any) => o.proposal_id)
+        (orders || []).map((o: any) => o.proposal_id)
       );
-      setProposals((proposalsRes.data || []).map((r: any) => mapRow(r, orderProposalIds)));
+      
+      setProposals((rawProposals || []).map((r: any) => mapRow(r, orderProposalIds)));
     } catch (e) {
       console.error('Error fetching proposals:', e);
     } finally {
@@ -135,7 +132,9 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
   const addProposal = async (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => {
     if (!user) return;
     const companyId = await getCompanyId();
-    const { error } = await supabase.from('proposals').insert({
+    if (!companyId) return;
+
+    const { error } = await ProposalsService.create({
       user_id: user.id,
       company_id: companyId,
       owner_user_id: user.id,
@@ -147,7 +146,8 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
       sent_date: proposal.sentDate,
       sent_method: proposal.sentMethod,
       lead_id: proposal.leadId || null,
-    } as any);
+    });
+
     if (error) throw error;
     await fetchProposals();
     logAudit({ action: 'creado', entityType: 'propuesta', entityLabel: proposal.client });
@@ -155,6 +155,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const updateProposal = async (id: string, updates: Partial<Proposal>) => {
     if (!user) return;
+    
     const dbUpdates: any = {};
     if (updates.client !== undefined) dbUpdates.client = updates.client;
     if (updates.project !== undefined) dbUpdates.project = updates.project;
@@ -164,8 +165,9 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (updates.sentDate !== undefined) dbUpdates.sent_date = updates.sentDate;
     if (updates.sentMethod !== undefined) dbUpdates.sent_method = updates.sentMethod;
 
-    const { error } = await supabase.from('proposals').update(dbUpdates).eq('id', id);
+    const { error } = await ProposalsService.update(id, dbUpdates);
     if (error) throw error;
+    
     const prop = proposals.find(p => p.id === id);
     const auditAction = updates.status === 'Aprobada' ? 'aprobado' as const : updates.status ? 'cambio_estado' as const : 'editado' as const;
     logAudit({ action: auditAction, entityType: 'propuesta', entityId: id, entityLabel: prop?.client, details: updates.status ? { before: prop?.status, after: updates.status } : dbUpdates });
@@ -175,7 +177,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
   const deleteProposal = async (id: string) => {
     if (!user) return;
     const prop = proposals.find(p => p.id === id);
-    const { error } = await supabase.from('proposals').delete().eq('id', id);
+    const { error } = await ProposalsService.delete(id);
     if (error) throw error;
     logAudit({ action: 'eliminado', entityType: 'propuesta', entityId: id, entityLabel: prop?.client });
     await fetchProposals();
