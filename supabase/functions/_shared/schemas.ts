@@ -59,6 +59,13 @@ export const AiBriefingSchema = z.object({
 });
 
 export const ApproveProposalSchema = z.object({
-  proposalId: z.string().uuid("ID de propuesta inválido"),
-  notes: SanitizedString.optional(),
+  approvalToken: z.string().min(1, "Token es requerido"),
+  signerName: SanitizedString.pipe(z.string().min(1, "Nombre del firmante es requerido")),
+  signatureData: z.string().optional().nullable(),
+});
+
+export const AcceptInvitationSchema = z.object({
+  invitationId: z.string().uuid("ID de invitación inválido"),
+  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+  fullName: SanitizedString.pipe(z.string().min(2, "Nombre demasiado corto")),
 });
