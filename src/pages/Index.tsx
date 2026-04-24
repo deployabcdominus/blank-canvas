@@ -93,8 +93,8 @@ const MacBookMockup = () => {
   const { t } = useLanguage();
   const m = t.landing.mockup;
   return (
-    <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "1600px" }}>
-      <div className="absolute -inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(124,58,237,0.12),transparent_60%)] pointer-events-none" />
+    <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "100rem" }}>
+      <div className="absolute -inset-[10vw] sm:-inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(124,58,237,0.12),transparent_60%)] pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 70, rotateX: 12 }}
         animate={{ opacity: 1, y: 0, rotateX: 4 }}
@@ -102,10 +102,10 @@ const MacBookMockup = () => {
         className="relative"
       >
         <div
-          className="relative rounded-t-[16px] border border-white/[0.08] bg-zinc-900/80 overflow-hidden"
+          className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] border border-white/[0.08] bg-zinc-900/80 overflow-hidden"
           style={{
             boxShadow:
-              "0 4px 8px rgba(0,0,0,0.4), 0 20px 50px rgba(0,0,0,0.6), 0 60px 140px -20px rgba(0,0,0,0.8), 0 0 100px -30px rgba(124,58,237,0.12), inset 0 1px 0 rgba(255,255,255,0.05)",
+              "0 0.25rem 0.5rem rgba(0,0,0,0.4), 0 1.25rem 3.125rem rgba(0,0,0,0.6), 0 3.75rem 8.75rem -1.25rem rgba(0,0,0,0.8), 0 0 6.25rem -1.875rem rgba(124,58,237,0.12), inset 0 0.0625rem 0 rgba(255,255,255,0.05)",
             aspectRatio: "16/9",
           }}
         >
