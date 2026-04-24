@@ -76,7 +76,7 @@ const WorkOrders = () => {
       .then(({ data }) => {
         if (data) {
           const map: Record<string, string> = {};
-          data.forEach((p: any) => { map[p.id] = p.full_name || "Unknown"; });
+          data.forEach((p) => { map[p.id] = p.full_name || "Unknown"; });
           setProfileMap(map);
         }
       });
@@ -96,7 +96,7 @@ const WorkOrders = () => {
         poi_token: token,
         poi_token_exp: exp.toISOString(),
         poi_token_used: false,
-      } as any)
+      })
       .eq("id", order.id);
     if (error) {
       toast.error("Failed to generate POI link");
