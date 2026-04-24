@@ -1,16 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EmailPayloadSchema } from "../_shared/schemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-interface EmailPayload {
-  type: "invitation" | "order_status" | "proposal_sent";
-  to: string;
-  data: Record<string, string>;
-}
 
 const TEMPLATES: Record<string, (data: Record<string, string>) => { subject: string; html: string }> = {
   invitation: (data) => ({
@@ -113,7 +108,20 @@ serve(async (req) => {
       });
     }
 
-    const { type, to, data }: EmailPayload = await req.json();
+    const body = await req.json();
+    const result = EmailPayloadSchema.safeParse(body);
+
+    if (!result.success) {
+      return new Response(JSON.stringify({ 
+        error: "Validación fallida", 
+        details: result.error.format() 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { type, to, data } = result.data;
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
 

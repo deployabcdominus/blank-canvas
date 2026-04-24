@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { ApproveProposalSchema } from "../_shared/schemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,13 +12,20 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { approvalToken, signerName, signatureData } = await req.json();
+    const body = await req.json();
+    const result = ApproveProposalSchema.safeParse(body);
 
-    if (!approvalToken || !signerName?.trim()) {
-      return new Response(JSON.stringify({ error: "Token y nombre del firmante son requeridos" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    if (!result.success) {
+      return new Response(JSON.stringify({ 
+        error: "Validación fallida", 
+        details: result.error.format() 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const { approvalToken, signerName, signatureData } = result.data;
 
     const signerIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
       || req.headers.get("cf-connecting-ip")

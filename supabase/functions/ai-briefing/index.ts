@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { AiBriefingSchema } from "../_shared/schemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,7 +38,20 @@ serve(async (req) => {
       }
     }
 
-    const { businessData } = await req.json();
+    const body = await req.json();
+    const result = AiBriefingSchema.safeParse(body);
+
+    if (!result.success) {
+      return new Response(JSON.stringify({ 
+        error: "Validación fallida", 
+        details: result.error.format() 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { businessData } = result.data;
 
     const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
     if (!ANTHROPIC_API_KEY) {

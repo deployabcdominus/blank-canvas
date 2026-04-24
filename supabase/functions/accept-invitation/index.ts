@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { AcceptInvitationSchema } from "../_shared/schemas.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,8 +14,20 @@ serve(async (req) => {
   }
 
   try {
-    const { token } = await req.json();
-    if (!token) throw new Error("Token requerido");
+    const body = await req.json();
+    const result = AcceptInvitationSchema.safeParse(body);
+
+    if (!result.success) {
+      return new Response(JSON.stringify({ 
+        error: "Validación fallida", 
+        details: result.error.format() 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { token } = result.data;
 
     // Extract user from Authorization header
     const authHeader = req.headers.get("Authorization");
