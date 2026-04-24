@@ -28,7 +28,7 @@ type FormData = {
 interface AddProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddProposal: (proposal: any) => Promise<void>;
+  onAddProposal: (proposal: Omit<Proposal, 'id' | 'createdAt' | 'approvalToken' | 'hasOrder'>) => Promise<void>;
   onCreateClient?: (name: string) => void;
 }
 
