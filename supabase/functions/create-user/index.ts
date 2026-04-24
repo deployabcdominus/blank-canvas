@@ -57,14 +57,19 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { email, password, fullName, companyId, role } = body;
+    const result = CreateUserSchema.safeParse(body);
 
-    if (!email || !password || !fullName || !companyId || !role) {
-      return new Response(JSON.stringify({ error: "Missing required fields: email, password, fullName, companyId, role" }), {
+    if (!result.success) {
+      return new Response(JSON.stringify({ 
+        error: "Validación fallida", 
+        details: result.error.format() 
+      }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const { email, password, fullName, companyId, role } = result.data;
 
     // Create the auth user
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
