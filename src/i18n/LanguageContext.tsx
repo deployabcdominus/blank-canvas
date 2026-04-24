@@ -34,8 +34,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
     const stored = localStorage.getItem("sf_lang") as Locale | null;
     if (stored === "en" || stored === "es") return stored;
-    const browserLang = navigator.language.slice(0, 2);
-    return browserLang === "es" ? "es" : "en";
+    return "es";
   });
 
   // Load preference from profile on login
