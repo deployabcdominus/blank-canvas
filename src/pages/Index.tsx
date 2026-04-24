@@ -372,10 +372,10 @@ const Index = () => {
 
         {/* ── Background layers ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-          <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "64px 64px" }} />
-          <div className="absolute -top-[25%] -left-[15%] w-[1000px] h-[1000px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)", filter: "blur(180px)" }} />
-          <div className="absolute -bottom-[25%] -right-[15%] w-[900px] h-[900px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)", filter: "blur(180px)" }} />
-          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] opacity-[0.06]" style={{ background: "radial-gradient(ellipse at center, #f97316, transparent 55%)", filter: "blur(180px)" }} />
+          <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "4rem 4rem" }} />
+          <div className="absolute -top-[25%] -left-[15%] w-[60vw] h-[60vw] max-w-[1000px] max-h-[1000px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)", filter: "blur(11.25rem)" }} />
+          <div className="absolute -bottom-[25%] -right-[15%] w-[55vw] h-[55vw] max-w-[900px] max-h-[900px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)", filter: "blur(11.25rem)" }} />
+          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[45vw] h-[30vw] max-w-[700px] max-h-[500px] opacity-[0.06]" style={{ background: "radial-gradient(ellipse at center, #f97316, transparent 55%)", filter: "blur(11.25rem)" }} />
         </div>
 
         {/* ═══════════ HEADER ═══════════ */}
