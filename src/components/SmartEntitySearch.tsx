@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useEntitySearchQuery, type EntityResult } from "@/hooks/queries/useEntitySearchQuery";
 
+export type { EntityResult };
+
 interface SmartEntitySearchProps {
   value: EntityResult | null;
   onSelect: (entity: EntityResult | null) => void;
