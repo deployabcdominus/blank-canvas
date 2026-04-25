@@ -43,8 +43,10 @@ const STATUS_OPTIONS = [
 const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders, updateOrder, deleteOrder, refreshOrders } = useWorkOrders();
-  const { canEdit, canDelete, isAdmin } = useUserRole();
+  const { companyId, canEdit, canDelete, isAdmin } = useUserRole();
+  const { orders, isLoading, updateWorkOrderMutation, deleteWorkOrderMutation, workOrdersQuery } = useWorkOrdersQuery(companyId);
+  const refreshOrders = () => workOrdersQuery.refetch();
+
   const limits = usePlanLimits();
   const { t } = useLanguage();
 
