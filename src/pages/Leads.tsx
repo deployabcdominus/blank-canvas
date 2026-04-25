@@ -62,16 +62,20 @@ const Leads = () => {
 
   const handleAddLead = async (leadData: any) => {
     try {
+      if (!companyId || !user) return;
       await createLeadMutation.mutateAsync({
+        company_id: companyId,
+        created_by_user_id: user.id,
         name: leadData.name,
         company: leadData.company,
         service: leadData.signType,
         status: "Nuevo",
-        contact: { phone: leadData.phone, email: leadData.email, location: leadData.address },
+        phone: leadData.phone,
+        email: leadData.email,
+        location: leadData.address,
         value: "Por definir",
-        daysAgo: 0,
         website: leadData.website,
-        logoUrl: leadData.logoUrl,
+        logo_url: leadData.logoUrl,
       });
     } catch {
       toast({ title: t.leads.toasts.saveError, description: t.leads.toasts.saveErrorDesc, variant: "destructive" });
