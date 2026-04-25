@@ -114,6 +114,16 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
         transition: "border-color 0.5s ease, box-shadow 1s ease, background 0.3s ease",
       }}
     >
+      {/* Ambient background blob */}
+      {(isActive || glowPulse) && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: [0.03, 0.08, 0.03], scale: [1, 1.2, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-primary blur-[40px] pointer-events-none"
+        />
+      )}
+
       {/* Top glow line — active filter or pulse */}
       {(isActive || glowPulse) && (
         <motion.div

@@ -127,6 +127,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: hsl(240 6% 6%);
+    cursor: default;
+  }
+
+  ::selection {
+    background: hsl(265 85% 60% / 0.25);
+    color: hsl(265 85% 95%);
   }
 
   /* Ambient violet / fuchsia blobs — always visible */
