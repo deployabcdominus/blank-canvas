@@ -59,7 +59,7 @@ const Proposals = () => {
   const handleEdit = async (data: any) => {
     const { id, ...rest } = data;
     const previousProposal = proposals.find(p => p.id === id);
-    await updateProposal(id, rest);
+    await updateProposalMutation.mutateAsync({ id, updates: rest });
 
     // Auto-create client + work order when manually approved
     if (rest.status === 'Aprobada' && previousProposal?.status !== 'Aprobada') {
