@@ -4,6 +4,7 @@ import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { PageTransition } from "@/components/PageTransition";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useCompany } from "@/hooks/useCompany";
 import { useTeamQuery, type CompanyUser, type Invitation } from "@/hooks/queries/useTeamQuery";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ const ROLE_LABELS: Record<string, string> = {
 export default function TenantTeamManagement() {
   const { user } = useAuth();
   const { isAdmin, companyId, loading: roleLoading } = useUserRole();
+  const { company } = useCompany();
   const { 
     users, 
     invitations, 
@@ -227,8 +229,8 @@ export default function TenantTeamManagement() {
                     ))}
                   </TableBody>
                 </Table>
-                {loadingUsers && <div className="p-4"><TableSkeleton cols={5} rows={4} /></div>}
-                {!loadingUsers && filteredUsers.length === 0 && (
+                {isLoadingUsers && <div className="p-4"><TableSkeleton cols={5} rows={4} /></div>}
+                {!isLoadingUsers && filteredUsers.length === 0 && (
                   <div className="p-8 text-center">
                     <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-lg font-medium mb-2">No hay miembros</h3>
@@ -361,8 +363,8 @@ export default function TenantTeamManagement() {
                     })}
                   </TableBody>
                 </Table>
-                {loadingInvitations && <div className="p-4"><TableSkeleton cols={4} rows={3} /></div>}
-                {!loadingInvitations && filteredInvitations.length === 0 && (
+                {isLoadingInvitations && <div className="p-4"><TableSkeleton cols={4} rows={3} /></div>}
+                {!isLoadingInvitations && filteredInvitations.length === 0 && (
                   <div className="p-8 text-center">
                     <Mail className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-lg font-medium mb-2">No hay invitaciones</h3>
@@ -378,7 +380,6 @@ export default function TenantTeamManagement() {
           isOpen={showInviteModal}
           onClose={() => {
             setShowInviteModal(false);
-            fetchInvitations();
           }}
         />
       </ResponsiveLayout>
