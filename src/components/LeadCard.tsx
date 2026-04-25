@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil, Eye, CheckCircle2, Trash2, MoreVertical } from "lucide-center";
+import { Phone, Mail, MapPin, ArrowRight, UserPlus, FolderKanban, Pencil, Eye, CheckCircle2, Trash2, MoreVertical } from "lucide-react";
 import { Lead } from "@/contexts/LeadsContext";
 import { Proposal } from "@/contexts/ProposalsContext";
 import { LeadPipelineStepper, getLeadPipelineStage } from "@/components/LeadPipelineStepper";
