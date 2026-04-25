@@ -139,7 +139,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.04 }}
                         onClick={() => navigate(card.navigateTo)}
-                        className="dash-card p-3 cursor-pointer card-interactive group"
+                        className="dash-card p-2 md:p-3 cursor-pointer card-interactive group"
                       >
                         <div className="flex items-start gap-2">
                           <div className="mt-1.5 flex-shrink-0">
