@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentsService, PaymentInsert, PaymentUpdate } from '@/services/payments.service';
 import { toast } from 'sonner';
+import { PaymentMethod, PaymentStatus } from '@/contexts/PaymentsContext';
 
 export const usePaymentsQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();
@@ -17,8 +18,8 @@ export const usePaymentsQuery = (companyId: string | null) => {
         proposalId: item.proposal_id,
         amount: Number(item.amount),
         currency: item.currency,
-        method: item.method,
-        status: item.status,
+        method: item.method as PaymentMethod,
+        status: item.status as PaymentStatus,
         paidAt: item.paid_at,
         note: item.note,
         createdAt: item.created_at,
