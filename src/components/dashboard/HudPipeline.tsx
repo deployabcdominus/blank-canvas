@@ -104,9 +104,9 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">{tc.title}</h2>
-        {activeFilter && <span className="text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-base md:text-lg font-bold text-foreground">{tc.title}</h2>
+        {activeFilter && <span className="text-[10px] md:text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
       </div>
 
       <div className="flex gap-3 overflow-x-auto pb-2">
