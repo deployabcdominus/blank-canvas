@@ -199,10 +199,10 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
   };
 
   const updateOrder = async (id: string, updates: Partial<WorkOrder>) => {
-    const dbUpdates: any = {};
+    const dbUpdates: WorkOrderUpdate = {};
     if (updates.status !== undefined) dbUpdates.status = STATUS_MAP_TO_DB[updates.status] || updates.status;
     if (updates.progress !== undefined) dbUpdates.progress = updates.progress;
-    if (updates.materials !== undefined) dbUpdates.materials = updates.materials;
+    if (updates.materials !== undefined) dbUpdates.materials = updates.materials as any;
     if (updates.client !== undefined) dbUpdates.client = updates.client;
     if (updates.project !== undefined) dbUpdates.project = updates.project;
     if (updates.startDate !== undefined) dbUpdates.start_date = updates.startDate;
@@ -213,10 +213,10 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.assignedToUserId !== undefined) dbUpdates.assigned_to_user_id = updates.assignedToUserId;
     if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
     if (updates.blueprintUrl !== undefined) dbUpdates.blueprint_url = updates.blueprintUrl;
-    if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations;
-    if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails;
+    if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations as any;
+    if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails as any;
     
-    const { error } = await WorkOrdersService.update(id, dbUpdates as any);
+    const { error } = await WorkOrdersService.update(id, dbUpdates);
     if (error) throw error;
     
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
