@@ -24,6 +24,7 @@ const Production = () => {
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { companyId, isAdmin, role } = useUserRole();
   const { orders, clearWorkOrdersMutation, updateWorkOrderMutation } = useWorkOrdersQuery(companyId);
+  const { toast } = useToast();
   
   const updateOrder = async (id: string, updates: any) => {
     await updateWorkOrderMutation.mutateAsync({ id, updates });
@@ -63,11 +64,6 @@ const Production = () => {
     setBuiltConfirmId(null);
   };
 
-  const handleClearOrders = () => {
-    clearOrders();
-    setIsClearDialogOpen(false);
-    toast({ title: "Órdenes eliminadas", description: "Todas las órdenes fueron eliminadas con éxito." });
-  };
 
   // Filter + sort
   const processed = useMemo(() => {
