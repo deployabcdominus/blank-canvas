@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
-import { useLeads, Lead } from "@/contexts/LeadsContext";
+import { Lead } from "@/contexts/LeadsContext";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
