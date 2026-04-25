@@ -1,46 +1,38 @@
 import { useLanguage, type Locale } from "@/i18n/LanguageContext";
+import { motion } from "framer-motion";
 
-const OPTIONS: { value: Locale; flag: string; label: string }[] = [
-  { value: "pt", flag: "🇧🇷", label: "Português" },
-  { value: "es", flag: "🇪🇸", label: "Español" },
-  { value: "en", flag: "🇺🇸", label: "English" },
+const OPTIONS: { value: Locale; label: string; short: string }[] = [
+  { value: "es", label: "Español", short: "ES" },
+  { value: "en", label: "English", short: "EN" },
 ];
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useLanguage();
 
   return (
-    <div className={`flex items-center gap-1.5 ${className}`}>
+    <div className={`relative flex items-center bg-white/5 border border-white/10 rounded-full p-1 ${className}`}>
+      {/* Active Indicator Background */}
+      <motion.div
+        className="absolute h-[calc(100%-8px)] rounded-full bg-primary/20 border border-primary/30"
+        initial={false}
+        animate={{
+          left: locale === "es" ? "4px" : "50%",
+          width: "calc(50% - 4px)",
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      />
+      
       {OPTIONS.map((opt) => {
         const isActive = locale === opt.value;
         return (
           <button
             key={opt.value}
             onClick={() => setLocale(opt.value)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "6px 12px",
-              borderRadius: "20px",
-              fontSize: "13px",
-              fontWeight: 500,
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              background: isActive ? "rgba(139,92,246,0.2)" : "transparent",
-              border: isActive ? "1px solid rgba(139,92,246,0.4)" : "1px solid rgba(255,255,255,0.1)",
-              color: isActive ? "rgb(196,181,253)" : "rgb(113,113,122)",
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = "rgb(212,212,216)";
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = "rgb(113,113,122)";
-            }}
+            className={`relative z-10 flex items-center justify-center gap-2 px-3 py-1.5 rounded-full transition-colors duration-200 min-w-[50px]
+              ${isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-white"}`}
             aria-label={`Switch to ${opt.label}`}
           >
-            <span>{opt.flag}</span>
-            <span>{opt.label}</span>
+            <span className="text-xs font-bold tracking-wider">{opt.short}</span>
           </button>
         );
       })}

@@ -193,7 +193,6 @@ export const en = {
     language: "Language",
     english: "English",
     spanish: "Español",
-    portuguese: "Portuguese",
     live: "Live",
     confirm: "Confirm",
     back: "Back",

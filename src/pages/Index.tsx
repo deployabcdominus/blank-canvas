@@ -540,12 +540,12 @@ const Index = () => {
                   >
                     <span className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60" />
-                      {locale === 'pt' ? 'Sem cartão de crédito' : locale === 'es' ? 'Sin tarjeta de crédito' : 'No credit card required'}
+                      {locale === 'es' ? 'Sin tarjeta de crédito' : 'No credit card required'}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-zinc-800" />
                     <span className="flex items-center gap-1.5">
                       <Zap className="w-3.5 h-3.5 text-amber-500/60" />
-                      {locale === 'pt' ? 'Configuração em 3 min' : locale === 'es' ? 'Configuración en 3 min' : '3-min setup'}
+                      {locale === 'es' ? 'Configuración en 3 min' : '3-min setup'}
                     </span>
                   </motion.div>
                 </div>
