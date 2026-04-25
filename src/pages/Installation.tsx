@@ -15,6 +15,7 @@ import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompany } from "@/hooks/useCompany";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +32,9 @@ const Installation = () => {
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
-  const { companyId } = useCompany();
+  const { user } = useAuth();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
   const { 
     installations, 
     createInstallationMutation, 
@@ -87,10 +90,11 @@ const Installation = () => {
   };
 
   const handleScheduleInstallation = async (data: any) => {
-    if (!companyId) return;
+    if (!companyId || !user) return;
 
     createInstallationMutation.mutate({
       company_id: companyId,
+      user_id: user.id,
       client: data.service.client,
       project: data.service.project,
       status: "Scheduled" as const,
