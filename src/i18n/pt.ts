@@ -1,4 +1,7 @@
-export const pt = {
+import { en } from "./en";
+
+export const pt: typeof en = {
+  ...en,
   /* ── Landing Page ── */
   landing: {
     nav: {
