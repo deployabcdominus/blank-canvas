@@ -100,11 +100,11 @@ const STATUS_MAP_TO_DB: Record<string, string> = {
 const mapRow = (row: WorkOrderRow): WorkOrder => ({
   id: row.id,
   client: row.client,
-  project: row.project,
+  project: row.project || '',
   serviceType: '',
-  status: STATUS_MAP_FROM_DB[row.status] || row.status || 'Pendiente',
+  status: row.status ? (STATUS_MAP_FROM_DB[row.status] || row.status) : 'Pendiente',
   progress: row.progress || 0,
-  materials: Array.isArray(row.materials) ? row.materials : [],
+  materials: Array.isArray(row.materials) ? (row.materials as any[]) : [],
   startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
   estimatedCompletion: row.end_date ? new Date(row.end_date).toISOString().split('T')[0] : '',
   companyId: row.company_id,
@@ -117,8 +117,8 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   assignedToUserId: row.assigned_to_user_id || null,
   installerCompanyId: row.installer_company_id || null,
   blueprintUrl: row.blueprint_url || null,
-  annotations: Array.isArray(row.annotations) ? row.annotations : [],
-  technicalDetails: row.technical_details || {},
+  annotations: Array.isArray(row.annotations) ? (row.annotations as any[]) : [],
+  technicalDetails: (row.technical_details as Record<string, any>) || {},
   // Production Sheet fields
   face_material_spec: row.face_material_spec || '',
   returns_material_spec: row.returns_material_spec || '',
@@ -140,7 +140,7 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   qc_signature_url: row.qc_signature_url || null,
   product_type: row.product_type || null,
   // Design workspace fields
-  mockup_urls: Array.isArray(row.mockup_urls) ? row.mockup_urls : [],
+  mockup_urls: Array.isArray(row.mockup_urls) ? (row.mockup_urls as string[]) : [],
   design_notes: row.design_notes || '',
 });
 
