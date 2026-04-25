@@ -177,12 +177,16 @@ export function WorkOrderCard({
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onOpen?.(order); }}>
               <Eye className="w-3.5 h-3.5 mr-2" /> View Details
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onGeneratePOI?.(order); }}>
-              <QrCode className="w-3.5 h-3.5 mr-2" /> Generate POI Link
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onPrintSheet?.(order); }}>
-              <Printer className="w-3.5 h-3.5 mr-2" /> Print Production Sheet
-            </DropdownMenuItem>
+            {canEdit && (
+              <>
+                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onGeneratePOI?.(order); }}>
+                  <QrCode className="w-3.5 h-3.5 mr-2" /> Generate POI Link
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onPrintSheet?.(order); }}>
+                  <Printer className="w-3.5 h-3.5 mr-2" /> Print Production Sheet
+                </DropdownMenuItem>
+              </>
+            )}
             {canDelete && onDelete && (
               <>
                 <DropdownMenuSeparator />
