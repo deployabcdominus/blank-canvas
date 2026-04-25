@@ -223,7 +223,8 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   const { t, locale } = useLanguage();
   const isEn = locale === "en";
   const { proposals } = useProposals();
-  const { companyId, user } = useUserRole();
+  const { user } = useAuth();
+  const { companyId } = useUserRole();
   const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();
