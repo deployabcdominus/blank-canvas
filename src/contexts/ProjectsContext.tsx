@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { ProjectsService } from '@/services/projects.service';
+import { ProjectsService, ProjectRow, ProjectUpdate } from '@/services/projects.service';
 
 export type ProjectStatus = 'Lead' | 'Proposal' | 'Production' | 'Installation' | 'Completed';
 
