@@ -113,7 +113,7 @@ const WorkOrders = () => {
   const confirmMarkCompleted = async () => {
     if (!completeConfirmId) return;
     try {
-      await updateOrder(completeConfirmId, { status: "Completada", progress: 100 });
+      await updateWorkOrderMutation.mutateAsync({ id: completeConfirmId, updates: { status: "Completada", progress: 100 } });
       toast.success("Order marked as completed");
     } catch {
       toast.error("Could not complete order");
