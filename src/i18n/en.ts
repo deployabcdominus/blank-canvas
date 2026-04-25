@@ -10,15 +10,15 @@ export const en = {
       goToDashboard: "Go to Dashboard",
     },
     hero: {
-      badge: "Multi-industry management",
-      titleLine1: "The platform for",
-      titleLine2: "industry leaders.",
+      badge: "The #1 Operations Hub for Service Businesses",
+      titleLine1: "Automate your operations.",
+      titleLine2: "Scale your results.",
       subtitle:
-        "Manage IT, HVAC & Signage operations in one intelligent interface. Total customization, absolute efficiency.",
-      ctaPrimary: "Activate Now",
-      ctaSecondary: "See how it works",
+        "The all-in-one platform to manage IT, HVAC, and Signage operations with absolute precision. Stop wasting time and start growing today.",
+      ctaPrimary: "Get Started Now",
+      ctaSecondary: "Watch Demo",
     },
-    trusted: "Companies that trust SignFlow",
+    trusted: "Join 500+ industry leaders worldwide",
     industries: {
       badge: "Industries",
       titleLine1: "Your industry, your language,",
