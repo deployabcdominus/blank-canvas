@@ -153,7 +153,7 @@ const Proposals = () => {
     }
   };
 
-  const handleDelete = async (id: string) => { await deleteProposal(id); toast.success(t.proposals.toasts.deleted); };
+  const handleDelete = async (id: string) => { await deleteProposalMutation.mutateAsync(id); toast.success(t.proposals.toasts.deleted); };
 
   const handleCreateOrder = async (proposal: Proposal) => {
     if (proposal.hasOrder) {
