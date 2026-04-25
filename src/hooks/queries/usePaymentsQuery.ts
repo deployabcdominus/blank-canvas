@@ -22,6 +22,8 @@ export const usePaymentsQuery = (companyId: string | null) => {
         paidAt: item.paid_at,
         note: item.note,
         createdAt: item.created_at,
+        companyId: item.company_id,
+        createdBy: item.created_by,
       }));
     },
     enabled: !!companyId,

@@ -21,7 +21,8 @@ const Payments = () => {
   const { company } = useCompany();
   const companyId = company?.id || null;
   const { payments, isLoading: loading, deletePaymentMutation } = usePaymentsQuery(companyId);
-  const { proposals } = useProposalsQuery(companyId);
+  const { proposalsData } = useProposalsQuery(companyId);
+  const proposals = proposalsData.proposals;
   const { canDelete } = useUserRole();
   const { toast } = useToast();
 
