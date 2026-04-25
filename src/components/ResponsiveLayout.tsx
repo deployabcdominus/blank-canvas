@@ -1,5 +1,4 @@
 import { useState, ReactNode } from "react";
-import { useBreakpoint } from "@/hooks/use-mobile";
 import { Sidebar } from "@/components/Sidebar";
 import { MobileMenu } from "@/components/MobileMenu";
 import { motion } from "framer-motion";
