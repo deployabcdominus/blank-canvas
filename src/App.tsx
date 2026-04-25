@@ -12,39 +12,49 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PublicRoute } from "@/components/PublicRoute";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
-import Index from "./pages/Index";
-import PostPaymentSetup from "./pages/PostPaymentSetup";
-import Checkout from "./pages/Checkout";
-import Success from "./pages/Success";
-import Access from "./pages/Access";
-import Invite from "./pages/Invite";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import SuperadminDashboard from "./pages/SuperadminDashboard";
-import TenantTeamManagement from "./pages/TenantTeamManagement";
-import Onboarding from "./pages/Onboarding";
-import Leads from "./pages/Leads";
-import Proposals from "./pages/Proposals";
-import WorkOrders from "./pages/WorkOrders";
-import WorkOrderDetail from "./pages/WorkOrderDetail";
-import Installation from "./pages/Installation";
-import InstallerCompanies from "./pages/InstallerCompanies";
-import Settings from "./pages/Settings";
-import Clients from "./pages/Clients";
-import ClientDetail from "./pages/ClientDetail";
-import Projects from "./pages/Projects";
-import NotFound from "./pages/NotFound";
-import MapHub from "./pages/MapHub";
-import Payments from "./pages/Payments";
-import Production from "./pages/Production";
-import OperatorStation from "./components/production/OperatorStation";
-import MobileTechnicianView from "./components/work-orders/MobileTechnicianView";
-import AuditLog from "./pages/AuditLog";
-import LeadsRecycleBin from "./pages/LeadsRecycleBin";
-import ProposalApproval from "./pages/ProposalApproval";
-import POIPage from "./pages/POIPage";
-import PrintPage from "./pages/PrintPage";
+import { lazy, Suspense } from "react";
+const Index = lazy(() => import("./pages/Index"));
+const PostPaymentSetup = lazy(() => import("./pages/PostPaymentSetup"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const Success = lazy(() => import("./pages/Success"));
+const Access = lazy(() => import("./pages/Access"));
+const Invite = lazy(() => import("./pages/Invite"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const SuperadminDashboard = lazy(() => import("./pages/SuperadminDashboard"));
+const TenantTeamManagement = lazy(() => import("./pages/TenantTeamManagement"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const Leads = lazy(() => import("./pages/Leads"));
+const Proposals = lazy(() => import("./pages/Proposals"));
+const WorkOrders = lazy(() => import("./pages/WorkOrders"));
+const WorkOrderDetail = lazy(() => import("./pages/WorkOrderDetail"));
+const Installation = lazy(() => import("./pages/Installation"));
+const InstallerCompanies = lazy(() => import("./pages/InstallerCompanies"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Clients = lazy(() => import("./pages/Clients"));
+const ClientDetail = lazy(() => import("./pages/ClientDetail"));
+const Projects = lazy(() => import("./pages/Projects"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const MapHub = lazy(() => import("./pages/MapHub"));
+const Payments = lazy(() => import("./pages/Payments"));
+const Production = lazy(() => import("./pages/Production"));
+const OperatorStation = lazy(() => import("./components/production/OperatorStation"));
+const MobileTechnicianView = lazy(() => import("./components/work-orders/MobileTechnicianView"));
+const AuditLog = lazy(() => import("./pages/AuditLog"));
+const LeadsRecycleBin = lazy(() => import("./pages/LeadsRecycleBin"));
+const ProposalApproval = lazy(() => import("./pages/ProposalApproval"));
+const POIPage = lazy(() => import("./pages/POIPage"));
+const PrintPage = lazy(() => import("./pages/PrintPage"));
+
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="relative w-12 h-12">
+      <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
+      <div className="absolute inset-0 rounded-full border-t-2 border-primary animate-spin" />
+    </div>
+  </div>
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
