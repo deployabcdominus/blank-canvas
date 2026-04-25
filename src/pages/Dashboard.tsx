@@ -80,10 +80,10 @@ const Dashboard = () => {
           </div>
         )}
         <GracePeriodBanner />
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6 flex items-end justify-between">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-4 md:mb-6 flex items-end justify-between">
           <div>
-            <h1 className="font-bold text-2xl text-foreground">{t.dashboard.controlCenter}</h1>
-            <p className="text-muted-foreground text-sm">
+            <h1 className="font-bold text-xl md:text-2xl text-foreground">{t.dashboard.controlCenter}</h1>
+            <p className="text-muted-foreground text-[10px] md:text-sm">
               {showFinancials ? t.dashboard.executiveView : t.dashboard.operativeView}
             </p>
           </div>
@@ -92,19 +92,19 @@ const Dashboard = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            <span className="text-xs text-muted-foreground">{t.common.live}</span>
+            <span className="text-[10px] md:text-xs text-muted-foreground">{t.common.live}</span>
           </div>
         </motion.div>
 
         {isAdmin && <AiBriefing />}
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
           {stats.map((stat, index) => (
             <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} delta={stat.delta} sparkline={stat.sparkline} />
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 mb-6 md:mb-10">
           {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
           {canViewOperations && <WorkOrdersRadial orders={orders} />}
           <GeoHeatmap installations={installations} />
