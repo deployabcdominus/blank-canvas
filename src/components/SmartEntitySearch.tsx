@@ -51,7 +51,6 @@ export const SmartEntitySearch: React.FC<SmartEntitySearchProps> = ({
   const handleClear = () => {
     onSelect(null);
     setQuery("");
-    setResults([]);
   };
 
   return (
