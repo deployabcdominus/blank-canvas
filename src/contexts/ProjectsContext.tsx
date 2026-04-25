@@ -40,7 +40,12 @@ export const useProjects = () => {
   return ctx;
 };
 
-const mapRow = (row: any): Project => {
+type ProjectWithRelations = ProjectRow & {
+  clients?: { client_name: string } | null;
+  leads?: { name: string; company: string | null }[] | null;
+};
+
+const mapRow = (row: ProjectWithRelations): Project => {
   // Source of truth: client name from joined clients table
   // Fallback: lead company name via leads join
   const clientName = row.clients?.client_name
@@ -54,7 +59,7 @@ const mapRow = (row: any): Project => {
     clientId: row.client_id,
     projectName: row.project_name,
     installAddress: row.install_address || '',
-    status: row.status || 'Lead',
+    status: (row.status as ProjectStatus) || 'Lead',
     ownerUserId: row.owner_user_id,
     assignedToUserId: row.assigned_to_user_id,
     folderRelativePath: row.folder_relative_path,
