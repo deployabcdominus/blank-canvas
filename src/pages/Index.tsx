@@ -452,15 +452,7 @@ const Index = () => {
           <div className="relative max-w-7xl mx-auto">
             <div className="text-center max-w-4xl mx-auto mb-20 lg:mb-24">
               <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-                <motion.span
-                  className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-purple-400/70 mb-8 px-4 py-2 rounded-full border border-purple-500/15 bg-purple-500/[0.06]"
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {L.hero.badge}
-                </motion.span>
+                <TrustStars />
 
                 <TrustStars />
 
