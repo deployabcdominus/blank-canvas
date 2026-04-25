@@ -263,20 +263,47 @@ const trustedLogos = [
   { name: "MaintainX", icon: Wrench },
 ];
 
+/* ─── Floating Mobile CTA ─── */
+const FloatingCTA = ({ onClick, show, label }: { onClick: () => void; show: boolean; label: string }) => (
+  <AnimatePresence>
+    {show && (
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 100, opacity: 0 }}
+        className="fixed bottom-6 left-6 right-6 z-[60] md:hidden"
+      >
+        <Button
+          onClick={onClick}
+          className="w-full h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold shadow-[0_8px_30px_rgba(139,92,246,0.4)] border border-white/10"
+        >
+          {label}
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 /* ═══════════════════════════════════════════════════════ */
 /*                       MAIN PAGE                        */
 /* ═══════════════════════════════════════════════════════ */
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const L = t.landing;
   const [scrolled, setScrolled] = useState(false);
   const [isAnnual, setIsAnnual] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setShowFloatingCTA(window.scrollY > 600); // Show after hero
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -470,36 +497,56 @@ const Index = () => {
                   {L.hero.subtitle}
                 </p>
 
-                <div className="flex flex-wrap items-center justify-center gap-4">
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                    <Button
-                      size="lg"
-                      onClick={() => scrollTo("pricing")}
-                      className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
-                    >
-                      <span className="relative z-10 flex items-center">
-                        {L.hero.ctaPrimary}
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </span>
-                      <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                        style={{
-                          background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
-                          backgroundSize: "200% 100%",
-                          animation: "shimmer-sweep 1.8s ease-in-out infinite",
-                        }}
-                      />
-                    </Button>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      onClick={() => scrollTo("industries")}
-                      className="rounded-full px-10 h-14 text-base font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
-                    >
-                      {L.hero.ctaSecondary}
-                    </Button>
+                <div className="flex flex-col items-center gap-6">
+                  <div className="flex flex-wrap items-center justify-center gap-4">
+                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                      <Button
+                        size="lg"
+                        onClick={() => scrollTo("pricing")}
+                        className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
+                      >
+                        <span className="relative z-10 flex items-center">
+                          {L.hero.ctaPrimary}
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                        <div
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                          style={{
+                            background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
+                            backgroundSize: "200% 100%",
+                            animation: "shimmer-sweep 1.8s ease-in-out infinite",
+                          }}
+                        />
+                      </Button>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={() => scrollTo("industries")}
+                        className="rounded-full px-10 h-14 text-base font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
+                      >
+                        {L.hero.ctaSecondary}
+                      </Button>
+                    </motion.div>
+                  </div>
+                  
+                  {/* CRO: Reduced Risk & Microcopy */}
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2 }}
+                    className="flex items-center gap-4 text-[11px] font-medium text-zinc-500 uppercase tracking-wider"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60" />
+                      {locale === 'pt' ? 'Sem cartão de crédito' : locale === 'es' ? 'Sin tarjeta de crédito' : 'No credit card required'}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                    <span className="flex items-center gap-1.5">
+                      <Zap className="w-3.5 h-3.5 text-amber-500/60" />
+                      {locale === 'pt' ? 'Configuração em 3 min' : locale === 'es' ? 'Configuración en 3 min' : '3-min setup'}
+                    </span>
                   </motion.div>
                 </div>
               </motion.div>
@@ -901,6 +948,12 @@ const Index = () => {
             </div>
           </div>
         </footer>
+
+        <FloatingCTA 
+          show={showFloatingCTA} 
+          onClick={() => scrollTo("pricing")} 
+          label={L.hero.ctaPrimary} 
+        />
       </div>
     </PageTransition>
   );

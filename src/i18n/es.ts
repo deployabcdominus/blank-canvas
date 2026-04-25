@@ -175,6 +175,10 @@ export const es: TranslationKeys = {
       onSite: "En sitio",
       available: "Libre",
     },
+    seo: {
+      title: "SignFlow | Gestión de Operaciones de Alto Rendimiento",
+      description: "La plataforma #1 para automatizar servicios, IT y mantenimiento. Escala tu negocio con precisión absoluta.",
+    }
   },
 
   /* ── Common / Shared ── */
@@ -191,6 +195,7 @@ export const es: TranslationKeys = {
     language: "Idioma",
     english: "English",
     spanish: "Español",
+    portuguese: "Português",
     live: "En vivo",
     confirm: "Confirmar",
     back: "Atrás",

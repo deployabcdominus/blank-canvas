@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import { en, type TranslationKeys } from "./en";
 import { es } from "./es";
+import { pt } from "./pt";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-export type Locale = "en" | "es";
+export type Locale = "en" | "es" | "pt";
 
 interface LanguageContextType {
   locale: Locale;
@@ -12,7 +13,7 @@ interface LanguageContextType {
   setLocale: (locale: Locale) => void;
 }
 
-const dictionaries: Record<Locale, TranslationKeys> = { en, es };
+const dictionaries: Record<Locale, TranslationKeys> = { en, es, pt };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
