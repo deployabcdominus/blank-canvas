@@ -35,10 +35,11 @@ const Leads = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const breakpoint = useBreakpoint();
-  const { leads, addLead, clearLeads, deleteLead, deleteLeads } = useLeads();
+  const { companyId, isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
+  const { leads, isLoading, createLeadMutation, deleteLeadMutation, deleteLeadsMutation, clearLeadsMutation } = useLeadsQuery(companyId);
   const { proposals, addProposal } = useProposals();
-  const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const limits = usePlanLimits();
+
   const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
