@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { resolveCompanyId } from "@/lib/resolve-company";
+import { InstallationsService, InstallationRow, InstallationUpdate } from "@/services/installations.service";
 
 export interface Installation {
   id: string;
