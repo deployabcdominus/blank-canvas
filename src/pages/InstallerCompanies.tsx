@@ -10,8 +10,9 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
+import { useInstallerCompaniesQuery } from "@/hooks/queries/useInstallerCompaniesQuery";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useCompany } from "@/hooks/useCompany";
 import { InstallerCompanyModal } from "@/components/InstallerCompanyModal";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -19,7 +20,9 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const InstallerCompanies = () => {
-  const { companies, deleteCompany } = useInstallerCompanies();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
+  const { installerCompanies: companies, deleteInstallerCompanyMutation } = useInstallerCompaniesQuery(companyId);
   const { canEdit, canDelete } = useUserRole();
   const { locale } = useLanguage();
   const isEn = locale === "en";
@@ -41,7 +44,7 @@ const InstallerCompanies = () => {
 
   const handleDelete = (id: string) => {
     try {
-      deleteCompany(id);
+      deleteInstallerCompanyMutation.mutate(id);
       setCompanyToDelete(null);
       toast({
         title: isEn ? "Company deleted" : "Empresa eliminada",
