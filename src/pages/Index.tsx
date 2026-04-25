@@ -948,6 +948,12 @@ const Index = () => {
             </div>
           </div>
         </footer>
+
+        <FloatingCTA 
+          show={showFloatingCTA} 
+          onClick={() => scrollTo("pricing")} 
+          label={L.hero.ctaPrimary} 
+        />
       </div>
     </PageTransition>
   );
