@@ -30,7 +30,6 @@ import {
 export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const breakpoint = useBreakpoint();
   const { signOut } = useAuth();
   const { role, isSuperadmin, isAdmin, loading: roleLoading } = useUserRole();
   const { avatarUrl } = useAvatarUrl();
@@ -38,36 +37,31 @@ export const Sidebar = () => {
   const industryLabels = useIndustryLabels();
   const { t } = useLanguage();
 
-  if (breakpoint === "mobile") return null;
   if (roleLoading) return null;
-
-  const isTablet = breakpoint === "tablet";
 
   return (
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed left-0 top-0 h-screen z-10 flex flex-col border-r border-white/[0.04] bg-zinc-950/40 backdrop-blur-xl ${
-        isTablet ? "w-[72px] px-2 py-4" : "w-[260px] px-4 py-5"
-      }`}
+      className="fixed left-0 top-0 h-screen z-40 hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/40 backdrop-blur-xl w-[72px] lg:w-[260px] px-2 lg:px-4 py-4 lg:py-5"
       style={{ letterSpacing: "-0.01em" }}
       role="navigation"
       aria-label="Menu lateral principal"
     >
       {/* Logo */}
-      {!isTablet ? (
-        <div className="mb-7 flex-shrink-0 px-1">
+      <div className="mb-5 lg:mb-7 flex-shrink-0 flex justify-center lg:justify-start lg:px-1">
+        <div className="hidden lg:block">
           <BrandLogo size={38} showText variant="iconWithText" textClassName="text-lg font-semibold tracking-tight" />
           <p className="text-[10px] text-zinc-500 mt-1.5 uppercase tracking-[0.08em] font-medium">
             {isSuperadmin ? "Platform Admin" : FIXED_BRANDING.appTagline}
           </p>
         </div>
-      ) : (
-        <div className="mb-5 flex-shrink-0 flex justify-center">
+        <div className="lg:hidden">
           <BrandLogo size={32} />
         </div>
-      )}
+      </div>
+
 
       {/* Build i18n-aware groups */}
       {(() => {
