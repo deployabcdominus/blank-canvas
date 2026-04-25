@@ -8,6 +8,7 @@ import {
   Clock, CheckCircle, XCircle, Send, Edit2, Trash2, Factory,
   Calendar, DollarSign, FileText,
 } from "lucide-react";
+import { ImageWithFallback } from "./ImageWithFallback";
 
 const STATUS_COLORS: Record<ProposalStatus, string> = {
   'Borrador': 'bg-muted/30 text-muted-foreground border-border/30',
