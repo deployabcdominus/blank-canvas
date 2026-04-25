@@ -170,7 +170,7 @@ export default function Clients() {
           notes: form.notes.trim() || null,
         };
         if (logoUrl !== undefined) updates.logoUrl = logoUrl;
-        await updateClient(editingClient.id, updates);
+        await updateClientMutation.mutateAsync({ id: editingClient.id, updates });
         toast({ title: t.clients.toasts.updated });
       } else {
         await addClient({
