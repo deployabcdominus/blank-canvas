@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useSettings } from "@/contexts/SettingsContext";
+import { useUserSettingsQuery } from "@/hooks/queries/useUserSettingsQuery";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
@@ -31,7 +31,9 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export default function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { settings, updateSettings, resetToDefaults } = useSettings();
+  const { user } = useAuth();
+  const { settings, updateSettingsMutation } = useUserSettingsQuery(user?.id);
+  const updateSettings = (updates: any) => updateSettingsMutation.mutate(updates);
   const { user } = useAuth();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
