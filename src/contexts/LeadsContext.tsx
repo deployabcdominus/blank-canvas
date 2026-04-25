@@ -62,13 +62,13 @@ export const useLeads = () => {
 const PAGE_SIZE = 500;
 
 const mapRow = (item: any): Lead => {
-  // When a lead is linked to a client, client data is the source of truth
-  const client = item.clients;
+  // item can be LeadRow with joined clients
+  const client = (item as any).clients;
   const hasClient = !!client && !!item.client_id;
 
   return {
     id: item.id,
-    name: hasClient ? (client.contact_name || client.client_name || item.name) : item.name,
+    name: hasClient ? (client.contact_name || client.client_name || item.name) : (item.name || ''),
     company: hasClient ? (client.client_name || item.company || '') : (item.company || ''),
     service: item.service || '',
     status: item.status || 'Nuevo',
