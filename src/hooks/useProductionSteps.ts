@@ -2,35 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/contexts/AuthContext";
+import { Database } from "@/integrations/supabase/types";
 
-export interface ProductionStep {
-  id: string;
-  production_order_id: string;
-  company_id: string;
-  name: string;
-  description?: string;
-  tip?: string;
-  assigned_to?: string;
-  assigned_name?: string;
-  status: "pending" | "in_progress" | "completed";
-  sort_order: number;
-  started_at?: string;
-  completed_at?: string;
-  duration_minutes?: number;
-  created_at?: string;
-}
-
-export interface WorkerStats {
-  xp_today: number;
-  xp_total: number;
-  tasks_today: number;
-  tasks_week: number;
-  tasks_total: number;
-  streak_days: number;
-  level: number;
-  level_title: string;
-  last_activity_date?: string;
-}
+export type ProductionStep = Database['public']['Tables']['production_steps']['Row'];
+export type WorkerStats = Database['public']['Tables']['worker_stats']['Row'];
 
 const LEVEL_TITLES = [
   "Aprendiz", "Operario", "Técnico", "Especialista",
@@ -49,12 +24,12 @@ export function useProductionSteps(orderId?: string) {
   const fetchSteps = useCallback(async () => {
     if (!orderId || !companyId) return;
     const { data } = await supabase
-      .from("production_steps" as any)
+      .from("production_steps")
       .select("*")
       .eq("production_order_id", orderId)
       .eq("company_id", companyId)
       .order("sort_order");
-    if (data) setSteps(data as unknown as ProductionStep[]);
+    if (data) setSteps(data);
     setLoading(false);
   }, [orderId, companyId]);
 
@@ -72,7 +47,7 @@ export function useProductionSteps(orderId?: string) {
   }, [orderId, fetchSteps]);
 
   const startStep = async (stepId: string) => {
-    await supabase.from("production_steps" as any).update({
+    await supabase.from("production_steps").update({
       status: "in_progress",
       started_at: new Date().toISOString(),
     }).eq("id", stepId);
@@ -90,7 +65,7 @@ export function useProductionSteps(orderId?: string) {
       ? Math.round((Date.now() - new Date(step.started_at).getTime()) / 60000)
       : 0;
 
-    await supabase.from("production_steps" as any).update({
+    await supabase.from("production_steps").update({
       status: "completed",
       completed_at: now,
       duration_minutes: minutes,
@@ -103,14 +78,14 @@ export function useProductionSteps(orderId?: string) {
     if (!user || !companyId) return;
 
     const { data: existing } = await supabase
-      .from("worker_stats" as any)
+      .from("worker_stats")
       .select("*")
       .eq("user_id", user.id)
       .eq("company_id", companyId)
       .maybeSingle();
 
     const today = new Date().toISOString().split("T")[0];
-    const ex = existing as unknown as WorkerStats & { last_activity_date?: string } | null;
+    const ex = existing;
     const isNewDay = ex?.last_activity_date !== today;
     const newTasksToday = isNewDay ? 1 : (ex?.tasks_today || 0) + 1;
     const newXpToday = isNewDay ? XP_PER_TASK : (ex?.xp_today || 0) + XP_PER_TASK;
@@ -120,7 +95,7 @@ export function useProductionSteps(orderId?: string) {
     const newStreak = isNewDay ? (ex?.streak_days || 0) + 1 : (ex?.streak_days || 0);
     const newLevel = Math.min(6, Math.floor(newXpTotal / XP_TO_NEXT_LEVEL));
 
-    await supabase.from("worker_stats" as any).upsert({
+    await supabase.from("worker_stats").upsert({
       user_id: user.id,
       company_id: companyId,
       xp_today: newXpToday,
@@ -133,16 +108,16 @@ export function useProductionSteps(orderId?: string) {
       level: newLevel,
       level_title: LEVEL_TITLES[newLevel],
       updated_at: now,
-    } as any);
+    });
   };
 
   const addStep = async (step: { name: string; description?: string; tip?: string; assigned_to?: string; assigned_name?: string; sort_order: number }) => {
     if (!orderId || !companyId) return;
-    await supabase.from("production_steps" as any).insert({
+    await supabase.from("production_steps").insert({
       production_order_id: orderId,
       company_id: companyId,
       ...step,
-    } as any);
+    });
   };
 
   const progress = steps.length > 0
@@ -160,12 +135,12 @@ export function useWorkerStats() {
   const fetchStats = useCallback(async () => {
     if (!user || !companyId) return;
     const { data } = await supabase
-      .from("worker_stats" as any)
+      .from("worker_stats")
       .select("*")
       .eq("user_id", user.id)
       .eq("company_id", companyId)
       .maybeSingle();
-    if (data) setStats(data as unknown as WorkerStats);
+    if (data) setStats(data);
   }, [user, companyId]);
 
   useEffect(() => {
@@ -183,12 +158,12 @@ export function useWorkerStats() {
 
 export function useLeaderboard() {
   const { companyId } = useUserRole();
-  const [board, setBoard] = useState<any[]>([]);
+  const [board, setBoard] = useState<(WorkerStats & { full_name: string })[]>([]);
 
   const fetchBoard = useCallback(async () => {
     if (!companyId) return;
     const { data } = await supabase
-      .from("worker_stats" as any)
+      .from("worker_stats")
       .select("*")
       .eq("company_id", companyId)
       .order("tasks_week", { ascending: false })
@@ -197,14 +172,14 @@ export function useLeaderboard() {
     if (!data) return;
 
     // Fetch profile names separately
-    const userIds = (data as any[]).map((d: any) => d.user_id);
+    const userIds = data.map(d => d.user_id);
     const { data: profiles } = await supabase
       .from("profiles")
       .select("id, full_name")
       .in("id", userIds);
 
     const profileMap = new Map((profiles || []).map(p => [p.id, p.full_name]));
-    setBoard((data as any[]).map((d: any) => ({
+    setBoard(data.map(d => ({
       ...d,
       full_name: profileMap.get(d.user_id) || "Operario",
     })));
