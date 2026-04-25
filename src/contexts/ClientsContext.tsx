@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { ClientsService, ClientRow } from '@/services/clients.service';
+import { ClientsService, ClientRow, ClientUpdate } from '@/services/clients.service';
 
 export interface Client {
   id: string;
