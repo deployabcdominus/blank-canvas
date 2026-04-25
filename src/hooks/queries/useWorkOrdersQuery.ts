@@ -119,7 +119,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Orden de trabajo creada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al crear la orden: ' + error.message);
     },
   });
@@ -131,7 +131,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Orden de trabajo actualizada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al actualizar la orden: ' + error.message);
     },
   });
@@ -142,7 +142,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Orden de trabajo eliminada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al eliminar la orden: ' + error.message);
     },
   });
@@ -153,7 +153,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Todas las órdenes de trabajo han sido eliminadas');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al limpiar órdenes: ' + error.message);
     },
   });
