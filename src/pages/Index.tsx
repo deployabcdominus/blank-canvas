@@ -86,6 +86,20 @@ const SectionBadge = ({ icon: Icon, label }: { icon: any; label: string }) => (
   </span>
 );
 
+/* ─── Trust Stars ─── */
+const TrustStars = () => (
+  <div className="flex flex-col items-center gap-3 mb-10">
+    <div className="flex items-center gap-1">
+      {[...Array(5)].map((_, i) => (
+        <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+      ))}
+    </div>
+    <p className="text-[12px] font-medium text-zinc-500 tracking-wide uppercase">
+      Rated 4.9/5 by 500+ Businesses
+    </p>
+  </div>
+);
+
 /* ═══════════════════════════════════════════════════════ */
 /*     MACBOOK PRO MOCKUP (HERO)                           */
 /* ═══════════════════════════════════════════════════════ */
@@ -438,22 +452,16 @@ const Index = () => {
           <div className="relative max-w-7xl mx-auto">
             <div className="text-center max-w-4xl mx-auto mb-20 lg:mb-24">
               <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-                <motion.span
-                  className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-purple-400/70 mb-8 px-4 py-2 rounded-full border border-purple-500/15 bg-purple-500/[0.06]"
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {L.hero.badge}
-                </motion.span>
+                <TrustStars />
 
-                <h1 className="text-[2rem] sm:text-[2.6rem] md:text-[3.4rem] lg:text-[4rem] xl:text-6xl font-black leading-[1.02] tracking-tighter mb-8">
+                <TrustStars />
+
+                <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-7xl font-black leading-[0.95] tracking-tighter mb-10">
                   <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
                     {L.hero.titleLine1}
                   </span>
                   <br />
-                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
                     {L.hero.titleLine2}
                   </span>
                 </h1>
@@ -750,6 +758,12 @@ const Index = () => {
                   </Reveal>
                 );
               })}
+            </div>
+            <div className="mt-14 text-center">
+              <p className="text-[12px] text-zinc-600 font-medium tracking-wide uppercase flex items-center justify-center gap-2">
+                <Shield className="w-3.5 h-3.5" />
+                Cancel anytime • 14-day money-back guarantee • Secure checkout
+              </p>
             </div>
           </div>
         </section>
