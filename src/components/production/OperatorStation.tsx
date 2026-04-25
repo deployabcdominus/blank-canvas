@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/contexts/AuthContext";
-import { useWorkerStats } from "@/hooks/useProductionSteps";
+import { useWorkerStatsQuery } from "@/hooks/queries/useWorkerStatsQuery";
+import { useProductionStepsQuery } from "@/hooks/queries/useProductionStepsQuery";
 import { Check, Flame, Zap, Filter, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -66,103 +67,28 @@ export default function OperatorStation() {
   const isEn = locale === "en";
   const DEPARTMENTS = getDepartments(isEn);
   const TOASTS = getToasts(isEn);
-  const stats = useWorkerStats();
-  const [tasks, setTasks] = useState<any[]>([]);
+  const { data: stats } = useWorkerStatsQuery(user?.id, companyId);
+  const { steps: tasks, startTaskMutation, completeTaskMutation } = useProductionStepsQuery(companyId, user?.id);
   const [department, setDepartment] = useState("all");
   const [userName, setUserName] = useState("");
   const [showConfetti, setShowConfetti] = useState(false);
   const [completedCount, setCompletedCount] = useState(0);
 
-  const loadTasks = useCallback(async () => {
-    if (!companyId) return;
-
-    if (user) {
-      const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
-      setUserName(profile?.full_name?.split(" ")[0] ?? "Operario");
-    }
-
-    // Fetch all pending/in_progress tasks for the company (or just assigned to user)
-    let query = supabase
-      .from("production_steps" as any)
-      .select("*")
-      .eq("company_id", companyId)
-      .in("status", ["pending", "in_progress"])
-      .order("sort_order");
-
-    // If not admin, only show assigned tasks
-    if (user) {
-      query = query.eq("assigned_to", user.id);
-    }
-
-    const { data: stepsData } = await query;
-    if (!stepsData || (stepsData as any[]).length === 0) { setTasks([]); return; }
-
-    const orderIds = [...new Set((stepsData as any[]).map((t: any) => t.production_order_id))];
-    const { data: orders } = await supabase
-      .from("production_orders")
-      .select("id, client, project, priority")
-      .in("id", orderIds);
-    const orderMap = new Map((orders || []).map(o => [o.id, o]));
-
-    setTasks((stepsData as any[]).map((t: any) => ({
-      ...t,
-      order_client: orderMap.get(t.production_order_id)?.client ?? "",
-      order_project: orderMap.get(t.production_order_id)?.project ?? "",
-      order_priority: orderMap.get(t.production_order_id)?.priority ?? "media",
-    })));
-  }, [companyId, user]);
-
   useEffect(() => {
-    loadTasks();
-    if (!companyId) return;
-    const channel = supabase.channel("operator-station")
-      .on("postgres_changes", { event: "*", schema: "public", table: "production_steps" }, loadTasks)
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [loadTasks, companyId]);
+    if (user) {
+      supabase.from("profiles").select("full_name").eq("id", user.id).single().then(({ data }) => {
+        setUserName(data?.full_name?.split(" ")[0] ?? "Operario");
+      });
+    }
+  }, [user]);
 
   const startTask = async (taskId: string) => {
-    await supabase.from("production_steps" as any).update({
-      status: "in_progress",
-      started_at: new Date().toISOString(),
-    } as any).eq("id", taskId);
+    startTaskMutation.mutate(taskId);
   };
 
   const completeTask = async (taskId: string) => {
-    const now = new Date().toISOString();
     const task = tasks.find(t => t.id === taskId);
-    const minutes = task?.started_at
-      ? Math.round((Date.now() - new Date(task.started_at).getTime()) / 60000) : 0;
-
-    await supabase.from("production_steps" as any).update({
-      status: "completed", completed_at: now, duration_minutes: minutes,
-    } as any).eq("id", taskId);
-
-    // Update worker stats
-    if (user && companyId) {
-      const { data: existing } = await supabase
-        .from("worker_stats" as any).select("*")
-        .eq("user_id", user.id).eq("company_id", companyId).maybeSingle();
-      const today = now.split("T")[0];
-      const ex = existing as any;
-      const isNewDay = ex?.last_activity_date !== today;
-      const LEVEL_TITLES = isEn
-        ? ["Apprentice", "Operator", "Technician", "Specialist", "Expert", "Master", "Legend"]
-        : ["Aprendiz", "Operario", "Técnico", "Especialista", "Experto", "Maestro", "Leyenda"];
-      const newXpTotal = (ex?.xp_total || 0) + 90;
-      const newLevel = Math.min(6, Math.floor(newXpTotal / 500));
-      await supabase.from("worker_stats" as any).upsert({
-        user_id: user.id, company_id: companyId,
-        xp_today: isNewDay ? 90 : (ex?.xp_today || 0) + 90,
-        xp_total: newXpTotal,
-        tasks_today: isNewDay ? 1 : (ex?.tasks_today || 0) + 1,
-        tasks_week: (ex?.tasks_week || 0) + 1,
-        tasks_total: (ex?.tasks_total || 0) + 1,
-        streak_days: isNewDay ? (ex?.streak_days || 0) + 1 : (ex?.streak_days || 0),
-        last_activity_date: today, level: newLevel,
-        level_title: LEVEL_TITLES[newLevel], updated_at: now,
-      } as any);
-    }
+    await completeTaskMutation.mutateAsync({ taskId, startedAt: task?.started_at });
 
     setCompletedCount(c => c + 1);
     setShowConfetti(true);
