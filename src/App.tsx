@@ -74,9 +74,11 @@ const App = () => {
     return (
       <GlobalErrorBoundary>
         <BrowserRouter>
-          <Routes>
-            <Route path="/poi/:orderId" element={<POIPage />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/poi/:orderId" element={<POIPage />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </GlobalErrorBoundary>
     );
@@ -86,9 +88,11 @@ const App = () => {
     return (
       <GlobalErrorBoundary>
         <BrowserRouter>
-          <Routes>
-            <Route path="/p/:proposalId" element={<ProposalApproval />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/p/:proposalId" element={<ProposalApproval />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </GlobalErrorBoundary>
     );
@@ -98,9 +102,11 @@ const App = () => {
     return (
       <GlobalErrorBoundary>
         <BrowserRouter>
-          <Routes>
-            <Route path="/print/:orderId" element={<PrintPage />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/print/:orderId" element={<PrintPage />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </GlobalErrorBoundary>
     );
@@ -116,47 +122,49 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
-                  <AnimatePresence>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
-                      <Route path="/success" element={<Success />} />
-                      <Route path="/setup" element={<PostPaymentSetup />} />
-                      <Route path="/access" element={<Access />} />
-                      <Route path="/invite" element={<Invite />} />
-                      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
-                      <Route path="/p/:proposalId" element={<ProposalApproval />} />
-                      <Route path="/poi/:orderId" element={<POIPage />} />
+                  <AnimatePresence mode="wait">
+                    <Suspense fallback={<PageLoader />}>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
+                        <Route path="/success" element={<Success />} />
+                        <Route path="/setup" element={<PostPaymentSetup />} />
+                        <Route path="/access" element={<Access />} />
+                        <Route path="/invite" element={<Invite />} />
+                        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
+                        <Route path="/p/:proposalId" element={<ProposalApproval />} />
+                        <Route path="/poi/:orderId" element={<POIPage />} />
 
-                      <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
-                      <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                        <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
+                        <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-                      <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/clients" element={<Clients />} />
-                        <Route path="/clients/:id" element={<ClientDetail />} />
-                        <Route path="/projects" element={<Projects />} />
-                        <Route path="/leads" element={<Leads />} />
-                        <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
-                        <Route path="/proposals" element={<Proposals />} />
-                        <Route path="/work-orders" element={<WorkOrders />} />
-                        <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
-                        <Route path="/payments" element={<Payments />} />
-                        <Route path="/installation" element={<Installation />} />
-                        <Route path="/map-hub" element={<MapHub />} />
-                        <Route path="/installer-companies" element={<InstallerCompanies />} />
-                        <Route path="/team-management" element={<TenantTeamManagement />} />
-                        <Route path="/production" element={<Production />} />
-                        <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
-                        <Route path="/tecnico" element={<MobileTechnicianView />} />
-                        <Route path="/audit-log" element={<AuditLog />} />
-                        <Route path="/settings" element={<Settings />} />
-                      </Route>
+                        <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
+                          <Route path="/dashboard" element={<Dashboard />} />
+                          <Route path="/clients" element={<Clients />} />
+                          <Route path="/clients/:id" element={<ClientDetail />} />
+                          <Route path="/projects" element={<Projects />} />
+                          <Route path="/leads" element={<Leads />} />
+                          <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
+                          <Route path="/proposals" element={<Proposals />} />
+                          <Route path="/work-orders" element={<WorkOrders />} />
+                          <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
+                          <Route path="/payments" element={<Payments />} />
+                          <Route path="/installation" element={<Installation />} />
+                          <Route path="/map-hub" element={<MapHub />} />
+                          <Route path="/installer-companies" element={<InstallerCompanies />} />
+                          <Route path="/team-management" element={<TenantTeamManagement />} />
+                          <Route path="/production" element={<Production />} />
+                          <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
+                          <Route path="/tecnico" element={<MobileTechnicianView />} />
+                          <Route path="/audit-log" element={<AuditLog />} />
+                          <Route path="/settings" element={<Settings />} />
+                        </Route>
 
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Suspense>
                   </AnimatePresence>
                 </BrowserRouter>
               </SettingsProvider>
