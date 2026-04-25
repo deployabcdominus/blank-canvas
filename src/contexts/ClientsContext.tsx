@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { logAudit } from '@/lib/audit';
 import { resolveCompanyId } from '@/lib/resolve-company';
+import { ClientsService, ClientRow } from '@/services/clients.service';
 
 export interface Client {
   id: string;
@@ -71,40 +70,37 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   const fetchClients = useCallback(async () => {
     if (!user) { setClients([]); setLoading(false); return; }
-    const { data, error } = await (supabase as any)
-      .from('clients')
-      .select('id, company_id, client_name, contact_name, primary_email, primary_phone, address, website, service_type, notes, logo_url, created_at, updated_at')
-      .order('client_name', { ascending: true });
+    const companyId = await getCompanyId();
+    if (!companyId) return;
+
+    const { data, error } = await ClientsService.getAll(companyId);
     if (error) console.error('Error loading clients:', error);
     else setClients((data || []).map(mapRow));
     setLoading(false);
-  }, [user]);
+  }, [user, getCompanyId]);
 
   useEffect(() => { fetchClients(); }, [fetchClients]);
 
   const addClient = async (client: Omit<Client, 'id' | 'createdAt' | 'updatedAt' | 'companyId'>): Promise<Client> => {
     const companyId = await getCompanyId();
     if (!companyId) throw new Error('No company found');
-    const { data, error } = await (supabase as any)
-      .from('clients')
-      .insert({
-        company_id: companyId,
-        client_name: client.clientName,
-        contact_name: client.contactName || '',
-        primary_email: client.primaryEmail,
-        primary_phone: client.primaryPhone,
-        address: client.address || '',
-        website: client.website || '',
-        service_type: client.serviceType || '',
-        notes: client.notes,
-        logo_url: client.logoUrl,
-      })
-      .select()
-      .single();
+    
+    const { data, error } = await ClientsService.create({
+      company_id: companyId,
+      client_name: client.clientName,
+      contact_name: client.contactName || '',
+      primary_email: client.primaryEmail,
+      primary_phone: client.primaryPhone,
+      address: client.address || '',
+      website: client.website || '',
+      service_type: client.serviceType || '',
+      notes: client.notes,
+      logo_url: client.logoUrl,
+    });
+    
     if (error) throw error;
     const newClient = mapRow(data);
     setClients(prev => [...prev, newClient].sort((a, b) => a.clientName.localeCompare(b.clientName)));
-    logAudit({ action: 'creado', entityType: 'cliente', entityId: newClient.id, entityLabel: newClient.clientName });
     return newClient;
   };
 
@@ -119,16 +115,14 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
     if (updates.serviceType !== undefined) dbUpdates.service_type = updates.serviceType;
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.logoUrl !== undefined) dbUpdates.logo_url = updates.logoUrl;
-    const { error } = await (supabase as any).from('clients').update(dbUpdates).eq('id', id);
+    
+    const { error } = await ClientsService.update(id, dbUpdates);
     if (error) throw error;
-    const client = clients.find(c => c.id === id);
     setClients(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
-    logAudit({ action: 'editado', entityType: 'cliente', entityId: id, entityLabel: client?.clientName, details: dbUpdates });
   };
 
   const deleteClient = async (id: string) => {
-    const client = clients.find(c => c.id === id);
-    const { error } = await (supabase as any).from('clients').delete().eq('id', id);
+    const { error } = await ClientsService.delete(id);
     if (error) {
       if (error.message?.includes('proyectos activos')) {
         throw new Error('No se puede eliminar: este cliente tiene proyectos activos. Complete o cancele los proyectos primero.');
@@ -136,7 +130,6 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
       throw error;
     }
     setClients(prev => prev.filter(c => c.id !== id));
-    logAudit({ action: 'eliminado', entityType: 'cliente', entityId: id, entityLabel: client?.clientName });
   };
 
   return (

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { logAudit } from '@/lib/audit';
 import { resolveCompanyId } from '@/lib/resolve-company';
 import { LeadsService, LeadRow } from '@/services/leads.service';
 
@@ -176,7 +175,6 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
       const newLead = mapRow(data);
       setLeads(prev => [newLead, ...prev]);
       setTotalCount(prev => prev + 1);
-      logAudit({ action: 'creado', entityType: 'lead', entityId: newLead.id, entityLabel: newLead.name });
     }
   };
 
@@ -204,17 +202,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     const { error } = await LeadsService.update(id, dbUpdates);
     if (error) throw error;
     
-    const lead = leads.find(l => l.id === id);
     setLeads(prev => prev.map(l => l.id === id ? { ...l, ...updates } : l));
-    
-    const auditAction = updates.status ? 'cambio_estado' as const : 'editado' as const;
-    logAudit({ 
-      action: auditAction, 
-      entityType: 'lead', 
-      entityId: id, 
-      entityLabel: lead?.name, 
-      details: updates.status ? { before: lead?.status, after: updates.status } : dbUpdates 
-    });
   };
 
   const assignLead = async (leadId: string, assignedToUserId: string | null) => {
@@ -226,12 +214,10 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
 
   const deleteLead = async (id: string) => {
     if (!user) return;
-    const lead = leads.find(l => l.id === id);
     const { error } = await LeadsService.softDelete(id);
     if (error) throw error;
     setLeads(prev => prev.filter(l => l.id !== id));
     setTotalCount(prev => prev - 1);
-    logAudit({ action: 'eliminado', entityType: 'lead', entityId: id, entityLabel: lead?.name });
   };
 
   const deleteLeads = async (ids: string[]) => {
@@ -240,7 +226,6 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (error) throw error;
     setLeads(prev => prev.filter(l => !ids.includes(l.id)));
     setTotalCount(prev => prev - ids.length);
-    logAudit({ action: 'eliminado', entityType: 'lead', entityId: ids[0], entityLabel: `${ids.length} leads`, details: { count: ids.length } });
   };
 
   const clearLeads = async () => {

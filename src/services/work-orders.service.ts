@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
+import { logAudit } from '@/lib/audit';
 
 export type WorkOrderRow = Database['public']['Tables']['production_orders']['Row'];
 export type WorkOrderInsert = Database['public']['Tables']['production_orders']['Insert'];
@@ -19,27 +20,64 @@ export const WorkOrdersService = {
   },
 
   async create(order: WorkOrderInsert) {
-    return await supabase
+    const result = await supabase
       .from('production_orders')
       .insert(order)
       .select()
       .single();
+
+    if (result.data) {
+      await logAudit({
+        action: 'creado',
+        entityType: 'orden_produccion',
+        entityId: result.data.id,
+        entityLabel: `OT #${result.data.wo_number || result.data.id.slice(0, 8)}`,
+        details: { status: result.data.status }
+      });
+    }
+
+    return result;
   },
 
   async update(id: string, updates: WorkOrderUpdate) {
-    return await supabase
+    const result = await supabase
       .from('production_orders')
       .update(updates)
       .eq('id', id)
       .select()
       .single();
+
+    if (result.data) {
+      await logAudit({
+        action: 'editado',
+        entityType: 'orden_produccion',
+        entityId: result.data.id,
+        entityLabel: `OT #${result.data.wo_number || result.data.id.slice(0, 8)}`,
+        details: updates
+      });
+    }
+
+    return result;
   },
 
   async delete(id: string) {
-    return await supabase
+    const { data: order } = await supabase.from('production_orders').select('wo_number').eq('id', id).single();
+
+    const result = await supabase
       .from('production_orders')
       .delete()
       .eq('id', id);
+
+    if (order) {
+      await logAudit({
+        action: 'eliminado',
+        entityType: 'orden_produccion',
+        entityId: id,
+        entityLabel: `OT #${order.wo_number || id.slice(0, 8)}`
+      });
+    }
+
+    return result;
   },
 
   async deleteByCompany(companyId: string) {

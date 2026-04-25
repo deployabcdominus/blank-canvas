@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
+import { logAudit } from '@/lib/audit';
 
 export type ProposalRow = Database['public']['Tables']['proposals']['Row'];
 export type ProposalInsert = Database['public']['Tables']['proposals']['Insert'];
@@ -44,26 +45,63 @@ export const ProposalsService = {
   },
 
   async create(proposal: ProposalInsert) {
-    return await supabase
+    const result = await supabase
       .from('proposals')
       .insert(proposal)
       .select()
       .single();
+
+    if (result.data) {
+      await logAudit({
+        action: 'creado',
+        entityType: 'propuesta',
+        entityId: result.data.id,
+        entityLabel: `${result.data.client} - ${result.data.project}`,
+        details: { value: result.data.value }
+      });
+    }
+
+    return result;
   },
 
   async update(id: string, updates: ProposalUpdate) {
-    return await supabase
+    const result = await supabase
       .from('proposals')
       .update(updates)
       .eq('id', id)
       .select()
       .single();
+
+    if (result.data) {
+      await logAudit({
+        action: result.data.status === 'approved' ? 'aprobado' : 'editado',
+        entityType: 'propuesta',
+        entityId: result.data.id,
+        entityLabel: `${result.data.client} - ${result.data.project}`,
+        details: updates
+      });
+    }
+
+    return result;
   },
 
   async delete(id: string) {
-    return await supabase
+    const { data: proposal } = await supabase.from('proposals').select('client, project').eq('id', id).single();
+
+    const result = await supabase
       .from('proposals')
       .delete()
       .eq('id', id);
+
+    if (proposal) {
+      await logAudit({
+        action: 'eliminado',
+        entityType: 'propuesta',
+        entityId: id,
+        entityLabel: `${proposal.client} - ${proposal.project}`
+      });
+    }
+
+    return result;
   }
 };

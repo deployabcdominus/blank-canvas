@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
+import { logAudit } from '@/lib/audit';
 
 export type ProjectRow = Database['public']['Tables']['projects']['Row'];
 export type ProjectInsert = Database['public']['Tables']['projects']['Insert'];
@@ -26,26 +27,63 @@ export const ProjectsService = {
   },
 
   async create(project: ProjectInsert) {
-    return await supabase
+    const result = await supabase
       .from('projects')
       .insert(project)
       .select('*, clients!projects_client_id_fkey(client_name)')
       .single();
+
+    if (result.data) {
+      await logAudit({
+        action: 'creado',
+        entityType: 'proyecto',
+        entityId: result.data.id,
+        entityLabel: result.data.project_name,
+        details: { status: result.data.status }
+      });
+    }
+
+    return result;
   },
 
   async update(id: string, updates: ProjectUpdate) {
-    return await supabase
+    const result = await supabase
       .from('projects')
       .update(updates)
       .eq('id', id)
       .select()
       .single();
+
+    if (result.data) {
+      await logAudit({
+        action: 'editado',
+        entityType: 'proyecto',
+        entityId: result.data.id,
+        entityLabel: result.data.project_name,
+        details: updates
+      });
+    }
+
+    return result;
   },
 
   async softDelete(id: string) {
-    return await supabase
+    const result = await supabase
       .from('projects')
       .update({ deleted_at: new Date().toISOString() })
-      .eq('id', id);
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (result.data) {
+      await logAudit({
+        action: 'eliminado',
+        entityType: 'proyecto',
+        entityId: result.data.id,
+        entityLabel: result.data.project_name
+      });
+    }
+
+    return result;
   }
 };
