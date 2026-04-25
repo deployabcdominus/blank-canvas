@@ -105,7 +105,7 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   const updateClient = async (id: string, updates: Partial<Omit<Client, 'id' | 'companyId'>>) => {
-    const dbUpdates: any = {};
+    const dbUpdates: ClientUpdate = {};
     if (updates.clientName !== undefined) dbUpdates.client_name = updates.clientName;
     if (updates.contactName !== undefined) dbUpdates.contact_name = updates.contactName;
     if (updates.primaryEmail !== undefined) dbUpdates.primary_email = updates.primaryEmail;
