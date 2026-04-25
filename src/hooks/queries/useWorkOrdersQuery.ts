@@ -1,8 +1,52 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { WorkOrdersService, WorkOrderInsert, WorkOrderUpdate } from '@/services/work-orders.service';
+import { Database, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 
-// Map DB statuses to new generic statuses
+interface WorkOrderMapped {
+  id: string;
+  client: string;
+  project: string;
+  serviceType: string;
+  status: string;
+  progress: number;
+  materials: any[];
+  startDate: string;
+  estimatedCompletion: string;
+  companyId: string;
+  ownerUserId: string | null;
+  projectId: string | null;
+  proposalId: string | null;
+  notes: string | null;
+  priority: string;
+  estimatedDelivery: string | null;
+  assignedToUserId: string | null;
+  installerCompanyId: string | null;
+  blueprintUrl: string | null;
+  annotations: any[];
+  technicalDetails: Record<string, any>;
+  face_material_spec: string;
+  returns_material_spec: string;
+  backs_material_spec: string;
+  trim_cap_spec: string;
+  led_mfg_spec: string;
+  power_supply_spec: string;
+  responsible_staff: Json | null;
+  qc_checklist: Json | null;
+  wo_number: string | null;
+  contact_name: string;
+  contact_phone: string;
+  contact_email: string;
+  site_address: string;
+  project_name: string;
+  poi_token_used: boolean;
+  poi_completed_at: string | null;
+  qc_signature_url: string | null;
+  product_type: string | null;
+  mockup_urls: string[];
+  design_notes: string;
+}
+
 const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Pendiente',
   'Materiales Pedidos': 'Pendiente',
@@ -11,10 +55,10 @@ const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Producido': 'Completada',
 };
 
-const mapRow = (row: any) => ({
+const mapRow = (row: Database['public']['Tables']['production_orders']['Row']): WorkOrderMapped => ({
   id: row.id,
-  client: row.client,
-  project: row.project,
+  client: (row as any).client || '', 
+  project: (row as any).project || '',
   serviceType: '',
   status: STATUS_MAP_FROM_DB[row.status] || row.status || 'Pendiente',
   progress: row.progress || 0,
@@ -32,7 +76,7 @@ const mapRow = (row: any) => ({
   installerCompanyId: row.installer_company_id || null,
   blueprintUrl: row.blueprint_url || null,
   annotations: Array.isArray(row.annotations) ? row.annotations : [],
-  technicalDetails: row.technical_details || {},
+  technicalDetails: (row.technical_details as Record<string, any>) || {},
   face_material_spec: row.face_material_spec || '',
   returns_material_spec: row.returns_material_spec || '',
   backs_material_spec: row.backs_material_spec || '',
@@ -40,8 +84,8 @@ const mapRow = (row: any) => ({
   led_mfg_spec: row.led_mfg_spec || '',
   power_supply_spec: row.power_supply_spec || '',
   responsible_staff: row.responsible_staff || null,
-  qc_checklist: row.qc_checklist || null,
-  wo_number: row.wo_number || null,
+  qc_checklist: row.qc_checklist,
+  wo_number: row.wo_number,
   contact_name: row.contact_name || '',
   contact_phone: row.contact_phone || '',
   contact_email: row.contact_email || '',
@@ -51,7 +95,7 @@ const mapRow = (row: any) => ({
   poi_completed_at: row.poi_completed_at || null,
   qc_signature_url: row.qc_signature_url || null,
   product_type: row.product_type || null,
-  mockup_urls: Array.isArray(row.mockup_urls) ? row.mockup_urls : [],
+  mockup_urls: Array.isArray(row.mockup_urls) ? (row.mockup_urls as string[]) : [],
   design_notes: row.design_notes || '',
 });
 
