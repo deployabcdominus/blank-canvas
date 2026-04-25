@@ -22,11 +22,20 @@ import LiveProductionTimeline from "@/components/production/LiveProductionTimeli
 const Production = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearWorkOrdersMutation, updateWorkOrderMutation } = useWorkOrdersQuery(null); // passing null temporarily, need to check how to get companyId here
-  const { clearOrders } = { clearOrders: () => clearWorkOrdersMutation.mutate("") }; // Will fix this in a moment
-  const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
-  const { toast } = useToast();
-  const { isAdmin, role } = useUserRole();
+  const { companyId, isAdmin, role } = useUserRole();
+  const { orders, clearWorkOrdersMutation, updateWorkOrderMutation } = useWorkOrdersQuery(companyId);
+  
+  const updateOrder = async (id: string, updates: any) => {
+    await updateWorkOrderMutation.mutateAsync({ id, updates });
+  };
+  
+  const handleClearOrders = async () => {
+    if (companyId) {
+      await clearWorkOrdersMutation.mutateAsync(companyId);
+      setIsClearDialogOpen(false);
+      toast({ title: "Órdenes eliminadas", description: "Todas las órdenes fueron eliminadas con éxito." });
+    }
+  };
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
