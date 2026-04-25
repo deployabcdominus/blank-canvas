@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { logAudit } from '@/lib/audit';
 import { resolveCompanyId } from '@/lib/resolve-company';
 import { WorkOrdersService } from '@/services/work-orders.service';
 
@@ -176,7 +174,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     const companyId = await getCompanyId();
     if (!companyId) return;
 
-    const { data, error } = await WorkOrdersService.create({
+    const { error } = await WorkOrdersService.create({
       user_id: user.id,
       company_id: companyId,
       owner_user_id: user.id,
@@ -197,7 +195,6 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     });
 
     if (error) throw error;
-    logAudit({ action: 'creado', entityType: 'orden_produccion', entityId: data?.id, entityLabel: order.client });
     await fetchOrders();
   };
 
@@ -222,18 +219,13 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     const { error } = await WorkOrdersService.update(id, dbUpdates as any);
     if (error) throw error;
     
-    const order = orders.find(o => o.id === id);
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
-    const auditAction = updates.status ? 'cambio_estado' as const : 'editado' as const;
-    logAudit({ action: auditAction, entityType: 'orden_produccion', entityId: id, entityLabel: order?.client, details: updates.status ? { before: order?.status, after: updates.status } : dbUpdates });
   };
 
   const deleteOrder = async (id: string) => {
-    const order = orders.find(o => o.id === id);
     const { error } = await WorkOrdersService.delete(id);
     if (error) throw error;
     setOrders(prev => prev.filter(o => o.id !== id));
-    logAudit({ action: 'eliminado', entityType: 'orden_produccion', entityId: id, entityLabel: order?.client });
   };
 
   const getAvailableForInstallation = () => {
