@@ -100,32 +100,32 @@ serve(async (req) => {
       global: { headers: { Authorization: authHeader } },
     });
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    // Validate user session
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
       return new Response(JSON.stringify({ error: "Token inválido" }), {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const body = await req.json();
-    const result = EmailPayloadSchema.safeParse(body);
+    const payloadResult = EmailPayloadSchema.safeParse(body);
 
-    if (!result.success) {
+    if (!payloadResult.success) {
       return new Response(JSON.stringify({ 
         error: "Validación fallida", 
-        details: result.error.format() 
+        details: payloadResult.error.format() 
       }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const { type, to, data } = result.data;
+    const { type, to, data } = payloadResult.data;
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
 
-    const template = TEMPLATES[type]?.(data);
+    const template = TEMPLATES[type]?.(data as Record<string, string>);
     if (!template) throw new Error(`Unknown email type: ${type}`);
 
     const fromName = data.companyName || "Sign Flow";
@@ -148,8 +148,8 @@ serve(async (req) => {
       throw new Error(`Resend error: ${err}`);
     }
 
-    const result = await response.json();
-    return new Response(JSON.stringify({ success: true, id: result.id }), {
+    const resendResult = await response.json();
+    return new Response(JSON.stringify({ success: true, id: resendResult.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
