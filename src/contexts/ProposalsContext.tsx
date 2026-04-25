@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { logAudit } from '@/lib/audit';
 import { resolveCompanyId } from '@/lib/resolve-company';
 import { ProposalsService } from '@/services/proposals.service';
 
@@ -150,7 +148,6 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     if (error) throw error;
     await fetchProposals();
-    logAudit({ action: 'creado', entityType: 'propuesta', entityLabel: proposal.client });
   };
 
   const updateProposal = async (id: string, updates: Partial<Proposal>) => {
@@ -167,19 +164,13 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     const { error } = await ProposalsService.update(id, dbUpdates);
     if (error) throw error;
-    
-    const prop = proposals.find(p => p.id === id);
-    const auditAction = updates.status === 'Aprobada' ? 'aprobado' as const : updates.status ? 'cambio_estado' as const : 'editado' as const;
-    logAudit({ action: auditAction, entityType: 'propuesta', entityId: id, entityLabel: prop?.client, details: updates.status ? { before: prop?.status, after: updates.status } : dbUpdates });
     await fetchProposals();
   };
 
   const deleteProposal = async (id: string) => {
     if (!user) return;
-    const prop = proposals.find(p => p.id === id);
     const { error } = await ProposalsService.delete(id);
     if (error) throw error;
-    logAudit({ action: 'eliminado', entityType: 'propuesta', entityId: id, entityLabel: prop?.client });
     await fetchProposals();
   };
 
