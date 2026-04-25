@@ -766,6 +766,11 @@ const Index = () => {
                   </Reveal>
                 );
               })}
+            <div className="mt-14 text-center">
+              <p className="text-[12px] text-zinc-600 font-medium tracking-wide uppercase flex items-center justify-center gap-2">
+                <Shield className="w-3.5 h-3.5" />
+                Cancel anytime • 14-day money-back guarantee • Secure checkout
+              </p>
             </div>
           </div>
         </section>
