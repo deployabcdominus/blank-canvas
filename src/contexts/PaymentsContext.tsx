@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
+import { Database } from '@/integrations/supabase/types';
+
+export type PaymentRow = Database['public']['Tables']['payments']['Row'];
+export type PaymentInsert = Database['public']['Tables']['payments']['Insert'];
 
 export type PaymentMethod = 'cash' | 'zelle' | 'card' | 'transfer' | 'check' | 'other';
 export type PaymentStatus = 'pending' | 'received' | 'refunded' | 'void';
