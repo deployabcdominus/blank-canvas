@@ -34,9 +34,10 @@ const PAGE_SIZE = 12;
 
 export default function Clients() {
   const { t } = useLanguage();
-  const { clients, loading, addClient, updateClient, deleteClient } = useClients();
-  const { projects } = useProjects();
-  const { canDelete, canEdit } = useUserRole();
+  const { companyId, canDelete, canEdit } = useUserRole();
+  const { clients, isLoading: loading, createClientMutation, updateClientMutation, deleteClientMutation } = useClientsQuery(companyId);
+  const { projects } = useProjectsQuery(companyId);
+
   const { toast } = useToast();
   const { items: catalogServices } = useCatalog("lead_service");
   const [search, setSearch] = useState('');
