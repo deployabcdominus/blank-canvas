@@ -25,12 +25,10 @@ import { FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 const Proposals = () => {
-  const { proposals, loading, addProposal, updateProposal, deleteProposal } = useProposals();
-  const { addOrder } = useWorkOrders();
-  const { clients, addClient, refreshClients } = useClients();
-  const { leads, updateLead } = useLeads();
-  const { company } = useCompany();
-  const { canEdit, canDelete } = useUserRole();
+  const { companyId, canEdit, canDelete } = useUserRole();
+  const { proposalsData, isLoading: loading, createProposalMutation, updateProposalMutation, deleteProposalMutation } = useProposalsQuery(companyId);
+  const proposals = proposalsData.proposals;
+
   const limits = usePlanLimits();
   const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
