@@ -52,7 +52,8 @@ const Leads = () => {
     clearLeadsMutation 
   } = useLeadsQuery(companyId);
 
-  const { proposals, createProposalMutation } = useProposalsQuery(companyId);
+  const { proposalsData, createProposalMutation } = useProposalsQuery(companyId);
+  const proposals = proposalsData.proposals;
   
   const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const limits = usePlanLimits();
