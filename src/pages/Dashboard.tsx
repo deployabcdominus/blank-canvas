@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { useBreakpoint } from "@/hooks/use-mobile";
+
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { HudCard } from "@/components/dashboard/HudCard";
@@ -26,7 +26,6 @@ import { GracePeriodBanner } from "@/components/GracePeriodBanner";
 import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
 
 const Dashboard = () => {
-  const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
   const { canViewFinancials, canViewOperations, isAdmin, isSuperadmin, companyId, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
@@ -41,8 +40,6 @@ const Dashboard = () => {
   const { installations } = useInstallations();
   const { payments } = usePayments();
 
-  const isMobile = breakpoint === "mobile";
-  const isTablet = breakpoint === "tablet";
 
   const stats = useMemo(() => {
     const activeLeads = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
@@ -101,17 +98,18 @@ const Dashboard = () => {
 
         {isAdmin && <AiBriefing />}
 
-        <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-10">
           {stats.map((stat, index) => (
             <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} delta={stat.delta} sparkline={stat.sparkline} />
           ))}
         </div>
 
-        <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-1" : "grid-cols-2 lg:grid-cols-3"}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-10">
           {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
           {canViewOperations && <WorkOrdersRadial orders={orders} />}
           <GeoHeatmap installations={installations} />
         </div>
+
 
         {isAdmin && <WeeklyReport />}
 

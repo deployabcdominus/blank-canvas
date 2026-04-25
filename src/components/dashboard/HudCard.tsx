@@ -99,20 +99,21 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
       onClick={onClick}
       className={`
         stat-card relative overflow-hidden text-left group
-        rounded-[10px] border transition-all duration-300 shimmer-hover
-        backdrop-blur-2xl
+        rounded-xl border transition-all duration-300 shimmer-hover
+        backdrop-blur-2xl p-4
         ${glowPulse
           ? "border-violet-500/50 shadow-[0_0_20px_rgba(139,92,246,0.25)]"
           : isActive
-            ? "border-primary/25 bg-[rgba(139,92,246,0.04)]"
-            : "border-white/[0.06] bg-[rgba(255,255,255,0.03)] hover:border-[rgba(139,92,246,0.3)] hover:bg-[rgba(139,92,246,0.04)]"
+            ? "border-primary/25 bg-primary/5"
+            : "border-white/[0.06] bg-white/[0.03] hover:border-primary/30 hover:bg-primary/5"
         }
+        ${isActive || glowPulse ? "border-l-primary/60" : "border-l-primary/40"}
+        border-l-2
       `}
       style={{
-        padding: "16px",
-        borderLeft: `2px solid rgba(139,92,246,${isActive || glowPulse ? "0.6" : "0.4"})`,
         transition: "border-color 0.5s ease, box-shadow 1s ease, background 0.3s ease",
       }}
+
     >
       {/* Ambient background blob */}
       {(isActive || glowPulse) && (
