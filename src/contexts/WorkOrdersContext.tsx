@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { WorkOrdersService } from '@/services/work-orders.service';
+import { WorkOrdersService, WorkOrderRow, WorkOrderUpdate } from '@/services/work-orders.service';
 
 export interface WorkOrder {
   id: string;
