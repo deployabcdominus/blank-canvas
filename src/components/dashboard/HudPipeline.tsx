@@ -104,12 +104,12 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">{tc.title}</h2>
-        {activeFilter && <span className="text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-base md:text-lg font-bold text-foreground">{tc.title}</h2>
+        {activeFilter && <span className="text-[10px] md:text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2">
         <AnimatePresence mode="popLayout">
           {visibleCols.map(col => {
             const colCards = cards.filter(c => c.column === col.key);
@@ -139,7 +139,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.04 }}
                         onClick={() => navigate(card.navigateTo)}
-                        className="dash-card p-3 cursor-pointer card-interactive group"
+                        className="dash-card p-2 md:p-3 cursor-pointer card-interactive group"
                       >
                         <div className="flex items-start gap-2">
                           <div className="mt-1.5 flex-shrink-0">
