@@ -199,7 +199,7 @@ export default function Clients() {
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      await deleteClient(deleteId);
+      await deleteClientMutation.mutateAsync(deleteId);
       toast({ title: t.clients.toasts.deleted });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
