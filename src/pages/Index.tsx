@@ -269,7 +269,7 @@ const trustedLogos = [
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const L = t.landing;
   const [scrolled, setScrolled] = useState(false);
   const [isAnnual, setIsAnnual] = useState(false);
