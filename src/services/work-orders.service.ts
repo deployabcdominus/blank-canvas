@@ -31,7 +31,7 @@ export const WorkOrdersService = {
         action: 'creado',
         entityType: 'orden_produccion',
         entityId: result.data.id,
-        entityLabel: `OT #${result.data.order_number || result.data.id.slice(0, 8)}`,
+        entityLabel: `OT #${result.data.wo_number || result.data.id.slice(0, 8)}`,
         details: { status: result.data.status }
       });
     }
@@ -52,7 +52,7 @@ export const WorkOrdersService = {
         action: 'editado',
         entityType: 'orden_produccion',
         entityId: result.data.id,
-        entityLabel: `OT #${result.data.order_number || result.data.id.slice(0, 8)}`,
+        entityLabel: `OT #${result.data.wo_number || result.data.id.slice(0, 8)}`,
         details: updates
       });
     }
@@ -61,7 +61,7 @@ export const WorkOrdersService = {
   },
 
   async delete(id: string) {
-    const { data: order } = await supabase.from('production_orders').select('order_number').eq('id', id).single();
+    const { data: order } = await supabase.from('production_orders').select('wo_number').eq('id', id).single();
 
     const result = await supabase
       .from('production_orders')
@@ -73,7 +73,7 @@ export const WorkOrdersService = {
         action: 'eliminado',
         entityType: 'orden_produccion',
         entityId: id,
-        entityLabel: `OT #${order.order_number || id.slice(0, 8)}`
+        entityLabel: `OT #${order.wo_number || id.slice(0, 8)}`
       });
     }
 
