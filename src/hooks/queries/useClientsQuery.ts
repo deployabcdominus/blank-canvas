@@ -36,7 +36,7 @@ export const useClientsQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['clients', companyId] });
       toast.success('Cliente creado correctamente');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al crear el cliente: ' + error.message);
     },
   });
@@ -48,7 +48,7 @@ export const useClientsQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['clients', companyId] });
       toast.success('Cliente actualizado correctamente');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al actualizar el cliente: ' + error.message);
     },
   });
@@ -59,7 +59,7 @@ export const useClientsQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['clients', companyId] });
       toast.success('Cliente eliminado correctamente');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al eliminar el cliente: ' + error.message);
     },
   });

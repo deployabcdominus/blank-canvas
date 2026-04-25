@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { ProjectsService } from '@/services/projects.service';
+import { ProjectsService, ProjectRow, ProjectUpdate } from '@/services/projects.service';
 
 export type ProjectStatus = 'Lead' | 'Proposal' | 'Production' | 'Installation' | 'Completed';
 
@@ -40,7 +40,12 @@ export const useProjects = () => {
   return ctx;
 };
 
-const mapRow = (row: any): Project => {
+type ProjectWithRelations = ProjectRow & {
+  clients?: { client_name: string } | null;
+  leads?: { name: string; company: string | null }[] | null;
+};
+
+const mapRow = (row: ProjectWithRelations): Project => {
   // Source of truth: client name from joined clients table
   // Fallback: lead company name via leads join
   const clientName = row.clients?.client_name
@@ -54,7 +59,7 @@ const mapRow = (row: any): Project => {
     clientId: row.client_id,
     projectName: row.project_name,
     installAddress: row.install_address || '',
-    status: row.status || 'Lead',
+    status: (row.status as ProjectStatus) || 'Lead',
     ownerUserId: row.owner_user_id,
     assignedToUserId: row.assigned_to_user_id,
     folderRelativePath: row.folder_relative_path,
@@ -136,7 +141,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const updateProject = async (id: string, updates: Partial<Omit<Project, 'id' | 'companyId'>>) => {
-    const dbUpdates: any = {};
+    const dbUpdates: ProjectUpdate = {};
     if (updates.projectName !== undefined) dbUpdates.project_name = updates.projectName;
     if (updates.installAddress !== undefined) dbUpdates.install_address = updates.installAddress;
     if (updates.status !== undefined) dbUpdates.status = updates.status;

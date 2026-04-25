@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { ProposalsService } from '@/services/proposals.service';
+import { ProposalsService, ProposalRow, ProposalUpdate } from '@/services/proposals.service';
 
 export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
 export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
@@ -55,7 +55,22 @@ export const useProposals = () => {
   return context;
 };
 
-const mapRow = (row: any, orderProposalIds: Set<string>): Proposal => {
+type ProposalWithRelations = ProposalRow & {
+  leads?: {
+    name: string;
+    company: string | null;
+    logo_url: string | null;
+    clients?: {
+      client_name: string;
+      contact_name: string | null;
+      logo_url: string | null;
+      primary_phone: string | null;
+      primary_email: string | null;
+    } | null;
+  } | null;
+};
+
+const mapRow = (row: ProposalWithRelations, orderProposalIds: Set<string>): Proposal => {
   const leadData = row.leads;
   const clientData = leadData?.clients;
   // If the lead is linked to a client, use client data as source of truth
@@ -107,10 +122,10 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (error) throw error;
       
       const orderProposalIds = new Set<string>(
-        (orders || []).map((o: any) => o.proposal_id)
+        (orders || []).map(o => o.proposal_id).filter((id): id is string => !!id)
       );
       
-      setProposals((rawProposals || []).map((r: any) => mapRow(r, orderProposalIds)));
+      setProposals((rawProposals || []).map(r => mapRow(r as ProposalWithRelations, orderProposalIds)));
     } catch (e) {
       console.error('Error fetching proposals:', e);
     } finally {

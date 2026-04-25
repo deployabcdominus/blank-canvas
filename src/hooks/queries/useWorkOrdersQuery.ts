@@ -57,10 +57,10 @@ const STATUS_MAP_FROM_DB: Record<string, string> = {
 
 const mapRow = (row: Database['public']['Tables']['production_orders']['Row']): WorkOrderMapped => ({
   id: row.id,
-  client: (row as any).client || '', 
-  project: (row as any).project || '',
+  client: row.client || '', 
+  project: row.project || '',
   serviceType: '',
-  status: STATUS_MAP_FROM_DB[row.status] || row.status || 'Pendiente',
+  status: STATUS_MAP_FROM_DB[row.status || ''] || row.status || 'Pendiente',
   progress: row.progress || 0,
   materials: Array.isArray(row.materials) ? row.materials : [],
   startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
@@ -119,7 +119,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Orden de trabajo creada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al crear la orden: ' + error.message);
     },
   });
@@ -131,7 +131,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Orden de trabajo actualizada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al actualizar la orden: ' + error.message);
     },
   });
@@ -142,7 +142,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Orden de trabajo eliminada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al eliminar la orden: ' + error.message);
     },
   });
@@ -153,7 +153,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Todas las órdenes de trabajo han sido eliminadas');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Error al limpiar órdenes: ' + error.message);
     },
   });

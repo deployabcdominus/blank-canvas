@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { ClientsService, ClientRow } from '@/services/clients.service';
+import { ClientsService, ClientRow, ClientUpdate } from '@/services/clients.service';
 
 export interface Client {
   id: string;
@@ -42,7 +42,7 @@ export const useClientsSafe = () => {
   return ctx ?? { clients: [], loading: false, addClient: async () => { throw new Error('No ClientsProvider'); }, updateClient: async () => {}, deleteClient: async () => {}, refreshClients: async () => {} } as ClientsContextType;
 };
 
-const mapRow = (row: any): Client => ({
+const mapRow = (row: ClientRow): Client => ({
   id: row.id,
   companyId: row.company_id,
   clientName: row.client_name,
@@ -105,7 +105,7 @@ export const ClientsProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   const updateClient = async (id: string, updates: Partial<Omit<Client, 'id' | 'companyId'>>) => {
-    const dbUpdates: any = {};
+    const dbUpdates: ClientUpdate = {};
     if (updates.clientName !== undefined) dbUpdates.client_name = updates.clientName;
     if (updates.contactName !== undefined) dbUpdates.contact_name = updates.contactName;
     if (updates.primaryEmail !== undefined) dbUpdates.primary_email = updates.primaryEmail;

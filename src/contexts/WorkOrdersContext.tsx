@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { WorkOrdersService } from '@/services/work-orders.service';
+import { WorkOrdersService, WorkOrderRow, WorkOrderUpdate } from '@/services/work-orders.service';
 
 export interface WorkOrder {
   id: string;
@@ -97,14 +97,14 @@ const STATUS_MAP_TO_DB: Record<string, string> = {
   'Completada': 'Completada',
 };
 
-const mapRow = (row: any): WorkOrder => ({
+const mapRow = (row: WorkOrderRow): WorkOrder => ({
   id: row.id,
   client: row.client,
-  project: row.project,
+  project: row.project || '',
   serviceType: '',
-  status: STATUS_MAP_FROM_DB[row.status] || row.status || 'Pendiente',
+  status: row.status ? (STATUS_MAP_FROM_DB[row.status] || row.status) : 'Pendiente',
   progress: row.progress || 0,
-  materials: Array.isArray(row.materials) ? row.materials : [],
+  materials: Array.isArray(row.materials) ? (row.materials as any[]) : [],
   startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
   estimatedCompletion: row.end_date ? new Date(row.end_date).toISOString().split('T')[0] : '',
   companyId: row.company_id,
@@ -117,8 +117,8 @@ const mapRow = (row: any): WorkOrder => ({
   assignedToUserId: row.assigned_to_user_id || null,
   installerCompanyId: row.installer_company_id || null,
   blueprintUrl: row.blueprint_url || null,
-  annotations: Array.isArray(row.annotations) ? row.annotations : [],
-  technicalDetails: row.technical_details || {},
+  annotations: Array.isArray(row.annotations) ? (row.annotations as any[]) : [],
+  technicalDetails: (row.technical_details as Record<string, any>) || {},
   // Production Sheet fields
   face_material_spec: row.face_material_spec || '',
   returns_material_spec: row.returns_material_spec || '',
@@ -140,7 +140,7 @@ const mapRow = (row: any): WorkOrder => ({
   qc_signature_url: row.qc_signature_url || null,
   product_type: row.product_type || null,
   // Design workspace fields
-  mockup_urls: Array.isArray(row.mockup_urls) ? row.mockup_urls : [],
+  mockup_urls: Array.isArray(row.mockup_urls) ? (row.mockup_urls as string[]) : [],
   design_notes: row.design_notes || '',
 });
 
@@ -199,10 +199,10 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
   };
 
   const updateOrder = async (id: string, updates: Partial<WorkOrder>) => {
-    const dbUpdates: any = {};
+    const dbUpdates: WorkOrderUpdate = {};
     if (updates.status !== undefined) dbUpdates.status = STATUS_MAP_TO_DB[updates.status] || updates.status;
     if (updates.progress !== undefined) dbUpdates.progress = updates.progress;
-    if (updates.materials !== undefined) dbUpdates.materials = updates.materials;
+    if (updates.materials !== undefined) dbUpdates.materials = updates.materials as any;
     if (updates.client !== undefined) dbUpdates.client = updates.client;
     if (updates.project !== undefined) dbUpdates.project = updates.project;
     if (updates.startDate !== undefined) dbUpdates.start_date = updates.startDate;
@@ -213,10 +213,10 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.assignedToUserId !== undefined) dbUpdates.assigned_to_user_id = updates.assignedToUserId;
     if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
     if (updates.blueprintUrl !== undefined) dbUpdates.blueprint_url = updates.blueprintUrl;
-    if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations;
-    if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails;
+    if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations as any;
+    if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails as any;
     
-    const { error } = await WorkOrdersService.update(id, dbUpdates as any);
+    const { error } = await WorkOrdersService.update(id, dbUpdates);
     if (error) throw error;
     
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
