@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
 import { logAudit } from '@/lib/audit';
+import { NotificationsService } from './notifications.service';
 
 export type LeadRow = Database['public']['Tables']['leads']['Row'];
 export type LeadInsert = Database['public']['Tables']['leads']['Insert'];
