@@ -59,7 +59,7 @@ const STATUS_LABELS_EN: Record<string, string> = {
 };
 
 export function WorkOrderCard({
-  order, index, assigneeName, onOpen, onGeneratePOI, onPrintSheet, onDelete, canDelete = false,
+  order, index, assigneeName, onOpen, onGeneratePOI, onPrintSheet, onDelete, canDelete = false, canEdit = true,
 }: Props) {
   const navigate = useNavigate();
   const { locale } = useLanguage();
