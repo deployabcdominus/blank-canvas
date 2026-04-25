@@ -1,6 +1,7 @@
 import { useLanguage, type Locale } from "@/i18n/LanguageContext";
 
 const OPTIONS: { value: Locale; flag: string; label: string }[] = [
+  { value: "pt", flag: "🇧🇷", label: "Português" },
   { value: "es", flag: "🇪🇸", label: "Español" },
   { value: "en", flag: "🇺🇸", label: "English" },
 ];
