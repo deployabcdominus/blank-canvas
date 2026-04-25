@@ -11,27 +11,41 @@ interface LogAuditParams {
   details?: Record<string, any>;
 }
 
+// Memory cache for user profile to avoid redundant DB calls on every log
+let cachedProfile: { company_id: string; full_name: string | null; user_id: string } | null = null;
+
 /**
  * Standalone audit logger — call from anywhere without hooks.
  * Silently fails to avoid blocking business logic.
  */
 export async function logAudit({ action, entityType, entityId, entityLabel, details }: LogAuditParams) {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    let profile = cachedProfile;
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('company_id, full_name')
-      .eq('id', user.id)
-      .maybeSingle();
+    if (!profile) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    if (!profile?.company_id) return;
+      const { data: dbProfile } = await supabase
+        .from('profiles')
+        .select('company_id, full_name')
+        .eq('id', user.id)
+        .maybeSingle();
 
-    await (supabase as any).from('audit_logs').insert({
+      if (!dbProfile?.company_id) return;
+
+      profile = {
+        company_id: dbProfile.company_id,
+        full_name: dbProfile.full_name,
+        user_id: user.id
+      };
+      cachedProfile = profile;
+    }
+
+    await supabase.from('audit_logs').insert({
       company_id: profile.company_id,
-      user_id: user.id,
-      user_name: profile.full_name || user.email || 'Usuario',
+      user_id: profile.user_id,
+      user_name: profile.full_name || 'Usuario',
       action,
       entity_type: entityType,
       entity_id: entityId || null,
