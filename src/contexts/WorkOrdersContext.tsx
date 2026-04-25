@@ -97,7 +97,7 @@ const STATUS_MAP_TO_DB: Record<string, string> = {
   'Completada': 'Completada',
 };
 
-const mapRow = (row: any): WorkOrder => ({
+const mapRow = (row: WorkOrderRow): WorkOrder => ({
   id: row.id,
   client: row.client,
   project: row.project,
