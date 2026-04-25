@@ -27,6 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PricingSection } from "@/components/settings/PricingSection";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { MFASettings } from "@/components/settings/MFASettings";
 
 
 export default function Settings() {
@@ -313,7 +314,8 @@ export default function Settings() {
                     </p>
                   </div>
                 </div>
-
+                <Separator />
+                <MFASettings />
                 <Separator />
 
                 <div className="space-y-2">

@@ -11,9 +11,11 @@ import { ScheduleInstallationModal } from "@/components/ScheduleInstallationModa
 import { InstallationPhotos } from "@/components/InstallationPhotos";
 import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useInstallations } from "@/contexts/InstallationsContext";
+import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCompany } from "@/hooks/useCompany";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,7 +32,15 @@ const Installation = () => {
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
-  const { installations, addInstallation, updateInstallation, clearInstallations } = useInstallations();
+  const { user } = useAuth();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
+  const { 
+    installations, 
+    createInstallationMutation, 
+    updateInstallationMutation, 
+    clearInstallationsMutation 
+  } = useInstallationsQuery(companyId);
   const { canEdit, canDelete } = useUserRole();
   const { locale } = useLanguage();
   const isEn = locale === "en";
@@ -68,33 +78,31 @@ const Installation = () => {
   };
 
   const handleMarkAsInstalled = async (installationId: string) => {
-    await updateInstallation(installationId, { status: "Completed" });
-    toast({
-      title: isEn ? "Execution completed" : "Ejecución completada",
-      description: isEn ? "The execution was marked as completed successfully." : "La ejecución fue marcada como completada con éxito.",
+    updateInstallationMutation.mutate({ 
+      id: installationId, 
+      updates: { status: "Completed" } 
     });
   };
 
   const handleClearInstallations = async () => {
-    await clearInstallations();
+    clearInstallationsMutation.mutate();
     setIsClearDialogOpen(false);
-    toast({
-      title: isEn ? "Executions deleted" : "Ejecuciones eliminadas",
-      description: isEn ? "All executions were deleted successfully." : "Todas las ejecuciones fueron eliminadas con éxito.",
-    });
   };
 
   const handleScheduleInstallation = async (data: any) => {
-    await addInstallation({
+    if (!companyId || !user) return;
+
+    createInstallationMutation.mutate({
+      company_id: companyId,
+      user_id: user.id,
       client: data.service.client,
       project: data.service.project,
       status: "Scheduled" as const,
-      address: data.address,
-      scheduledDate: data.date.toISOString().split('T')[0],
-      scheduledTime: data.time,
-      technician: data.installerCompany.contact,
+      location: data.address,
+      scheduled_date: data.date.toISOString(),
+      team: data.installerCompany.contact,
       notes: data.notes || `Empresa instaladora: ${data.installerCompany.name}. ${data.contactName ? `Contacto: ${data.contactName}` : ''}${data.contactPhone ? ` - ${data.contactPhone}` : ''}${data.contactEmail ? ` - ${data.contactEmail}` : ''}`,
-      projectId: null,
+      project_id: null,
     });
   };
 

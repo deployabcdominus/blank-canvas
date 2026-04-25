@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
-import { usePayments, Payment } from "@/contexts/PaymentsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useCompany } from "@/hooks/useCompany";
 import { PaymentsKPIBar } from "@/components/payments/PaymentsKPIBar";
 import { PaymentsControlBar, type PaymentSortKey, type ViewMode } from "@/components/payments/PaymentsControlBar";
 import { PaymentsTableView } from "@/components/payments/PaymentsTableView";
@@ -17,8 +18,11 @@ import { useToast } from "@/hooks/use-toast";
 import { DollarSign } from "lucide-react";
 
 const Payments = () => {
-  const { payments, loading, deletePayment } = usePayments();
-  const { proposals } = useProposals();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
+  const { payments, isLoading: loading, deletePaymentMutation } = usePaymentsQuery(companyId);
+  const { proposalsData } = useProposalsQuery(companyId);
+  const proposals = proposalsData.proposals;
   const { canDelete } = useUserRole();
   const { toast } = useToast();
 
@@ -79,8 +83,7 @@ const Payments = () => {
   const handleDeletePayment = async () => {
     if (!deleteId) return;
     try {
-      await deletePayment(deleteId);
-      toast({ title: "Pago eliminado" });
+      deletePaymentMutation.mutate(deleteId);
       setDeleteId(null);
     } catch (error) {
       console.error(error);
