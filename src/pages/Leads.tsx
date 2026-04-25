@@ -143,7 +143,7 @@ const Leads = () => {
   const handleConfirmDeleteSingle = async () => {
     if (!deleteTargetId) return;
     try {
-      await deleteLead(deleteTargetId);
+      await deleteLeadMutation.mutateAsync(deleteTargetId);
       setSelectedIds(prev => { const n = new Set(prev); n.delete(deleteTargetId); return n; });
       toast({ title: t.leads.toasts.deleted, description: t.leads.toasts.deletedDesc });
     } catch {
