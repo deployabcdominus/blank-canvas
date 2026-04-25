@@ -57,10 +57,10 @@ const STATUS_MAP_FROM_DB: Record<string, string> = {
 
 const mapRow = (row: Database['public']['Tables']['production_orders']['Row']): WorkOrderMapped => ({
   id: row.id,
-  client: (row as any).client || '', 
-  project: (row as any).project || '',
+  client: row.client || '', 
+  project: row.project || '',
   serviceType: '',
-  status: STATUS_MAP_FROM_DB[row.status] || row.status || 'Pendiente',
+  status: STATUS_MAP_FROM_DB[row.status || ''] || row.status || 'Pendiente',
   progress: row.progress || 0,
   materials: Array.isArray(row.materials) ? row.materials : [],
   startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
