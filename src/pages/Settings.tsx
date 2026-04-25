@@ -314,7 +314,8 @@ export default function Settings() {
                     </p>
                   </div>
                 </div>
-
+                <Separator />
+                <MFASettings />
                 <Separator />
 
                 <div className="space-y-2">
