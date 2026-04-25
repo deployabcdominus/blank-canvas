@@ -195,7 +195,6 @@ export const es: TranslationKeys = {
     language: "Idioma",
     english: "English",
     spanish: "Español",
-    portuguese: "Português",
     live: "En vivo",
     confirm: "Confirmar",
     back: "Atrás",
