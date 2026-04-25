@@ -32,8 +32,9 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 export default function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
-  const { settings, updateSettingsMutation } = useUserSettingsQuery(user?.id);
+  const { settings, updateSettingsMutation, resetToDefaultsMutation } = useUserSettingsQuery(user?.id);
   const updateSettings = (updates: any) => updateSettingsMutation.mutate(updates);
+  const resetToDefaults = () => resetToDefaultsMutation.mutate();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
   const { t, locale } = useLanguage();
