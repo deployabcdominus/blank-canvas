@@ -173,6 +173,10 @@ export const en = {
       onSite: "On site",
       available: "Available",
     },
+    seo: {
+      title: "SignFlow | High-Performance Operations Management",
+      description: "The #1 platform to automate services, IT and maintenance operations. Scale your business with absolute precision.",
+    }
   },
 
   /* ── Common / Shared ── */
