@@ -202,31 +202,40 @@ export function AiBriefing() {
       >
         {/* AI Panel — Zinc-950 with subtle orange border */}
         <div
-          className="rounded-2xl border border-white/[0.06] bg-zinc-950/40 backdrop-blur-2xl overflow-hidden transition-all duration-300 hover:border-white/[0.12]"
+          className="rounded-2xl border border-white/[0.06] bg-zinc-950/40 backdrop-blur-2xl overflow-hidden transition-all duration-300 hover:border-white/[0.12] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
         >
-          <div className="p-5 sm:p-6">
+          <div className="p-5 sm:p-6 relative overflow-hidden">
+            {/* Ambient Pulse */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[60px] pointer-events-none" />
+
             {/* Header */}
-            <div className="flex items-start justify-between mb-5">
+            <div className="flex items-start justify-between mb-5 relative z-10">
               <div className="flex items-center gap-3">
                 <motion.div
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                  animate={{ 
+                    rotate: [0, 10, -10, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="p-2 rounded-xl bg-primary/10 border border-primary/20"
                 >
-                  <Sparkles className="h-6 w-6 text-primary" strokeWidth={1.5} />
+                  <Sparkles className="h-5 w-5 text-primary" strokeWidth={2} />
                 </motion.div>
                 <div>
-                  <h2 className="font-medium text-lg text-white">{greeting}, {firstName}</h2>
-                  <p className="text-xs text-zinc-500">
+                  <h2 className="font-bold text-lg text-white tracking-tight">{greeting}, {firstName}</h2>
+                  <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
                     {tc.todaySummary.replace("{{date}}", dateStr)}
                   </p>
                 </div>
-                <Badge className="ml-2 text-[10px] px-2 py-0.5 border-0 font-bold bg-primary/15 text-primary">
-                  AI
+                <Badge className="ml-2 text-[9px] px-2 py-0.5 border-0 font-bold bg-primary text-white shadow-[0_0_15px_rgba(var(--primary),0.3)]">
+                  PREMIUM AI
                 </Badge>
               </div>
-              <span className="text-[10px] hidden sm:block text-zinc-600">
-                {tc.updatedAgo}
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-[10px] hidden sm:block text-zinc-600 font-medium">
+                  {tc.updatedAgo}
+                </span>
+              </div>
             </div>
 
             {!hasEnoughData ? (
