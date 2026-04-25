@@ -24,6 +24,33 @@ interface CompanyPublic {
 
 type PageState = "loading" | "ready" | "already_approved" | "success" | "error" | "not_found";
 
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle2, FileText, AlertTriangle, Loader2, Eraser, Phone, Mail, ShieldCheck, Clock, User } from "lucide-react";
+
+interface ProposalPublic {
+  id: string;
+  client: string;
+  project: string | null;
+  value: number | null;
+  description: string | null;
+  status: string | null;
+  approved_at: string | null;
+  approval_token: string;
+  company_id: string | null;
+  mockup_url: string | null;
+}
+
+interface CompanyPublic {
+  name: string;
+  logo_url: string | null;
+  brand_color: string | null;
+}
+
+type PageState = "loading" | "ready" | "already_approved" | "success" | "error" | "not_found";
+
 const ProposalApproval = () => {
   const { proposalId } = useParams<{ proposalId: string }>();
   const [state, setState] = useState<PageState>("loading");
@@ -68,11 +95,10 @@ const ProposalApproval = () => {
           .maybeSingle();
         if (comp) setCompany(comp);
 
-        // Log first view (fire & forget, uses service role via edge function not needed — use anon insert if policy allows, else skip)
         try {
           await (supabase as any).from("audit_logs").insert({
             company_id: data.company_id,
-            user_id: data.company_id, // placeholder — external view
+            user_id: data.company_id,
             user_name: "Cliente externo",
             action: "visualizado",
             entity_type: "propuesta",
@@ -100,9 +126,10 @@ const ProposalApproval = () => {
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.lineCap = "round";
-    ctx.strokeStyle = "hsl(25 95% 53%)";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "hsl(265 85% 60%)";
   }, [showSignature]);
 
   const getPos = (e: React.TouchEvent | React.MouseEvent) => {
@@ -177,219 +204,328 @@ const ProposalApproval = () => {
   const formatCurrency = (v: number | null) =>
     v != null ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(v) : "—";
 
-  // ── Render states ──
-  if (state === "loading") {
-    return (
-      <Shell>
-        <div className="flex flex-col items-center gap-4 py-20">
-          <Loader2 className="w-8 h-8 animate-spin" style={{ color: "hsl(25 95% 53%)" }} />
-          <p style={{ color: "hsl(0 0% 55%)" }}>Cargando propuesta...</p>
-        </div>
-      </Shell>
-    );
-  }
-
-  if (state === "not_found" || state === "error") {
-    return (
-      <Shell>
-        <div className="flex flex-col items-center gap-4 py-20 text-center">
-          <AlertTriangle className="w-10 h-10" style={{ color: "hsl(0 72% 51%)" }} />
-          <h2 className="text-lg font-semibold" style={{ color: "hsl(0 0% 95%)" }}>Propuesta no encontrada</h2>
-          <p className="text-sm max-w-sm" style={{ color: "hsl(0 0% 55%)" }}>
-            Este enlace puede ser inválido o haber expirado.
-          </p>
-        </div>
-      </Shell>
-    );
-  }
-
-  if (state === "already_approved") {
-    return (
-      <Shell company={company}>
-        <div className="flex flex-col items-center gap-4 py-12 text-center">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center"
-            style={{ background: "hsl(142 72% 37% / 0.12)", border: "1px solid hsl(142 72% 37% / 0.3)" }}>
-            <CheckCircle2 className="w-8 h-8" style={{ color: "hsl(142 72% 37%)" }} />
-          </div>
-          <h2 className="text-xl font-bold" style={{ color: "hsl(0 0% 95%)" }}>Propuesta ya aprobada</h2>
-          <p className="text-sm max-w-sm" style={{ color: "hsl(0 0% 55%)" }}>
-            Esta propuesta ya fue aprobada anteriormente.
-          </p>
-        </div>
-      </Shell>
-    );
-  }
-
-  if (state === "success") {
-    return (
-      <Shell company={company}>
-        <div className="flex flex-col items-center gap-5 py-12 text-center">
-          <div className="w-20 h-20 rounded-full flex items-center justify-center"
-            style={{ background: "hsl(142 72% 37% / 0.12)", border: "1px solid hsl(142 72% 37% / 0.3)" }}>
-            <CheckCircle2 className="w-10 h-10" style={{ color: "hsl(142 72% 37%)" }} />
-          </div>
-          <h2 className="text-2xl font-bold" style={{ color: "hsl(0 0% 95%)" }}>¡Propuesta aprobada!</h2>
-          <p className="text-sm max-w-md leading-relaxed" style={{ color: "hsl(0 0% 65%)" }}>
-            El equipo ha sido notificado y tu proyecto está ahora en fase de producción.
-          </p>
-        </div>
-      </Shell>
-    );
-  }
-
-  // ── Ready: Premium proposal landing page ──
   return (
     <Shell company={company}>
-      {/* Hero Mockup */}
-      {proposal?.mockup_url && (
-        <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid hsl(0 0% 100% / 0.06)" }}>
-          <img
-            src={proposal.mockup_url}
-            alt="Visualización del proyecto"
-            className="w-full object-contain"
-            style={{ maxHeight: 440, background: "hsl(0 0% 3%)" }}
-          />
-          <div className="px-4 py-2.5 text-center" style={{ background: "hsl(0 0% 5%)" }}>
-            <p className="text-[11px] font-medium" style={{ color: "hsl(0 0% 40%)" }}>
-              Visualización realista del proyecto
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Proposal details */}
-      <div className="rounded-2xl p-6 space-y-5" style={{ background: "hsl(0 0% 5% / 0.8)", border: "1px solid hsl(0 0% 100% / 0.06)" }}>
-        <div className="flex items-start gap-3">
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: "hsl(25 95% 53% / 0.12)" }}>
-            <FileText className="w-5 h-5" style={{ color: "hsl(25 95% 53%)" }} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "hsl(0 0% 40%)" }}>Propuesta Comercial</p>
-            <h2 className="text-xl font-bold mt-1" style={{ color: "hsl(0 0% 95%)" }}>
-              {proposal?.project || proposal?.client}
-            </h2>
-          </div>
-        </div>
-
-        {/* Cost table */}
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid hsl(0 0% 100% / 0.06)" }}>
-          <div className="grid grid-cols-2">
-            <CostRow label="Cliente" value={proposal?.client || "—"} />
-            <CostRow label="Proyecto" value={proposal?.project || "—"} />
-          </div>
-          <div className="px-4 py-4 flex items-center justify-between" style={{ background: "hsl(25 95% 53% / 0.06)", borderTop: "1px solid hsl(25 95% 53% / 0.15)" }}>
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "hsl(0 0% 55%)" }}>Total</span>
-            <span className="text-2xl font-bold" style={{ color: "hsl(25 95% 53%)", fontFamily: "Georgia, serif" }}>
-              {formatCurrency(proposal?.value ?? null)}
-            </span>
-          </div>
-        </div>
-
-        {proposal?.description && (
-          <div className="rounded-xl p-4" style={{ background: "hsl(0 0% 100% / 0.02)", border: "1px solid hsl(0 0% 100% / 0.04)" }}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "hsl(0 0% 40%)" }}>Detalles</p>
-            <p className="text-sm leading-relaxed" style={{ color: "hsl(0 0% 65%)" }}>{proposal.description}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <button
-          onClick={() => setShowSignature(true)}
-          className="py-3.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
-          style={{ background: "hsl(25 95% 53%)", color: "white" }}
-        >
-          <CheckCircle2 className="w-4 h-4" /> Aprobar Proyecto
-        </button>
-        <a
-          href={`mailto:${company?.name || ""}?subject=Consulta sobre propuesta ${proposal?.project || ""}`}
-          className="py-3.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
-          style={{ background: "hsl(0 0% 100% / 0.04)", color: "hsl(0 0% 75%)", border: "1px solid hsl(0 0% 100% / 0.08)" }}
-        >
-          <Mail className="w-4 h-4" /> Contactar Asesor
-        </a>
-      </div>
-
-      {/* Signature Modal */}
-      {showSignature && (
-        <div className="rounded-2xl p-6 space-y-4" style={{ background: "hsl(0 0% 5% / 0.8)", border: "1px solid hsl(0 0% 100% / 0.06)" }}>
-          <h3 className="text-base font-semibold" style={{ color: "hsl(0 0% 95%)" }}>Firma de aprobación</h3>
-
-          <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: "hsl(0 0% 55%)" }}>Nombre completo *</label>
-            <input
-              type="text" value={signerName}
-              onChange={e => setSignerName(e.target.value)}
-              maxLength={100} placeholder="Ej: María García"
-              className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-              style={{ background: "hsl(0 0% 5%)", border: "1px solid hsl(0 0% 100% / 0.08)", color: "hsl(0 0% 95%)" }}
-            />
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-medium" style={{ color: "hsl(0 0% 55%)" }}>Firma (opcional)</label>
-              {hasSignature && (
-                <button onClick={clearCanvas} className="text-xs flex items-center gap-1" style={{ color: "hsl(0 0% 45%)" }}>
-                  <Eraser className="w-3 h-3" /> Limpiar
-                </button>
-              )}
-            </div>
-            <canvas
-              ref={canvasRef}
-              onMouseDown={startDraw} onMouseMove={draw} onMouseUp={stopDraw} onMouseLeave={stopDraw}
-              onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={stopDraw}
-              className="w-full rounded-lg cursor-crosshair touch-none"
-              style={{ height: 120, background: "hsl(0 0% 4%)", border: "1px dashed hsl(0 0% 100% / 0.1)" }}
-            />
-          </div>
-
-          {errorMsg && <p className="text-xs font-medium" style={{ color: "hsl(0 72% 51%)" }}>{errorMsg}</p>}
-
-          <button
-            onClick={handleApprove}
-            disabled={submitting || !signerName.trim()}
-            className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-40"
-            style={{ background: "hsl(25 95% 53%)", color: "white" }}
+      <AnimatePresence mode="wait">
+        {state === "loading" && (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center gap-4 py-24 text-center"
           >
-            {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</> : <><CheckCircle2 className="w-4 h-4" /> Firmar y Aprobar</>}
-          </button>
+            <div className="relative">
+              <Loader2 className="w-12 h-12 animate-spin text-primary opacity-20" />
+              <Loader2 className="w-12 h-12 animate-spin text-primary absolute inset-0 [animation-duration:1.5s]" />
+            </div>
+            <p className="text-sm font-medium text-muted-foreground animate-pulse">Autenticando propuesta...</p>
+          </motion.div>
+        )}
 
-          <p className="text-center text-xs leading-relaxed" style={{ color: "hsl(0 0% 35%)" }}>
-            Al firmar, aceptas los términos. Se registrará tu IP y fecha como constancia legal.
-          </p>
-        </div>
-      )}
+        {(state === "not_found" || state === "error") && (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-6 py-16 text-center glass-card p-8"
+          >
+            <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center border border-destructive/20">
+              <AlertTriangle className="w-8 h-8 text-destructive" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold">Enlace no válido</h2>
+              <p className="text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                Este documento puede haber sido eliminado o el enlace de acceso ha expirado por seguridad.
+              </p>
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-xs font-semibold px-6 py-2.5 rounded-full border border-border/50 hover:bg-white/5 transition-colors"
+            >
+              Reintentar
+            </button>
+          </motion.div>
+        )}
+
+        {state === "already_approved" && (
+          <motion.div
+            key="already_approved"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center gap-6 py-12 text-center glass-card p-8"
+          >
+            <div className="w-16 h-16 rounded-full bg-mint/10 flex items-center justify-center border border-mint/20">
+              <CheckCircle2 className="w-8 h-8 text-mint" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold">Documento Aprobado</h2>
+              <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                Esta propuesta ya fue firmada y aprobada el {proposal?.approved_at ? new Date(proposal.approved_at).toLocaleDateString() : 'anteriormente'}.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {state === "success" && (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-6 py-12 text-center glass-card p-10 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-mint/5 to-transparent pointer-events-none" />
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", damping: 12, stiffness: 200, delay: 0.2 }}
+              className="w-24 h-24 rounded-full bg-mint/15 flex items-center justify-center border border-mint/30 shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]"
+            >
+              <CheckCircle2 className="w-12 h-12 text-mint" />
+            </motion.div>
+            <div className="space-y-3 z-10">
+              <h2 className="text-2xl font-bold tracking-tight">¡Propuesta Formalizada!</h2>
+              <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
+                Gracias, <strong>{signerName}</strong>. El equipo ha sido notificado. El proyecto inicia su fase operativa de inmediato.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {state === "ready" && (
+          <motion.div
+            key="ready"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-6"
+          >
+            {/* Visual Hero */}
+            {proposal?.mockup_url ? (
+              <div className="glass-card overflow-hidden group border-white/10">
+                <div className="relative aspect-video sm:aspect-[21/9] bg-black/40">
+                  <img
+                    src={proposal.mockup_url}
+                    alt="Mockup"
+                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                    <div className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-wider text-white/80">
+                      Previsualización Final
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="h-2 w-full bg-gradient-to-r from-transparent via-primary/20 to-transparent rounded-full opacity-50" />
+            )}
+
+            {/* Main Content Card */}
+            <div className="glass-card p-8 space-y-8 relative border-white/10 overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <FileText size={120} />
+              </div>
+
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-primary/70 mb-1">
+                    <ShieldCheck size={14} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Certificado Oficial</span>
+                  </div>
+                  <h2 className="text-2xl font-bold tracking-tight leading-none">
+                    {proposal?.project || "Propuesta de Proyecto"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">ID de Propuesta: <code className="text-[11px] bg-white/5 px-1.5 py-0.5 rounded">#{proposal?.id.split('-')[0]}</code></p>
+                </div>
+              </div>
+
+              {/* Specs Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5 space-y-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Cliente</span>
+                  <p className="font-semibold text-white/90">{proposal?.client}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-primary/[0.04] border border-primary/10 space-y-1">
+                  <span className="text-[10px] font-bold text-primary/70 uppercase tracking-wider">Inversión Total</span>
+                  <p className="text-2xl font-black text-primary tracking-tight">
+                    {formatCurrency(proposal?.value ?? null)}
+                  </p>
+                </div>
+              </div>
+
+              {proposal?.description && (
+                <div className="space-y-3">
+                  <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Alcance y Términos</h4>
+                  <div className="text-sm leading-relaxed text-muted-foreground/90 p-5 rounded-xl bg-white/[0.02] border border-white/5">
+                    {proposal.description}
+                  </div>
+                </div>
+              </div>
+
+              {/* Trust badges */}
+              <div className="flex items-center gap-6 pt-4 border-t border-white/5">
+                <div className="flex items-center gap-2">
+                  <Clock size={14} className="text-muted-foreground" />
+                  <span className="text-[11px] text-muted-foreground font-medium">Validez: 15 días</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={14} className="text-muted-foreground" />
+                  <span className="text-[11px] text-muted-foreground font-medium">Protocolo SSL/TLS</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Action Bar */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <button
+                onClick={() => {
+                  setShowSignature(true);
+                  setTimeout(() => {
+                    document.getElementById('signing-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+                className="group relative overflow-hidden py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_30px_-5px_rgba(var(--primary),0.4)]"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="flex items-center justify-center gap-2">
+                  <CheckCircle2 size={18} /> Aceptar y Proceder
+                </span>
+              </button>
+              <a
+                href={`mailto:${company?.name || ""}?subject=Consulta: ${proposal?.project || "Propuesta"}`}
+                className="py-4 rounded-2xl bg-white/5 border border-white/10 text-white/70 font-bold text-sm transition-all hover:bg-white/10 hover:border-white/20 flex items-center justify-center gap-2"
+              >
+                <Mail size={18} /> Contactar Soporte
+              </a>
+            </div>
+
+            {/* Signing Section */}
+            {showSignature && (
+              <motion.div
+                id="signing-section"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass-card p-8 space-y-6 border-primary/20 bg-primary/[0.02]"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <User size={16} className="text-primary" />
+                  </div>
+                  <h3 className="font-bold">Protocolo de Firma Digital</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1">Representante Autorizado</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={signerName}
+                        onChange={e => setSignerName(e.target.value)}
+                        placeholder="Nombre completo del firmante"
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between ml-1">
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Rúbrica Digital</label>
+                      {hasSignature && (
+                        <button onClick={clearCanvas} className="text-[10px] flex items-center gap-1.5 text-muted-foreground hover:text-white transition-colors uppercase font-bold tracking-tighter">
+                          <Eraser size={10} /> Limpiar
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/60 group">
+                      <canvas
+                        ref={canvasRef}
+                        onMouseDown={startDraw} onMouseMove={draw} onMouseUp={stopDraw} onMouseLeave={stopDraw}
+                        onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={stopDraw}
+                        className="w-full h-40 cursor-crosshair touch-none"
+                      />
+                      {!hasSignature && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-20 space-y-2">
+                          <PenTool size={32} />
+                          <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Firme aquí</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <button
+                    onClick={handleApprove}
+                    disabled={submitting || !signerName.trim()}
+                    className="w-full py-4 rounded-xl bg-white text-black font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-30 disabled:pointer-events-none shadow-xl"
+                  >
+                    {submitting ? (
+                      <span className="flex items-center justify-center gap-3">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Procesando Firma...
+                      </span>
+                    ) : "Confirmar Aprobación Legal"}
+                  </button>
+                  <p className="text-[10px] text-center text-muted-foreground leading-relaxed px-4">
+                    Al proceder, usted confirma que tiene autoridad legal para aprobar este presupuesto. Su dirección IP y marca de tiempo serán registradas como prueba de consentimiento electrónico según la normativa vigente.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Shell>
   );
 };
 
-/* ── Shell ── */
+/* ── UI Components ── */
 function Shell({ children, company }: { children: React.ReactNode; company?: CompanyPublic | null }) {
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-8 sm:py-16" style={{ background: "hsl(0 0% 2%)" }}>
-      <div className="mb-8">
-        {company?.logo_url ? (
-          <img src={company.logo_url} alt={company.name} className="h-12 object-contain" />
-        ) : company?.name ? (
-          <h1 className="text-xl font-bold" style={{ color: "hsl(25 95% 53%)" }}>{company.name}</h1>
-        ) : (
-          <div className="h-12" />
-        )}
+    <div className="min-h-screen bg-[#050505] text-white selection:bg-primary/30 selection:text-white py-12 px-4 sm:px-6">
+      {/* Background Ambience */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] rounded-full bg-primary/5 blur-[100px]" />
       </div>
-      <div className="w-full max-w-lg space-y-5">{children}</div>
-      <p className="mt-12 text-xs" style={{ color: "hsl(0 0% 25%)" }}>Powered by Sign Flow</p>
-    </div>
-  );
-}
 
-function CostRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="px-4 py-3" style={{ borderBottom: "1px solid hsl(0 0% 100% / 0.04)" }}>
-      <p className="text-[10px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: "hsl(0 0% 40%)" }}>{label}</p>
-      <p className="text-sm font-medium" style={{ color: "hsl(0 0% 80%)" }}>{value}</p>
+      <div className="max-w-xl mx-auto relative z-10 space-y-12">
+        {/* Header/Logo */}
+        <header className="flex flex-col items-center gap-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="p-3 rounded-2xl bg-white/5 border border-white/10"
+          >
+            {company?.logo_url ? (
+              <img src={company.logo_url} alt={company.name} className="h-10 object-contain" />
+            ) : (
+              <h1 className="text-lg font-black tracking-tighter uppercase text-primary">
+                {company?.name || "Sign Flow"}
+              </h1>
+            )}
+          </motion.div>
+          {!company?.logo_url && company?.name && (
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.4em] ml-1.5">
+              Portal de Aprobación
+            </span>
+          )}
+        </header>
+
+        <main>{children}</main>
+
+        <footer className="text-center space-y-4 pt-8 border-t border-white/5">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.25em]">
+            Tecnología Segura por <span className="text-primary/60">Sign Flow Systems</span>
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <ShieldCheck size={12} className="text-muted-foreground/30" />
+            <div className="h-1 w-1 rounded-full bg-white/10" />
+            <div className="text-[9px] text-muted-foreground/40 font-medium">Cumplimiento Legal eIDAS & ESIGN</div>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
