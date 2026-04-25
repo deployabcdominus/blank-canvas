@@ -44,7 +44,7 @@ const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { companyId, canEdit, canDelete, isAdmin } = useUserRole();
-  const { orders, isLoading, updateWorkOrderMutation, deleteWorkOrderMutation, workOrdersQuery } = useWorkOrdersQuery(companyId);
+  const { orders, isLoading, updateWorkOrderMutation, deleteWorkOrderMutation, clearWorkOrdersMutation, workOrdersQuery } = useWorkOrdersQuery(companyId);
   const refreshOrders = () => workOrdersQuery.refetch();
 
   const limits = usePlanLimits();
