@@ -17,7 +17,8 @@ import {
   ClipboardList, Factory, StickyNote, Ruler, Calendar,
 } from "lucide-react";
 import { useProposals } from "@/contexts/ProposalsContext";
-import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
@@ -222,7 +223,8 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
   const { t, locale } = useLanguage();
   const isEn = locale === "en";
   const { proposals } = useProposals();
-  const { addOrder } = useWorkOrders();
+  const { companyId, user } = useUserRole();
+  const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
@@ -342,18 +344,24 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
 
   const createOrder = async (andView: boolean = false) => {
     if (!validate()) return;
+    if (!user) return;
     const data = buildOrderData();
 
-    await addOrder({
+    await createWorkOrderMutation.mutateAsync({
+      user_id: user.id,
+      company_id: companyId!,
+      owner_user_id: user.id,
       client: data.client,
       project: data.project,
-      serviceType: data.serviceType || '',
       status: "Pendiente",
       progress: 0,
       materials: data.materials.map(m => ({ item: m.name, quantity: String(m.quantity), status: 'Pendiente' })),
-      startDate: new Date().toISOString().split('T')[0],
-      estimatedCompletion: data.targetDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
-      projectId: null, notes: data.notes || null, priority: data.priority === 'Urgente' ? 'urgente' : 'media',
+      start_date: new Date().toISOString().split('T')[0],
+      end_date: data.targetDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+      project_id: null,
+      notes: data.notes || null,
+      priority: data.priority === 'Urgente' ? 'urgente' : 'media',
+    } as any);
     });
 
     sonnerToast.success(t.newWorkOrderModal.toastCreated.replace("{{client}}", data.client));
