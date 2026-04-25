@@ -100,7 +100,12 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
         <div className={`flex items-start justify-between mb-3 ${isMobile ? 'flex-col gap-2' : ''} ${onSelect ? 'pl-6' : ''}`}>
           <div className="flex items-center gap-3 min-w-0">
             {lead.logoUrl ? (
-              <img src={lead.logoUrl} alt={`Logo ${lead.company}`} className="w-11 h-11 rounded-xl object-contain border border-white/[0.06] bg-white/[0.03] flex-shrink-0" />
+              <ImageWithFallback 
+                src={lead.logoUrl} 
+                alt={lead.company} 
+                className="w-full h-full object-contain"
+                containerClassName="w-11 h-11 rounded-xl border border-white/[0.06] bg-white/[0.03] flex-shrink-0"
+              />
             ) : (
               <div className="w-11 h-11 rounded-xl border border-white/[0.06] bg-white/[0.03] flex items-center justify-center flex-shrink-0">
                 <span className="text-sm font-bold text-zinc-500">{lead.company?.charAt(0)?.toUpperCase() || '?'}</span>
