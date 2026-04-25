@@ -289,7 +289,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                       <Share2 className="w-4 h-4 mr-2" />
                       {isEn ? "Share" : "Compartir"}
                     </Button>
-                    {installation.status === "In Progress" && (
+                    {installation.status === "In Progress" && canEdit && (
                       <Button 
                         onClick={() => handleMarkAsInstalled(installation.id)}
                         size="sm" 
