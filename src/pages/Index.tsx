@@ -263,6 +263,28 @@ const trustedLogos = [
   { name: "MaintainX", icon: Wrench },
 ];
 
+/* ─── Floating Mobile CTA ─── */
+const FloatingCTA = ({ onClick, show, label }: { onClick: () => void; show: boolean; label: string }) => (
+  <AnimatePresence>
+    {show && (
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 100, opacity: 0 }}
+        className="fixed bottom-6 left-6 right-6 z-[60] md:hidden"
+      >
+        <Button
+          onClick={onClick}
+          className="w-full h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold shadow-[0_8px_30px_rgba(139,92,246,0.4)] border border-white/10"
+        >
+          {label}
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 /* ═══════════════════════════════════════════════════════ */
 /*                       MAIN PAGE                        */
 /* ═══════════════════════════════════════════════════════ */
