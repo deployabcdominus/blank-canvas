@@ -26,7 +26,6 @@ import { GracePeriodBanner } from "@/components/GracePeriodBanner";
 import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
 
 const Dashboard = () => {
-  const breakpoint = useBreakpoint();
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
   const { canViewFinancials, canViewOperations, isAdmin, isSuperadmin, companyId, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
@@ -41,8 +40,6 @@ const Dashboard = () => {
   const { installations } = useInstallations();
   const { payments } = usePayments();
 
-  const isMobile = breakpoint === "mobile";
-  const isTablet = breakpoint === "tablet";
 
   const stats = useMemo(() => {
     const activeLeads = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
