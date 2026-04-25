@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveCompanyId } from '@/lib/resolve-company';
-import { LeadsService, LeadRow } from '@/services/leads.service';
+import { LeadsService, LeadRow, LeadUpdate } from '@/services/leads.service';
 
 export interface Lead {
   id: string;
