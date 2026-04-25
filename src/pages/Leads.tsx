@@ -156,7 +156,7 @@ const Leads = () => {
   const handleDeleteSelected = async () => {
     if (selectedIds.size === 0) return;
     try {
-      await deleteLeads(Array.from(selectedIds));
+      await deleteLeadsMutation.mutateAsync(Array.from(selectedIds));
       toast({ title: `${selectedIds.size} ${t.leads.toasts.selectedDeleted}`, description: t.leads.toasts.selectedDeletedDesc });
       setSelectedIds(new Set());
     } catch {
