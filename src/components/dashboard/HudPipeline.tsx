@@ -109,7 +109,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
         {activeFilter && <span className="text-[10px] md:text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2">
         <AnimatePresence mode="popLayout">
           {visibleCols.map(col => {
             const colCards = cards.filter(c => c.column === col.key);
