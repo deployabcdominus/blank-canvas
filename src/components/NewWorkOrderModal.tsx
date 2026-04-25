@@ -362,7 +362,6 @@ export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, on
       notes: data.notes || null,
       priority: data.priority === 'Urgente' ? 'urgente' : 'media',
     } as any);
-    });
 
     sonnerToast.success(t.newWorkOrderModal.toastCreated.replace("{{client}}", data.client));
 
