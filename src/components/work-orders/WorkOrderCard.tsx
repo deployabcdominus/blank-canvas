@@ -38,6 +38,7 @@ interface Props {
   onPrintSheet?: (order: WorkOrder) => void;
   onDelete?: (id: string) => void;
   canDelete?: boolean;
+  canEdit?: boolean;
 }
 
 function formatDelivery(date: string | null | undefined): string | null {
