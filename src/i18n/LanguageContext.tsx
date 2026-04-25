@@ -13,7 +13,7 @@ interface LanguageContextType {
   setLocale: (locale: Locale) => void;
 }
 
-const dictionaries: Record<Locale, TranslationKeys> = { en, es };
+const dictionaries: Record<Locale, TranslationKeys> = { en, es, pt };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
