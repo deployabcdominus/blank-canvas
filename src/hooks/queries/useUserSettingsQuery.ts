@@ -67,5 +67,22 @@ export const useUserSettingsQuery = (userId: string | undefined) => {
     settings: settingsQuery.data || defaultSettings,
     isLoading: settingsQuery.isLoading,
     updateSettingsMutation,
+    resetToDefaultsMutation: useMutation({
+      mutationFn: async () => {
+        if (!userId) throw new Error('Not authenticated');
+        const { error } = await supabase
+          .from('user_settings')
+          .update({
+            theme: 'dark',
+            glass_effect: defaultSettings.glassEffect,
+          })
+          .eq('user_id', userId);
+        if (error) throw error;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['user-settings', userId] });
+        toast.success('Configuración restablecida');
+      },
+    }),
   };
 };
