@@ -766,6 +766,7 @@ const Index = () => {
                   </Reveal>
                 );
               })}
+            </div>
             <div className="mt-14 text-center">
               <p className="text-[12px] text-zinc-600 font-medium tracking-wide uppercase flex items-center justify-center gap-2">
                 <Shield className="w-3.5 h-3.5" />
