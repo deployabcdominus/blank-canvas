@@ -133,7 +133,7 @@ const WorkOrders = () => {
   };
 
   const handleClearOrders = () => {
-    clearOrders();
+    if (companyId) clearWorkOrdersMutation.mutate(companyId);
     setIsClearDialogOpen(false);
     toast.success("All orders cleared");
   };
