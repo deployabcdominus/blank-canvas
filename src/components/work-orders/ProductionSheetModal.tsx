@@ -121,9 +121,9 @@ const defaultMaterialSpecs: MaterialSpecs = {
 };
 
 export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }: ProductionSheetModalProps) {
+  const { companyId } = useUserRole();
   const { updateWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
-  const { companyId } = useUserRole();
   const { company } = useCompany();
   const { toast } = useToast();
   const sheetRef = useRef<HTMLDivElement>(null);
