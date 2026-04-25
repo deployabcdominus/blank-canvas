@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { ListCardSkeleton } from "@/components/ui/skeleton-card";
 
 const Leads = () => {
   const navigate = useNavigate();
