@@ -101,17 +101,18 @@ const Dashboard = () => {
 
         {isAdmin && <AiBriefing />}
 
-        <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-2" : "grid-cols-4"}`}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-10">
           {stats.map((stat, index) => (
             <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} delta={stat.delta} sparkline={stat.sparkline} />
           ))}
         </div>
 
-        <div className={`grid gap-5 mb-10 ${isMobile ? "grid-cols-1" : "grid-cols-2 lg:grid-cols-3"}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-10">
           {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
           {canViewOperations && <WorkOrdersRadial orders={orders} />}
           <GeoHeatmap installations={installations} />
         </div>
+
 
         {isAdmin && <WeeklyReport />}
 
