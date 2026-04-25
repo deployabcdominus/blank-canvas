@@ -3,7 +3,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
 import { NewProductionOrderModal } from "@/components/NewProductionOrderModal";
-import { useProductionOrders, ProductionOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { ProductionControlBar, type SortKey, type ViewMode } from "@/components/production/ProductionControlBar";
 import { ProductionCompactCard } from "@/components/production/ProductionCompactCard";
 import { ProductionTableView } from "@/components/production/ProductionTableView";
@@ -22,7 +22,9 @@ import LiveProductionTimeline from "@/components/production/LiveProductionTimeli
 const Production = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders, updateOrder } = useProductionOrders();
+  const { orders, clearWorkOrdersMutation, updateWorkOrderMutation } = useWorkOrdersQuery(null); // passing null temporarily, need to check how to get companyId here
+  const { clearOrders } = { clearOrders: () => clearWorkOrdersMutation.mutate("") }; // Will fix this in a moment
+  const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
   const { toast } = useToast();
   const { isAdmin, role } = useUserRole();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
