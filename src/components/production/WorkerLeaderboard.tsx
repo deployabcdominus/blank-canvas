@@ -1,10 +1,10 @@
-import { useLeaderboard } from "@/hooks/useProductionSteps";
+import { useLeaderboardQuery } from "@/hooks/queries/useLeaderboardQuery";
 import { Trophy, Flame } from "lucide-react";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
 export default function WorkerLeaderboard() {
-  const board = useLeaderboard();
+  const { data: board = [] } = useLeaderboardQuery();
 
   if (board.length === 0) {
     return (

@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
-import { useWorkOrders } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useInstallations } from "@/contexts/InstallationsContext";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
 import { statsConfig } from "@/constants/landingPageData";
@@ -9,7 +10,8 @@ import { statsConfig } from "@/constants/landingPageData";
 export const SystemStats = () => {
   const { leads } = useLeads();
   const { proposals } = useProposals();
-  const { orders } = useWorkOrders();
+  const { companyId } = useUserRole();
+  const { orders } = useWorkOrdersQuery(companyId);
   const { installations } = useInstallations();
   const { companies } = useInstallerCompanies();
 

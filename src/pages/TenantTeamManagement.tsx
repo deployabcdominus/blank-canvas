@@ -5,6 +5,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
+import { useTeamQuery, type CompanyUser, type Invitation } from "@/hooks/queries/useTeamQuery";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,24 +19,6 @@ import { InviteMemberModal } from "@/components/InviteMemberModal";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import RolePermissionsGuide from "@/components/team/RolePermissionsGuide";
 
-interface CompanyUser {
-  id: string;
-  full_name: string;
-  email: string;
-  role: string;
-  is_active: boolean;
-  created_at: string;
-}
-
-interface Invitation {
-  id: string;
-  email: string;
-  role: string;
-  token: string;
-  expires_at: string;
-  accepted_at: string | null;
-  created_at: string;
-}
 
 const ROLE_LABELS: Record<string, string> = {
   admin: "Admin",
@@ -49,137 +32,41 @@ export default function TenantTeamManagement() {
   const { user } = useAuth();
   const { isAdmin, companyId, loading: roleLoading } = useUserRole();
   const { company } = useCompany();
+  const { 
+    users, 
+    invitations, 
+    isLoadingUsers, 
+    isLoadingInvitations, 
+    toggleActiveMutation, 
+    updateRoleMutation, 
+    removeUserMutation, 
+    revokeInvitationMutation, 
+    clearHistoryMutation 
+  } = useTeamQuery(companyId);
   const { toast } = useToast();
 
-  const [users, setUsers] = useState<CompanyUser[]>([]);
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [loadingInvitations, setLoadingInvitations] = useState(true);
   const [search, setSearch] = useState("");
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [tab, setTab] = useState("members");
 
-  const fetchUsers = useCallback(async () => {
-    if (!companyId) return;
-    setLoadingUsers(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("manage-user", {
-        body: { action: "list-company-users", companyId },
-      });
-      if (error) throw error;
-      setUsers(data.users || []);
-    } catch (e: any) {
-      console.error("Error fetching users:", e);
-    }
-    setLoadingUsers(false);
-  }, [companyId]);
-
-  const fetchInvitations = useCallback(async () => {
-    if (!companyId) return;
-    setLoadingInvitations(true);
-    try {
-      const { data, error } = await supabase
-        .from("invitations")
-        .select("id, email, role, token, expires_at, accepted_at, created_at")
-        .eq("company_id", companyId)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      setInvitations((data as Invitation[]) || []);
-    } catch (e: any) {
-      console.error("Error fetching invitations:", e);
-    }
-    setLoadingInvitations(false);
-  }, [companyId]);
-
-  useEffect(() => {
-    if (companyId && isAdmin) {
-      fetchUsers();
-      fetchInvitations();
-    }
-  }, [companyId, isAdmin, fetchUsers, fetchInvitations]);
-
   const handleToggleActive = async (userId: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke("manage-user", {
-        body: { action: "toggle-active", userId },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      toast({ title: "Estado actualizado" });
-      fetchUsers();
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
-    }
+    toggleActiveMutation.mutate(userId);
   };
 
   const handleChangeRole = async (userId: string, newRole: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke("manage-user", {
-        body: { action: "update-role", userId, role: newRole },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      toast({ title: "Rol actualizado" });
-      fetchUsers();
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
-    }
+    updateRoleMutation.mutate({ userId, role: newRole });
   };
 
   const handleRemoveUser = async (userId: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke("manage-user", {
-        body: { action: "remove-from-company", userId },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      toast({ title: "Usuario removido", description: "El usuario fue removido de la empresa." });
-      fetchUsers();
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
-    }
+    removeUserMutation.mutate(userId);
   };
 
   const handleRevokeInvitation = async (invitationId: string) => {
-    try {
-      const { error } = await supabase
-        .from("invitations")
-        .delete()
-        .eq("id", invitationId);
-      if (error) throw error;
-      toast({ title: "Invitación eliminada" });
-      fetchInvitations();
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
-    }
+    revokeInvitationMutation.mutate(invitationId);
   };
 
   const handleClearHistory = async () => {
-    if (!companyId) return;
-    try {
-      // Delete accepted invitations
-      const { error: err1 } = await supabase
-        .from("invitations")
-        .delete()
-        .eq("company_id", companyId)
-        .not("accepted_at", "is", null);
-
-      // Delete expired invitations (accepted_at is null but expired)
-      const { error: err2 } = await supabase
-        .from("invitations")
-        .delete()
-        .eq("company_id", companyId)
-        .is("accepted_at", null)
-        .lt("expires_at", new Date().toISOString());
-
-      if (err1) throw err1;
-      if (err2) throw err2;
-
-      toast({ title: "Historial limpiado", description: "Se eliminaron las invitaciones aceptadas y expiradas." });
-      fetchInvitations();
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
-    }
+    clearHistoryMutation.mutate();
   };
 
   const handleResendInvitation = async (invitation: Invitation) => {
@@ -342,8 +229,8 @@ export default function TenantTeamManagement() {
                     ))}
                   </TableBody>
                 </Table>
-                {loadingUsers && <div className="p-4"><TableSkeleton cols={5} rows={4} /></div>}
-                {!loadingUsers && filteredUsers.length === 0 && (
+                {isLoadingUsers && <div className="p-4"><TableSkeleton cols={5} rows={4} /></div>}
+                {!isLoadingUsers && filteredUsers.length === 0 && (
                   <div className="p-8 text-center">
                     <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-lg font-medium mb-2">No hay miembros</h3>
@@ -476,8 +363,8 @@ export default function TenantTeamManagement() {
                     })}
                   </TableBody>
                 </Table>
-                {loadingInvitations && <div className="p-4"><TableSkeleton cols={4} rows={3} /></div>}
-                {!loadingInvitations && filteredInvitations.length === 0 && (
+                {isLoadingInvitations && <div className="p-4"><TableSkeleton cols={4} rows={3} /></div>}
+                {!isLoadingInvitations && filteredInvitations.length === 0 && (
                   <div className="p-8 text-center">
                     <Mail className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-lg font-medium mb-2">No hay invitaciones</h3>
@@ -493,7 +380,6 @@ export default function TenantTeamManagement() {
           isOpen={showInviteModal}
           onClose={() => {
             setShowInviteModal(false);
-            fetchInvitations();
           }}
         />
       </ResponsiveLayout>

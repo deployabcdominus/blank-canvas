@@ -14,7 +14,9 @@ import {
   ChevronDown, ChevronUp, Check,
 } from "lucide-react";
 import { useProposals } from "@/contexts/ProposalsContext";
-import { useProductionOrders, ProductionOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
@@ -219,8 +221,10 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 // MAIN MODAL
 // ══════════════════════════════════════════════
 export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = ({ isOpen, onClose }) => {
+  const { user } = useAuth();
+  const { companyId } = useUserRole();
   const { proposals } = useProposals();
-  const { addOrder } = useProductionOrders();
+  const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
@@ -325,18 +329,24 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
   const createOrder = async (andView: boolean = false) => {
     if (!validate()) return;
     const data = buildOrderData();
+    if (!user || !companyId) return;
 
-    await addOrder({
+    await createWorkOrderMutation.mutateAsync({
+      user_id: user.id,
+      company_id: companyId,
+      owner_user_id: user.id,
       client: data.client,
       project: data.project,
       serviceType: data.serviceType || 'Letrero Luminoso',
       status: "Pendiente",
       progress: 0,
       materials: data.materials.map(m => ({ item: m.name, quantity: String(m.quantity), status: 'Pendiente' })),
-      startDate: new Date().toISOString().split('T')[0],
-      estimatedCompletion: data.targetDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
-      projectId: null, notes: null, priority: 'media',
-    });
+      start_date: new Date().toISOString().split('T')[0],
+      end_date: data.targetDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+      project_id: null,
+      notes: null,
+      priority: 'media',
+    } as any);
 
     sonnerToast.success(`Orden creada para "${data.client}"`);
 

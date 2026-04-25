@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { useWorkOrders, type WorkOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
+import { type WorkOrder } from "@/contexts/WorkOrdersContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
@@ -120,8 +121,9 @@ const defaultMaterialSpecs: MaterialSpecs = {
 };
 
 export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }: ProductionSheetModalProps) {
-  const { updateOrder } = useWorkOrders();
   const { companyId } = useUserRole();
+  const { updateWorkOrderMutation } = useWorkOrdersQuery(companyId);
+  const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
   const { company } = useCompany();
   const { toast } = useToast();
   const sheetRef = useRef<HTMLDivElement>(null);

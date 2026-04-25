@@ -26,7 +26,8 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useCatalog } from "@/hooks/useCatalog";
-import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
+import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -88,8 +89,10 @@ function Section({ title, icon, defaultOpen = true, children }: {
 }
 
 export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = false }: EditWorkOrderModalProps) {
-  const { updateOrder, deleteOrder } = useWorkOrders();
   const { isAdmin, companyId } = useUserRole();
+  const { updateWorkOrderMutation, deleteWorkOrderMutation } = useWorkOrdersQuery(companyId);
+  const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
+  const deleteOrder = (id: string) => deleteWorkOrderMutation.mutateAsync(id);
   const { items: statuses } = useCatalog("order_status");
   const { toast } = useToast();
   const { locale } = useLanguage();

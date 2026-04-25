@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
-import { useWorkOrders } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useInstallations } from "@/contexts/InstallationsContext";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
 import { systemModulesConfig } from "@/constants/landingPageData";
@@ -12,7 +13,8 @@ export const SystemModules = () => {
   const navigate = useNavigate();
   const { leads } = useLeads();
   const { proposals } = useProposals();
-  const { orders } = useWorkOrders();
+  const { companyId } = useUserRole();
+  const { orders } = useWorkOrdersQuery(companyId);
   const { installations } = useInstallations();
   const { companies } = useInstallerCompanies();
 

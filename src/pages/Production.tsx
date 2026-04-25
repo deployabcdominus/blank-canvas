@@ -3,7 +3,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
 import { NewProductionOrderModal } from "@/components/NewProductionOrderModal";
-import { useProductionOrders, ProductionOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { ProductionControlBar, type SortKey, type ViewMode } from "@/components/production/ProductionControlBar";
 import { ProductionCompactCard } from "@/components/production/ProductionCompactCard";
 import { ProductionTableView } from "@/components/production/ProductionTableView";
@@ -22,9 +22,21 @@ import LiveProductionTimeline from "@/components/production/LiveProductionTimeli
 const Production = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders, updateOrder } = useProductionOrders();
+  const { companyId, isAdmin, role } = useUserRole();
+  const { orders, clearWorkOrdersMutation, updateWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
-  const { isAdmin, role } = useUserRole();
+  
+  const updateOrder = async (id: string, updates: any) => {
+    await updateWorkOrderMutation.mutateAsync({ id, updates });
+  };
+  
+  const handleClearOrders = async () => {
+    if (companyId) {
+      await clearWorkOrdersMutation.mutateAsync(companyId);
+      setIsClearDialogOpen(false);
+      toast({ title: "Órdenes eliminadas", description: "Todas las órdenes fueron eliminadas con éxito." });
+    }
+  };
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortKey>("newest");
@@ -52,11 +64,6 @@ const Production = () => {
     setBuiltConfirmId(null);
   };
 
-  const handleClearOrders = () => {
-    clearOrders();
-    setIsClearDialogOpen(false);
-    toast({ title: "Órdenes eliminadas", description: "Todas las órdenes fueron eliminadas con éxito." });
-  };
 
   // Filter + sort
   const processed = useMemo(() => {
