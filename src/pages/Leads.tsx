@@ -64,6 +64,7 @@ const Leads = () => {
     try {
       if (!companyId || !user) return;
       await createLeadMutation.mutateAsync({
+        user_id: user.id,
         company_id: companyId,
         created_by_user_id: user.id,
         name: leadData.name,
