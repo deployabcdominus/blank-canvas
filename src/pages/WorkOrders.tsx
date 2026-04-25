@@ -4,7 +4,8 @@ import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
-import { useWorkOrders, WorkOrder } from "@/contexts/WorkOrdersContext";
+import { WorkOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -42,8 +43,10 @@ const STATUS_OPTIONS = [
 const WorkOrders = () => {
   const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-  const { orders, clearOrders, updateOrder, deleteOrder, refreshOrders } = useWorkOrders();
-  const { canEdit, canDelete, isAdmin } = useUserRole();
+  const { companyId, canEdit, canDelete, isAdmin } = useUserRole();
+  const { orders, isLoading, updateWorkOrderMutation, deleteWorkOrderMutation, clearWorkOrdersMutation, workOrdersQuery } = useWorkOrdersQuery(companyId);
+  const refreshOrders = () => workOrdersQuery.refetch();
+
   const limits = usePlanLimits();
   const { t } = useLanguage();
 
@@ -110,7 +113,7 @@ const WorkOrders = () => {
   const confirmMarkCompleted = async () => {
     if (!completeConfirmId) return;
     try {
-      await updateOrder(completeConfirmId, { status: "Completada", progress: 100 });
+      await updateWorkOrderMutation.mutateAsync({ id: completeConfirmId, updates: { status: "Completada", progress: 100 } });
       toast.success("Order marked as completed");
     } catch {
       toast.error("Could not complete order");
@@ -121,7 +124,7 @@ const WorkOrders = () => {
   const confirmDeleteSingle = async () => {
     if (!deleteConfirmId) return;
     try {
-      await deleteOrder(deleteConfirmId);
+      await deleteWorkOrderMutation.mutateAsync(deleteConfirmId);
       toast.success("Order deleted");
     } catch {
       toast.error("Could not delete order");
@@ -130,7 +133,7 @@ const WorkOrders = () => {
   };
 
   const handleClearOrders = () => {
-    clearOrders();
+    if (companyId) clearWorkOrdersMutation.mutate(companyId);
     setIsClearDialogOpen(false);
     toast.success("All orders cleared");
   };

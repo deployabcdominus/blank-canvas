@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useWeeklyReportQuery } from "@/hooks/queries/useWeeklyReportQuery";
 import {
   TrendingUp,
   TrendingDown,
@@ -24,21 +23,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-
-interface WeekMetrics {
-  new_leads: number;
-  converted: number;
-  revenue: number;
-  lost_value: number;
-  closed_orders: number;
-}
-
-interface ReportData {
-  current: WeekMetrics;
-  previous: WeekMetrics;
-  period_start: string;
-  period_end: string;
-}
 
 function TrendBadge({ current, previous }: { current: number; previous: number }) {
   if (previous === 0 && current === 0) {
@@ -80,27 +64,9 @@ function TrendBadge({ current, previous }: { current: number; previous: number }
 export function WeeklyReport() {
   const { companyId, isAdmin } = useUserRole();
   const { t } = useLanguage();
-  const [data, setData] = useState<ReportData | null>(null);
-  const [loading, setLoading] = useState(true);
+  
+  const { data, isLoading: loading } = useWeeklyReportQuery(companyId, isAdmin);
 
-  useEffect(() => {
-    if (!companyId || !isAdmin) {
-      setLoading(false);
-      return;
-    }
-    (async () => {
-      try {
-        const { data: result, error } = await supabase.rpc("get_weekly_report", {
-          p_company_id: companyId,
-        });
-        if (!error && result) setData(result as unknown as ReportData);
-      } catch (e) {
-        console.error("Weekly report error:", e);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [companyId, isAdmin]);
 
   if (!isAdmin) return null;
   if (loading) {

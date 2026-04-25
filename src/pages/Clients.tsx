@@ -1,8 +1,9 @@
 import { useState, useMemo, useRef } from "react";
 import { ListCardSkeleton } from "@/components/ui/skeleton-card";
 import { useCatalog } from "@/hooks/useCatalog";
-import { useClients, Client } from "@/contexts/ClientsContext";
-import { useProjects } from "@/contexts/ProjectsContext";
+import { Client } from "@/contexts/ClientsContext";
+import { useClientsQuery } from "@/hooks/queries/useClientsQuery";
+import { useProjectsQuery } from "@/hooks/queries/useProjectsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
@@ -33,9 +34,10 @@ const PAGE_SIZE = 12;
 
 export default function Clients() {
   const { t } = useLanguage();
-  const { clients, loading, addClient, updateClient, deleteClient } = useClients();
-  const { projects } = useProjects();
-  const { canDelete, canEdit } = useUserRole();
+  const { companyId, canDelete, canEdit } = useUserRole();
+  const { clients, isLoading: loading, createClientMutation, updateClientMutation, deleteClientMutation } = useClientsQuery(companyId);
+  const { projects } = useProjectsQuery(companyId);
+
   const { toast } = useToast();
   const { items: catalogServices } = useCatalog("lead_service");
   const [search, setSearch] = useState('');
@@ -157,30 +159,32 @@ export default function Clients() {
       }
 
       if (editingClient) {
-        const updates: Partial<Omit<Client, 'id' | 'companyId'>> = {
-          clientName: form.clientName.trim(),
-          contactName: form.contactName.trim() || null,
-          primaryEmail: form.primaryEmail.trim() || null,
-          primaryPhone: form.primaryPhone.trim() || null,
+        const updates: any = {
+          client_name: form.clientName.trim(),
+          contact_name: form.contactName.trim() || null,
+          primary_email: form.primaryEmail.trim() || null,
+          primary_phone: form.primaryPhone.trim() || null,
           address: form.address.trim() || null,
           website: form.website.trim() || null,
-          serviceType: form.serviceType || null,
+          service_type: form.serviceType || null,
           notes: form.notes.trim() || null,
         };
-        if (logoUrl !== undefined) updates.logoUrl = logoUrl;
-        await updateClient(editingClient.id, updates);
+        if (logoUrl !== undefined) updates.logo_url = logoUrl;
+        await updateClientMutation.mutateAsync({ id: editingClient.id, updates });
         toast({ title: t.clients.toasts.updated });
       } else {
-        await addClient({
-          clientName: form.clientName.trim(),
-          contactName: form.contactName.trim() || null,
-          primaryEmail: form.primaryEmail.trim() || null,
-          primaryPhone: form.primaryPhone.trim() || null,
+        if (!companyId) return;
+        await createClientMutation.mutateAsync({
+          company_id: companyId,
+          client_name: form.clientName.trim(),
+          contact_name: form.contactName.trim() || null,
+          primary_email: form.primaryEmail.trim() || null,
+          primary_phone: form.primaryPhone.trim() || null,
           address: form.address.trim() || null,
           website: form.website.trim() || null,
-          serviceType: form.serviceType || null,
+          service_type: form.serviceType || null,
           notes: form.notes.trim() || null,
-          logoUrl: logoUrl || null,
+          logo_url: logoUrl || null,
         });
         toast({ title: t.clients.toasts.created });
       }
@@ -195,7 +199,7 @@ export default function Clients() {
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      await deleteClient(deleteId);
+      await deleteClientMutation.mutateAsync(deleteId);
       toast({ title: t.clients.toasts.deleted });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });

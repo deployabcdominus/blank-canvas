@@ -10,7 +10,8 @@ import { ProposalCard } from "@/components/ProposalCard";
 import { ProposalsControlBar, type ProposalSortKey, type ViewMode } from "@/components/proposals/ProposalsControlBar";
 import { ProposalsTableView } from "@/components/proposals/ProposalsTableView";
 import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPagination";
-import { useProposals, type Proposal } from "@/contexts/ProposalsContext";
+import { type Proposal } from "@/contexts/ProposalsContext";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
 import { useClients } from "@/contexts/ClientsContext";
 import { useLeads } from "@/contexts/LeadsContext";
@@ -24,12 +25,15 @@ import { FileText, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 const Proposals = () => {
-  const { proposals, loading, addProposal, updateProposal, deleteProposal } = useProposals();
+  const { companyId, canEdit, canDelete } = useUserRole();
+  const { proposalsData, isLoading: loading, createProposalMutation, updateProposalMutation, deleteProposalMutation } = useProposalsQuery(companyId);
   const { addOrder } = useWorkOrders();
   const { clients, addClient, refreshClients } = useClients();
   const { leads, updateLead } = useLeads();
   const { company } = useCompany();
-  const { canEdit, canDelete } = useUserRole();
+  const proposals = proposalsData.proposals;
+
+
   const limits = usePlanLimits();
   const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -47,12 +51,15 @@ const Proposals = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
 
-  const handleAdd = async (data: any) => { await addProposal(data); };
+  const handleAdd = async (data: any) => { 
+    if (!companyId) return;
+    await createProposalMutation.mutateAsync({ ...data, company_id: companyId }); 
+  };
 
   const handleEdit = async (data: any) => {
     const { id, ...rest } = data;
     const previousProposal = proposals.find(p => p.id === id);
-    await updateProposal(id, rest);
+    await updateProposalMutation.mutateAsync({ id, updates: rest });
 
     // Auto-create client + work order when manually approved
     if (rest.status === 'Aprobada' && previousProposal?.status !== 'Aprobada') {
@@ -146,7 +153,7 @@ const Proposals = () => {
     }
   };
 
-  const handleDelete = async (id: string) => { await deleteProposal(id); toast.success(t.proposals.toasts.deleted); };
+  const handleDelete = async (id: string) => { await deleteProposalMutation.mutateAsync(id); toast.success(t.proposals.toasts.deleted); };
 
   const handleCreateOrder = async (proposal: Proposal) => {
     if (proposal.hasOrder) {

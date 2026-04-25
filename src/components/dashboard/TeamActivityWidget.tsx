@@ -1,19 +1,9 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Activity } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
-
-interface AuditEntry {
-  id: string;
-  user_name: string;
-  action: string;
-  entity_type: string;
-  entity_label: string | null;
-  created_at: string;
-}
+import { useAuditLogsQuery } from "@/hooks/queries/useAuditLogsQuery";
 
 function timeAgoFn(dateStr: string, labels: { now: string; minutes: string; hours: string; days: string }): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -38,22 +28,9 @@ function getInitials(name: string) {
 export function TeamActivityWidget() {
   const { t } = useLanguage();
   const tc = t.teamActivity;
-  const [entries, setEntries] = useState<AuditEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  const { data: entries = [], isLoading: loading } = useAuditLogsQuery(null, 5);
 
-  useEffect(() => {
-    const load = async () => {
-      const { data, error } = await supabase
-        .from("audit_logs")
-        .select("id, user_name, action, entity_type, entity_label, created_at")
-        .order("created_at", { ascending: false })
-        .limit(5);
-
-      if (!error && data) setEntries(data as AuditEntry[]);
-      setLoading(false);
-    };
-    load();
-  }, []);
 
   return (
     <motion.div

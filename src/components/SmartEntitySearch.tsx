@@ -1,18 +1,13 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Plus, Building2, UserCircle } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { useEntitySearchQuery, type EntityResult } from "@/hooks/queries/useEntitySearchQuery";
 
-export interface EntityResult {
-  id: string;
-  name: string;
-  type: "client" | "lead";
-  logoUrl?: string | null;
-}
+export type { EntityResult };
 
 interface SmartEntitySearchProps {
   value: EntityResult | null;
@@ -31,57 +26,16 @@ export const SmartEntitySearch: React.FC<SmartEntitySearchProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<EntityResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const search = useCallback(async (term: string) => {
-    if (term.length < 1) { setResults([]); return; }
-    setLoading(true);
-    try {
-      const pattern = `%${term}%`;
-      const [clientsRes, leadsRes] = await Promise.all([
-        supabase
-          .from("clients")
-          .select("id, client_name, logo_url")
-          .ilike("client_name", pattern)
-          .limit(5),
-        supabase
-          .from("leads")
-          .select("id, name, company, logo_url, status")
-          .or(`name.ilike.${pattern},company.ilike.${pattern}`)
-          .is("deleted_at", null)
-          .limit(5),
-      ]);
-
-      const mapped: EntityResult[] = [
-        ...(clientsRes.data || []).map((c: any) => ({
-          id: c.id,
-          name: c.client_name,
-          type: "client" as const,
-          logoUrl: c.logo_url,
-        })),
-        ...(leadsRes.data || []).map((l: any) => ({
-          id: l.id,
-          name: l.company || l.name,
-          type: "lead" as const,
-          logoUrl: l.logo_url,
-        })),
-      ];
-      setResults(mapped);
-    } catch (e) {
-      console.error("SmartEntitySearch error:", e);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => search(query), 250);
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [query, search]);
+    const timer = setTimeout(() => setDebouncedQuery(query), 250);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const { data: results = [], isLoading: loading } = useEntitySearchQuery(debouncedQuery);
+
 
   const handleSelect = (entity: EntityResult) => {
     onSelect(entity);
@@ -97,7 +51,6 @@ export const SmartEntitySearch: React.FC<SmartEntitySearchProps> = ({
   const handleClear = () => {
     onSelect(null);
     setQuery("");
-    setResults([]);
   };
 
   return (
