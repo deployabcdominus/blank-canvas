@@ -34,7 +34,6 @@ export default function Settings() {
   const { user } = useAuth();
   const { settings, updateSettingsMutation } = useUserSettingsQuery(user?.id);
   const updateSettings = (updates: any) => updateSettingsMutation.mutate(updates);
-  const { user } = useAuth();
   const { isAdmin, isSuperadmin, role } = useUserRole();
   const { company, updateCompanyName, updateCompanySettings } = useCompany();
   const { t, locale } = useLanguage();
