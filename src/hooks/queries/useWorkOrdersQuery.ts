@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { WorkOrdersService, WorkOrderInsert, WorkOrderUpdate } from '@/services/work-orders.service';
-import { Database } from '@/integrations/supabase/types';
+import { Database, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 
 interface WorkOrderMapped {
@@ -31,8 +31,8 @@ interface WorkOrderMapped {
   trim_cap_spec: string;
   led_mfg_spec: string;
   power_supply_spec: string;
-  responsible_staff: string | null;
-  qc_checklist: any | null;
+  responsible_staff: Json | null;
+  qc_checklist: Json | null;
   wo_number: string | null;
   contact_name: string;
   contact_phone: string;
