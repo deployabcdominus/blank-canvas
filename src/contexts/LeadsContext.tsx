@@ -61,35 +61,46 @@ export const useLeads = () => {
 
 const PAGE_SIZE = 500;
 
-const mapRow = (item: any): Lead => {
-  // item can be LeadRow with joined clients
-  const client = (item as any).clients;
+type LeadWithClient = LeadRow & {
+  clients?: {
+    client_name: string;
+    contact_name: string | null;
+    primary_phone: string | null;
+    primary_email: string | null;
+    address: string | null;
+    website: string | null;
+    logo_url: string | null;
+  } | null;
+};
+
+const mapRow = (item: LeadWithClient): Lead => {
+  const client = item.clients;
   const hasClient = !!client && !!item.client_id;
 
   return {
     id: item.id,
-    name: hasClient ? (client.contact_name || client.client_name || item.name) : (item.name || ''),
-    company: hasClient ? (client.client_name || item.company || '') : (item.company || ''),
+    name: hasClient && client ? (client.contact_name || client.client_name || item.name) : (item.name || ''),
+    company: hasClient && client ? (client.client_name || item.company || '') : (item.company || ''),
     service: item.service || '',
     status: item.status || 'Nuevo',
     contact: {
-      phone: hasClient ? (client.primary_phone || item.phone || '') : (item.phone || ''),
-      email: hasClient ? (client.primary_email || item.email || '') : (item.email || ''),
-      location: hasClient ? (client.address || item.location || '') : (item.location || ''),
+      phone: hasClient && client ? (client.primary_phone || item.phone || '') : (item.phone || ''),
+      email: hasClient && client ? (client.primary_email || item.email || '') : (item.email || ''),
+      location: hasClient && client ? (client.address || item.location || '') : (item.location || ''),
     },
     value: item.value || '',
     daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
     source: item.source || undefined,
     notes: item.notes || undefined,
-    website: hasClient ? (client.website || item.website || undefined) : (item.website || undefined),
-    logoUrl: hasClient ? (client.logo_url || item.logo_url || undefined) : (item.logo_url || undefined),
+    website: hasClient && client ? (client.website || item.website || undefined) : (item.website || undefined),
+    logoUrl: hasClient && client ? (client.logo_url || item.logo_url || undefined) : (item.logo_url || undefined),
     companyId: item.company_id || undefined,
     createdByUserId: item.created_by_user_id || undefined,
     assignedToUserId: item.assigned_to_user_id || undefined,
     clientId: item.client_id || undefined,
     projectId: item.project_id || undefined,
-    resolvedName: hasClient ? (client.contact_name || client.client_name) : undefined,
-    resolvedCompany: hasClient ? client.client_name : undefined,
+    resolvedName: hasClient && client ? (client.contact_name || client.client_name) : undefined,
+    resolvedCompany: hasClient && client ? client.client_name : undefined,
   };
 };
 
