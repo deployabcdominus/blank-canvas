@@ -12,15 +12,15 @@ export const es: TranslationKeys = {
       goToDashboard: "Ir al Dashboard",
     },
     hero: {
-      badge: "Gestión multi-industria",
-      titleLine1: "La plataforma para líderes",
-      titleLine2: "de industria.",
+      badge: "El Hub #1 para Negocios de Servicios",
+      titleLine1: "Automatiza tu operación.",
+      titleLine2: "Escala tus resultados.",
       subtitle:
-        "Gestión de IT, HVAC y Señalética en una sola interfaz inteligente. Personalización total, eficiencia absoluta.",
-      ctaPrimary: "Activar Ahora",
-      ctaSecondary: "Ver cómo funciona",
+        "La plataforma todo-en-uno para gestionar IT, HVAC y Señalética con precisión absoluta. Deja de perder tiempo y empieza a crecer hoy.",
+      ctaPrimary: "Empezar Ahora",
+      ctaSecondary: "Ver Demo",
     },
-    trusted: "Empresas que confían en SignFlow",
+    trusted: "Únete a más de 500 líderes de industria",
     industries: {
       badge: "Industrias",
       titleLine1: "Tu industria, tu lenguaje,",
