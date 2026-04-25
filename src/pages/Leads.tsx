@@ -62,7 +62,7 @@ const Leads = () => {
 
   const handleAddLead = async (leadData: any) => {
     try {
-      await addLead({
+      await createLeadMutation.mutateAsync({
         name: leadData.name,
         company: leadData.company,
         service: leadData.signType,
