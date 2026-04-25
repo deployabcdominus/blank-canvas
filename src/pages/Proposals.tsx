@@ -31,6 +31,8 @@ const Proposals = () => {
   const { clients, addClient, refreshClients } = useClients();
   const { leads, updateLead } = useLeads();
   const { company } = useCompany();
+  const proposals = proposalsData.proposals;
+
 
   const limits = usePlanLimits();
   const { t } = useLanguage();
