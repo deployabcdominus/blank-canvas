@@ -173,7 +173,9 @@ export default function Clients() {
         await updateClientMutation.mutateAsync({ id: editingClient.id, updates });
         toast({ title: t.clients.toasts.updated });
       } else {
-        await addClient({
+        if (!companyId) return;
+        await createClientMutation.mutateAsync({
+          company_id: companyId,
           clientName: form.clientName.trim(),
           contactName: form.contactName.trim() || null,
           primaryEmail: form.primaryEmail.trim() || null,
