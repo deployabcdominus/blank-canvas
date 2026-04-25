@@ -268,6 +268,7 @@ const WorkOrders = () => {
                     index={i}
                     assigneeName={order.assignedToUserId ? profileMap[order.assignedToUserId] : undefined}
                     canDelete={canDelete}
+                    canEdit={canEdit}
                     onOpen={(o) => setSheetOrder(o)}
                     onGeneratePOI={generatePOIToken}
                     onPrintSheet={(o) => setSheetOrder(o)}
