@@ -37,7 +37,7 @@ export const useInstallations = () => {
   return context;
 };
 
-const mapRow = (row: any): Installation => {
+const mapRow = (row: InstallationRow): Installation => {
   // Parse scheduled_date into date and time parts
   let scheduledDate = '';
   let scheduledTime = '';
@@ -75,26 +75,28 @@ export const InstallationsProvider = ({ children }: { children: ReactNode }) => 
 
   const fetchInstallations = useCallback(async () => {
     if (!user) { setInstallations([]); setLoading(false); return; }
-    const { data, error } = await supabase
-      .from('installations')
-      .select('id, client, project, status, location, scheduled_date, team, notes, project_id')
-      .order('scheduled_date', { ascending: false });
+    const companyId = await getCompanyId();
+    if (!companyId) return;
+
+    const { data, error } = await InstallationsService.getAll(companyId);
     if (error) console.error('Error loading installations:', error);
     else setInstallations((data || []).map(mapRow));
     setLoading(false);
-  }, [user]);
+  }, [user, getCompanyId]);
 
   useEffect(() => { fetchInstallations(); }, [fetchInstallations]);
 
   const addInstallation = async (installation: Omit<Installation, "id">) => {
     if (!user) throw new Error('Not authenticated');
     const companyId = await getCompanyId();
+    if (!companyId) return;
+
     // Combine date + time into a single timestamp
     let scheduledDateTime: string | null = null;
     if (installation.scheduledDate) {
       scheduledDateTime = `${installation.scheduledDate}T${installation.scheduledTime || '00:00'}:00`;
     }
-    const { error } = await supabase.from('installations').insert({
+    const { error } = await InstallationsService.create({
       user_id: user.id,
       company_id: companyId,
       client: installation.client,
@@ -111,7 +113,7 @@ export const InstallationsProvider = ({ children }: { children: ReactNode }) => 
   };
 
   const updateInstallation = async (id: string, updates: Partial<Installation>) => {
-    const dbUpdates: any = {};
+    const dbUpdates: InstallationUpdate = {};
     if (updates.status !== undefined) dbUpdates.status = updates.status;
     if (updates.client !== undefined) dbUpdates.client = updates.client;
     if (updates.project !== undefined) dbUpdates.project = updates.project;
@@ -125,13 +127,13 @@ export const InstallationsProvider = ({ children }: { children: ReactNode }) => 
       const time = updates.scheduledTime ?? current?.scheduledTime ?? '00:00';
       if (date) dbUpdates.scheduled_date = `${date}T${time}:00`;
     }
-    const { error } = await supabase.from('installations').update(dbUpdates).eq('id', id);
+    const { error } = await InstallationsService.update(id, dbUpdates);
     if (error) throw error;
     setInstallations(prev => prev.map(i => i.id === id ? { ...i, ...updates } : i));
   };
 
   const deleteInstallation = async (id: string) => {
-    const { error } = await supabase.from('installations').delete().eq('id', id);
+    const { error } = await InstallationsService.delete(id);
     if (error) throw error;
     setInstallations(prev => prev.filter(i => i.id !== id));
   };
@@ -139,9 +141,9 @@ export const InstallationsProvider = ({ children }: { children: ReactNode }) => 
   const clearInstallations = async () => {
     if (!user) return;
     const companyId = await getCompanyId();
-    const filterCol = companyId ? 'company_id' : 'user_id';
-    const filterVal = companyId || user.id;
-    const { error } = await supabase.from('installations').delete().eq(filterCol, filterVal);
+    if (!companyId) return;
+
+    const { error } = await InstallationsService.clearAll(companyId);
     if (error) throw error;
     setInstallations([]);
   };
