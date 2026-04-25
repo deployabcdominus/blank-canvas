@@ -242,14 +242,14 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                     <Textarea
                       className="glass mt-2 min-h-[80px]"
                       defaultValue={installation.notes}
-                      readOnly={installation.status === "Completed"}
+                      readOnly={installation.status === "Completed" || !canEdit}
                     />
                   </div>
 
                     {(installation.status === "In Progress" || installation.status === "Completed") && (
                      <InstallationPhotos
                        installationId={String(installation.id)}
-                       isReadOnly={installation.status === "Completed"}
+                       isReadOnly={installation.status === "Completed" || !canEdit}
                      />
                    )}
 
@@ -289,7 +289,7 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                       <Share2 className="w-4 h-4 mr-2" />
                       {isEn ? "Share" : "Compartir"}
                     </Button>
-                    {installation.status === "In Progress" && (
+                    {installation.status === "In Progress" && canEdit && (
                       <Button 
                         onClick={() => handleMarkAsInstalled(installation.id)}
                         size="sm" 
