@@ -1,8 +1,9 @@
 import { useState, useMemo, useRef } from "react";
 import { ListCardSkeleton } from "@/components/ui/skeleton-card";
 import { useCatalog } from "@/hooks/useCatalog";
-import { useClients, Client } from "@/contexts/ClientsContext";
-import { useProjects } from "@/contexts/ProjectsContext";
+import { Client } from "@/contexts/ClientsContext";
+import { useClientsQuery } from "@/hooks/queries/useClientsQuery";
+import { useProjectsQuery } from "@/hooks/queries/useProjectsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
