@@ -124,8 +124,9 @@ const Leads = () => {
   };
 
   const handleClearLeads = async () => {
+    if (!companyId) return;
     try {
-      await clearLeads();
+      await clearLeadsMutation.mutateAsync(companyId);
       setIsConfirmClearOpen(false);
       setSelectedIds(new Set());
       toast({ title: t.leads.toasts.cleared, description: t.leads.toasts.clearedDesc });
