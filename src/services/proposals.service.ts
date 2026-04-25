@@ -74,13 +74,38 @@ export const ProposalsService = {
       .single();
 
     if (result.data) {
+      const isApproved = updates.status === 'approved' || updates.status === 'Aprobada';
+      
       await logAudit({
-        action: result.data.status === 'approved' ? 'aprobado' : 'editado',
+        action: isApproved ? 'aprobado' : 'editado',
         entityType: 'propuesta',
         entityId: result.data.id,
         entityLabel: `${result.data.client} - ${result.data.project}`,
         details: updates
       });
+
+      // Automated Notification for Approval
+      if (isApproved && result.data.company_id) {
+        // Find admins to notify them
+        const { data: admins } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .eq('company_id', result.data.company_id)
+          .eq('role', 'admin');
+
+        if (admins) {
+          for (const admin of admins) {
+            await NotificationsService.create({
+              userId: admin.user_id,
+              companyId: result.data.company_id,
+              title: "Propuesta Aprobada",
+              message: `La propuesta de ${result.data.client} ha sido aprobada por un valor de $${result.data.value}`,
+              type: 'proposal_approved',
+              link: `/proposals`
+            });
+          }
+        }
+      }
     }
 
     return result;
