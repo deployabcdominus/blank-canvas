@@ -1,34 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { CheckCircle2, FileText, AlertTriangle, Loader2, Eraser, Phone, Mail } from "lucide-react";
-
-interface ProposalPublic {
-  id: string;
-  client: string;
-  project: string | null;
-  value: number | null;
-  description: string | null;
-  status: string | null;
-  approved_at: string | null;
-  approval_token: string;
-  company_id: string | null;
-  mockup_url: string | null;
-}
-
-interface CompanyPublic {
-  name: string;
-  logo_url: string | null;
-  brand_color: string | null;
-}
-
-type PageState = "loading" | "ready" | "already_approved" | "success" | "error" | "not_found";
-
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, FileText, AlertTriangle, Loader2, Eraser, Phone, Mail, ShieldCheck, Clock, User } from "lucide-react";
+import { CheckCircle2, FileText, AlertTriangle, Loader2, Eraser, Mail, ShieldCheck, Clock, User, PenTool } from "lucide-react";
 
 interface ProposalPublic {
   id: string;
@@ -135,12 +109,15 @@ const ProposalApproval = () => {
   const getPos = (e: React.TouchEvent | React.MouseEvent) => {
     const canvas = canvasRef.current!;
     const rect = canvas.getBoundingClientRect();
-    if ("touches" in e) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+    if ("touches" in e) return { x: (e as any).touches[0].clientX - rect.left, y: (e as any).touches[0].clientY - rect.top };
     return { x: (e as React.MouseEvent).clientX - rect.left, y: (e as React.MouseEvent).clientY - rect.top };
   };
 
   const startDraw = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
+    if ("touches" in e) {
+      // Don't prevent default here to allow scroll if not drawing, 
+      // but we handle touch-none in CSS to prevent scroll while drawing
+    }
     isDrawingRef.current = true;
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
@@ -151,7 +128,6 @@ const ProposalApproval = () => {
 
   const draw = (e: React.TouchEvent | React.MouseEvent) => {
     if (!isDrawingRef.current) return;
-    e.preventDefault();
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
     const { x, y } = getPos(e);
@@ -333,7 +309,7 @@ const ProposalApproval = () => {
                     <ShieldCheck size={14} />
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Certificado Oficial</span>
                   </div>
-                  <h2 className="text-2xl font-bold tracking-tight leading-none">
+                  <h2 className="text-2xl font-bold tracking-tight leading-none text-white">
                     {proposal?.project || "Propuesta de Proyecto"}
                   </h2>
                   <p className="text-sm text-muted-foreground">ID de Propuesta: <code className="text-[11px] bg-white/5 px-1.5 py-0.5 rounded">#{proposal?.id.split('-')[0]}</code></p>
@@ -361,7 +337,7 @@ const ProposalApproval = () => {
                     {proposal.description}
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Trust badges */}
               <div className="flex items-center gap-6 pt-4 border-t border-white/5">
@@ -412,7 +388,7 @@ const ProposalApproval = () => {
                   <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                     <User size={16} className="text-primary" />
                   </div>
-                  <h3 className="font-bold">Protocolo de Firma Digital</h3>
+                  <h3 className="font-bold text-white">Protocolo de Firma Digital</h3>
                 </div>
 
                 <div className="space-y-4">
@@ -424,7 +400,7 @@ const ProposalApproval = () => {
                         value={signerName}
                         onChange={e => setSignerName(e.target.value)}
                         placeholder="Nombre completo del firmante"
-                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
                       />
                     </div>
                   </div>
