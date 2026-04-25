@@ -242,14 +242,14 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                     <Textarea
                       className="glass mt-2 min-h-[80px]"
                       defaultValue={installation.notes}
-                      readOnly={installation.status === "Completed"}
+                      readOnly={installation.status === "Completed" || !canEdit}
                     />
                   </div>
 
                     {(installation.status === "In Progress" || installation.status === "Completed") && (
                      <InstallationPhotos
                        installationId={String(installation.id)}
-                       isReadOnly={installation.status === "Completed"}
+                       isReadOnly={installation.status === "Completed" || !canEdit}
                      />
                    )}
 
