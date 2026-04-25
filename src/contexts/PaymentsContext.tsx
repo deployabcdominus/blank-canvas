@@ -42,7 +42,7 @@ export const usePayments = () => {
   return ctx;
 };
 
-const mapRow = (row: any): Payment => ({
+const mapRow = (row: PaymentRow): Payment => ({
   id: row.id,
   companyId: row.company_id,
   proposalId: row.proposal_id,
@@ -64,10 +64,10 @@ export const PaymentsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const fetchPayments = async () => {
     if (!user) { setPayments([]); setLoading(false); return; }
     try {
-      const { data, error } = await (supabase
-        .from('payments' as any)
-        .select('id, company_id, proposal_id, amount, currency, method, status, paid_at, note, created_by, created_at')
-        .order('paid_at', { ascending: false }) as any);
+      const { data, error } = await supabase
+        .from('payments')
+        .select('*')
+        .order('paid_at', { ascending: false });
       if (error) throw error;
       setPayments((data || []).map(mapRow));
     } catch (e) {
@@ -89,7 +89,7 @@ export const PaymentsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const companyId = payment.companyId || await getCompanyId();
     if (!companyId) throw new Error('No company found');
 
-    const { error } = await (supabase.from('payments' as any).insert({
+    const { error } = await supabase.from('payments').insert({
       company_id: companyId,
       proposal_id: payment.proposalId,
       amount: payment.amount,
@@ -99,13 +99,13 @@ export const PaymentsProvider: React.FC<{ children: ReactNode }> = ({ children }
       paid_at: payment.paidAt,
       note: payment.note,
       created_by: user.id,
-    }) as any);
+    });
     if (error) throw error;
     await fetchPayments();
   };
 
   const deletePayment = async (id: string) => {
-    const { error } = await (supabase.from('payments' as any).delete().eq('id', id) as any);
+    const { error } = await supabase.from('payments').delete().eq('id', id);
     if (error) throw error;
     setPayments(prev => prev.filter(p => p.id !== id));
   };
