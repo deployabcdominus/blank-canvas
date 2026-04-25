@@ -124,7 +124,7 @@ const WorkOrders = () => {
   const confirmDeleteSingle = async () => {
     if (!deleteConfirmId) return;
     try {
-      await deleteOrder(deleteConfirmId);
+      await deleteWorkOrderMutation.mutateAsync(deleteConfirmId);
       toast.success("Order deleted");
     } catch {
       toast.error("Could not delete order");
