@@ -66,6 +66,18 @@ export const LeadsService = {
         entityLabel: result.data.name,
         details: updates
       });
+
+      // Automated Notification: If assigned to a new user
+      if (updates.assigned_to_user_id && updates.assigned_to_user_id !== result.data.assigned_to_user_id) {
+        await NotificationsService.create({
+          userId: updates.assigned_to_user_id,
+          companyId: result.data.company_id,
+          title: "Nuevo Lead Asignado",
+          message: `Se te ha asignado el lead: ${result.data.name}`,
+          type: 'lead_assigned',
+          link: `/leads`
+        });
+      }
     }
 
     return result;
