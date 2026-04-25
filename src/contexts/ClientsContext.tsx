@@ -42,7 +42,7 @@ export const useClientsSafe = () => {
   return ctx ?? { clients: [], loading: false, addClient: async () => { throw new Error('No ClientsProvider'); }, updateClient: async () => {}, deleteClient: async () => {}, refreshClients: async () => {} } as ClientsContextType;
 };
 
-const mapRow = (row: any): Client => ({
+const mapRow = (row: ClientRow): Client => ({
   id: row.id,
   companyId: row.company_id,
   clientName: row.client_name,
