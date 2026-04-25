@@ -141,7 +141,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const updateProject = async (id: string, updates: Partial<Omit<Project, 'id' | 'companyId'>>) => {
-    const dbUpdates: any = {};
+    const dbUpdates: ProjectUpdate = {};
     if (updates.projectName !== undefined) dbUpdates.project_name = updates.projectName;
     if (updates.installAddress !== undefined) dbUpdates.install_address = updates.installAddress;
     if (updates.status !== undefined) dbUpdates.status = updates.status;
