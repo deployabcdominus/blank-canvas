@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { UserPlus, Loader2, Check, ChevronRight, Star, ArrowRight, Zap } from "lucide-react";
+import { UserPlus, Loader2, Check, ChevronRight, Star, ArrowRight, Zap, Eye, EyeOff, Building2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { hasCompany } from "@/lib/auth-helpers";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,6 +21,7 @@ const Register = () => {
   const { signUp } = useAuth();
   const { locale } = useLanguage();
   const isEn = locale === "en";
+  const [showPassword, setShowPassword] = useState(false);
 
   const plans = [
     {
@@ -95,7 +96,6 @@ const Register = () => {
         return;
       }
 
-      // Not authorized — but we won't redirect, we'll show pricing
       setIsAuthorized(false);
       setIsValidating(false);
     };
@@ -140,7 +140,6 @@ const Register = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        // Set plan context and allow registration
         navigate(`/register?plan=${tierKey}`, { replace: true });
         return;
       }
@@ -160,89 +159,89 @@ const Register = () => {
   if (isValidating) {
     return (
       <PageTransition>
-        <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-          <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+        <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/20 rounded-full blur-[100px]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary relative z-10" />
         </div>
       </PageTransition>
     );
   }
 
-  // ── Not authorized: show pricing instead of blocking ──
   if (!isAuthorized) {
     return (
       <PageTransition>
-        <div className="min-h-screen bg-[#050505] text-zinc-200 px-5 py-20 overflow-x-hidden">
-          {/* Background */}
-          <div className="fixed inset-0 pointer-events-none -z-10">
-            <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.04),transparent_50%)]" />
+        <div className="min-h-screen bg-background text-foreground px-5 py-20 overflow-x-hidden relative">
+          <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_60%)]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[radial-gradient(ellipse_at_center,hsl(265,85%,60%,0.05),transparent_60%)]" />
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            {/* Header */}
+          <div className="max-w-6xl mx-auto relative z-10">
             <div className="flex items-center justify-between mb-16">
-              <a href="/" className="flex items-center gap-1.5" aria-label="Sign Flow">
-                <div className="w-8 h-8 overflow-hidden">
+              <button onClick={() => navigate("/")} className="flex items-center gap-2.5 group" aria-label="Sign Flow">
+                <div className="w-10 h-10 p-2 glass-card border-primary/20 flex items-center justify-center transition-all group-hover:border-primary/40">
                   <img src={brandLogoSrc} alt="Sign Flow" className="w-full h-full object-contain" />
                 </div>
-                <span className="font-bold text-lg text-zinc-100">Sign Flow</span>
-              </a>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-zinc-500 hover:text-zinc-200 border border-white/[0.06] rounded-full px-5 text-[13px]">
+                <span className="font-bold text-xl tracking-tight">Sign Flow</span>
+              </button>
+              <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-muted-foreground hover:text-foreground border border-white/10 rounded-full px-6 transition-all">
                 {isEn ? "Log In" : "Iniciar Sesión"}
               </Button>
             </div>
 
-            {/* Title */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
-              <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-400/60 mb-6 px-3.5 py-1.5 rounded-full border border-orange-500/10 bg-orange-500/[0.04]">
-                <Zap className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-6 px-4 py-2 rounded-full border border-primary/20 bg-primary/5">
+                <Zap className="w-3.5 h-3.5 fill-current" />
                 {isEn ? "Choose your plan to get started" : "Elige tu plan para comenzar"}
               </span>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-4">
-                {isEn ? "First, choose the ideal plan" : "Primero, elige el plan ideal"}
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
+                {isEn ? "The perfect solution" : "La solución perfecta"}
                 <br className="hidden sm:block" />
-                <span className="bg-gradient-to-r from-orange-300 via-orange-500 to-amber-500 bg-clip-text text-transparent">{isEn ? " for your business" : " para tu negocio"}</span>
+                <span className="text-primary">{isEn ? " for your installation business" : " para tu negocio de instalaciones"}</span>
               </h1>
-              <p className="text-zinc-400 text-[15px] max-w-lg mx-auto">
-                {isEn ? "Select your plan and create your account. No commitments, cancel anytime." : "Selecciona tu plan y crea tu cuenta. Sin compromisos, cancela cuando quieras."}
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                {isEn ? "Select the plan that fits your needs and start scaling today." : "Selecciona el plan que mejor se adapte a tus necesidades y comienza a escalar hoy mismo."}
               </p>
             </motion.div>
 
-            {/* Plans grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch max-w-5xl mx-auto">
               {plans.map((plan, i) => (
                 <motion.div
                   key={plan.key}
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * i, duration: 0.6 }}
-                  className={`group relative flex flex-col rounded-2xl transition-all duration-500 ${
+                  className={`group relative flex flex-col rounded-3xl transition-all duration-500 overflow-hidden ${
                     plan.recommended
-                      ? "border-2 border-orange-500/25 bg-[#0a0a0a] md:scale-[1.04] shadow-[0_0_40px_-10px_rgba(249,115,22,0.08)]"
-                      : "border border-white/[0.04] bg-[#0a0a0a] opacity-80 hover:opacity-100"
+                      ? "border-2 border-primary bg-primary/5 md:scale-[1.05] shadow-[0_20px_50px_-12px_rgba(139,92,246,0.15)] z-20"
+                      : "border border-white/10 bg-card/40 hover:bg-card/60"
                   }`}
                 >
                   {plan.recommended && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                      <span className="bg-gradient-to-b from-orange-500 to-orange-600 text-white text-[10px] font-bold px-5 py-1.5 rounded-full shadow-[0_2px_10px_rgba(249,115,22,0.25)] flex items-center gap-1.5">
-                        <Star className="w-3 h-3 fill-current" /> {isEn ? "Most Popular" : "Más Popular"}
+                    <div className="absolute top-0 left-0 right-0 h-1.5 bg-primary" />
+                  )}
+                  {plan.recommended && (
+                    <div className="absolute top-5 right-5 z-10">
+                      <span className="bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-current" /> {isEn ? "Popular" : "Popular"}
                       </span>
                     </div>
                   )}
 
-                  <div className="relative z-10 p-8 sm:p-9">
-                    <h3 className="text-xl font-bold mb-1 text-white">{plan.name}</h3>
-                    {plan.recommended && <p className="text-[11px] text-orange-400/40 font-medium mb-4">{isEn ? "Chosen by growing businesses" : "Elegido por negocios en crecimiento"}</p>}
-                    {!plan.recommended && <div className="mb-4" />}
-
-                    <div className="flex items-baseline gap-1.5 mb-7">
+                  <div className="p-8 sm:p-10 flex flex-col h-full">
+                    <h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
+                    
+                    <div className="flex items-baseline gap-1.5 mb-8">
                       <span className="text-5xl font-extrabold tracking-tight">${plan.price}</span>
-                      <span className="text-sm text-zinc-600 font-medium">{isEn ? "/mo" : "/mes"}</span>
+                      <span className="text-sm text-muted-foreground font-medium">{isEn ? "/month" : "/mes"}</span>
                     </div>
 
-                    <ul className="space-y-4 mb-10">
+                    <ul className="space-y-4 mb-10 flex-grow">
                       {plan.features.map((f) => (
-                        <li key={f} className="flex items-start gap-3 text-[13px] text-zinc-400">
-                          <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.recommended ? "text-orange-400/60" : "text-zinc-600"}`} />
+                        <li key={f} className="flex items-start gap-3 text-[14px] text-muted-foreground group-hover:text-foreground transition-colors">
+                          <div className={`mt-1 p-0.5 rounded-full ${plan.recommended ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+                            <Check className="w-3 h-3" />
+                          </div>
                           {f}
                         </li>
                       ))}
@@ -251,23 +250,23 @@ const Register = () => {
                     <Button
                       onClick={() => handleChoosePlan(plan.key)}
                       disabled={loadingPlan === plan.key}
-                      className={`w-full rounded-xl h-12 font-semibold text-[14px] transition-all duration-500 ${
+                      className={`w-full rounded-2xl h-14 font-bold text-base transition-all duration-300 ${
                         plan.recommended
-                          ? "bg-gradient-to-b from-orange-500 to-orange-600 text-white hover:from-orange-500 hover:to-orange-700 shadow-[0_2px_12px_rgba(249,115,22,0.15)]"
-                          : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/[0.04] hover:border-orange-500/10"
+                          ? "btn-violet shadow-xl shadow-primary/20"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-white/5"
                       }`}
                     >
-                      {loadingPlan === plan.key ? (isEn ? "Processing..." : "Procesando...") : (isEn ? `Choose ${plan.name}` : `Elegir ${plan.name}`)}
-                      {loadingPlan !== plan.key && <ChevronRight className="w-4 h-4 ml-1" />}
+                      {loadingPlan === plan.key ? (isEn ? "Wait..." : "Espera...") : (isEn ? `Get ${plan.name}` : `Elegir ${plan.name}`)}
+                      {loadingPlan !== plan.key && <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />}
                     </Button>
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="text-center mt-10 text-[13px] text-zinc-600">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="text-center mt-12 text-muted-foreground">
               {isEn ? "Already have an account?" : "¿Ya tienes una cuenta?"}{" "}
-              <button onClick={() => navigate("/login")} className="text-orange-400/70 hover:text-orange-400 transition-colors">{isEn ? "Log in" : "Inicia sesión"}</button>
+              <button onClick={() => navigate("/login")} className="text-primary font-bold hover:underline underline-offset-4">{isEn ? "Log in" : "Inicia sesión"}</button>
             </motion.p>
           </div>
         </div>
@@ -277,56 +276,79 @@ const Register = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex items-center justify-center px-6">
-        <div className="w-full max-w-md">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-6 glass-card rounded-full flex items-center justify-center">
-              <UserPlus className="w-8 h-8 text-soft-blue-foreground" />
-            </div>
-            <h1 className="text-3xl font-bold mb-2">{isEn ? "Create account" : "Crear cuenta"}</h1>
-            <p className="text-muted-foreground">{isEn ? "Sign up to get started on SignFlow" : "Regístrate para comenzar en SignFlow"}</p>
+      <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden py-12">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+        
+        <div className="w-full max-w-md relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-10">
+            <motion.div 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", damping: 12 }}
+              className="w-16 h-16 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5"
+            >
+              <UserPlus className="w-8 h-8 text-primary" />
+            </motion.div>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">{isEn ? "Create your account" : "Crea tu cuenta"}</h1>
+            <p className="text-muted-foreground/80">{isEn ? "Join SignFlow and transform your business" : "Únete a SignFlow y transforma tu negocio"}</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card p-8">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="fullName">{isEn ? "Full name" : "Nombre completo"}</Label>
-                <Input id="fullName" type="text" placeholder={isEn ? "Enter your name" : "Ingresa tu nombre"} value={formData.fullName}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))} required className="glass" />
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card p-8 border-white/10 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 gap-5">
+                <div className="space-y-2">
+                  <Label htmlFor="fullName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Full name" : "Nombre completo"}</Label>
+                  <Input id="fullName" type="text" placeholder={isEn ? "Your name" : "Tu nombre"} value={formData.fullName}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))} required className="glass input-glow h-11" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="companyName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Company name" : "Empresa"}</Label>
+                  <div className="relative">
+                    <Input id="companyName" type="text" placeholder={isEn ? "Your business" : "Tu negocio"} value={formData.companyName}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, companyName: e.target.value }))} required className="glass input-glow h-11 pl-10" />
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  </div>
+                </div>
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="companyName">{isEn ? "Company name" : "Nombre de la empresa"}</Label>
-                <Input id="companyName" type="text" placeholder={isEn ? "Enter your company name" : "Ingresa el nombre de la empresa"} value={formData.companyName}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, companyName: e.target.value }))} required className="glass" />
+                <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Email</Label>
+                <Input id="email" type="email" placeholder="email@ejemplo.com" value={formData.email}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} required className="glass input-glow h-11" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder={isEn ? "Enter your email" : "Ingresa tu email"} value={formData.email}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} required className="glass" />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Password" : "Contraseña"}</Label>
+                  <div className="relative">
+                    <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••" value={formData.password}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))} required className="glass input-glow h-11 pr-10" />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Confirm" : "Confirmar"}</Label>
+                  <Input id="confirmPassword" type={showPassword ? "text" : "password"} placeholder="••••••" value={formData.confirmPassword}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))} required className="glass input-glow h-11" />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">{isEn ? "Password" : "Contraseña"}</Label>
-                <Input id="password" type="password" placeholder={isEn ? "Minimum 6 characters" : "Mínimo 6 caracteres"} value={formData.password}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))} required className="glass" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">{isEn ? "Confirm password" : "Confirmar contraseña"}</Label>
-                <Input id="confirmPassword" type="password" placeholder={isEn ? "Repeat your password" : "Repite la contraseña"} value={formData.confirmPassword}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))} required className="glass" />
-              </div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button type="submit" className="w-full btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover" size="lg" disabled={isLoading}>
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  {isLoading ? (isEn ? "Creating account..." : "Creando cuenta...") : (isEn ? "Create account" : "Crear cuenta")}
+
+              <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="pt-2">
+                <Button type="submit" className="w-full btn-violet h-12 shadow-lg shadow-primary/20" size="lg" disabled={isLoading}>
+                  {isLoading ? (isEn ? "Creating..." : "Creando...") : (isEn ? "Create account" : "Crear cuenta")}
                 </Button>
               </motion.div>
             </form>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }} className="text-center mt-6">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }} className="text-center mt-8">
             <p className="text-sm text-muted-foreground">
               {isEn ? "Already have an account?" : "¿Ya tienes una cuenta?"}{" "}
-              <button onClick={() => navigate("/login")} className="text-soft-blue-foreground hover:underline">{isEn ? "Log in" : "Inicia sesión"}</button>
+              <button onClick={() => navigate("/login")} className="font-semibold text-primary hover:underline underline-offset-4">{isEn ? "Log in" : "Inicia sesión"}</button>
             </p>
           </motion.div>
         </div>
