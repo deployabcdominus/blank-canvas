@@ -59,23 +59,53 @@ export const useLeadsQuery = (companyId: string | null) => {
   const updateLeadMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: LeadUpdate }) => 
       LeadsService.update(id, updates),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['leads', companyId] });
-      toast.success('Lead actualizado correctamente');
+    onMutate: async ({ id, updates }) => {
+      await queryClient.cancelQueries({ queryKey: ['leads', companyId] });
+      const previousLeads = queryClient.getQueryData(['leads', companyId]);
+      
+      queryClient.setQueryData(['leads', companyId], (old: any[] | undefined) => {
+        return old?.map(lead => lead.id === id ? { ...lead, ...updates } : lead);
+      });
+      
+      return { previousLeads };
     },
-    onError: (error: any) => {
+    onError: (error: any, _variables, context) => {
+      if (context?.previousLeads) {
+        queryClient.setQueryData(['leads', companyId], context.previousLeads);
+      }
       toast.error('Error al actualizar el lead: ' + error.message);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads', companyId] });
+    },
+    onSuccess: () => {
+      toast.success('Lead actualizado correctamente');
     },
   });
 
   const deleteLeadMutation = useMutation({
     mutationFn: (id: string) => LeadsService.softDelete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['leads', companyId] });
-      toast.success('Lead enviado a la papelera');
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['leads', companyId] });
+      const previousLeads = queryClient.getQueryData(['leads', companyId]);
+      
+      queryClient.setQueryData(['leads', companyId], (old: any[] | undefined) => {
+        return old?.filter(lead => lead.id !== id);
+      });
+      
+      return { previousLeads };
     },
-    onError: (error: any) => {
+    onError: (error: any, _variables, context) => {
+      if (context?.previousLeads) {
+        queryClient.setQueryData(['leads', companyId], context.previousLeads);
+      }
       toast.error('Error al eliminar el lead: ' + error.message);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads', companyId] });
+    },
+    onSuccess: () => {
+      toast.success('Lead enviado a la papelera');
     },
   });
 
