@@ -1,6 +1,7 @@
-import { useProductionSteps } from "@/hooks/useProductionSteps";
+import { useProductionStepsByOrderQuery } from "@/hooks/queries/useProductionStepsByOrderQuery";
 import { Check, Zap, Clock, User, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 interface Props {
   orderId: string;
@@ -8,7 +9,15 @@ interface Props {
 }
 
 export default function LiveProductionTimeline({ orderId, compact = false }: Props) {
-  const { steps, loading, syncing, progress } = useProductionSteps(orderId);
+  const { data: steps = [], isLoading: loading } = useProductionStepsByOrderQuery(orderId);
+  
+  const progress = useMemo(() => {
+    if (steps.length === 0) return 0;
+    const completed = steps.filter(s => s.status === "completed").length;
+    return Math.round((completed / steps.length) * 100);
+  }, [steps]);
+  
+  const syncing = false; // We don't have a syncing state here easily with React Query unless we use isFetching
 
   if (loading) {
     return (
