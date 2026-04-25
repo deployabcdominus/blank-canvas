@@ -86,6 +86,20 @@ const SectionBadge = ({ icon: Icon, label }: { icon: any; label: string }) => (
   </span>
 );
 
+/* ─── Trust Stars ─── */
+const TrustStars = () => (
+  <div className="flex flex-col items-center gap-3 mb-10">
+    <div className="flex items-center gap-1">
+      {[...Array(5)].map((_, i) => (
+        <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+      ))}
+    </div>
+    <p className="text-[12px] font-medium text-zinc-500 tracking-wide uppercase">
+      Rated 4.9/5 by 500+ Businesses
+    </p>
+  </div>
+);
+
 /* ═══════════════════════════════════════════════════════ */
 /*     MACBOOK PRO MOCKUP (HERO)                           */
 /* ═══════════════════════════════════════════════════════ */
