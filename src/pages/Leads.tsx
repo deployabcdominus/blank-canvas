@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
-import { useLeadsQuery, Lead } from "@/hooks/queries/useLeadsQuery";
-import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { useLeads, Lead } from "@/contexts/LeadsContext";
+import { useProposals } from "@/contexts/ProposalsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
 import { PlanLimitBanner } from "@/components/PlanLimitBanner";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { PageTransition } from "@/components/PageTransition";
 import { Sidebar } from "@/components/Sidebar";
-import { resolveCompanyId } from "@/lib/resolve-company";
 
 import { MobileMenu } from "@/components/MobileMenu";
 import { Button } from "@/components/ui/button";
@@ -35,26 +34,8 @@ const Leads = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const breakpoint = useBreakpoint();
-  const [companyId, setCompanyId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user) {
-      resolveCompanyId(user.id).then(setCompanyId);
-    }
-  }, [user]);
-
-  const { 
-    leads, 
-    isLoading: leadsLoading, 
-    createLeadMutation, 
-    deleteLeadMutation, 
-    deleteLeadsMutation, 
-    clearLeadsMutation 
-  } = useLeadsQuery(companyId);
-
-  const { proposalsData, createProposalMutation } = useProposalsQuery(companyId);
-  const proposals = proposalsData.proposals;
-  
+  const { leads, addLead, clearLeads, deleteLead, deleteLeads } = useLeads();
+  const { proposals, addProposal } = useProposals();
   const { isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const limits = usePlanLimits();
   const { t } = useLanguage();
@@ -78,55 +59,50 @@ const Leads = () => {
   const sidebarWidth = isMobile ? 0 : isTablet ? 80 : 256;
 
   const handleAddLead = async (leadData: any) => {
-    if (!user || !companyId) return;
     try {
-      await createLeadMutation.mutateAsync({
-        user_id: user.id,
-        company_id: companyId,
-        created_by_user_id: user.id,
+      await addLead({
         name: leadData.name,
         company: leadData.company,
         service: leadData.signType,
         status: "Nuevo",
-        phone: leadData.phone,
-        email: leadData.email,
-        location: leadData.address,
+        contact: { phone: leadData.phone, email: leadData.email, location: leadData.address },
         value: "Por definir",
+        daysAgo: 0,
         website: leadData.website,
-        logo_url: leadData.logoUrl,
+        logoUrl: leadData.logoUrl,
       });
-      setIsAddLeadModalOpen(false);
     } catch {
-      // toast is handled in mutation
+      toast({ title: t.leads.toasts.saveError, description: t.leads.toasts.saveErrorDesc, variant: "destructive" });
     }
   };
 
   const handleAdvanceToProposal = async (leadId: string) => {
     const lead = leads.find(l => l.id === leadId);
-    if (!lead || !user || !companyId) return;
+    if (!lead) return;
 
     if (lead.status === 'Convertido' || lead.clientId) {
       toast({ title: t.leads.toasts.alreadyConverted, description: t.leads.toasts.alreadyConvertedDesc, variant: "destructive" });
       return;
     }
 
-    try {
-      await createProposalMutation.mutateAsync({
-        company_id: companyId,
-        user_id: user.id,
-        client: lead.name,
-        project: lead.service,
-        value: parseFloat(lead.value.replace(/[^0-9.]/g, '')) || 0,
-        description: `Propuesta creada a partir del lead: ${lead.name}`,
-        status: "Borrador",
-        lead_id: lead.id,
-      });
+    await addProposal({
+      client: lead.name,
+      project: lead.service,
+      value: parseFloat(lead.value.replace(/[^0-9.]/g, '')) || 0,
+      description: `Propuesta creada a partir del lead: ${lead.name}`,
+      status: "Borrador",
+      sentDate: null,
+      sentMethod: null,
+      updatedAt: null,
+      leadId: lead.id,
+      lead: null,
+      approvedTotal: null,
+      approvedAt: null,
+      mockupUrl: null,
+    });
 
-      toast({ title: t.leads.toasts.proposalCreated, description: t.leads.toasts.proposalCreatedDesc });
-      setTimeout(() => navigate('/proposals'), 1000);
-    } catch {
-      // Error handled in mutation
-    }
+    toast({ title: t.leads.toasts.proposalCreated, description: t.leads.toasts.proposalCreatedDesc });
+    setTimeout(() => navigate('/proposals'), 1000);
   };
 
   const handleViewProposal = (proposalId: string) => {
@@ -141,13 +117,13 @@ const Leads = () => {
   };
 
   const handleClearLeads = async () => {
-    if (!companyId) return;
     try {
-      await clearLeadsMutation.mutateAsync(companyId);
+      await clearLeads();
       setIsConfirmClearOpen(false);
       setSelectedIds(new Set());
+      toast({ title: t.leads.toasts.cleared, description: t.leads.toasts.clearedDesc });
     } catch {
-      // handled in mutation
+      toast({ title: t.leads.toasts.clearError, description: t.leads.toasts.clearErrorDesc, variant: "destructive" });
     }
   };
 
@@ -159,10 +135,11 @@ const Leads = () => {
   const handleConfirmDeleteSingle = async () => {
     if (!deleteTargetId) return;
     try {
-      await deleteLeadMutation.mutateAsync(deleteTargetId);
+      await deleteLead(deleteTargetId);
       setSelectedIds(prev => { const n = new Set(prev); n.delete(deleteTargetId); return n; });
+      toast({ title: t.leads.toasts.deleted, description: t.leads.toasts.deletedDesc });
     } catch {
-      // handled in mutation
+      toast({ title: t.leads.toasts.deleteError, description: t.leads.toasts.deleteErrorDesc, variant: "destructive" });
     }
     setDeleteTargetId(null);
     setIsConfirmDeleteOpen(false);
@@ -171,10 +148,11 @@ const Leads = () => {
   const handleDeleteSelected = async () => {
     if (selectedIds.size === 0) return;
     try {
-      await deleteLeadsMutation.mutateAsync(Array.from(selectedIds));
+      await deleteLeads(Array.from(selectedIds));
+      toast({ title: `${selectedIds.size} ${t.leads.toasts.selectedDeleted}`, description: t.leads.toasts.selectedDeletedDesc });
       setSelectedIds(new Set());
     } catch {
-      // handled in mutation
+      toast({ title: t.leads.toasts.deleteError, description: t.leads.toasts.clearErrorDesc, variant: "destructive" });
     }
   };
 
