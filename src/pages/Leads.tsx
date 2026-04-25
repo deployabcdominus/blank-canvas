@@ -299,9 +299,18 @@ const Leads = () => {
           </div>
 
           <PlanLimitBanner entity="leads" />
-
-          {/* Cards */}
-          {filteredLeads.length === 0 ? (
+          
+          {isLoading ? (
+            <div className={`grid gap-5 ${
+              isMobile ? 'grid-cols-1' :
+              isTablet ? 'grid-cols-2' :
+              'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+            }`}>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ListCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : filteredLeads.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-lg font-semibold mb-2">
                 {searchTerm ? `${t.leads.emptySearch} "${searchTerm}"` : t.leads.emptyDefault}
