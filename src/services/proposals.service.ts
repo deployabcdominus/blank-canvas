@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
 import { logAudit } from '@/lib/audit';
+import { NotificationsService } from './notifications.service';
 
 export type ProposalRow = Database['public']['Tables']['proposals']['Row'];
 export type ProposalInsert = Database['public']['Tables']['proposals']['Insert'];
