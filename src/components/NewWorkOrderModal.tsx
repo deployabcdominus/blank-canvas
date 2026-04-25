@@ -17,6 +17,7 @@ import {
   ClipboardList, Factory, StickyNote, Ruler, Calendar,
 } from "lucide-react";
 import { useProposals } from "@/contexts/ProposalsContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
