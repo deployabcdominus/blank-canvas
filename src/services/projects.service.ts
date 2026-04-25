@@ -16,7 +16,7 @@ export const ProjectsService = {
       .select(`
         id, company_id, client_id, project_name, install_address, status, 
         owner_user_id, assigned_to_user_id, folder_relative_path, folder_full_path, 
-        created_at, updated_at, 
+        created_at, updated_at, deleted_at,
         clients!projects_client_id_fkey(client_name), 
         leads!leads_project_id_fkey(name, company)
       `, { count: 'exact' })
