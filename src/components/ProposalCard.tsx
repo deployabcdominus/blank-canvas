@@ -89,7 +89,12 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-muted/60 flex items-center justify-center overflow-hidden flex-shrink-0 border border-border/30">
           {logoUrl ? (
-            <img src={logoUrl} alt={companyName} className="w-full h-full object-cover" />
+            <ImageWithFallback 
+              src={logoUrl} 
+              alt={companyName} 
+              className="w-full h-full object-contain"
+              containerClassName="w-full h-full"
+            />
           ) : (
             <span className="text-xs font-bold text-muted-foreground">{initials}</span>
           )}
