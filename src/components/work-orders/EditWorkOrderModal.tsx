@@ -89,10 +89,10 @@ function Section({ title, icon, defaultOpen = true, children }: {
 }
 
 export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = false }: EditWorkOrderModalProps) {
+  const { isAdmin, companyId } = useUserRole();
   const { updateWorkOrderMutation, deleteWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
   const deleteOrder = (id: string) => deleteWorkOrderMutation.mutateAsync(id);
-  const { isAdmin, companyId } = useUserRole();
   const { items: statuses } = useCatalog("order_status");
   const { toast } = useToast();
   const { locale } = useLanguage();
