@@ -462,12 +462,14 @@ const Index = () => {
                   {L.hero.badge}
                 </motion.span>
 
+                <TrustStars />
+
                 <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-7xl font-black leading-[0.95] tracking-tighter mb-10">
                   <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
                     {L.hero.titleLine1}
                   </span>
                   <br />
-                  <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-violet-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
+                  <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
                     {L.hero.titleLine2}
                   </span>
                 </h1>
