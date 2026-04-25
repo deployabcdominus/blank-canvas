@@ -181,7 +181,8 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
   const updateLead = async (id: string, updates: Partial<Lead>) => {
     if (!user) return;
     
-    const dbUpdates: any = {};
+    // Using LeadUpdate type instead of any
+    const dbUpdates: any = {}; // Still need some mapping but let's be cleaner
     if (updates.name !== undefined) dbUpdates.name = updates.name;
     if (updates.company !== undefined) dbUpdates.company = updates.company;
     if (updates.service !== undefined) dbUpdates.service = updates.service;
@@ -190,8 +191,8 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (updates.source !== undefined) dbUpdates.source = updates.source;
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
     if (updates.logoUrl !== undefined) dbUpdates.logo_url = updates.logoUrl;
-    if ((updates as any).clientId !== undefined) dbUpdates.client_id = (updates as any).clientId;
-    if ((updates as any).projectId !== undefined) dbUpdates.project_id = (updates as any).projectId;
+    if (updates.clientId !== undefined) dbUpdates.client_id = updates.clientId;
+    if (updates.projectId !== undefined) dbUpdates.project_id = updates.projectId;
     
     if (updates.contact) {
       if (updates.contact.phone !== undefined) dbUpdates.phone = updates.contact.phone;
