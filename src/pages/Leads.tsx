@@ -333,10 +333,10 @@ const Leads = () => {
                   isMobile={isMobile}
                   selected={selectedIds.has(lead.id)}
                   onSelect={isAdmin ? handleSelect : undefined}
-                  onAdvance={handleAdvanceToProposal}
+                  onAdvance={canEdit ? handleAdvanceToProposal : (leadId) => {}}
                   onAssign={canManageLeads ? handleAssignLead : undefined}
-                  onConvert={(leadId) => setConvertLeadId(leadId)}
-                  onEdit={(l) => { setEditLead(l); setEditLeadMode(true); }}
+                  onConvert={canEdit ? (leadId) => setConvertLeadId(leadId) : undefined}
+                  onEdit={canEdit ? (l) => { setEditLead(l); setEditLeadMode(true); } : undefined}
                   onDelete={isAdmin ? handleDeleteSingle : undefined}
                   onCardClick={(l) => { setEditLead(l); setEditLeadMode(false); }}
                   onViewProposal={handleViewProposal}
