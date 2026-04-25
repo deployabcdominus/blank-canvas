@@ -15,7 +15,6 @@ interface ResponsiveLayoutProps {
 
 export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: ResponsiveLayoutProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isMobile = useIsMobile();
 
   return (
     <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/20">
