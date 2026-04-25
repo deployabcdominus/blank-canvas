@@ -87,8 +87,8 @@ export const ProposalsService = {
       // Automated Notification for Approval
       if (isApproved && result.data.company_id) {
         // Find admins to notify them
-        const { data: admins } = await supabase
-          .from('user_roles')
+        const { data: admins } = await (supabase
+          .from('user_roles') as any)
           .select('user_id')
           .eq('company_id', result.data.company_id)
           .eq('role', 'admin');
