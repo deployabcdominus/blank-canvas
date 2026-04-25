@@ -159,32 +159,32 @@ export default function Clients() {
       }
 
       if (editingClient) {
-        const updates: Partial<Omit<Client, 'id' | 'companyId'>> = {
-          clientName: form.clientName.trim(),
-          contactName: form.contactName.trim() || null,
-          primaryEmail: form.primaryEmail.trim() || null,
-          primaryPhone: form.primaryPhone.trim() || null,
+        const updates: any = {
+          client_name: form.clientName.trim(),
+          contact_name: form.contactName.trim() || null,
+          primary_email: form.primaryEmail.trim() || null,
+          primary_phone: form.primaryPhone.trim() || null,
           address: form.address.trim() || null,
           website: form.website.trim() || null,
-          serviceType: form.serviceType || null,
+          service_type: form.serviceType || null,
           notes: form.notes.trim() || null,
         };
-        if (logoUrl !== undefined) updates.logoUrl = logoUrl;
+        if (logoUrl !== undefined) updates.logo_url = logoUrl;
         await updateClientMutation.mutateAsync({ id: editingClient.id, updates });
         toast({ title: t.clients.toasts.updated });
       } else {
         if (!companyId) return;
         await createClientMutation.mutateAsync({
           company_id: companyId,
-          clientName: form.clientName.trim(),
-          contactName: form.contactName.trim() || null,
-          primaryEmail: form.primaryEmail.trim() || null,
-          primaryPhone: form.primaryPhone.trim() || null,
+          client_name: form.clientName.trim(),
+          contact_name: form.contactName.trim() || null,
+          primary_email: form.primaryEmail.trim() || null,
+          primary_phone: form.primaryPhone.trim() || null,
           address: form.address.trim() || null,
           website: form.website.trim() || null,
-          serviceType: form.serviceType || null,
+          service_type: form.serviceType || null,
           notes: form.notes.trim() || null,
-          logoUrl: logoUrl || null,
+          logo_url: logoUrl || null,
         });
         toast({ title: t.clients.toasts.created });
       }
