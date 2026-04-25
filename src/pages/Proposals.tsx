@@ -51,7 +51,10 @@ const Proposals = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
 
-  const handleAdd = async (data: any) => { await addProposal(data); };
+  const handleAdd = async (data: any) => { 
+    if (!companyId) return;
+    await createProposalMutation.mutateAsync({ ...data, company_id: companyId }); 
+  };
 
   const handleEdit = async (data: any) => {
     const { id, ...rest } = data;
