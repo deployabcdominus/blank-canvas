@@ -27,7 +27,10 @@ import { toast } from "sonner";
 const Proposals = () => {
   const { companyId, canEdit, canDelete } = useUserRole();
   const { proposalsData, isLoading: loading, createProposalMutation, updateProposalMutation, deleteProposalMutation } = useProposalsQuery(companyId);
-  const proposals = proposalsData.proposals;
+  const { addOrder } = useWorkOrders();
+  const { clients, addClient, refreshClients } = useClients();
+  const { leads, updateLead } = useLeads();
+  const { company } = useCompany();
 
   const limits = usePlanLimits();
   const { t } = useLanguage();
