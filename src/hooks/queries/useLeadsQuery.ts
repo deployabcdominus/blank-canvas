@@ -11,7 +11,36 @@ export const useLeadsQuery = (companyId: string | null) => {
       if (!companyId) return [];
       const { data, error } = await LeadsService.getAll(companyId);
       if (error) throw error;
-      return data || [];
+      
+      // Map to local Lead interface if needed, but LeadsService.getAll should return what we need
+      return (data || []).map(item => {
+        const client = (item as any).clients;
+        const hasClient = !!client && !!item.client_id;
+        
+        return {
+          id: item.id,
+          name: hasClient ? (client.contact_name || client.client_name || item.name) : item.name,
+          company: hasClient ? (client.client_name || item.company || '') : (item.company || ''),
+          service: item.service || '',
+          status: item.status || 'Nuevo',
+          contact: {
+            phone: hasClient ? (client.primary_phone || item.phone || '') : (item.phone || ''),
+            email: hasClient ? (client.primary_email || item.email || '') : (item.email || ''),
+            location: hasClient ? (client.address || item.location || '') : (item.location || ''),
+          },
+          value: item.value || '',
+          daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
+          source: item.source || undefined,
+          notes: item.notes || undefined,
+          website: hasClient ? (client.website || item.website || undefined) : (item.website || undefined),
+          logoUrl: hasClient ? (client.logo_url || item.logo_url || undefined) : (item.logo_url || undefined),
+          companyId: item.company_id || undefined,
+          createdByUserId: item.created_by_user_id || undefined,
+          assignedToUserId: item.assigned_to_user_id || undefined,
+          clientId: item.client_id || undefined,
+          projectId: item.project_id || undefined,
+        };
+      });
     },
     enabled: !!companyId,
   });
@@ -50,6 +79,28 @@ export const useLeadsQuery = (companyId: string | null) => {
     },
   });
 
+  const deleteLeadsMutation = useMutation({
+    mutationFn: (ids: string[]) => LeadsService.softDeleteBatch(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads', companyId] });
+      toast.success('Leads eliminados correctamente');
+    },
+    onError: (error: any) => {
+      toast.error('Error al eliminar leads: ' + error.message);
+    },
+  });
+
+  const clearLeadsMutation = useMutation({
+    mutationFn: (companyId: string) => LeadsService.clearAll(companyId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads', companyId] });
+      toast.success('Todos los leads han sido eliminados');
+    },
+    onError: (error: any) => {
+      toast.error('Error al limpiar leads: ' + error.message);
+    },
+  });
+
   return {
     leads: leadsQuery.data || [],
     isLoading: leadsQuery.isLoading,
@@ -57,5 +108,7 @@ export const useLeadsQuery = (companyId: string | null) => {
     createLeadMutation,
     updateLeadMutation,
     deleteLeadMutation,
+    deleteLeadsMutation,
+    clearLeadsMutation,
   };
 };
