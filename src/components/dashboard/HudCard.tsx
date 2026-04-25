@@ -100,7 +100,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
       className={`
         stat-card relative overflow-hidden text-left group
         rounded-xl border transition-all duration-300 shimmer-hover
-        backdrop-blur-2xl p-4
+        backdrop-blur-2xl p-3 md:p-4
         ${glowPulse
           ? "border-violet-500/50 shadow-[0_0_20px_rgba(139,92,246,0.25)]"
           : isActive
