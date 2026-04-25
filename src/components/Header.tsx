@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useBreakpoint } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,48 +22,48 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isDashboard = location.pathname === '/dashboard';
-  const breakpoint = useBreakpoint();
   const { signOut } = useAuth();
   const { fullName, email, initials } = useUserProfile();
   const { t } = useLanguage();
+  
   const handleLogout = async () => {
     await signOut();
     navigate('/login');
   };
-
-  const isMobile = breakpoint === 'mobile';
 
   return (
     <motion.header
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`glass-card p-4 mb-6 ${isMobile ? 'px-4 py-3' : ''}`}
+      className="glass-card p-3 md:p-4 mb-6"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {isMobile && onMenuToggle && (
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          {onMenuToggle && (
             <Button variant="ghost" size="icon" onClick={onMenuToggle}
-              className="hover:bg-white/10 min-h-[44px] min-w-[44px]"
+              className="md:hidden hover:bg-white/10 h-11 w-11 shrink-0"
               aria-label="Abrir menú de navegación">
               <Menu className="w-5 h-5" />
             </Button>
           )}
           {isDashboard && (
-            <div className={isMobile ? 'hidden' : ''}>
-              <h1 className="font-bold text-2xl">{t.dashboard.welcomeBack}, {fullName.split(' ')[0]}!</h1>
+            <div className="hidden md:block">
+              <h1 className="font-bold text-2xl truncate">{t.dashboard.welcomeBack}, {fullName.split(' ')[0]}!</h1>
               <p className="text-muted-foreground text-sm">{t.dashboard.projectsToday}</p>
             </div>
           )}
-          {isMobile && <h1 className="text-lg font-bold">{FIXED_BRANDING.appName}</h1>}
+          <h1 className="md:hidden text-lg font-bold truncate">{FIXED_BRANDING.appName}</h1>
         </div>
 
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
           <NotificationBell />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="glass-card p-0 min-h-[44px] min-w-[44px]" aria-label="Menú del usuario">
+              <Button variant="ghost" className="glass-card p-0 h-11 w-11" aria-label="Menú del usuario">
                 <Avatar className="w-10 h-10">
                   <AvatarFallback className="bg-soft-blue text-soft-blue-foreground font-semibold">{initials}</AvatarFallback>
                 </Avatar>
@@ -72,8 +71,8 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="glass-card border-white/20 w-56 z-50" sideOffset={5}>
               <div className="p-2">
-                <p className="font-medium">{fullName}</p>
-                <p className="text-sm text-muted-foreground">{email}</p>
+                <p className="font-medium truncate">{fullName}</p>
+                <p className="text-sm text-muted-foreground truncate">{email}</p>
               </div>
               <DropdownMenuSeparator className="bg-white/20" />
               <DropdownMenuItem onClick={() => navigate('/settings?tab=perfil')} className="hover:bg-white/10 min-h-[44px]">
