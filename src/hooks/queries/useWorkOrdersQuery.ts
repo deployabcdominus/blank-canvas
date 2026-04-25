@@ -55,7 +55,7 @@ const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Producido': 'Completada',
 };
 
-const mapRow = (row: Database['public']['Tables']['work_orders']['Row']): WorkOrderMapped => ({
+const mapRow = (row: Database['public']['Tables']['production_orders']['Row']): WorkOrderMapped => ({
   id: row.id,
   client: (row as any).client || '', 
   project: (row as any).project || '',
