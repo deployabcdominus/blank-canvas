@@ -1,8 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
+import { AuditLogsService, type AuditLogEntry } from "@/services/audit-logs.service";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useEffect } from "react";
 import { useClients } from "@/contexts/ClientsContext";
 import { useProjects, type Project } from "@/contexts/ProjectsContext";
 import { useProposals, type Proposal } from "@/contexts/ProposalsContext";
