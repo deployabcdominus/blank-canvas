@@ -220,6 +220,48 @@ const ClientDetail = () => {
               </div>
             )}
           </TabsContent>
+
+          {/* History / Audit Tab */}
+          <TabsContent value="history">
+            {loadingLogs ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="glass-card p-4 animate-pulse">
+                    <div className="h-4 bg-white/5 rounded w-1/3 mb-2" />
+                    <div className="h-3 bg-white/5 rounded w-1/4" />
+                  </div>
+                ))}
+              </div>
+            ) : auditLogs.length === 0 ? (
+              <div className="glass-card p-8 text-center text-muted-foreground">
+                <Clock className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                No hay actividad reciente registrada para este cliente.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {auditLogs.map((log) => (
+                  <div key={log.id} className="glass-card p-4 flex items-start gap-3 border border-white/[0.04]">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs">
+                        <span className="font-semibold text-foreground">{log.user_name}</span>
+                        <span className="text-muted-foreground"> {log.action} {log.entity_type}</span>
+                        {log.entity_label && <span className="text-foreground"> "{log.entity_label}"</span>}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground/60 mt-1">
+                        {new Date(log.created_at).toLocaleString('es-ES', { 
+                          day: '2-digit', month: 'short', year: 'numeric', 
+                          hour: '2-digit', minute: '2-digit' 
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </ResponsiveLayout>
     </PageTransition>
