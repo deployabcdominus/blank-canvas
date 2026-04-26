@@ -22,18 +22,7 @@ import {
   Plus, Pencil, Trash2, ArrowRightLeft, CheckCircle2, UserPlus, Send,
 } from "lucide-react";
 
-interface AuditEntry {
-  id: string;
-  company_id: string;
-  user_id: string;
-  user_name: string;
-  action: string;
-  entity_type: string;
-  entity_id: string | null;
-  entity_label: string | null;
-  details: Record<string, any>;
-  created_at: string;
-}
+// Using AuditLogEntry from service
 
 const ACTION_META: Record<string, { icon: typeof Plus; color: string; label: string }> = {
   creado: { icon: Plus, color: 'text-emerald-400', label: 'Creado' },
