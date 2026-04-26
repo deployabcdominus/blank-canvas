@@ -1,8 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
+import { AuditLogsService, type AuditLogEntry } from "@/services/audit-logs.service";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useEffect } from "react";
 import { useClients } from "@/contexts/ClientsContext";
 import { useProjects, type Project } from "@/contexts/ProjectsContext";
 import { useProposals, type Proposal } from "@/contexts/ProposalsContext";
@@ -38,12 +41,32 @@ const PROPOSAL_STATUS_COLORS: Record<string, string> = {
 const ClientDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAdmin, companyId } = useUserRole();
   const { clients } = useClients();
   const { projects } = useProjects();
   const { proposals } = useProposals();
   const { payments } = usePayments();
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   const client = clients.find((c) => c.id === id);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      if (!id || !companyId || !isAdmin) return;
+      setLoadingLogs(true);
+      const { data } = await AuditLogsService.getAll(companyId);
+      if (data) {
+        // Filter logs specifically for this client
+        const filtered = (data as AuditLogEntry[]).filter(
+          log => log.entity_id === id || (log.details && log.details.client_id === id)
+        );
+        setAuditLogs(filtered);
+      }
+      setLoadingLogs(false);
+    };
+    fetchLogs();
+  }, [id, companyId, isAdmin]);
 
   const clientProjects = useMemo(
     () => projects.filter((p) => p.clientId === id),
@@ -133,6 +156,11 @@ const ClientDetail = () => {
             <TabsTrigger value="metrics" className="gap-1.5 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
               <BarChart3 className="w-3.5 h-3.5" /> Métricas
             </TabsTrigger>
+            {isAdmin && (
+              <TabsTrigger value="history" className="gap-1.5 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
+                <Clock className="w-3.5 h-3.5" /> Auditoría
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {/* Projects Tab */}
@@ -189,6 +217,48 @@ const ClientDetail = () => {
                     </Badge>
                   ))}
                 </div>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* History / Audit Tab */}
+          <TabsContent value="history">
+            {loadingLogs ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="glass-card p-4 animate-pulse">
+                    <div className="h-4 bg-white/5 rounded w-1/3 mb-2" />
+                    <div className="h-3 bg-white/5 rounded w-1/4" />
+                  </div>
+                ))}
+              </div>
+            ) : auditLogs.length === 0 ? (
+              <div className="glass-card p-8 text-center text-muted-foreground">
+                <Clock className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                No hay actividad reciente registrada para este cliente.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {auditLogs.map((log) => (
+                  <div key={log.id} className="glass-card p-4 flex items-start gap-3 border border-white/[0.04]">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Clock className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs">
+                        <span className="font-semibold text-foreground">{log.user_name}</span>
+                        <span className="text-muted-foreground"> {log.action} {log.entity_type}</span>
+                        {log.entity_label && <span className="text-foreground"> "{log.entity_label}"</span>}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground/60 mt-1">
+                        {new Date(log.created_at).toLocaleString('es-ES', { 
+                          day: '2-digit', month: 'short', year: 'numeric', 
+                          hour: '2-digit', minute: '2-digit' 
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </TabsContent>
