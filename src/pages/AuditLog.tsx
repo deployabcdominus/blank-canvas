@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { AuditLogsService, type AuditLogEntry } from "@/services/audit-logs.service";
 import { useAuth } from "@/contexts/AuthContext";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
