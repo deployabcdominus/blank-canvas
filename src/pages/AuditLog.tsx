@@ -115,7 +115,7 @@ export default function AuditLog() {
 
   const hasFilters = search || actionFilter !== 'all' || entityFilter !== 'all' || dateFrom || dateTo;
 
-  const buildDescription = (e: AuditEntry) => {
+  const buildDescription = (e: AuditLogEntry) => {
     const entity = ENTITY_LABELS[e.entity_type] || e.entity_type;
     const label = e.entity_label ? ` "${e.entity_label}"` : '';
     const actionLabel = ACTION_META[e.action]?.label || e.action;
