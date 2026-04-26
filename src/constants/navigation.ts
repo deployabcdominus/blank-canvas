@@ -64,6 +64,7 @@ export const adminGroup: NavGroup = {
   icon: DollarSign,
   items: [
     { icon: DollarSign, label: "Pagos", path: "/payments", roles: ['admin', 'sales'] },
+    { icon: Activity, label: "Auditoría", path: "/audit-log", roles: ['admin'] },
     { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
   ],
 };
