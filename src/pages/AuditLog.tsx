@@ -62,38 +62,43 @@ function getInitials(name: string) {
 
 export default function AuditLog() {
   const { user } = useAuth();
-  const [entries, setEntries] = useState<AuditEntry[]>([]);
+  const { companyId, isAdmin } = useUserRole();
+  const [entries, setEntries] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [actionFilter, setActionFilter] = useState('all');
   const [entityFilter, setEntityFilter] = useState('all');
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
-  const [selectedEntry, setSelectedEntry] = useState<AuditEntry | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState<AuditLogEntry | null>(null);
 
   const fetchLogs = useCallback(async () => {
-    if (!user) return;
+    if (!user || !companyId || !isAdmin) return;
     setLoading(true);
-    let query = (supabase as any)
-      .from('audit_logs')
-      .select('id, entity_type, action, entity_label, user_name, details, created_at')
-      .order('created_at', { ascending: false })
-      .limit(500);
-
-    if (dateFrom) query = query.gte('created_at', dateFrom.toISOString());
-    if (dateTo) {
-      const end = new Date(dateTo);
-      end.setHours(23, 59, 59, 999);
-      query = query.lte('created_at', end.toISOString());
-    }
-
-    const { data, error } = await query;
+    
+    // In a real multi-tenant scenario, we filter by companyId
+    // If date filters are present, we might need a more complex query in the service
+    const { data, error } = await AuditLogsService.getAll(companyId);
+    
     if (error) {
       if (import.meta.env.DEV) console.error('Audit logs error:', error);
     }
-    setEntries((data || []) as AuditEntry[]);
+    
+    let processedData = (data || []) as AuditLogEntry[];
+    
+    // Apply client-side date filters since service getAll doesn't support them yet
+    if (dateFrom) {
+      processedData = processedData.filter(e => new Date(e.created_at) >= dateFrom);
+    }
+    if (dateTo) {
+      const end = new Date(dateTo);
+      end.setHours(23, 59, 59, 999);
+      processedData = processedData.filter(e => new Date(e.created_at) <= end);
+    }
+
+    setEntries(processedData);
     setLoading(false);
-  }, [user, dateFrom, dateTo]);
+  }, [user, companyId, isAdmin, dateFrom, dateTo]);
 
   useEffect(() => { fetchLogs(); }, [fetchLogs]);
 
