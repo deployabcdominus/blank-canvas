@@ -156,6 +156,11 @@ const ClientDetail = () => {
             <TabsTrigger value="metrics" className="gap-1.5 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
               <BarChart3 className="w-3.5 h-3.5" /> Métricas
             </TabsTrigger>
+            {isAdmin && (
+              <TabsTrigger value="history" className="gap-1.5 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
+                <Clock className="w-3.5 h-3.5" /> Auditoría
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {/* Projects Tab */}
