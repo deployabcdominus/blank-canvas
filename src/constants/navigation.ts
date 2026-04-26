@@ -70,7 +70,6 @@ export const adminGroup: NavGroup = {
 };
 
 export const utilityItems: NavItem[] = [
-  { icon: Activity, label: "Auditoría", path: "/audit-log", roles: ['admin'] },
   { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin'] },
 ];
 
