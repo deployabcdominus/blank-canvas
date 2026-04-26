@@ -51,6 +51,23 @@ const ClientDetail = () => {
 
   const client = clients.find((c) => c.id === id);
 
+  useEffect(() => {
+    const fetchLogs = async () => {
+      if (!id || !companyId || !isAdmin) return;
+      setLoadingLogs(true);
+      const { data } = await AuditLogsService.getAll(companyId);
+      if (data) {
+        // Filter logs specifically for this client
+        const filtered = (data as AuditLogEntry[]).filter(
+          log => log.entity_id === id || (log.details && log.details.client_id === id)
+        );
+        setAuditLogs(filtered);
+      }
+      setLoadingLogs(false);
+    };
+    fetchLogs();
+  }, [id, companyId, isAdmin]);
+
   const clientProjects = useMemo(
     () => projects.filter((p) => p.clientId === id),
     [projects, id]
