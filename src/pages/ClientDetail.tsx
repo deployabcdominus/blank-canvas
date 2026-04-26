@@ -41,10 +41,13 @@ const PROPOSAL_STATUS_COLORS: Record<string, string> = {
 const ClientDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAdmin, companyId } = useUserRole();
   const { clients } = useClients();
   const { projects } = useProjects();
   const { proposals } = useProposals();
   const { payments } = usePayments();
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   const client = clients.find((c) => c.id === id);
 
