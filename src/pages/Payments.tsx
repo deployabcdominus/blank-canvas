@@ -5,6 +5,7 @@ import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
 import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { PaymentsKPIBar } from "@/components/payments/PaymentsKPIBar";
 import { PaymentsControlBar, type PaymentSortKey, type ViewMode } from "@/components/payments/PaymentsControlBar";
 import { PaymentsTableView } from "@/components/payments/PaymentsTableView";
