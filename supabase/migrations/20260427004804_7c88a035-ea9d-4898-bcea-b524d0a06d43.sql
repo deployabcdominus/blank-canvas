@@ -1,0 +1,1 @@
+ALTER TABLE public.companies ADD COLUMN proposal_terms TEXT;
