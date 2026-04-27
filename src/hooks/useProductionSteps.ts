@@ -65,11 +65,31 @@ export function useProductionSteps(orderId?: string) {
       ? Math.round((Date.now() - new Date(step.started_at).getTime()) / 60000)
       : 0;
 
-    await supabase.from("production_steps").update({
+    const { error } = await supabase.from("production_steps").update({
       status: "completed",
       completed_at: now,
       duration_minutes: minutes,
     }).eq("id", stepId);
+
+    if (!error) {
+      // Get the order owner to notify
+      const { data: order } = await supabase
+        .from('production_orders')
+        .select('owner_user_id, client')
+        .eq('id', step.production_order_id)
+        .single();
+
+      if (order?.owner_user_id && companyId) {
+        await supabase.from('notifications' as any).insert({
+          user_id: order.owner_user_id,
+          company_id: companyId,
+          type: 'success',
+          title: 'Etapa Completada',
+          message: `La etapa "${step.name}" ha sido completada por un operario.`,
+          link: `/work-orders/${step.production_order_id}`
+        } as any);
+      }
+    }
 
     // Brief delay to let DB triggers cascade progress
     setTimeout(() => setSyncing(false), 1500);
