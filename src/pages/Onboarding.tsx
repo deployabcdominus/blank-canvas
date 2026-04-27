@@ -270,7 +270,7 @@ const Onboarding = () => {
 
         await (supabase as any)
           .from("companies")
-          .update({ service_types: finalServiceTypes })
+          .update({ service_types: finalServiceTypes, proposal_terms: formData.proposalTerms })
           .eq("id", companyId);
 
         if (purchaseToken) {
