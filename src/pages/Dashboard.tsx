@@ -21,7 +21,7 @@ import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { isThisMonth } from "date-fns";
-import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Shield, ArrowRight } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
 import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
 
