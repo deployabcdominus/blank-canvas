@@ -72,7 +72,7 @@ const INDUSTRY_PRESETS_EN: Record<string, IndustryPreset> = {
   },
 };
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 const stepVariants = {
   enter: { opacity: 0, x: 40, filter: "blur(4px)" },
