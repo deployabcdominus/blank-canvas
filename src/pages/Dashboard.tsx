@@ -21,7 +21,7 @@ import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { isThisMonth } from "date-fns";
-import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Shield, ArrowRight } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
 import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
 
@@ -80,6 +80,25 @@ const Dashboard = () => {
           </div>
         )}
         <GracePeriodBanner />
+        
+        {/* Project Health Alert */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }} 
+          animate={{ opacity: 1, x: 0 }} 
+          className="mb-6 p-4 rounded-2xl border border-red-500/20 bg-red-500/5 backdrop-blur-xl flex items-center justify-between group cursor-pointer hover:bg-red-500/10 transition-all duration-300"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 group-hover:scale-110 transition-transform duration-300">
+              <Shield className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-red-400 uppercase tracking-widest">Prioridad Alta</p>
+              <h3 className="text-sm font-semibold text-foreground">1. 🛡️ Seguridad y Salud del Proyecto</h3>
+            </div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-red-400/50 group-hover:translate-x-1 transition-transform" />
+        </motion.div>
+
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-4 md:mb-6 flex items-end justify-between">
           <div>
             <h1 className="font-bold text-xl md:text-2xl text-foreground">{t.dashboard.controlCenter}</h1>
