@@ -207,7 +207,14 @@ export default function MobileTechnicianView() {
       <div className="min-h-screen bg-zinc-950 text-foreground">
         <div className="safe-top px-4 pt-6 pb-3">
           <h1 className="text-xl font-bold">Mis {labels.workOrders}</h1>
-          <p className="text-xs text-muted-foreground mt-1">Órdenes asignadas a ti</p>
+          <div className="flex items-center justify-between mt-1">
+            <p className="text-xs text-muted-foreground">Órdenes asignadas a ti</p>
+            {lastSync && (
+              <p className="text-[10px] text-muted-foreground/60 italic">
+                Sinc: {new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
+          </div>
         </div>
         <div className="px-4 space-y-3 pb-8">
           {orders.length === 0 && (
