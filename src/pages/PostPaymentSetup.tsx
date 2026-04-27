@@ -150,13 +150,19 @@ const PostPaymentSetup = () => {
       // 6. Assign admin role
       await supabase.from("user_roles").insert({ user_id: user.id, role: "admin" });
 
-      // 7. Update company with stripe_customer_id and subscription_status
+      // 7. Update company with stripe details and default terms
+      const defaultTerms = "1. Pago: 50% de anticipo, 50% contra entrega.\n2. Validez: Esta propuesta es válida por 30 días.\n3. Cambios: Cualquier modificación puede afectar el precio final.";
+      
+      const updateData: any = {
+        proposal_terms: defaultTerms,
+      };
+      
       if (stripeCustomerId) {
-        await supabase.from("companies").update({
-          stripe_customer_id: stripeCustomerId,
-          subscription_status: "active",
-        }).eq("id", companyId);
+        updateData.stripe_customer_id = stripeCustomerId;
+        updateData.subscription_status = "active";
       }
+      
+      await supabase.from("companies").update(updateData).eq("id", companyId);
 
       setCompleted(true);
 
