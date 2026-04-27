@@ -180,6 +180,7 @@ export type Database = {
           name: string
           network_base_path: string | null
           plan_id: string | null
+          proposal_terms: string | null
           service_types: string[] | null
           stripe_customer_id: string | null
           subscription_end_date: string | null
@@ -199,6 +200,7 @@ export type Database = {
           name: string
           network_base_path?: string | null
           plan_id?: string | null
+          proposal_terms?: string | null
           service_types?: string[] | null
           stripe_customer_id?: string | null
           subscription_end_date?: string | null
@@ -218,6 +220,7 @@ export type Database = {
           name?: string
           network_base_path?: string | null
           plan_id?: string | null
+          proposal_terms?: string | null
           service_types?: string[] | null
           stripe_customer_id?: string | null
           subscription_end_date?: string | null
@@ -1567,6 +1570,7 @@ export type Database = {
           name: string
           network_base_path: string | null
           plan_id: string | null
+          proposal_terms: string | null
           service_types: string[] | null
           stripe_customer_id: string | null
           subscription_end_date: string | null

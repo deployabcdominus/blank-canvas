@@ -72,7 +72,7 @@ const INDUSTRY_PRESETS_EN: Record<string, IndustryPreset> = {
   },
 };
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 const stepVariants = {
   enter: { opacity: 0, x: 40, filter: "blur(4px)" },
@@ -94,6 +94,9 @@ const Onboarding = () => {
     companyName: "",
     logo: null as string | null,
     brandColor: "soft-blue",
+    proposalTerms: isEn 
+      ? "1. Payment: 50% deposit, 50% upon delivery.\n2. Validity: This proposal is valid for 30 days.\n3. Changes: Any modification may affect the final price."
+      : "1. Pago: 50% de anticipo, 50% contra entrega.\n2. Validez: Esta propuesta es válida por 30 días.\n3. Cambios: Cualquier modificación puede afectar el precio final.",
   });
 
   const [serviceTypes, setServiceTypes] = useState<string[]>([]);
@@ -149,8 +152,9 @@ const Onboarding = () => {
     switch (currentStep) {
       case 1: return !!formData.industry;
       case 2: return !!formData.companyName.trim() && !!formData.logo;
-      case 3: return true; // color always has default
+      case 3: return true;
       case 4: return serviceTypes.length > 0;
+      case 5: return !!formData.proposalTerms.trim();
       default: return false;
     }
   };
@@ -227,6 +231,7 @@ const Onboarding = () => {
             brand_color: formData.brandColor,
             industry: formData.industry,
             service_types: finalServiceTypes,
+            proposal_terms: formData.proposalTerms,
           })
           .eq("id", existingCompany.id);
         companyId = existingCompany.id;
@@ -265,7 +270,7 @@ const Onboarding = () => {
 
         await (supabase as any)
           .from("companies")
-          .update({ service_types: finalServiceTypes })
+          .update({ service_types: finalServiceTypes, proposal_terms: formData.proposalTerms })
           .eq("id", companyId);
 
         if (purchaseToken) {
@@ -471,6 +476,7 @@ const Onboarding = () => {
     { title: isEn ? "Identity" : "Identidad", subtitle: isEn ? "Company name and logo" : "Nombre y logo de tu empresa", icon: Upload },
     { title: isEn ? "Brand" : "Marca", subtitle: isEn ? "Choose a color that represents you" : "Elige un color que te represente", icon: Sparkles },
     { title: isEn ? "Services" : "Servicios", subtitle: isEn ? "Define what you offer" : "Define lo que ofreces", icon: Briefcase },
+    { title: isEn ? "Legal" : "Legal", subtitle: isEn ? "Proposal Terms & Conditions" : "Términos y Condiciones de Propuestas", icon: FileText },
   ];
 
   const current = stepMeta[currentStep - 1];
@@ -730,6 +736,33 @@ const Onboarding = () => {
 
                   <p className="text-[11px] text-muted-foreground">
                     {isEn ? "You can edit this list later in Settings → Organization" : "Puedes editar esta lista después en Configuración → Organización"}
+                  </p>
+                </motion.div>
+              )}
+              {/* ── Step 5: Legal / Terms ── */}
+              {currentStep === 5 && (
+                <motion.div key="s5" variants={stepVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.35 }} className="space-y-6">
+                  <div className="text-center mb-2">
+                    <CurrentIcon className="w-10 h-10 mx-auto mb-3 text-orange-400" strokeWidth={1.5} />
+                    <h2 className="text-lg font-semibold">{current.subtitle}</h2>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {isEn ? "These terms will appear at the bottom of every proposal" : "Estos términos aparecerán al pie de cada propuesta"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">{isEn ? "Terms & Conditions" : "Términos y Condiciones"}</Label>
+                    <textarea
+                      value={formData.proposalTerms}
+                      onChange={(e) => setFormData(prev => ({ ...prev, proposalTerms: e.target.value }))}
+                      rows={8}
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-2xl p-4 text-sm focus:border-orange-500/40 outline-none transition-colors"
+                      placeholder={isEn ? "Enter your terms..." : "Escribe tus términos..."}
+                    />
+                  </div>
+
+                  <p className="text-[11px] text-muted-foreground italic">
+                    {isEn ? "You can customize this per proposal later" : "Podrás personalizar esto en cada propuesta más adelante"}
                   </p>
                 </motion.div>
               )}
