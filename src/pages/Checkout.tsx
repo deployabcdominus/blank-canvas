@@ -60,28 +60,21 @@ const Checkout = () => {
 
     setIsLoading(true);
     try {
-      // Create purchase record (mock paid)
-      const { data: purchase, error: purchaseError } = await supabase
-        .from("purchases")
-        .insert({
-          plan_id: planId,
-          purchaser_email: formData.email.trim().toLowerCase(),
-          status: "paid",
-        } as any)
-        .select("access_token")
-        .single();
+      // Call create-checkout edge function
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId: planId },
+      });
 
-      if (purchaseError) throw purchaseError;
+      if (error) throw error;
+      if (!data?.url) throw new Error("No se pudo generar la sesión de pago.");
 
-      // Store data for Success page
-      localStorage.setItem("userName", formData.fullName);
-      localStorage.setItem("purchase_access_token", (purchase as any).access_token);
-      localStorage.setItem("purchase_email", formData.email);
-
-      toast({ title: "¡Compra exitosa!", description: "Tu plan ha sido activado." });
-      navigate("/success");
+      // Store basic data to recover if needed, but the real setup happens in PostPaymentSetup
+      localStorage.setItem("selectedPlan", selectedPlan);
+      
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Error al procesar la compra", variant: "destructive" });
+      toast({ title: "Error", description: err.message || "Error al conectar con la pasarela de pago", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
