@@ -94,6 +94,9 @@ const Onboarding = () => {
     companyName: "",
     logo: null as string | null,
     brandColor: "soft-blue",
+    proposalTerms: isEn 
+      ? "1. Payment: 50% deposit, 50% upon delivery.\n2. Validity: This proposal is valid for 30 days.\n3. Changes: Any modification may affect the final price."
+      : "1. Pago: 50% de anticipo, 50% contra entrega.\n2. Validez: Esta propuesta es válida por 30 días.\n3. Cambios: Cualquier modificación puede afectar el precio final.",
   });
 
   const [serviceTypes, setServiceTypes] = useState<string[]>([]);
