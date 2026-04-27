@@ -64,11 +64,39 @@ export const useProductionStepsQuery = (companyId: string | null, userId: string
       const minutes = startedAt
         ? Math.round((Date.now() - new Date(startedAt).getTime()) / 60000) : 0;
 
+      // Get step and order info first
+      const { data: step } = await supabase
+        .from('production_steps' as any)
+        .select('production_order_id, name')
+        .eq('id', taskId)
+        .single();
+
       const { error } = await supabase.from('production_steps' as any).update({
         status: 'completed', completed_at: now, duration_minutes: minutes,
       } as any).eq('id', taskId);
       
       if (error) throw error;
+
+      if (step) {
+        // Get the order owner/manager
+        const { data: order } = await supabase
+          .from('production_orders')
+          .select('owner_user_id, client, project')
+          .eq('id', (step as any).production_order_id)
+          .single();
+
+        if (order?.owner_user_id && companyId) {
+          // Notify the manager
+          await supabase.from('notifications' as any).insert({
+            user_id: order.owner_user_id,
+            company_id: companyId,
+            type: 'success',
+            title: 'Etapa Completada',
+            message: `La etapa "${(step as any).name}" de la orden para ${order.client} ha sido completada.`,
+            link: `/work-orders/${(step as any).production_order_id}`
+          } as any);
+        }
+      }
       
       if (userId && companyId) {
         const { data: existing } = await supabase
