@@ -476,6 +476,7 @@ const Onboarding = () => {
     { title: isEn ? "Identity" : "Identidad", subtitle: isEn ? "Company name and logo" : "Nombre y logo de tu empresa", icon: Upload },
     { title: isEn ? "Brand" : "Marca", subtitle: isEn ? "Choose a color that represents you" : "Elige un color que te represente", icon: Sparkles },
     { title: isEn ? "Services" : "Servicios", subtitle: isEn ? "Define what you offer" : "Define lo que ofreces", icon: Briefcase },
+    { title: isEn ? "Legal" : "Legal", subtitle: isEn ? "Proposal Terms & Conditions" : "Términos y Condiciones de Propuestas", icon: FileText },
   ];
 
   const current = stepMeta[currentStep - 1];
