@@ -88,7 +88,11 @@ export default function MobileTechnicianView() {
   const { company } = useCompany();
   const labels = useIndustryLabels();
   const [tab, setTab] = useState<MobileTab>("task");
-  const [orders, setOrders] = useState<OrderData[]>([]);
+  const [orders, setOrders] = useState<OrderData[]>(() => {
+    const saved = localStorage.getItem("cached_tech_orders");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [lastSync, setLastSync] = useState<string | null>(localStorage.getItem("tech_orders_last_sync"));
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
   const [techDetails, setTechDetails] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
@@ -102,15 +106,27 @@ export default function MobileTechnicianView() {
   // Load assigned orders
   const loadOrders = useCallback(async () => {
     if (!user || !companyId) return;
-    const { data } = await supabase
-      .from("production_orders")
-      .select("id, client, project, status, progress, priority, notes, technical_details, estimated_delivery")
-      .eq("company_id", companyId)
-      .or(`assigned_to_user_id.eq.${user.id},owner_user_id.eq.${user.id}`)
-      .in("status", ["Pendiente", "En Progreso", "En Producción"])
-      .order("created_at", { ascending: false })
-      .limit(20);
-    if (data) setOrders(data as any);
+    try {
+      const { data } = await supabase
+        .from("production_orders")
+        .select("id, client, project, status, progress, priority, notes, technical_details, estimated_delivery")
+        .eq("company_id", companyId)
+        .or(`assigned_to_user_id.eq.${user.id},owner_user_id.eq.${user.id}`)
+        .in("status", ["Pendiente", "En Progreso", "En Producción"])
+        .order("created_at", { ascending: false })
+        .limit(20);
+      
+      if (data) {
+        setOrders(data as any);
+        const now = new Date().toISOString();
+        localStorage.setItem("cached_tech_orders", JSON.stringify(data));
+        localStorage.setItem("tech_orders_last_sync", now);
+        setLastSync(now);
+      }
+    } catch (err) {
+      console.error("Error loading orders:", err);
+      toast({ title: "Modo Offline", description: "Mostrando datos guardados localmente." });
+    }
   }, [user, companyId]);
 
   useEffect(() => { loadOrders(); }, [loadOrders]);
