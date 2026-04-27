@@ -5,6 +5,7 @@ import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
 import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { PaymentsKPIBar } from "@/components/payments/PaymentsKPIBar";
 import { PaymentsControlBar, type PaymentSortKey, type ViewMode } from "@/components/payments/PaymentsControlBar";
 import { PaymentsTableView } from "@/components/payments/PaymentsTableView";
@@ -23,8 +24,10 @@ const Payments = () => {
   const { payments, isLoading: loading, deletePaymentMutation } = usePaymentsQuery(companyId);
   const { proposalsData } = useProposalsQuery(companyId);
   const proposals = proposalsData.proposals;
-  const { canDelete } = useUserRole();
+  const { canDelete, role, loading: roleLoading } = useUserRole();
   const { toast } = useToast();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<PaymentSortKey>("date_desc");
@@ -72,6 +75,20 @@ const Payments = () => {
     });
     return result;
   }, [payments, search, methodFilter, statusFilter, dateFrom, dateTo, sort, proposalMap]);
+
+  const canAccess = role === 'admin' || role === 'sales' || role === 'superadmin';
+
+  if (!canAccess && !roleLoading) {
+    return (
+      <ResponsiveLayout>
+        <div className="flex flex-col items-center justify-center py-20">
+          <h2 className="text-xl font-semibold mb-2">{isEn ? "Access Restricted" : "Acceso restringido"}</h2>
+          <p className="text-muted-foreground">{isEn ? "Only administrators and sales can view payments." : "Solo los administradores y ventas pueden ver los pagos."}</p>
+        </div>
+      </ResponsiveLayout>
+    );
+  }
+
 
   const totalPages = Math.ceil(processed.length / pageSize);
   const safePage = Math.min(page, Math.max(totalPages, 1));
