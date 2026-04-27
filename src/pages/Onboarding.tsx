@@ -231,6 +231,7 @@ const Onboarding = () => {
             brand_color: formData.brandColor,
             industry: formData.industry,
             service_types: finalServiceTypes,
+            proposal_terms: formData.proposalTerms,
           })
           .eq("id", existingCompany.id);
         companyId = existingCompany.id;
