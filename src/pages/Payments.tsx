@@ -23,8 +23,10 @@ const Payments = () => {
   const { payments, isLoading: loading, deletePaymentMutation } = usePaymentsQuery(companyId);
   const { proposalsData } = useProposalsQuery(companyId);
   const proposals = proposalsData.proposals;
-  const { canDelete } = useUserRole();
+  const { canDelete, role, loading: roleLoading } = useUserRole();
   const { toast } = useToast();
+  const { locale } = useLanguage();
+  const isEn = locale === "en";
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<PaymentSortKey>("date_desc");
@@ -36,6 +38,20 @@ const Payments = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const canAccess = role === 'admin' || role === 'sales' || role === 'superadmin';
+
+  if (!canAccess && !roleLoading) {
+    return (
+      <ResponsiveLayout>
+        <div className="flex flex-col items-center justify-center py-20">
+          <h2 className="text-xl font-semibold mb-2">{isEn ? "Access Restricted" : "Acceso restringido"}</h2>
+          <p className="text-muted-foreground">{isEn ? "Only administrators and sales can view payments." : "Solo los administradores y ventas pueden ver los pagos."}</p>
+        </div>
+      </ResponsiveLayout>
+    );
+  }
+
 
   const proposalMap = useMemo(() => {
     const map = new Map<string, { client: string; project: string }>();
