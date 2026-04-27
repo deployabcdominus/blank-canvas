@@ -152,8 +152,9 @@ const Onboarding = () => {
     switch (currentStep) {
       case 1: return !!formData.industry;
       case 2: return !!formData.companyName.trim() && !!formData.logo;
-      case 3: return true; // color always has default
+      case 3: return true;
       case 4: return serviceTypes.length > 0;
+      case 5: return !!formData.proposalTerms.trim();
       default: return false;
     }
   };
