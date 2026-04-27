@@ -22,14 +22,28 @@ import { useLanguage } from "@/i18n/LanguageContext";
 const InstallerCompanies = () => {
   const { company } = useCompany();
   const companyId = company?.id || null;
+  const { role, canEdit, canDelete, loading: roleLoading } = useUserRole();
   const { installerCompanies: companies, deleteInstallerCompanyMutation } = useInstallerCompaniesQuery(companyId);
-  const { canEdit, canDelete } = useUserRole();
   const { locale } = useLanguage();
   const isEn = locale === "en";
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
   const [companyToDelete, setCompanyToDelete] = useState<string | null>(null);
+
+  const canAccess = role === 'admin' || role === 'operations' || role === 'superadmin';
+
+  if (!canAccess && !roleLoading) {
+    return (
+      <ResponsiveLayout>
+        <div className="flex flex-col items-center justify-center py-20">
+          <h2 className="text-xl font-semibold mb-2">{isEn ? "Access Restricted" : "Acceso restringido"}</h2>
+          <p className="text-muted-foreground">{isEn ? "Only administrators and operations can manage subcontractor companies." : "Solo los administradores y operaciones pueden gestionar las empresas subcontratistas."}</p>
+        </div>
+      </ResponsiveLayout>
+    );
+  }
+
 
   const filteredCompanies = companies.filter(company =>
     company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
