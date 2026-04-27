@@ -739,6 +739,33 @@ const Onboarding = () => {
                   </p>
                 </motion.div>
               )}
+              {/* ── Step 5: Legal / Terms ── */}
+              {currentStep === 5 && (
+                <motion.div key="s5" variants={stepVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.35 }} className="space-y-6">
+                  <div className="text-center mb-2">
+                    <CurrentIcon className="w-10 h-10 mx-auto mb-3 text-orange-400" strokeWidth={1.5} />
+                    <h2 className="text-lg font-semibold">{current.subtitle}</h2>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {isEn ? "These terms will appear at the bottom of every proposal" : "Estos términos aparecerán al pie de cada propuesta"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">{isEn ? "Terms & Conditions" : "Términos y Condiciones"}</Label>
+                    <textarea
+                      value={formData.proposalTerms}
+                      onChange={(e) => setFormData(prev => ({ ...prev, proposalTerms: e.target.value }))}
+                      rows={8}
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-2xl p-4 text-sm focus:border-orange-500/40 outline-none transition-colors"
+                      placeholder={isEn ? "Enter your terms..." : "Escribe tus términos..."}
+                    />
+                  </div>
+
+                  <p className="text-[11px] text-muted-foreground italic">
+                    {isEn ? "You can customize this per proposal later" : "Podrás personalizar esto en cada propuesta más adelante"}
+                  </p>
+                </motion.div>
+              )}
             </AnimatePresence>
 
             {/* Navigation */}
