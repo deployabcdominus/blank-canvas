@@ -40,20 +40,6 @@ const Payments = () => {
   const [pageSize, setPageSize] = useState(12);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const canAccess = role === 'admin' || role === 'sales' || role === 'superadmin';
-
-  if (!canAccess && !roleLoading) {
-    return (
-      <ResponsiveLayout>
-        <div className="flex flex-col items-center justify-center py-20">
-          <h2 className="text-xl font-semibold mb-2">{isEn ? "Access Restricted" : "Acceso restringido"}</h2>
-          <p className="text-muted-foreground">{isEn ? "Only administrators and sales can view payments." : "Solo los administradores y ventas pueden ver los pagos."}</p>
-        </div>
-      </ResponsiveLayout>
-    );
-  }
-
-
   const proposalMap = useMemo(() => {
     const map = new Map<string, { client: string; project: string }>();
     proposals.forEach(p => map.set(p.id, { client: p.client, project: p.project }));
@@ -89,6 +75,20 @@ const Payments = () => {
     });
     return result;
   }, [payments, search, methodFilter, statusFilter, dateFrom, dateTo, sort, proposalMap]);
+
+  const canAccess = role === 'admin' || role === 'sales' || role === 'superadmin';
+
+  if (!canAccess && !roleLoading) {
+    return (
+      <ResponsiveLayout>
+        <div className="flex flex-col items-center justify-center py-20">
+          <h2 className="text-xl font-semibold mb-2">{isEn ? "Access Restricted" : "Acceso restringido"}</h2>
+          <p className="text-muted-foreground">{isEn ? "Only administrators and sales can view payments." : "Solo los administradores y ventas pueden ver los pagos."}</p>
+        </div>
+      </ResponsiveLayout>
+    );
+  }
+
 
   const totalPages = Math.ceil(processed.length / pageSize);
   const safePage = Math.min(page, Math.max(totalPages, 1));
