@@ -23,11 +23,15 @@ interface CompanyUser { id: string; role: string; }
 interface PlatformHealth {
   total_revenue: number;
   active_tenants: number;
+  total_users: number;
+  orders_in_progress: number;
+  avg_completion_days: number;
   conversion_rate: number;
   total_records: number;
   total_leads: number;
   approved_proposals: number;
   growth_data: { date: string; leads: number; orders: number }[];
+  revenue_history: { month: string; amount: number }[];
   top_tenants: {
     id: string; name: string; logo_url: string | null;
     created_at: string; is_active: boolean;
@@ -113,25 +117,39 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
       bg: "from-emerald-500/10 to-emerald-500/5",
     },
     {
-      label: "Active Tenants",
-      value: fmtNumber(health.active_tenants),
-      icon: Building,
+      label: "Total Users",
+      value: fmtNumber(health.total_users),
+      icon: Users,
       accent: "text-primary",
       bg: "from-primary/10 to-primary/5",
     },
     {
-      label: "Conversion Rate",
-      value: `${health.conversion_rate}%`,
+      label: "Orders in Progress",
+      value: fmtNumber(health.orders_in_progress),
+      icon: Activity,
+      accent: "text-amber-400",
+      bg: "from-amber-500/10 to-amber-500/5",
+    },
+    {
+      label: "Avg. Completion",
+      value: `${health.avg_completion_days} days`,
       icon: TrendingUp,
       accent: "text-sky-400",
       bg: "from-sky-500/10 to-sky-500/5",
     },
     {
+      label: "Active Tenants",
+      value: fmtNumber(health.active_tenants),
+      icon: Building,
+      accent: "text-violet-400",
+      bg: "from-violet-500/10 to-violet-500/5",
+    },
+    {
       label: "System Records",
       value: fmtNumber(health.total_records),
       icon: Database,
-      accent: "text-violet-400",
-      bg: "from-violet-500/10 to-violet-500/5",
+      accent: "text-zinc-400",
+      bg: "from-zinc-500/10 to-zinc-500/5",
     },
   ] : [];
 
@@ -163,7 +181,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
   return (
     <div className="space-y-6">
       {/* ── KPI Bento Grid ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {kpis.map((kpi, i) => (
           <motion.div
             key={kpi.label}
@@ -200,20 +218,19 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
       </div>
 
       {/* ── Charts Row ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Area Chart — Leads & Orders Growth (30d) */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="lg:col-span-2"
         >
           <Card className="glass-card border-white/[0.06]">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-sm font-semibold">Crecimiento — 30 días</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Leads y Órdenes de Trabajo a nivel plataforma</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Leads y Órdenes a nivel plataforma</p>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
                   <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary" />Leads</span>
@@ -224,8 +241,8 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
                 <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
                   <defs>
                     <linearGradient id="gradLeads" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(24,95%,53%)" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="hsl(24,95%,53%)" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="gradOrders" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="hsl(152,69%,53%)" stopOpacity={0.25} />
@@ -238,7 +255,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
                     tick={{ fontSize: 10, fill: "hsl(0,0%,55%)" }}
                     tickLine={false}
                     axisLine={false}
-                    interval="preserveStartEnd"
+                    interval={5}
                   />
                   <YAxis
                     tick={{ fontSize: 10, fill: "hsl(0,0%,55%)" }}
@@ -250,7 +267,7 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
                   <Area
                     type="monotone"
                     dataKey="leads"
-                    stroke="hsl(24,95%,53%)"
+                    stroke="hsl(var(--primary))"
                     strokeWidth={2}
                     fill="url(#gradLeads)"
                   />
@@ -267,33 +284,30 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
           </Card>
         </motion.div>
 
-        {/* Bar Chart — Top Tenants by Revenue */}
+        {/* Bar Chart — Revenue History */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="glass-card border-white/[0.06] h-full">
+          <Card className="glass-card border-white/[0.06]">
             <CardContent className="p-5">
-              <p className="text-sm font-semibold mb-1">Top Tenants</p>
-              <p className="text-xs text-muted-foreground mb-4">Por ingresos facturados</p>
+              <p className="text-sm font-semibold mb-1">Ingresos Mensuales</p>
+              <p className="text-xs text-muted-foreground mb-4">Histórico de los últimos 6 meses</p>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart
-                  data={topTenants.map(t => ({
-                    name: t.name.length > 12 ? t.name.slice(0, 12) + "…" : t.name,
-                    revenue: t.total_revenue,
-                  }))}
-                  margin={{ top: 5, right: 5, bottom: 0, left: -20 }}
+                  data={health.revenue_history}
+                  margin={{ top: 5, right: 5, bottom: 0, left: -10 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,100%,0.04)" />
-                  <XAxis dataKey="name" tick={{ fontSize: 9, fill: "hsl(0,0%,55%)" }} tickLine={false} axisLine={false} />
+                  <XAxis dataKey="month" tick={{ fontSize: 9, fill: "hsl(0,0%,55%)" }} tickLine={false} axisLine={false} />
                   <YAxis tick={{ fontSize: 10, fill: "hsl(0,0%,55%)" }} tickLine={false} axisLine={false} />
                   <ReTooltip
                     contentStyle={{ background: "hsl(0,0%,8%)", border: "1px solid hsl(0,0%,100%,0.08)", borderRadius: 12 }}
                     labelStyle={{ color: "hsl(0,0%,60%)", fontSize: 11 }}
-                    formatter={(val: number) => [fmtCurrency(val), "Revenue"]}
+                    formatter={(val: number) => [fmtCurrency(val), "Ingresos"]}
                   />
-                  <Bar dataKey="revenue" fill="hsl(24,95%,53%)" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
