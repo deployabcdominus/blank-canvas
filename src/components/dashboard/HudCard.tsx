@@ -8,6 +8,7 @@ interface HudCardProps {
   label: string;
   desc: string;
   value: number;
+  isCurrency?: boolean;
   icon: LucideIcon;
   isActive: boolean;
   onClick: () => void;
