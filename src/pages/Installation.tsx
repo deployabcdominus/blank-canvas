@@ -319,7 +319,8 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </div>
+            </motion.div>
               ))
             )}
           </div>
