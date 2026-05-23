@@ -122,11 +122,11 @@ export function WorkOrderCard({
       <div className="flex items-center gap-4 text-xs flex-wrap">
         <span className="flex items-center gap-1.5" style={{ color: formattedDelivery ? "#9ca3af" : "#4b5563" }}>
           <Calendar className="w-3.5 h-3.5" />
-          {formattedDelivery || t.workOrders.details.noDate}
+          {formattedDelivery || (t as any).workOrders.details.noDate}
         </span>
         <span className="flex items-center gap-1.5" style={{ color: assigneeName ? "#9ca3af" : "#4b5563" }}>
           <User className="w-3.5 h-3.5" />
-          {assigneeName || t.workOrders.details.unassigned}
+          {assigneeName || (t as any).workOrders.details.unassigned}
         </span>
 
         {order.product_type && (
@@ -146,7 +146,7 @@ export function WorkOrderCard({
               style={{ background: "rgba(88,28,135,0.4)", color: "#c4b5fd" }}
             >
               <ShieldCheck className="w-2.5 h-2.5" />
-              {t.workOrders.details.qcSigned}
+              {(t as any).workOrders.details.qcSigned}
             </span>
           )}
           {order.poi_token_used && (
@@ -155,7 +155,7 @@ export function WorkOrderCard({
               style={{ background: "rgba(6,78,59,0.5)", color: "#6ee7b7" }}
             >
               <CheckCircle className="w-2.5 h-2.5" />
-              {t.workOrders.details.installed}
+              {(t as any).workOrders.details.installed}
             </span>
           )}
         </div>
@@ -167,18 +167,19 @@ export function WorkOrderCard({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onOpen?.(order); }}>
-              <Eye className="w-3.5 h-3.5 mr-2" /> {t.workOrders.details.viewDetails}
+              <Eye className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.viewDetails}
             </DropdownMenuItem>
             {canEdit && (
               <>
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onGeneratePOI?.(order); }}>
-                  <QrCode className="w-3.5 h-3.5 mr-2" /> {t.workOrders.details.generatePoi}
+                  <QrCode className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.generatePoi}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onPrintSheet?.(order); }}>
-                  <Printer className="w-3.5 h-3.5 mr-2" /> {t.workOrders.details.printSheet}
+                  <Printer className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.printSheet}
                 </DropdownMenuItem>
               </>
             )}
+
 
             {canDelete && onDelete && (
               <>
