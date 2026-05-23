@@ -37,6 +37,7 @@ interface Props {
   canEdit?: boolean;
 }
 
+
 function formatDelivery(date: string | null | undefined): string | null {
   if (!date) return null;
   try {

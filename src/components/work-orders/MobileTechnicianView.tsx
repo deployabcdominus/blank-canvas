@@ -398,7 +398,7 @@ export default function MobileTechnicianView() {
                 className="w-full h-12 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-foreground font-medium"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                Guardar Ficha Técnica
+                {saving ? t.technician.actions.saving : t.technician.techSheet}
               </Button>
 
               <FeatureGuard feature="access_advanced_fields" message="Personaliza los campos técnicos según tu negocio.">
@@ -492,7 +492,7 @@ export default function MobileTechnicianView() {
             className="w-full h-14 rounded-2xl text-base font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_4px_20px_rgba(16,185,129,0.3)] active:scale-[0.97] transition-transform"
           >
             {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Play className="w-5 h-5 mr-2" />}
-            Iniciar Tarea
+            {saving ? t.technician.actions.saving : t.technician.actions.start}
           </Button>
         ) : selectedOrder.status !== "Finalizada" ? (
           <Button
@@ -501,7 +501,7 @@ export default function MobileTechnicianView() {
             className="w-full h-14 rounded-2xl text-base font-bold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-[0_4px_20px_rgba(251,146,60,0.35)] active:scale-[0.97] transition-transform"
           >
             {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <CheckCircle2 className="w-5 h-5 mr-2" />}
-            Finalizar Orden
+            {saving ? t.technician.actions.saving : t.technician.actions.finish}
           </Button>
         ) : null}
       </div>
