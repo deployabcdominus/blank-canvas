@@ -89,6 +89,25 @@ export interface WorkOrder {
   painting_color?: string;
   target_completion_date?: string;
   actual_completion_date?: string;
+  // Phase 4: Project Closing & Financials
+  client_acceptance_required?: boolean;
+  client_accepted?: boolean;
+  client_acceptance_date?: string;
+  client_acceptance_method?: string;
+  client_acceptance_notes?: string;
+  accepted_by_client_name?: string;
+  final_balance_due?: number;
+  final_payment_required?: boolean;
+  final_payment_received?: boolean;
+  final_payment_amount?: number;
+  final_payment_date?: string;
+  final_payment_method?: string;
+  final_payment_reference?: string;
+  closing_status?: string;
+  closed_at?: string;
+  closed_by_user_id?: string;
+  closing_notes?: string;
+  closeout_checklist_completed?: boolean;
 }
 
 // Backward-compatible alias
@@ -233,6 +252,24 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   painting_color: row.painting_color || '',
   target_completion_date: row.target_completion_date || null,
   actual_completion_date: row.actual_completion_date || null,
+  client_acceptance_required: row.client_acceptance_required ?? true,
+  client_accepted: row.client_accepted || false,
+  client_acceptance_date: row.client_acceptance_date || null,
+  client_acceptance_method: row.client_acceptance_method || '',
+  client_acceptance_notes: row.client_acceptance_notes || '',
+  accepted_by_client_name: row.accepted_by_client_name || '',
+  final_balance_due: row.final_balance_due || 0,
+  final_payment_required: row.final_payment_required ?? true,
+  final_payment_received: row.final_payment_received || false,
+  final_payment_amount: row.final_payment_amount || 0,
+  final_payment_date: row.final_payment_date || null,
+  final_payment_method: row.final_payment_method || '',
+  final_payment_reference: row.final_payment_reference || '',
+  closing_status: row.closing_status || 'Not Ready',
+  closed_at: row.closed_at || null,
+  closed_by_user_id: row.closed_by_user_id || null,
+  closing_notes: row.closing_notes || '',
+  closeout_checklist_completed: row.closeout_checklist_completed || false,
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -351,6 +388,26 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.painting_color !== undefined) dbUpdates.painting_color = updates.painting_color;
     if (updates.target_completion_date !== undefined) dbUpdates.target_completion_date = updates.target_completion_date;
     if (updates.actual_completion_date !== undefined) dbUpdates.actual_completion_date = updates.actual_completion_date;
+    
+    // Phase 4 mappings
+    if (updates.client_acceptance_required !== undefined) dbUpdates.client_acceptance_required = updates.client_acceptance_required;
+    if (updates.client_accepted !== undefined) dbUpdates.client_accepted = updates.client_accepted;
+    if (updates.client_acceptance_date !== undefined) dbUpdates.client_acceptance_date = updates.client_acceptance_date;
+    if (updates.client_acceptance_method !== undefined) dbUpdates.client_acceptance_method = updates.client_acceptance_method;
+    if (updates.client_acceptance_notes !== undefined) dbUpdates.client_acceptance_notes = updates.client_acceptance_notes;
+    if (updates.accepted_by_client_name !== undefined) dbUpdates.accepted_by_client_name = updates.accepted_by_client_name;
+    if (updates.final_balance_due !== undefined) dbUpdates.final_balance_due = updates.final_balance_due;
+    if (updates.final_payment_required !== undefined) dbUpdates.final_payment_required = updates.final_payment_required;
+    if (updates.final_payment_received !== undefined) dbUpdates.final_payment_received = updates.final_payment_received;
+    if (updates.final_payment_amount !== undefined) dbUpdates.final_payment_amount = updates.final_payment_amount;
+    if (updates.final_payment_date !== undefined) dbUpdates.final_payment_date = updates.final_payment_date;
+    if (updates.final_payment_method !== undefined) dbUpdates.final_payment_method = updates.final_payment_method;
+    if (updates.final_payment_reference !== undefined) dbUpdates.final_payment_reference = updates.final_payment_reference;
+    if (updates.closing_status !== undefined) dbUpdates.closing_status = updates.closing_status;
+    if (updates.closed_at !== undefined) dbUpdates.closed_at = updates.closed_at;
+    if (updates.closed_by_user_id !== undefined) dbUpdates.closed_by_user_id = updates.closed_by_user_id;
+    if (updates.closing_notes !== undefined) dbUpdates.closing_notes = updates.closing_notes;
+    if (updates.closeout_checklist_completed !== undefined) dbUpdates.closeout_checklist_completed = updates.closeout_checklist_completed;
     
     const { error } = await WorkOrdersService.update(id, dbUpdates);
     if (error) throw error;
