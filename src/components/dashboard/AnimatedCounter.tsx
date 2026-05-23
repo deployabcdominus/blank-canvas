@@ -7,7 +7,7 @@ interface AnimatedCounterProps {
   isCurrency?: boolean;
 }
 
-export const AnimatedCounter = ({ value, className = "" }: AnimatedCounterProps) => {
+export const AnimatedCounter = ({ value, className = "", isCurrency = false }: AnimatedCounterProps) => {
   const [showPulse, setShowPulse] = useState(false);
   const prevValue = useRef(value);
   const spring = useSpring(0, { stiffness: 80, damping: 20 });
