@@ -1066,6 +1066,7 @@ export type Database = {
           closed_at: string | null
           closed_by_user_id: string | null
           closeout_checklist_completed: boolean | null
+          closing_checklist: Json | null
           closing_notes: string | null
           closing_status: string | null
           cnc_required: boolean | null
@@ -1173,6 +1174,7 @@ export type Database = {
           closed_at?: string | null
           closed_by_user_id?: string | null
           closeout_checklist_completed?: boolean | null
+          closing_checklist?: Json | null
           closing_notes?: string | null
           closing_status?: string | null
           cnc_required?: boolean | null
@@ -1280,6 +1282,7 @@ export type Database = {
           closed_at?: string | null
           closed_by_user_id?: string | null
           closeout_checklist_completed?: boolean | null
+          closing_checklist?: Json | null
           closing_notes?: string | null
           closing_status?: string | null
           cnc_required?: boolean | null
