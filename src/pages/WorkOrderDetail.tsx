@@ -5,6 +5,7 @@ import {
   ChevronLeft, Pencil, Printer, QrCode, Calendar, User, Save,
   CheckCircle, ShieldCheck, Circle, Loader2, Clock, X, Wrench,
   Upload, Maximize2, Plus, Trash2, ChevronRight, ChevronLeftIcon,
+  AlertCircle, AlertTriangle, ShieldAlert,
 } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
