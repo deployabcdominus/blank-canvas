@@ -178,7 +178,7 @@ export const EditProposalModal = ({ isOpen, onClose, onEditProposal, proposal }:
             />
           </div>
           <div>
-            <Label>{m.sentMethodLabel}</Label>
+            <Label htmlFor="sentMethod">{m.sentMethodLabel}</Label>
             <Select onValueChange={(v) => setValue("sentMethod", v)} defaultValue={proposal.sentMethod || undefined}>
               <SelectTrigger><SelectValue placeholder={m.sentMethodPlaceholder} /></SelectTrigger>
               <SelectContent>
