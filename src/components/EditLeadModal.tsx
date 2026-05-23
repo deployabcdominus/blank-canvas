@@ -600,6 +600,13 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                   </div>
                 )}
                 {editing && (
+                  <div className="pt-2">
+                    <Form {...form}>
+                      <PilotTagSelector control={form.control} />
+                    </Form>
+                  </div>
+                )}
+                {editing && (
                   <FieldRow icon={Tag} label={t.editLeadModal.statusLabel} value={status} editing>
                     <Select value={status} onValueChange={setStatus}>
                       <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
