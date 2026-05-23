@@ -1290,6 +1290,47 @@ export type Database = {
           },
         ]
       }
+      security_events: {
+        Row: {
+          actor_id: string | null
+          company_id: string | null
+          created_at: string | null
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       system_heartbeats: {
         Row: {
           created_at: string
@@ -1631,6 +1672,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: { p_company_id?: string; p_details?: Json; p_event_type: string }
+        Returns: undefined
       }
       manter_bd_ativo: { Args: never; Returns: undefined }
       recalc_project_progress: {
