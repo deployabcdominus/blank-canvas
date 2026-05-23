@@ -5,8 +5,9 @@ import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
   MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
   FileText, AlertCircle, Upload, Trash2, QrCode, Image, ExternalLink,
-  Pencil,
+  Pencil, AlertTriangle, Info,
 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -963,19 +964,19 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               </div>
             </div>
 
-            {/* ═══ BOTTOM GRID: Staff + QC ═══ */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {/* ═══ BOTTOM GRID: Staff + QC + Notes ═══ */}
+            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: 10 }}>
               {/* Responsible Staff */}
               <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
-                  Responsible Staff
+                  Production Team
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   {STAFF_ROLES.map(({ key, label }) => {
                     const entry = staff[key as keyof ResponsibleStaff];
                     return (
-                      <div key={key} style={{ display: "grid", gridTemplateColumns: "100px 1fr 70px 24px", gap: 4, alignItems: "center" }}>
-                        <span style={{ fontSize: 9, fontWeight: 600, color: "#555" }}>{label}:</span>
+                      <div key={key} style={{ display: "grid", gridTemplateColumns: "85px 1fr 24px", gap: 4, alignItems: "center" }}>
+                        <span style={{ fontSize: 8, fontWeight: 600, color: "#555" }}>{label}:</span>
                         <Select
                           value={entry.user_id || "none"}
                           onValueChange={v => {
@@ -984,7 +985,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                             updateStaffField(key, "name", op?.name || "");
                           }}
                         >
-                          <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
+                          <SelectTrigger className="h-5 text-[8px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
                             <SelectValue placeholder="Assign..." />
                           </SelectTrigger>
                           <SelectContent>
@@ -992,27 +993,13 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                             {operators.map(o => <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <Select
-                          value={entry.status}
-                          onValueChange={v => updateStaffField(key, "status", v)}
-                        >
-                          <SelectTrigger className="h-5 text-[8px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="in_progress">In Progress</SelectItem>
-                            <SelectItem value="done">Done</SelectItem>
-                            <SelectItem value="verified">Verified</SelectItem>
-                          </SelectContent>
-                        </Select>
                         <button
                           onClick={() => updateStaffField(key, "is_verified", !entry.is_verified)}
                           style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                         >
                           {entry.is_verified
-                            ? <CheckSquare size={14} style={{ color: "#16a34a" }} />
-                            : <Square size={14} style={{ color: "#999" }} />
+                            ? <CheckSquare size={12} style={{ color: "#16a34a" }} />
+                            : <Square size={12} style={{ color: "#999" }} />
                           }
                         </button>
                       </div>
@@ -1024,29 +1011,48 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               {/* QC Checklist */}
               <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
-                  QC Checklist
+                  QC & Checklist
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   {QC_ITEMS.map(item => (
                     <button
                       key={item.key}
                       onClick={() => toggleQC(item.key)}
                       className="flex items-center gap-2 text-left"
-                      style={{ fontSize: 10 }}
+                      style={{ fontSize: 9 }}
                     >
                       {qcChecklist[item.key as keyof QCChecklist]
-                        ? <CheckSquare size={14} style={{ color: "#16a34a" }} />
-                        : <Square size={14} style={{ color: "#999" }} />
+                        ? <CheckSquare size={13} style={{ color: "#16a34a" }} />
+                        : <Square size={13} style={{ color: "#999" }} />
                       }
-                      <span style={{
-                        color: qcChecklist[item.key as keyof QCChecklist] ? "#16a34a" : "#333",
-                        textDecoration: qcChecklist[item.key as keyof QCChecklist] ? "line-through" : "none",
-                        fontWeight: 500,
-                      }}>
-                        {item.label}
-                      </span>
+                      <span style={{ color: "#333", fontWeight: 500 }}>{item.label}</span>
                     </button>
                   ))}
+                  <div className="mt-2 pt-2 border-t border-zinc-100">
+                     <label className="text-[8px] font-bold text-zinc-400 uppercase block mb-1">Warnings</label>
+                     <Textarea 
+                       value={prodWarnings} 
+                       onChange={e => setProdWarnings(e.target.value)} 
+                       placeholder="Critical warnings..."
+                       className="min-h-[40px] text-[9px] p-1.5 border-zinc-300 bg-transparent text-red-600 font-bold"
+                     />
+                  </div>
+                </div>
+              </div>
+
+              {/* Fabrication Notes */}
+              <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                  Workshop Notes
+                </div>
+                <Textarea 
+                  value={fabNotes} 
+                  onChange={e => setFabNotes(e.target.value)} 
+                  placeholder="Additional construction or fabrication instructions..."
+                  className="min-h-[140px] text-[10px] p-2 border-zinc-300 bg-transparent"
+                />
+              </div>
+            </div>
 
                   {/* Digital Signature Pad */}
                   <QCSignaturePad
