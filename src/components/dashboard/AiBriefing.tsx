@@ -23,18 +23,30 @@ import { useNavigate } from "react-router-dom";
 function BriefingContent({ text }: { text: string }) {
   const lines = text.split('\n').filter(Boolean);
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
       {lines.map((line, i) => {
         if (line.startsWith('## '))
           return <h3 key={i} className="text-sm font-bold text-foreground/90 mt-4 first:mt-0">{line.replace('## ', '')}</h3>;
         if (line.startsWith('# '))
           return <h2 key={i} className="text-base font-bold text-foreground mb-1">{line.replace('# ', '')}</h2>;
-        const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return <p key={i} className="text-sm text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />;
+        
+        // Simple bold parser without dangerouslySetInnerHTML
+        const parts = line.split(/(\*\*.*?\*\*)/g);
+        return (
+          <p key={i}>
+            {parts.map((part, j) => {
+              if (part.startsWith('**') && part.endsWith('**')) {
+                return <strong key={j}>{part.slice(2, -2)}</strong>;
+              }
+              return part;
+            })}
+          </p>
+        );
       })}
     </div>
   );
 }
+
 
 export function AiBriefing() {
   const { fullName } = useUserProfile();
