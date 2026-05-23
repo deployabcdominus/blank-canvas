@@ -859,6 +859,186 @@ export default function WorkOrderDetail() {
                   </div>
                 )}
               </SectionCard>
+
+              {/* ═══ CLOSING & FINANCIALS ═══ */}
+              <SectionCard className={closingStatus === "Closed" ? "border-emerald-500/30 bg-emerald-500/5" : ""}>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Closing & Financials</h2>
+                  <Badge className={`${CLOSING_STATUS_OPTIONS.find(s => s.value === closingStatus)?.color} border-0`}>
+                    {closingStatus}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Client Acceptance */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-wider uppercase text-violet-400/80">Client Acceptance</p>
+                    <div className="flex items-center gap-3">
+                      <Checkbox 
+                        id="clientAccepted" 
+                        checked={clientAccepted} 
+                        onCheckedChange={(v) => {
+                          setClientAccepted(!!v);
+                          handleClosingUpdate({ client_accepted: !!v, client_acceptance_date: !!v ? new Date().toISOString() : null });
+                        }} 
+                      />
+                      <Label htmlFor="clientAccepted" className="text-sm font-medium">Client has accepted project</Label>
+                    </div>
+                    
+                    {clientAccepted && (
+                      <div className="space-y-3 pl-7 animate-in fade-in slide-in-from-top-1">
+                        <div className="grid grid-cols-2 gap-2">
+                          <Field label="Method">
+                            <Select value={acceptanceMethod} onValueChange={(v) => {
+                              setClientAcceptanceMethod(v);
+                              handleClosingUpdate({ client_acceptance_method: v });
+                            }}>
+                              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Signature">Digital Signature</SelectItem>
+                                <SelectItem value="Email">Email Approval</SelectItem>
+                                <SelectItem value="In Person">In Person</SelectItem>
+                                <SelectItem value="Phone">Phone / Text</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </Field>
+                          <Field label="Accepted By">
+                            <Input 
+                              value={acceptedByName} 
+                              onChange={e => setAcceptedByClientName(e.target.value)}
+                              onBlur={() => handleClosingUpdate({ accepted_by_client_name: acceptedByName })}
+                              className="h-8 text-xs" 
+                              placeholder="Customer Name"
+                            />
+                          </Field>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Financial Closing */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-wider uppercase text-violet-400/80">Financial Settlement</p>
+                    {canViewFinancials ? (
+                      <>
+                        <div className="flex items-center justify-between py-2 border-b border-white/5">
+                          <span className="text-sm text-muted-foreground">Balance Due</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold text-foreground">$</span>
+                            <Input 
+                              type="number"
+                              value={balanceDue}
+                              onChange={e => setBalanceDue(Number(e.target.value))}
+                              onBlur={() => handleClosingUpdate({ final_balance_due: balanceDue })}
+                              className="h-7 w-24 text-xs text-right bg-transparent border-white/10"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 py-1">
+                          <Checkbox 
+                            id="paymentReceived" 
+                            checked={paymentReceived} 
+                            onCheckedChange={(v) => {
+                              setPaymentReceived(!!v);
+                              handleClosingUpdate({ 
+                                final_payment_received: !!v, 
+                                final_payment_date: !!v ? new Date().toISOString() : null,
+                                final_payment_amount: !!v ? balanceDue : 0
+                              });
+                            }} 
+                          />
+                          <Label htmlFor="paymentReceived" className="text-sm font-medium">Final payment received</Label>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic">You don't have permission to view financial details.</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Closeout Checklist */}
+                <div className="mt-8 pt-6 border-t border-white/5">
+                  <p className="text-[10px] font-bold tracking-wider uppercase text-violet-400/80 mb-4">Closeout Checklist</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {Object.entries(checklist).map(([key, val]) => (
+                      <label key={key} className="flex items-center gap-2 cursor-pointer group">
+                        <Checkbox 
+                          checked={val} 
+                          onCheckedChange={() => toggleChecklist(key)}
+                          className="w-3.5 h-3.5"
+                        />
+                        <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors capitalize">
+                          {key.replace(/_/g, " ")}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Actions */}
+                <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="flex-1">
+                    {!allQcPassed && <p className="text-[10px] text-amber-400 flex items-center gap-1.5"><AlertCircle className="w-3 h-3" /> QC must be completed before closing</p>}
+                    {allQcPassed && !clientAccepted && <p className="text-[10px] text-amber-400 flex items-center gap-1.5"><AlertCircle className="w-3 h-3" /> Waiting for client acceptance</p>}
+                    {allQcPassed && clientAccepted && paymentReceived && <p className="text-[10px] text-emerald-400 flex items-center gap-1.5"><CheckCircle className="w-3 h-3" /> Ready to close project</p>}
+                  </div>
+
+                  <div className="flex gap-2 shrink-0">
+                    {closingStatus === "Closed" ? (
+                      isAdmin && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setIsReopenDialogOpen(true)}
+                          className="text-xs border-red-500/30 text-red-400 hover:bg-red-500/10"
+                        >
+                          Reopen Project
+                        </Button>
+                      )
+                    ) : (
+                      <Button 
+                        onClick={handleCloseProject}
+                        disabled={closingSaving || !allQcPassed || !clientAccepted || (order.final_payment_required && !paymentReceived)}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 px-6 font-bold shadow-lg shadow-emerald-900/20"
+                      >
+                        {closingSaving ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5 mr-2" />}
+                        OFFICIALLY CLOSE PROJECT
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </SectionCard>
+
+              {/* Reopen Dialog */}
+              <Dialog open={isReopenDialogOpen} onOpenChange={setIsReopenDialogOpen}>
+                <DialogContent className="bg-zinc-900 border-white/10 text-white">
+                  <DialogHeader>
+                    <DialogTitle>Reopen Project</DialogTitle>
+                    <DialogDescription className="text-zinc-400">
+                      Please provide a reason for reopening this project. This will be recorded in the audit trail.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <Textarea 
+                      value={reopenReason} 
+                      onChange={e => setReopenReason(e.target.value)}
+                      placeholder="Reason for reopening..."
+                      className="min-h-[100px] bg-black/20 border-white/10"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsReopenDialogOpen(false)}>Cancel</Button>
+                    <Button 
+                      onClick={handleReopenProject} 
+                      disabled={!reopenReason || closingSaving}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      {closingSaving ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : "Reopen Project"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* RIGHT COL – 40% (2/5) */}
