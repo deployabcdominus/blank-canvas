@@ -68,10 +68,11 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     ? catalogServices.map(s => s.label)
     : serviceTypes;
 
-  const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { status: 'Borrador', initialPaymentRequired: true },
+    defaultValues: { status: 'Borrador', initialPaymentRequired: true, pilotTag: "" },
   });
+  const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = form;
 
   const watchPaymentRequired = watch("initialPaymentRequired");
   const [sentDate, setSentDate] = useState(new Date().toISOString().split('T')[0]);
