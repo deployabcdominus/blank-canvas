@@ -45,6 +45,17 @@ const STATUS_OPTIONS = [
   { value: "Instalado", label: "Installed", bg: "bg-violet-500/20", text: "text-white" },
 ];
 
+const CLOSING_STATUS_OPTIONS = [
+  { value: "Not Ready", label: "Not Ready", color: "bg-zinc-500/20 text-zinc-400" },
+  { value: "Ready for Client Acceptance", label: "Ready for Acceptance", color: "bg-blue-500/20 text-blue-400" },
+  { value: "Waiting for Client Acceptance", label: "Waiting for Acceptance", color: "bg-amber-500/20 text-amber-400" },
+  { value: "Waiting for Final Payment", label: "Waiting for Payment", color: "bg-violet-500/20 text-violet-400" },
+  { value: "Ready to Close", label: "Ready to Close", color: "bg-emerald-500/20 text-emerald-400" },
+  { value: "Closed", label: "Closed", color: "bg-emerald-600 text-white" },
+  { value: "Reopened", label: "Reopened", color: "bg-red-500/20 text-red-400" },
+  { value: "Canceled", label: "Canceled", color: "bg-zinc-800 text-zinc-500" },
+];
+
 const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
   baja:   { label: "Low",    color: "bg-zinc-500/20 text-zinc-400" },
   media:  { label: "Medium", color: "bg-blue-500/20 text-blue-400" },
