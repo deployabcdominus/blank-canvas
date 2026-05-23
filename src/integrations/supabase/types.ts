@@ -830,37 +830,114 @@ export type Database = {
           },
         ]
       }
+      production_order_status_history: {
+        Row: {
+          changed_by_user_id: string | null
+          company_id: string
+          created_at: string
+          id: string
+          new_status: string
+          notes: string | null
+          previous_status: string | null
+          production_order_id: string
+        }
+        Insert: {
+          changed_by_user_id?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          new_status: string
+          notes?: string | null
+          previous_status?: string | null
+          production_order_id: string
+        }
+        Update: {
+          changed_by_user_id?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          new_status?: string
+          notes?: string | null
+          previous_status?: string | null
+          production_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_order_status_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_order_status_history_production_order_id_fkey"
+            columns: ["production_order_id"]
+            isOneToOne: false
+            referencedRelation: "production_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       production_orders: {
         Row: {
+          actual_completion_date: string | null
           annotations: Json | null
           assigned_to_user_id: string | null
           backs_material_spec: string | null
           blueprint_url: string | null
           client: string
           client_id: string | null
+          cnc_required: boolean | null
           company_id: string
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
           created_at: string
+          cutting_required: boolean | null
           design_notes: string | null
+          design_review_completed: boolean | null
+          design_review_notes: string | null
+          design_review_required: boolean | null
+          design_reviewed_by: string | null
+          electrical_required: boolean | null
           end_date: string | null
           estimated_delivery: string | null
+          fabrication_notes: string | null
           face_material_spec: string | null
+          final_height: number | null
+          final_width: number | null
+          frame_material: string | null
           id: string
+          illuminated_or_non: string | null
+          indoor_or_outdoor: string | null
+          installation_surface: string | null
           installer_company_id: string | null
+          internal_status: string | null
+          laminate_required: boolean | null
+          laminate_type: string | null
           led_mfg_spec: string | null
           materials: Json | null
+          measurement_unit: string | null
           mockup_urls: Json | null
+          mounting_method: string | null
           notes: string | null
           owner_user_id: string | null
+          painting_color: string | null
+          painting_required: boolean | null
+          permit_required: boolean | null
           poi_completed_at: string | null
           poi_token: string | null
           poi_token_exp: string | null
           poi_token_used: boolean | null
           power_supply_spec: string | null
+          prepared_by_department: string | null
+          print_material: string | null
+          print_notes: string | null
+          print_quality: string | null
+          print_required: boolean | null
           priority: string | null
           product_type: string | null
+          production_warnings: string | null
           progress: number | null
           project: string | null
           project_id: string | null
@@ -874,44 +951,82 @@ export type Database = {
           qc_signer_name: string | null
           responsible_staff: Json | null
           returns_material_spec: string | null
+          single_or_double_sided: string | null
           site_address: string | null
           start_date: string | null
           status: string | null
+          substrate_material: string | null
+          target_completion_date: string | null
           technical_details: Json | null
           trim_cap_spec: string | null
           user_id: string
+          vinyl_brand: string | null
+          vinyl_color: string | null
+          vinyl_finish: string | null
+          vinyl_notes: string | null
+          vinyl_required: boolean | null
+          welding_required: boolean | null
           wo_number: string | null
         }
         Insert: {
+          actual_completion_date?: string | null
           annotations?: Json | null
           assigned_to_user_id?: string | null
           backs_material_spec?: string | null
           blueprint_url?: string | null
           client: string
           client_id?: string | null
+          cnc_required?: boolean | null
           company_id: string
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
+          cutting_required?: boolean | null
           design_notes?: string | null
+          design_review_completed?: boolean | null
+          design_review_notes?: string | null
+          design_review_required?: boolean | null
+          design_reviewed_by?: string | null
+          electrical_required?: boolean | null
           end_date?: string | null
           estimated_delivery?: string | null
+          fabrication_notes?: string | null
           face_material_spec?: string | null
+          final_height?: number | null
+          final_width?: number | null
+          frame_material?: string | null
           id?: string
+          illuminated_or_non?: string | null
+          indoor_or_outdoor?: string | null
+          installation_surface?: string | null
           installer_company_id?: string | null
+          internal_status?: string | null
+          laminate_required?: boolean | null
+          laminate_type?: string | null
           led_mfg_spec?: string | null
           materials?: Json | null
+          measurement_unit?: string | null
           mockup_urls?: Json | null
+          mounting_method?: string | null
           notes?: string | null
           owner_user_id?: string | null
+          painting_color?: string | null
+          painting_required?: boolean | null
+          permit_required?: boolean | null
           poi_completed_at?: string | null
           poi_token?: string | null
           poi_token_exp?: string | null
           poi_token_used?: boolean | null
           power_supply_spec?: string | null
+          prepared_by_department?: string | null
+          print_material?: string | null
+          print_notes?: string | null
+          print_quality?: string | null
+          print_required?: boolean | null
           priority?: string | null
           product_type?: string | null
+          production_warnings?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
@@ -925,44 +1040,82 @@ export type Database = {
           qc_signer_name?: string | null
           responsible_staff?: Json | null
           returns_material_spec?: string | null
+          single_or_double_sided?: string | null
           site_address?: string | null
           start_date?: string | null
           status?: string | null
+          substrate_material?: string | null
+          target_completion_date?: string | null
           technical_details?: Json | null
           trim_cap_spec?: string | null
           user_id: string
+          vinyl_brand?: string | null
+          vinyl_color?: string | null
+          vinyl_finish?: string | null
+          vinyl_notes?: string | null
+          vinyl_required?: boolean | null
+          welding_required?: boolean | null
           wo_number?: string | null
         }
         Update: {
+          actual_completion_date?: string | null
           annotations?: Json | null
           assigned_to_user_id?: string | null
           backs_material_spec?: string | null
           blueprint_url?: string | null
           client?: string
           client_id?: string | null
+          cnc_required?: boolean | null
           company_id?: string
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
+          cutting_required?: boolean | null
           design_notes?: string | null
+          design_review_completed?: boolean | null
+          design_review_notes?: string | null
+          design_review_required?: boolean | null
+          design_reviewed_by?: string | null
+          electrical_required?: boolean | null
           end_date?: string | null
           estimated_delivery?: string | null
+          fabrication_notes?: string | null
           face_material_spec?: string | null
+          final_height?: number | null
+          final_width?: number | null
+          frame_material?: string | null
           id?: string
+          illuminated_or_non?: string | null
+          indoor_or_outdoor?: string | null
+          installation_surface?: string | null
           installer_company_id?: string | null
+          internal_status?: string | null
+          laminate_required?: boolean | null
+          laminate_type?: string | null
           led_mfg_spec?: string | null
           materials?: Json | null
+          measurement_unit?: string | null
           mockup_urls?: Json | null
+          mounting_method?: string | null
           notes?: string | null
           owner_user_id?: string | null
+          painting_color?: string | null
+          painting_required?: boolean | null
+          permit_required?: boolean | null
           poi_completed_at?: string | null
           poi_token?: string | null
           poi_token_exp?: string | null
           poi_token_used?: boolean | null
           power_supply_spec?: string | null
+          prepared_by_department?: string | null
+          print_material?: string | null
+          print_notes?: string | null
+          print_quality?: string | null
+          print_required?: boolean | null
           priority?: string | null
           product_type?: string | null
+          production_warnings?: string | null
           progress?: number | null
           project?: string | null
           project_id?: string | null
@@ -976,12 +1129,21 @@ export type Database = {
           qc_signer_name?: string | null
           responsible_staff?: Json | null
           returns_material_spec?: string | null
+          single_or_double_sided?: string | null
           site_address?: string | null
           start_date?: string | null
           status?: string | null
+          substrate_material?: string | null
+          target_completion_date?: string | null
           technical_details?: Json | null
           trim_cap_spec?: string | null
           user_id?: string
+          vinyl_brand?: string | null
+          vinyl_color?: string | null
+          vinyl_finish?: string | null
+          vinyl_notes?: string | null
+          vinyl_required?: boolean | null
+          welding_required?: boolean | null
           wo_number?: string | null
         }
         Relationships: [
