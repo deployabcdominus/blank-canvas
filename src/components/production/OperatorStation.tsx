@@ -9,14 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-const getDepartments = (isEn: boolean) => [
-  { value: "all", label: isEn ? "All" : "Todos", icon: "🏭" },
-  { value: "cnc", label: "CNC", icon: "⚙️" },
-  { value: "electrical", label: isEn ? "Electrical" : "Eléctrico", icon: "⚡" },
-  { value: "graphics", label: isEn ? "Graphics" : "Gráficos", icon: "🎨" },
-  { value: "qa", label: isEn ? "Quality" : "Calidad", icon: "✅" },
-  { value: "general", label: "General", icon: "📋" },
+const getDepartments = (t: any) => [
+  { value: "all", label: t.production.operatorStation.departments.all, icon: "🏭" },
+  { value: "cnc", label: t.production.operatorStation.departments.cnc, icon: "⚙️" },
+  { value: "electrical", label: t.production.operatorStation.departments.electrical, icon: "⚡" },
+  { value: "graphics", label: t.production.operatorStation.departments.graphics, icon: "🎨" },
+  { value: "qa", label: t.production.operatorStation.departments.quality, icon: "✅" },
+  { value: "general", label: t.production.operatorStation.departments.general, icon: "📋" },
 ];
+
 
 const PRIORITY_BADGE: Record<string, string> = {
   urgente: "bg-red-500/15 text-red-400 border-red-500/30",
@@ -25,13 +26,14 @@ const PRIORITY_BADGE: Record<string, string> = {
   baja: "bg-muted text-muted-foreground border-border",
 };
 
-const getToasts = (isEn: boolean) => [
-  { emoji: "🔥", msg: isEn ? "Unstoppable! The admin already saw it on the dashboard" : "¡Imparable! El admin ya lo vio en el dashboard" },
-  { emoji: "💪", msg: isEn ? "Task crushed! The workshop needs you" : "¡Tarea aplastada! El taller te necesita" },
-  { emoji: "⚡", msg: isEn ? "Lightning fast! Are you human or robot?" : "¡Rapidísimo! ¿Eres humano o robot?" },
-  { emoji: "🏆", msg: isEn ? "One step closer to Friday's free lunch!" : "¡Un paso más al almuerzo gratis del viernes!" },
-  { emoji: "🎯", msg: isEn ? "Perfect! No errors, that's how it's done" : "¡Perfecto! Sin errores, así se hace" },
+const getToasts = (t: any) => [
+  { emoji: "🔥", msg: t.production.operatorStation.toasts.unstoppable },
+  { emoji: "💪", msg: t.production.operatorStation.toasts.taskCrushed },
+  { emoji: "⚡", msg: t.production.operatorStation.toasts.lightningFast },
+  { emoji: "🏆", msg: t.production.operatorStation.toasts.fridayLunch },
+  { emoji: "🎯", msg: t.production.operatorStation.toasts.perfect },
 ];
+
 
 function Confetti({ active }: { active: boolean }) {
   const colors = ["#7C3AED", "#A78BFA", "#16A34A", "#F59E0B", "#14B8A6", "#EC4899"];
@@ -63,10 +65,10 @@ function Confetti({ active }: { active: boolean }) {
 export default function OperatorStation() {
   const { companyId } = useUserRole();
   const { user } = useAuth();
-  const { locale } = useLanguage();
-  const isEn = locale === "en";
-  const DEPARTMENTS = getDepartments(isEn);
-  const TOASTS = getToasts(isEn);
+  const { locale, t } = useLanguage();
+  const DEPARTMENTS = getDepartments(t);
+  const TOASTS = getToasts(t);
+
   const { data: stats } = useWorkerStatsQuery(user?.id, companyId);
   const { steps: tasks, startTaskMutation, completeTaskMutation } = useProductionStepsQuery(companyId, user?.id);
   const [department, setDepartment] = useState("all");
