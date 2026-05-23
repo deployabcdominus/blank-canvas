@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 
+
 /* ── Industry field definitions (mirrored from TechnicalSheet) ── */
 interface FieldDef {
   key: string;
