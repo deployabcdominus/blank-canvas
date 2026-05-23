@@ -65,11 +65,10 @@ export function WorkOrderCard({
   const deliveryDate = order.estimatedDelivery || order.estimatedCompletion;
   const formattedDelivery = formatDelivery(deliveryDate);
   const progress = order.progress ?? 0;
+  const statusKey = order.poi_token_used ? "installed" : order.status;
+  const status = STATUS_CONFIG[statusKey as keyof typeof STATUS_CONFIG] || STATUS_CONFIG["Pendiente"];
+  const statusLabel = status.label;
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
       onClick={() => navigate(`/work-orders/${order.id}`)}
       className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col"
