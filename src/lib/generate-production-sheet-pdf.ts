@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+// Dynamically import jsPDF inside the function to optimize performance
 
 /* ── Types ── */
 
@@ -52,7 +52,7 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
   });
 }
 
-function sectionHeader(doc: jsPDF, text: string, x: number, y: number, w: number): number {
+function sectionHeader(doc: any, text: string, x: number, y: number, w: number): number {
   doc.setFillColor(...BG_SECTION);
   doc.roundedRect(x, y, w, 5.5, 0.8, 0.8, "F");
   doc.setFont("helvetica", "bold");
@@ -63,7 +63,7 @@ function sectionHeader(doc: jsPDF, text: string, x: number, y: number, w: number
   return y + 7;
 }
 
-function kvRow(doc: jsPDF, label: string, value: string, x: number, y: number, labelW = 22): number {
+function kvRow(doc: any, label: string, value: string, x: number, y: number, labelW = 22): number {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.5);
   doc.setTextColor(...GRAY);
@@ -75,7 +75,7 @@ function kvRow(doc: jsPDF, label: string, value: string, x: number, y: number, l
   return y + 4;
 }
 
-function thinLine(doc: jsPDF, x1: number, y1: number, x2: number, y2: number) {
+function thinLine(doc: any, x1: number, y1: number, x2: number, y2: number) {
   doc.setDrawColor(...LINE);
   doc.setLineWidth(0.15);
   doc.line(x1, y1, x2, y2);
@@ -83,7 +83,9 @@ function thinLine(doc: jsPDF, x1: number, y1: number, x2: number, y2: number) {
 
 /* ── Main Export ── */
 export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
+  const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+
   const W = 297, H = 210;
   const mx = 8, my = 7;
   const cw = W - mx * 2;

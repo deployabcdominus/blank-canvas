@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+// Dynamically import jsPDF inside the function to optimize performance
 
 interface PdfWorkOrder {
   id: string;
@@ -23,7 +23,7 @@ const MID_TEXT: [number, number, number] = [100, 100, 100];
 const LIGHT_LINE: [number, number, number] = [200, 200, 210];
 const SECTION_BG: [number, number, number] = [245, 243, 255]; // very light violet
 
-function drawSectionTitle(doc: jsPDF, title: string, x: number, y: number): number {
+function drawSectionTitle(doc: any, title: string, x: number, y: number): number {
   doc.setFillColor(...SECTION_BG);
   doc.roundedRect(x, y, 160, 7, 1, 1, "F");
   doc.setFont("helvetica", "bold");
@@ -45,7 +45,9 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
 }
 
 export async function generateProductionPDF(order: PdfWorkOrder): Promise<void> {
+  const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+
   const pageW = 297;
   const pageH = 210;
   const margin = 12;
