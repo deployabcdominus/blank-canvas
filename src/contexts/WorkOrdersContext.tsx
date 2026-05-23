@@ -307,6 +307,44 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations as any;
     if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails as any;
     
+    // Phase 2 mappings
+    if (updates.internal_status !== undefined) dbUpdates.internal_status = updates.internal_status;
+    if (updates.prepared_by_department !== undefined) dbUpdates.prepared_by_department = updates.prepared_by_department;
+    if (updates.design_review_required !== undefined) dbUpdates.design_review_required = updates.design_review_required;
+    if (updates.design_review_completed !== undefined) dbUpdates.design_review_completed = updates.design_review_completed;
+    if (updates.final_width !== undefined) dbUpdates.final_width = updates.final_width;
+    if (updates.final_height !== undefined) dbUpdates.final_height = updates.final_height;
+    if (updates.measurement_unit !== undefined) dbUpdates.measurement_unit = updates.measurement_unit;
+    if (updates.single_or_double_sided !== undefined) dbUpdates.single_or_double_sided = updates.single_or_double_sided;
+    if (updates.indoor_or_outdoor !== undefined) dbUpdates.indoor_or_outdoor = updates.indoor_or_outdoor;
+    if (updates.illuminated_or_non !== undefined) dbUpdates.illuminated_or_non = updates.illuminated_or_non;
+    if (updates.substrate_material !== undefined) dbUpdates.substrate_material = updates.substrate_material;
+    if (updates.frame_material !== undefined) dbUpdates.frame_material = updates.frame_material;
+    if (updates.mounting_method !== undefined) dbUpdates.mounting_method = updates.mounting_method;
+    if (updates.installation_surface !== undefined) dbUpdates.installation_surface = updates.installation_surface;
+    if (updates.electrical_required !== undefined) dbUpdates.electrical_required = updates.electrical_required;
+    if (updates.permit_required !== undefined) dbUpdates.permit_required = updates.permit_required;
+    if (updates.fabrication_notes !== undefined) dbUpdates.fabrication_notes = updates.fabrication_notes;
+    if (updates.production_warnings !== undefined) dbUpdates.production_warnings = updates.production_warnings;
+    if (updates.vinyl_required !== undefined) dbUpdates.vinyl_required = updates.vinyl_required;
+    if (updates.vinyl_brand !== undefined) dbUpdates.vinyl_brand = updates.vinyl_brand;
+    if (updates.vinyl_color !== undefined) dbUpdates.vinyl_color = updates.vinyl_color;
+    if (updates.vinyl_finish !== undefined) dbUpdates.vinyl_finish = updates.vinyl_finish;
+    if (updates.vinyl_notes !== undefined) dbUpdates.vinyl_notes = updates.vinyl_notes;
+    if (updates.print_required !== undefined) dbUpdates.print_required = updates.print_required;
+    if (updates.print_material !== undefined) dbUpdates.print_material = updates.print_material;
+    if (updates.print_quality !== undefined) dbUpdates.print_quality = updates.print_quality;
+    if (updates.laminate_required !== undefined) dbUpdates.laminate_required = updates.laminate_required;
+    if (updates.laminate_type !== undefined) dbUpdates.laminate_type = updates.laminate_type;
+    if (updates.print_notes !== undefined) dbUpdates.print_notes = updates.print_notes;
+    if (updates.cutting_required !== undefined) dbUpdates.cutting_required = updates.cutting_required;
+    if (updates.cnc_required !== undefined) dbUpdates.cnc_required = updates.cnc_required;
+    if (updates.welding_required !== undefined) dbUpdates.welding_required = updates.welding_required;
+    if (updates.painting_required !== undefined) dbUpdates.painting_required = updates.painting_required;
+    if (updates.painting_color !== undefined) dbUpdates.painting_color = updates.painting_color;
+    if (updates.target_completion_date !== undefined) dbUpdates.target_completion_date = updates.target_completion_date;
+    if (updates.actual_completion_date !== undefined) dbUpdates.actual_completion_date = updates.actual_completion_date;
+    
     const { error } = await WorkOrdersService.update(id, dbUpdates);
     if (error) throw error;
     
