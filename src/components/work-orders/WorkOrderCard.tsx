@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/i18n/LanguageContext";
+import { useLanguage, useT } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { WorkOrder } from "@/contexts/WorkOrdersContext";
@@ -12,6 +12,7 @@ import {
   CheckCircle, ShieldCheck, Trash2, Wrench,
 } from "lucide-react";
 import { format } from "date-fns";
+
 
 const getStatusConfig = (t: any) => ({
   "Pendiente":          { bg: "rgba(107,114,128,0.12)", color: "#6b7280", label: t.workOrders.statusLabels.pending },
@@ -52,8 +53,9 @@ export function WorkOrderCard({
   order, index, assigneeName, onOpen, onGeneratePOI, onPrintSheet, onDelete, canDelete = false, canEdit = true,
 }: Props) {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const t = useT();
   const STATUS_CONFIG = getStatusConfig(t);
+
 
   const statusKey = order.poi_token_used ? "installed" : order.status;
   const status = STATUS_CONFIG[statusKey as keyof typeof STATUS_CONFIG] || STATUS_CONFIG["Pendiente"];

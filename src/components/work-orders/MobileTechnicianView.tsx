@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
 import { useIndustryLabels } from "@/hooks/useIndustryLabels";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,6 +20,7 @@ import {
   Clock, Shield, Monitor, Wrench, Hammer, X, Image as ImageIcon,
   ChevronRight, Loader2
 } from "lucide-react";
+
 
 /* ── Industry field definitions (mirrored from TechnicalSheet) ── */
 interface FieldDef {
