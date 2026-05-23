@@ -22,6 +22,11 @@ import {
   Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList,
   BreadcrumbPage, BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useWorkOrders, type WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useProductionSteps } from "@/hooks/useProductionSteps";
 import { useUserRole } from "@/hooks/useUserRole";
