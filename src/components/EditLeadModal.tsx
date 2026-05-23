@@ -175,6 +175,16 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const [location, setLocation] = useState("");
   const [service, setService] = useState("");
   const [source, setSource] = useState("");
+  const [leadSource, setLeadSource] = useState("");
+  const [brokerName, setBrokerName] = useState("");
+  const [brokerPhone, setBrokerPhone] = useState("");
+  const [brokerEmail, setBrokerEmail] = useState("");
+  const [brokerNotes, setBrokerNotes] = useState("");
+  const [informalNotes, setInformalNotes] = useState("");
+  const [agreedPrice, setAgreedPrice] = useState("");
+  const [intakeQuality, setIntakeQuality] = useState("");
+  const [followUpRequired, setFollowUpRequired] = useState(false);
+  const [followUpNotes, setFollowUpNotes] = useState("");
   const [status, setStatus] = useState("");
   const [value, setValue] = useState("");
   const [notes, setNotes] = useState("");
@@ -204,6 +214,16 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       setLocation(lead.contact.location);
       setService(lead.service);
       setSource(lead.source || "");
+      setLeadSource(lead.leadSource || "");
+      setBrokerName(lead.brokerName || "");
+      setBrokerPhone(lead.brokerPhone || "");
+      setBrokerEmail(lead.brokerEmail || "");
+      setBrokerNotes(lead.brokerNotes || "");
+      setInformalNotes(lead.informalNotes || "");
+      setAgreedPrice(lead.agreedPrice?.toString() || "");
+      setIntakeQuality(lead.intakeQuality || "");
+      setFollowUpRequired(!!lead.followUpRequired);
+      setFollowUpNotes(lead.followUpNotes || "");
       setStatus(lead.status);
       setValue(lead.value);
       setNotes(lead.notes || "");
@@ -259,6 +279,9 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       }
       const updates: Partial<Lead> = {
         name, company, service, source, status, value, notes,
+        leadSource, brokerName, brokerPhone, brokerEmail, brokerNotes,
+        informalNotes, intakeQuality, followUpRequired, followUpNotes,
+        agreedPrice: agreedPrice ? parseFloat(agreedPrice) : undefined,
         contact: { phone, email, location },
       };
       if (logoUrl !== undefined) updates.logoUrl = logoUrl;
@@ -460,6 +483,44 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
               </div>
             </GlassCard>
 
+            {/* Lead Source Card */}
+            <GlassCard title={t.addLeadModal.leadSourceSection} icon={Tag}>
+              <div className="space-y-0">
+                <FieldRow icon={Tag} label={t.addLeadModal.leadSourceLabel} value={leadSource} editing={editing}>
+                  <Select value={leadSource} onValueChange={setLeadSource}>
+                    <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder={t.addLeadModal.leadSourcePlaceholder} /></SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(t.addLeadModal.sources).map(([key, label]) => (
+                        <SelectItem key={key} value={label}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FieldRow>
+                {(leadSource === "Broker" || leadSource === t.addLeadModal.sources.broker) && (
+                  <>
+                    <FieldRow icon={UserPlus} label={t.addLeadModal.brokerNameLabel} value={brokerName} editing={editing}>
+                      <Input value={brokerName} onChange={e => setBrokerName(e.target.value)} className={`h-8 text-sm ${editRing}`} />
+                    </FieldRow>
+                    <FieldRow icon={Phone} label={t.addLeadModal.brokerPhoneLabel} value={brokerPhone} editing={editing}>
+                      <Input value={brokerPhone} onChange={e => setBrokerPhone(e.target.value)} className={`h-8 text-sm ${editRing}`} />
+                    </FieldRow>
+                    <FieldRow icon={Mail} label={t.addLeadModal.brokerEmailLabel} value={brokerEmail} editing={editing}>
+                      <Input value={brokerEmail} onChange={e => setBrokerEmail(e.target.value)} className={`h-8 text-sm ${editRing}`} />
+                    </FieldRow>
+                  </>
+                )}
+              </div>
+            </GlassCard>
+
+            {/* Price Agreement Card */}
+            <GlassCard title={t.addLeadModal.priceAgreementSection} icon={TrendingUp}>
+              <div className="space-y-0">
+                <FieldRow icon={TrendingUp} label={t.addLeadModal.agreedPriceLabel} value={agreedPrice ? `$${parseFloat(agreedPrice).toLocaleString()}` : "—"} editing={editing}>
+                  <Input type="number" step="0.01" value={agreedPrice} onChange={e => setAgreedPrice(e.target.value)} className={`h-8 text-sm ${editRing}`} />
+                </FieldRow>
+              </div>
+            </GlassCard>
+
             {/* Project Specs Card */}
             <GlassCard title={t.editLeadModal.projectSpecsTitle} icon={Briefcase}>
               <div className="space-y-0">
@@ -523,26 +584,59 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                   </div>
                 )}
                 {editing && (
-                  <>
-                    <FieldRow icon={Globe} label={t.editLeadModal.sourceLabel} value={source} editing>
-                      <Select value={source} onValueChange={setSource}>
-                        <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                        <SelectContent>
-                          {sources.map(s => <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </FieldRow>
-                    <FieldRow icon={Tag} label={t.editLeadModal.statusLabel} value={status} editing>
-                      <Select value={status} onValueChange={setStatus}>
-                        <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                        <SelectContent>
-                          {statuses.map(s => <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </FieldRow>
-                  </>
+                  <FieldRow icon={Tag} label={t.editLeadModal.statusLabel} value={status} editing>
+                    <Select value={status} onValueChange={setStatus}>
+                      <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                      <SelectContent>
+                        {statuses.map(s => <SelectItem key={s.value} value={s.label}>{s.label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </FieldRow>
                 )}
+                <FieldRow icon={CheckCircle2} label={t.addLeadModal.intakeQualityLabel} value={t.addLeadModal.intakeQualityOptions[intakeQuality as keyof typeof t.addLeadModal.intakeQualityOptions] || intakeQuality} editing={editing}>
+                   <Select value={intakeQuality} onValueChange={setIntakeQuality}>
+                    <SelectTrigger className={`h-8 text-sm ${editRing}`}><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(t.addLeadModal.intakeQualityOptions).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FieldRow>
               </div>
+            </GlassCard>
+
+            {/* Assignment & Follow-up Card */}
+            <GlassCard title={t.addLeadModal.assignmentSection} icon={UserPlus}>
+              <div className="space-y-2">
+                 <div className="flex items-center gap-2 py-1">
+                    <input 
+                      type="checkbox" 
+                      id="followUpRequired"
+                      disabled={!editing}
+                      checked={followUpRequired} 
+                      onChange={e => setFollowUpRequired(e.target.checked)} 
+                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <label htmlFor="followUpRequired" className="text-xs text-zinc-400 font-medium">
+                      {t.addLeadModal.followUpRequiredLabel}
+                    </label>
+                 </div>
+                 {(followUpRequired || followUpNotes) && (
+                   <FieldRow icon={MessageSquare} label={t.addLeadModal.followUpNotesLabel} value={followUpNotes} editing={editing}>
+                     <Textarea value={followUpNotes} onChange={e => setFollowUpNotes(e.target.value)} className={`min-h-[60px] text-sm ${editRing}`} />
+                   </FieldRow>
+                 )}
+              </div>
+            </GlassCard>
+
+            {/* Informal Notes Card */}
+            <GlassCard title={t.addLeadModal.informalNotesLabel} icon={StickyNote}>
+               {editing ? (
+                 <Textarea value={informalNotes} onChange={e => setInformalNotes(e.target.value)} className={`min-h-[80px] text-sm ${editRing}`} />
+               ) : (
+                 <p className="text-sm text-zinc-400 whitespace-pre-wrap">{informalNotes || "—"}</p>
+               )}
             </GlassCard>
 
             {/* Notes Card with Voice Input */}
