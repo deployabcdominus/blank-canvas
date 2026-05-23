@@ -55,6 +55,10 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
             </div>
           )}
           <h1 className="md:hidden text-lg font-bold truncate">{FIXED_BRANDING.appName}</h1>
+          
+          <div className="hidden md:flex ml-4">
+            <GlobalSearch />
+          </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
