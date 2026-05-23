@@ -184,6 +184,8 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
               </Select>
             </div>
           </div>
+
+          <div className="space-y-2">
             <Label className="text-sm font-medium text-foreground">{t.installerCompanyModal.servicesLabel}</Label>
             <div className="grid grid-cols-2 gap-2 border border-border rounded-xl p-3 bg-muted/30">
               {serviceTypes.map((service) => (
