@@ -157,7 +157,14 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
         </div>
 
         {/* Service type */}
-        <p className="text-sm font-medium text-zinc-400 mb-2">{lead.service}</p>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-sm font-medium text-zinc-400">{lead.service}</p>
+          {lead.leadSource && (
+            <Badge variant="outline" className="text-[10px] bg-zinc-800/40 text-zinc-500 border-zinc-700/40">
+              {lead.leadSource}
+            </Badge>
+          )}
+        </div>
 
         {/* Price block */}
         <div className="mb-3">
@@ -165,12 +172,29 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
             <p className="text-2xl font-bold text-zinc-100">
               ${linkedProposal.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </p>
+          ) : lead.agreedPrice ? (
+            <p className="text-2xl font-bold text-emerald-400/90">
+              ${Number(lead.agreedPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              <span className="text-[10px] ml-2 text-zinc-500 font-normal uppercase tracking-tighter">Acordado</span>
+            </p>
           ) : (
             <p className="text-lg font-semibold text-zinc-600">{t.leadCard.priceTbd}</p>
           )}
-          <Badge variant="outline" className={`mt-1 text-xs ${proposalBadge.className}`}>
-            {t.leadCard.proposalStatus[proposalBadge.key]}
-          </Badge>
+          <div className="flex items-center gap-2 mt-1">
+            <Badge variant="outline" className={`text-xs ${proposalBadge.className}`}>
+              {t.leadCard.proposalStatus[proposalBadge.key]}
+            </Badge>
+            {lead.intakeQuality && lead.intakeQuality !== 'complete' && (
+              <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-500 border-amber-500/20">
+                {t.addLeadModal.intakeQualityOptions[lead.intakeQuality as keyof typeof t.addLeadModal.intakeQualityOptions] || lead.intakeQuality}
+              </Badge>
+            )}
+            {lead.followUpRequired && (
+              <Badge variant="outline" className="text-[10px] bg-red-500/10 text-red-500 border-red-500/20">
+                Seguimiento
+              </Badge>
+            )}
+          </div>
         </div>
 
         {/* Contact info */}
