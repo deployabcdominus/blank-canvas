@@ -107,7 +107,6 @@ const Leads = () => {
       approvedTotal: null,
       approvedAt: null,
       mockupUrl: null,
-      owner_user_id: user?.id,
     });
 
     toast({ title: t.leads.toasts.proposalCreated, description: t.leads.toasts.proposalCreatedDesc });
