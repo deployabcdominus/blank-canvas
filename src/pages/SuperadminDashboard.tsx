@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { FullPageSpinnerSkeleton } from "@/components/ui/skeleton-card";
 import { motion } from "framer-motion";
 import { useSearchParams, Navigate } from "react-router-dom";
@@ -13,13 +13,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import { Shield, Building, Users, Globe, ServerCog, ScrollText } from "lucide-react";
-import { SuperadminOverview } from "@/components/superadmin/SuperadminOverview";
+import { Shield, Building, Users, Globe, ServerCog, ScrollText, Loader2 } from "lucide-react";
 import { SuperadminCompanies } from "@/components/superadmin/SuperadminCompanies";
 import { SuperadminUsers } from "@/components/superadmin/SuperadminUsers";
 import { SuperadminProvisioning } from "@/components/superadmin/SuperadminProvisioning";
 import { SuperadminAuditLogs } from "@/components/superadmin/SuperadminAuditLogs";
 import { ChangePlanModal } from "@/components/superadmin/ChangePlanModal";
+
+// Lazy-loaded heavy components
+const SuperadminOverview = lazy(() => import("@/components/superadmin/SuperadminOverview").then(m => ({ default: m.SuperadminOverview })));
+
 
 interface Company {
   id: string; name: string; user_id: string; plan_id: string | null;
