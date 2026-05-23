@@ -35,6 +35,9 @@ import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { QCSignaturePad } from "@/components/work-orders/QCSignaturePad";
+import { PilotTagSelector } from "@/components/pilot/PilotTagSelector";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 
 /* ── Status config ── */
@@ -158,6 +161,11 @@ export default function WorkOrderDetail() {
     permit_closed: false,
     tools_returned: false,
   });
+  const [pilotTag, setPilotTag] = useState<string | null>(null);
+
+  const form = useForm({
+    defaultValues: { pilotTag: order?.pilot_tag || "" }
+  });
 
   // Load order data into local state
   useEffect(() => {
@@ -183,6 +191,8 @@ export default function WorkOrderDetail() {
     setAcceptedByClientName(order.accepted_by_client_name || "");
     setClosingNotes(order.closing_notes || "");
     if (raw.closing_checklist) setChecklist(raw.closing_checklist);
+    setPilotTag(order.pilot_tag || null);
+    form.setValue("pilotTag", order.pilot_tag || "");
   }, [order]);
 
   // Load assignee name
@@ -256,6 +266,7 @@ export default function WorkOrderDetail() {
         contact_name: editFields.contact_name,
         contact_phone: editFields.contact_phone,
         contact_email: editFields.contact_email,
+        pilot_tag: form.getValues("pilotTag") || null,
       } as any).eq("id", order.id);
       toast.success("Work order updated");
       setEditMode(false);
@@ -1073,6 +1084,9 @@ export default function WorkOrderDetail() {
                           </SelectContent>
                         </Select>
                       </Field>
+                      <Form {...form}>
+                        <PilotTagSelector control={form.control} />
+                      </Form>
                       <Field label="Delivery Date"><Input type="date" value={editFields.estimated_delivery} onChange={e => setEditFields(p => ({ ...p, estimated_delivery: e.target.value }))} /></Field>
                       <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 12, marginTop: 4 }} />
                       <Field label="Site Address"><Input value={editFields.site_address} onChange={e => setEditFields(p => ({ ...p, site_address: e.target.value }))} /></Field>

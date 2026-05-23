@@ -15,10 +15,11 @@ import { useCatalog } from "@/hooks/useCatalog";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { PilotTagSelector } from "./pilot/PilotTagSelector";
 
 const makeLeadFormSchema = (isEn: boolean) => z.object({
-  name: z.string().min(2, isEn ? "Name must be at least 2 characters" : "El nombre debe tener al menos 2 caracteres"),
-  company: z.string().min(2, isEn ? "Company name must be at least 2 characters" : "El nombre de la empresa debe tener al menos 2 caracteres"),
+  name: z.string().min(1, isEn ? "Name is required" : "El nombre es obligatorio"),
+  company: z.string().optional().or(z.literal("")),
   phone: z.string().optional(),
   email: z.string().email(isEn ? "Email must have a valid format" : "El email debe tener un formato válido").optional().or(z.literal("")),
   signType: z.string().optional(),
@@ -34,6 +35,7 @@ const makeLeadFormSchema = (isEn: boolean) => z.object({
   intakeQuality: z.string().optional(),
   followUpRequired: z.boolean().default(false),
   followUpNotes: z.string().optional(),
+  pilotTag: z.string().optional(),
 });
 
 type LeadFormData = z.infer<ReturnType<typeof makeLeadFormSchema>>;
@@ -64,6 +66,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
     defaultValues: { 
       name: "", 
       company: "", 
+      pilotTag: "",
       phone: "", 
       email: "", 
       signType: "", 
@@ -157,7 +160,8 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
         agreedPrice: data.agreedPrice ? parseFloat(data.agreedPrice) : undefined,
         intakeQuality: data.intakeQuality,
         followUpRequired: data.followUpRequired,
-        followUpNotes: data.followUpNotes
+        followUpNotes: data.followUpNotes,
+        pilot_tag: data.pilotTag
       };
 
       await onAddLead(leadData as any);
@@ -344,6 +348,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
             <div className="space-y-4">
               <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.assignmentSection}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <PilotTagSelector control={form.control} />
                 <FormField control={form.control} name="intakeQuality" render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t.addLeadModal.intakeQualityLabel}</FormLabel>

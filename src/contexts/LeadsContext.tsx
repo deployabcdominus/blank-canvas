@@ -39,6 +39,7 @@ export interface Lead {
   /** Resolved client name (from clients table when linked) */
   resolvedName?: string;
   resolvedCompany?: string;
+  pilot_tag?: string | null;
 }
 
 interface LeadsContextType {
@@ -123,6 +124,7 @@ const mapRow = (item: LeadWithClient): Lead => {
     createdByRole: item.created_by_role || undefined,
     resolvedName: hasClient && client ? (client.contact_name || client.client_name) : undefined,
     resolvedCompany: hasClient && client ? client.client_name : undefined,
+    pilot_tag: item.pilot_tag,
   };
 };
 
@@ -207,7 +209,8 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
       intake_quality: lead.intakeQuality,
       follow_up_required: lead.followUpRequired,
       follow_up_notes: lead.followUpNotes,
-      created_by_role: lead.createdByRole
+      created_by_role: lead.createdByRole,
+      pilot_tag: lead.pilot_tag
     });
 
     if (error) {
@@ -247,6 +250,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (updates.followUpRequired !== undefined) dbUpdates.follow_up_required = updates.followUpRequired;
     if (updates.followUpNotes !== undefined) dbUpdates.follow_up_notes = updates.followUpNotes;
     if (updates.createdByRole !== undefined) dbUpdates.created_by_role = updates.createdByRole;
+    if (updates.pilot_tag !== undefined) dbUpdates.pilot_tag = updates.pilot_tag;
     
     if (updates.contact) {
       if (updates.contact.phone !== undefined) dbUpdates.phone = updates.contact.phone;

@@ -109,6 +109,7 @@ export interface WorkOrder {
   closing_notes?: string;
   closeout_checklist_completed?: boolean;
   closing_checklist?: Record<string, boolean>;
+  pilot_tag?: string | null;
 }
 
 // Backward-compatible alias
@@ -272,6 +273,7 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   closing_notes: row.closing_notes || '',
   closeout_checklist_completed: row.closeout_checklist_completed || false,
   closing_checklist: (row.closing_checklist as Record<string, boolean>) || {},
+  pilot_tag: row.pilot_tag,
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -322,6 +324,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       proposal_id: order.proposalId || null,
       assigned_to_user_id: order.assignedToUserId || null,
       installer_company_id: order.installerCompanyId || null,
+      pilot_tag: order.pilot_tag || null,
     });
 
     if (error) throw error;
@@ -342,6 +345,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.priority !== undefined) dbUpdates.priority = updates.priority;
     if (updates.assignedToUserId !== undefined) dbUpdates.assigned_to_user_id = updates.assignedToUserId;
     if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
+    if (updates.pilot_tag !== undefined) dbUpdates.pilot_tag = updates.pilot_tag;
     if (updates.blueprintUrl !== undefined) dbUpdates.blueprint_url = updates.blueprintUrl;
     if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations as any;
     if (updates.technicalDetails !== undefined) {

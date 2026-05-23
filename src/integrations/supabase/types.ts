@@ -655,6 +655,7 @@ export type Database = {
           name: string
           notes: string | null
           phone: string | null
+          pilot_tag: string | null
           project_id: string | null
           service: string | null
           source: string | null
@@ -689,6 +690,7 @@ export type Database = {
           name: string
           notes?: string | null
           phone?: string | null
+          pilot_tag?: string | null
           project_id?: string | null
           service?: string | null
           source?: string | null
@@ -723,6 +725,7 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string | null
+          pilot_tag?: string | null
           project_id?: string | null
           service?: string | null
           source?: string | null
@@ -900,6 +903,94 @@ export type Database = {
             columns: ["proposal_id"]
             isOneToOne: false
             referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_checklist: {
+        Row: {
+          company_id: string
+          id: string
+          item_key: string
+          notes: string | null
+          status: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          company_id?: string
+          id?: string
+          item_key: string
+          notes?: string | null
+          status?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          item_key?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_checklist_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_feedback: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          description: string
+          id: string
+          issue_type: string
+          module: string
+          severity: string
+          status: string
+          suggested_improvement: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          company_id?: string
+          created_at?: string | null
+          description: string
+          id?: string
+          issue_type: string
+          module: string
+          severity?: string
+          status?: string
+          suggested_improvement?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          issue_type?: string
+          module?: string
+          severity?: string
+          status?: string
+          suggested_improvement?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_feedback_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -1135,6 +1226,7 @@ export type Database = {
           painting_color: string | null
           painting_required: boolean | null
           permit_required: boolean | null
+          pilot_tag: string | null
           poi_completed_at: string | null
           poi_token: string | null
           poi_token_exp: string | null
@@ -1243,6 +1335,7 @@ export type Database = {
           painting_color?: string | null
           painting_required?: boolean | null
           permit_required?: boolean | null
+          pilot_tag?: string | null
           poi_completed_at?: string | null
           poi_token?: string | null
           poi_token_exp?: string | null
@@ -1351,6 +1444,7 @@ export type Database = {
           painting_color?: string | null
           painting_required?: boolean | null
           permit_required?: boolean | null
+          pilot_tag?: string | null
           poi_completed_at?: string | null
           poi_token?: string | null
           poi_token_exp?: string | null
@@ -1675,6 +1769,7 @@ export type Database = {
           id: string
           install_address: string | null
           owner_user_id: string | null
+          pilot_tag: string | null
           project_name: string
           status: string | null
           updated_at: string
@@ -1690,6 +1785,7 @@ export type Database = {
           id?: string
           install_address?: string | null
           owner_user_id?: string | null
+          pilot_tag?: string | null
           project_name: string
           status?: string | null
           updated_at?: string
@@ -1705,6 +1801,7 @@ export type Database = {
           id?: string
           install_address?: string | null
           owner_user_id?: string | null
+          pilot_tag?: string | null
           project_name?: string
           status?: string | null
           updated_at?: string
@@ -1749,6 +1846,7 @@ export type Database = {
           lead_id: string | null
           mockup_url: string | null
           owner_user_id: string | null
+          pilot_tag: string | null
           project: string | null
           sent_date: string | null
           sent_method: string | null
@@ -1785,6 +1883,7 @@ export type Database = {
           lead_id?: string | null
           mockup_url?: string | null
           owner_user_id?: string | null
+          pilot_tag?: string | null
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null
@@ -1821,6 +1920,7 @@ export type Database = {
           lead_id?: string | null
           mockup_url?: string | null
           owner_user_id?: string | null
+          pilot_tag?: string | null
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null

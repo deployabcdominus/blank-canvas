@@ -92,6 +92,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         assignedToUserId: lead.assignedToUserId || null,
         folderRelativePath: null,
         folderFullPath: null,
+        pilotTag: lead.pilot_tag || null,
       });
       if (!project?.id) throw new Error(m.errorNoProjectId);
 

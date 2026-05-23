@@ -83,6 +83,10 @@ export async function generateProductionPDF(order: PdfWorkOrder): Promise<void> 
     : "Sin fecha de entrega";
   doc.text(deliveryText, rightX, margin + 9, { align: "right" });
   doc.text(`Estado: ${order.status} | Prioridad: ${order.priority} | Progreso: ${order.progress}%`, rightX, margin + 14, { align: "right" });
+  if ((order as any).pilot_tag) {
+    doc.setFont("helvetica", "bold");
+    doc.text(`TAG: ${(order as any).pilot_tag.toUpperCase()}`, rightX, margin + 19, { align: "right" });
+  }
 
   if (order.assignedOperator) {
     doc.text(`Operario: ${order.assignedOperator}`, rightX, margin + 19, { align: "right" });

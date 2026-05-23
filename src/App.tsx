@@ -48,6 +48,7 @@ const ProposalApproval = lazy(() => import("./pages/ProposalApproval"));
 const POIPage = lazy(() => import("./pages/POIPage"));
 const PrintPage = lazy(() => import("./pages/PrintPage"));
 
+const PilotDashboard = lazy(() => import("./pages/PilotDashboard"));
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
     <div className="relative w-12 h-12">
@@ -162,6 +163,7 @@ const App = () => {
                           <Route path="/audit-log" element={<AuditLog />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/reports" element={<Reports />} />
+                <Route path="/pilot" element={<PilotDashboard />} />
                         </Route>
 
                         <Route path="*" element={<NotFound />} />

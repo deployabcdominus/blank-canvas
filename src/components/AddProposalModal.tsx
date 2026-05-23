@@ -15,6 +15,8 @@ import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
 import { SmartEntitySearch, type EntityResult } from "@/components/SmartEntitySearch";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { PilotTagSelector } from "./pilot/PilotTagSelector";
+import { Form } from "@/components/ui/form";
 
 type FormData = {
   project: string;
@@ -28,6 +30,7 @@ type FormData = {
   sentNotes?: string;
   initialPaymentRequired?: boolean;
   initialPaymentAmount?: string;
+  pilotTag?: string;
 };
 
 interface AddProposalModalProps {
@@ -56,6 +59,7 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     sentNotes: z.string().optional(),
     initialPaymentRequired: z.boolean().optional(),
     initialPaymentAmount: z.string().optional(),
+    pilotTag: z.string().optional(),
   }), [m]);
 
   const serviceTypes = useServiceTypes();
@@ -64,10 +68,11 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     ? catalogServices.map(s => s.label)
     : serviceTypes;
 
-  const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { status: 'Borrador', initialPaymentRequired: true },
+    defaultValues: { status: 'Borrador', initialPaymentRequired: true, pilotTag: "" },
   });
+  const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = form;
 
   const watchPaymentRequired = watch("initialPaymentRequired");
   const [sentDate, setSentDate] = useState(new Date().toISOString().split('T')[0]);
@@ -96,6 +101,7 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
         sentNotes: data.sentNotes,
         initialPaymentRequired: data.initialPaymentRequired,
         initialPaymentAmount: data.initialPaymentAmount ? parseFloat(data.initialPaymentAmount) : null,
+        pilot_tag: data.pilotTag || null,
       });
       toast.success(m.successToast);
       reset();
@@ -132,6 +138,7 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
           <DialogTitle>{m.title}</DialogTitle>
         </DialogHeader>
 
+        <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 sm:col-span-1">
@@ -197,6 +204,11 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
               onChange={setSentDate}
             />
           </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <PilotTagSelector control={form.control} />
+            <div></div>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -249,6 +261,7 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
             </Button>
           </div>
         </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

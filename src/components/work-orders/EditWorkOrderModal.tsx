@@ -31,6 +31,9 @@ import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { PilotTagSelector } from "../pilot/PilotTagSelector";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { BlueprintAnnotator, type Annotation } from "./BlueprintAnnotator";
 import { TechnicalSheet, type TechnicalDetails } from "./TechnicalSheet";
@@ -122,6 +125,11 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [technicalDetails, setTechnicalDetails] = useState<TechnicalDetails>({});
   const [materials, setMaterials] = useState<Array<{ item: string; quantity: string; measures: string; status: string }>>([]);
+  const [pilotTag, setPilotTag] = useState<string | null>(null);
+
+  const form = useForm({
+    defaultValues: { pilotTag: order?.pilot_tag || "" }
+  });
 
   const [operators, setOperators] = useState<OperatorOption[]>([]);
   const [installers, setInstallers] = useState<InstallerOption[]>([]);
@@ -147,6 +155,8 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         ? order.materials.map((m: any) => ({ item: m.item || "", quantity: m.quantity || "", measures: m.measures || "", status: m.status || "pendiente" }))
         : []
     );
+    setPilotTag(order.pilot_tag || null);
+    form.setValue("pilotTag", order.pilot_tag || "");
     setEditing(startInEditMode);
   }, [order, startInEditMode]);
 
@@ -227,6 +237,7 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
         notes, priority, blueprintUrl, annotations,
         technicalDetails: { ...technicalDetails, installerNotes },
         materials: materials.filter(m => m.item.trim()),
+        pilot_tag: form.getValues("pilotTag") || null,
       });
       toast({ title: "Orden actualizada" });
       setEditing(false);
@@ -387,6 +398,18 @@ export function EditWorkOrderModal({ order, isOpen, onClose, startInEditMode = f
                   </Select>
                 ) : (
                   <span className="text-[11px] text-muted-foreground">{assignedInst?.name || "Sin subcontratista"}</span>
+                )}
+              </div>
+              {/* Pilot Tag Display/Selector */}
+              <div className="ml-auto">
+                {editing ? (
+                  <Form {...form}>
+                    <PilotTagSelector control={form.control} />
+                  </Form>
+                ) : pilotTag && (
+                  <Badge variant="outline" className="text-[10px] bg-primary/5 border-primary/20 text-primary">
+                    {pilotTag}
+                  </Badge>
                 )}
               </div>
             </div>

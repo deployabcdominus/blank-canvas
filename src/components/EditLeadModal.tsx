@@ -14,8 +14,11 @@ import { toast } from "@/hooks/use-toast";
 import {
   Loader2, Pencil, Trash2, Upload, X, Phone, Mail, MapPin,
   Briefcase, Tag, TrendingUp, StickyNote, ArrowRight, Globe,
-  Clock, CheckCircle2, MessageSquare, FileText, ExternalLink, Copy, Mic, MicOff, UserPlus
+  Clock, CheckCircle2, MessageSquare, FileText, ExternalLink, Copy, Mic, MicOff, UserPlus, Tag as TagIcon
 } from "lucide-react";
+import { PilotTagSelector } from "./pilot/PilotTagSelector";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -188,6 +191,11 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
   const [status, setStatus] = useState("");
   const [value, setValue] = useState("");
   const [notes, setNotes] = useState("");
+  const [pilotTag, setPilotTag] = useState<string | null>(null);
+
+  const form = useForm({
+    defaultValues: { pilotTag: lead?.pilot_tag || "" }
+  });
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -227,6 +235,8 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       setStatus(lead.status);
       setValue(lead.value);
       setNotes(lead.notes || "");
+      setPilotTag(lead.pilot_tag || null);
+      form.setValue("pilotTag", lead.pilot_tag || "");
       setLogoPreview(lead.logoUrl || null);
       setLogoFile(null);
       setEditing(startInEditMode);
@@ -281,6 +291,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
         name, company, service, source, status, value, notes,
         leadSource, brokerName, brokerPhone, brokerEmail, brokerNotes,
         informalNotes, intakeQuality, followUpRequired, followUpNotes,
+        pilot_tag: form.getValues("pilotTag") || null,
         agreedPrice: agreedPrice ? parseFloat(agreedPrice) : undefined,
         contact: { phone, email, location },
       };
@@ -437,6 +448,11 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                   <Badge variant="outline" className={`text-[10px] ${getStatusColor(lead.status)}`}>
                     {lead.status}
                   </Badge>
+                  {pilotTag && (
+                    <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20">
+                      {pilotTag}
+                    </Badge>
+                  )}
                   {lead.source && (
                     <Badge variant="outline" className="text-[10px] bg-zinc-800/40 text-zinc-500 border-zinc-700/40">
                       {lead.source}
@@ -581,6 +597,13 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
                         )}
                       </div>
                     </div>
+                  </div>
+                )}
+                {editing && (
+                  <div className="pt-2">
+                    <Form {...form}>
+                      <PilotTagSelector control={form.control} />
+                    </Form>
                   </div>
                 )}
                 {editing && (
