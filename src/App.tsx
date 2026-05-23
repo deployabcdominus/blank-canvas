@@ -32,6 +32,7 @@ const WorkOrderDetail = lazy(() => import("./pages/WorkOrderDetail"));
 const Installation = lazy(() => import("./pages/Installation"));
 const InstallerCompanies = lazy(() => import("./pages/InstallerCompanies"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Reports = lazy(() => import("./pages/Reports"));
 const Clients = lazy(() => import("./pages/Clients"));
 const ClientDetail = lazy(() => import("./pages/ClientDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
