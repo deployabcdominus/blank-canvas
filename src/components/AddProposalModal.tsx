@@ -23,6 +23,11 @@ type FormData = {
   sentMethod: string;
   status: string;
   serviceType?: string;
+  sentVia?: string;
+  externalSentReference?: string;
+  sentNotes?: string;
+  initialPaymentRequired?: boolean;
+  initialPaymentAmount?: string;
 };
 
 interface AddProposalModalProps {
@@ -43,9 +48,14 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     project: z.string().min(1, m.projectRequired),
     value: z.string().min(1, m.amountRequired),
     description: z.string().min(1, m.descriptionRequired),
-    sentMethod: z.string().min(1, m.sentMethodRequired),
+    sentMethod: z.string().optional(),
     status: z.string().min(1, m.statusRequired),
     serviceType: z.string().optional(),
+    sentVia: z.string().optional(),
+    externalSentReference: z.string().optional(),
+    sentNotes: z.string().optional(),
+    initialPaymentRequired: z.boolean().optional(),
+    initialPaymentAmount: z.string().optional(),
   }), [m]);
 
   const serviceTypes = useServiceTypes();
@@ -54,10 +64,12 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
     ? catalogServices.map(s => s.label)
     : serviceTypes;
 
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { status: 'Borrador' },
+    defaultValues: { status: 'Borrador', initialPaymentRequired: true },
   });
+
+  const watchPaymentRequired = watch("initialPaymentRequired");
   const [sentDate, setSentDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedEntity, setSelectedEntity] = useState<EntityResult | null>(null);
   const [entityError, setEntityError] = useState<string | null>(null);
@@ -79,7 +91,11 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
         sentDate: data.status === 'Borrador' ? null : sentDate,
         sentMethod: data.status === 'Borrador' ? null : (data.sentMethod as SentMethod),
         leadId: selectedEntity.type === "lead" ? selectedEntity.id : null,
-        // If client selected, we still pass lead_id as null (proposals link through leads)
+        sentVia: data.sentVia,
+        externalSentReference: data.externalSentReference,
+        sentNotes: data.sentNotes,
+        initialPaymentRequired: data.initialPaymentRequired,
+        initialPaymentAmount: data.initialPaymentAmount ? parseFloat(data.initialPaymentAmount) : null,
       });
       toast.success(m.successToast);
       reset();
@@ -182,19 +198,48 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
             />
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="sentVia">{t.proposals.form.sentViaLabel}</Label>
+              <Select onValueChange={(v) => setValue("sentVia", v)}>
+                <SelectTrigger><SelectValue placeholder="..." /></SelectTrigger>
+                <SelectContent>
+                  {Object.entries(t.proposals.form.sentViaOptions).map(([key, label]) => (
+                    <SelectItem key={key} value={label}>{label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="externalSentReference">{t.proposals.form.externalRefLabel}</Label>
+              <Input {...register("externalSentReference")} id="externalSentReference" placeholder="..." />
+            </div>
+          </div>
+
           <div>
-            <Label htmlFor="sentMethod">{m.sentMethodLabel}</Label>
-            <Select onValueChange={(v) => setValue("sentMethod", v)}>
-              <SelectTrigger><SelectValue placeholder={m.sentMethodPlaceholder} /></SelectTrigger>
-              <SelectContent>
-                {SENT_METHODS.map(method => (
-                  <SelectItem key={method} value={method}>
-                    {m.sentMethodLabels[method as keyof typeof m.sentMethodLabels] ?? method}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.sentMethod && <p className="text-sm text-destructive mt-1">{errors.sentMethod.message}</p>}
+             <Label htmlFor="sentNotes">{t.proposals.form.sentNotesLabel}</Label>
+             <Textarea {...register("sentNotes")} id="sentNotes" className="min-h-[60px]" />
+          </div>
+
+          <div className="space-y-4 border-t pt-4">
+            <div className="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="initialPaymentRequired"
+                {...register("initialPaymentRequired")}
+                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <Label htmlFor="initialPaymentRequired" className="font-normal">
+                {t.proposals.form.initialPaymentRequiredLabel}
+              </Label>
+            </div>
+
+            {watchPaymentRequired && (
+              <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                <Label htmlFor="initialPaymentAmount">{t.proposals.form.initialPaymentAmountLabel}</Label>
+                <Input {...register("initialPaymentAmount")} id="initialPaymentAmount" type="number" step="0.01" placeholder="0.00" />
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

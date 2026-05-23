@@ -14,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   Loader2, Pencil, Trash2, Upload, X, Phone, Mail, MapPin,
   Briefcase, Tag, TrendingUp, StickyNote, ArrowRight, Globe,
-  Clock, CheckCircle2, MessageSquare, FileText, ExternalLink, Copy, Mic, MicOff
+  Clock, CheckCircle2, MessageSquare, FileText, ExternalLink, Copy, Mic, MicOff, UserPlus
 } from "lucide-react";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import {

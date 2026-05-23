@@ -20,6 +20,17 @@ type FormData = {
   sentDate?: string;
   sentMethod?: string;
   status: string;
+  sentVia?: string;
+  externalSentReference?: string;
+  sentNotes?: string;
+  clientApproved?: boolean;
+  clientApprovalDate?: string;
+  initialPaymentRequired?: boolean;
+  initialPaymentReceived?: boolean;
+  initialPaymentAmount?: string;
+  adminOverrideApproval?: boolean;
+  adminOverrideReason?: string;
+  approvedForProduction?: boolean;
 };
 
 const SENT_METHODS: SentMethod[] = ['Gmail', 'WhatsApp', 'PDF físico', 'Otro'];
@@ -44,10 +55,24 @@ export const EditProposalModal = ({ isOpen, onClose, onEditProposal, proposal }:
     sentDate: z.string().optional(),
     sentMethod: z.string().optional(),
     status: z.string().min(1, m.statusRequired),
+    sentVia: z.string().optional(),
+    externalSentReference: z.string().optional(),
+    sentNotes: z.string().optional(),
+    clientApproved: z.boolean().optional(),
+    clientApprovalDate: z.string().optional(),
+    initialPaymentRequired: z.boolean().optional(),
+    initialPaymentReceived: z.boolean().optional(),
+    initialPaymentAmount: z.string().optional(),
+    adminOverrideApproval: z.boolean().optional(),
+    adminOverrideReason: z.string().optional(),
+    approvedForProduction: z.boolean().optional(),
   }), [m]);
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const watchPaymentRequired = watch("initialPaymentRequired");
+  const watchAdminOverride = watch("adminOverrideApproval");
   const [sentDateValue, setSentDateValue] = useState("");
+  const [approvalDateValue, setApprovalDateValue] = useState("");
 
   useEffect(() => {
     if (proposal) {
@@ -59,6 +84,19 @@ export const EditProposalModal = ({ isOpen, onClose, onEditProposal, proposal }:
       setValue("sentDate", proposal.sentDate || '');
       setSentDateValue(proposal.sentDate || '');
       setValue("sentMethod", proposal.sentMethod || '');
+      
+      setValue("sentVia", proposal.sentVia || '');
+      setValue("externalSentReference", proposal.externalSentReference || '');
+      setValue("sentNotes", proposal.sentNotes || '');
+      setValue("clientApproved", !!proposal.clientApproved);
+      setValue("clientApprovalDate", proposal.clientApprovalDate || '');
+      setApprovalDateValue(proposal.clientApprovalDate || '');
+      setValue("initialPaymentRequired", !!proposal.initialPaymentRequired);
+      setValue("initialPaymentReceived", !!proposal.initialPaymentReceived);
+      setValue("initialPaymentAmount", proposal.initialPaymentAmount?.toString() || '');
+      setValue("adminOverrideApproval", !!proposal.adminOverrideApproval);
+      setValue("adminOverrideReason", proposal.adminOverrideReason || '');
+      setValue("approvedForProduction", !!proposal.approvedForProduction);
     }
   }, [proposal, setValue]);
 
@@ -73,11 +111,22 @@ export const EditProposalModal = ({ isOpen, onClose, onEditProposal, proposal }:
       status: data.status as ProposalStatus,
       sentDate: sentDateValue || null,
       sentMethod: (data.sentMethod as SentMethod) || null,
+      sentVia: data.sentVia,
+      externalSentReference: data.externalSentReference,
+      sentNotes: data.sentNotes,
+      clientApproved: data.clientApproved,
+      clientApprovalDate: approvalDateValue || null,
+      initialPaymentRequired: data.initialPaymentRequired,
+      initialPaymentReceived: data.initialPaymentReceived,
+      initialPaymentAmount: data.initialPaymentAmount ? parseFloat(data.initialPaymentAmount) : null,
+      adminOverrideApproval: data.adminOverrideApproval,
+      adminOverrideReason: data.adminOverrideReason,
+      approvedForProduction: data.approvedForProduction,
     });
     handleClose();
   };
 
-  const handleClose = () => { reset(); setSentDateValue(""); onClose(); };
+  const handleClose = () => { reset(); setSentDateValue(""); setApprovalDateValue(""); onClose(); };
 
   if (!proposal) return null;
 
