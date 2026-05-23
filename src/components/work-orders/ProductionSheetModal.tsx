@@ -454,7 +454,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         staff: staff as unknown as Record<string, any>,
         qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
         blueprintUrl: localBlueprintUrl || order.blueprintUrl || null,
-        annotations: ((order as any).annotations || []) as Array<{ text?: string }>,
+        annotations: (Array.isArray((order as any).annotations) ? (order as any).annotations : []) as Array<{ text?: string }>,
         companyName: company?.name || "MY COMPANY",
         companyLogoUrl: company?.logo_url || null,
         qcSignatureUrl: signatureUrl || null,

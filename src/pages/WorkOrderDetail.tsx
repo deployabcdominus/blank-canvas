@@ -173,10 +173,10 @@ export default function WorkOrderDetail() {
     const raw = order as any;
     setNotes(order.notes || "");
     setQcChecklist({
-      design_verified: raw.qc_checklist?.design_verified || false,
-      material_specs_confirmed: raw.qc_checklist?.material_specs_confirmed || false,
-      wiring_test_passed: raw.qc_checklist?.wiring_test_passed || false,
-      final_sign_cleaned: raw.qc_checklist?.final_sign_cleaned || false,
+      design_verified: raw?.qc_checklist?.design_verified || false,
+      material_specs_confirmed: raw?.qc_checklist?.material_specs_confirmed || false,
+      wiring_test_passed: raw?.qc_checklist?.wiring_test_passed || false,
+      final_sign_cleaned: raw?.qc_checklist?.final_sign_cleaned || false,
     });
     setSignatureUrl(raw.qc_signature_url || null);
     setQcSignerName(raw.qc_signer_name || null);
@@ -190,7 +190,7 @@ export default function WorkOrderDetail() {
     setClientAcceptanceMethod(order.client_acceptance_method || "Signature");
     setAcceptedByClientName(order.accepted_by_client_name || "");
     setClosingNotes(order.closing_notes || "");
-    if (raw.closing_checklist) setChecklist(raw.closing_checklist);
+    if (raw?.closing_checklist) setChecklist(raw.closing_checklist);
     setPilotTag(order.pilot_tag || null);
     form.setValue("pilotTag", order.pilot_tag || "");
   }, [order]);
@@ -458,11 +458,9 @@ export default function WorkOrderDetail() {
 
   // All images for fullscreen navigation
   const allImages = useMemo(() => {
-    if (!order) return [];
-    const raw = order as any;
     const imgs: string[] = [];
-    if (order.blueprintUrl) imgs.push(order.blueprintUrl);
-    if (Array.isArray(order.mockup_urls)) imgs.push(...order.mockup_urls);
+    if (order?.blueprintUrl) imgs.push(order.blueprintUrl);
+    if (Array.isArray(order?.mockup_urls)) imgs.push(...order!.mockup_urls);
     return imgs;
   }, [order]);
 
@@ -481,9 +479,9 @@ export default function WorkOrderDetail() {
   const statusKey = order.poi_token_used ? "Instalado" : order.status;
   const isClosed = closingStatus === "Closed";
   const currentStatus = STATUS_OPTIONS.find(s => s.value === statusKey) || STATUS_OPTIONS[0];
-  const progress = stepsProgress || order.progress || 0;
+  const progress = stepsProgress ?? order.progress ?? 0;
   const priorityInfo = PRIORITY_CONFIG[order.priority || "media"] || PRIORITY_CONFIG.media;
-  const responsibleStaff = raw.responsible_staff;
+  const responsibleStaff = (order as any).responsible_staff;
 
   const fmtDate = (d: string | null | undefined) => {
     if (!d) return null;
@@ -801,12 +799,12 @@ export default function WorkOrderDetail() {
                     <label key={item.key} className="flex items-center gap-3 cursor-pointer py-1.5 px-2 rounded-lg hover:bg-white/[0.02] transition-colors">
                       <input
                         type="checkbox"
-                        checked={!!qcChecklist[item.key]}
+                        checked={!!qcChecklist?.[item.key]}
                         onChange={() => !isClosed && toggleQc(item.key)}
                         disabled={isClosed}
                         className="w-4 h-4 rounded accent-violet-500 disabled:opacity-50"
                       />
-                      <span className={`text-sm ${qcChecklist[item.key] ? "text-foreground" : "text-muted-foreground"}`}>
+                      <span className={`text-sm ${qcChecklist?.[item.key] ? "text-foreground" : "text-muted-foreground"}`}>
                         {item.label}
                       </span>
                     </label>
@@ -1121,8 +1119,8 @@ export default function WorkOrderDetail() {
                   {MATERIAL_FIELDS.map(f => (
                     <div key={f.key}>
                       <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground mb-1">{f.label}</p>
-                      <p className={`text-[13px] break-words ${(order as any)[f.key] ? "text-foreground" : "text-zinc-600"}`}>
-                        {(order as any)[f.key] || "—"}
+                      <p className={`text-[13px] break-words ${(order as any)?.[f.key] ? "text-foreground" : "text-zinc-600"}`}>
+                        {(order as any)?.[f.key] || "—"}
                       </p>
                     </div>
                   ))}
@@ -1134,12 +1132,15 @@ export default function WorkOrderDetail() {
                 <SectionCard>
                   <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Team</h2>
                   <div className="space-y-2">
-                    {Object.entries(responsibleStaff).map(([role, entry]: [string, any]) => {
+                    {Object.entries(responsibleStaff || {}).map(([role, entry]: [string, any]) => {
                       if (!entry?.name) return null;
+                      const initials = entry.name
+                        ? entry.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
+                        : "?";
                       return (
                         <div key={role} className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0" style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa" }}>
-                            {entry.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()}
+                            {initials}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-foreground truncate">{entry.name}</p>
