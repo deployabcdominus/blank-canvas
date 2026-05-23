@@ -270,6 +270,7 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   closed_by_user_id: row.closed_by_user_id || null,
   closing_notes: row.closing_notes || '',
   closeout_checklist_completed: row.closeout_checklist_completed || false,
+  closing_checklist: (row.closing_checklist as Record<string, boolean>) || {},
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -408,6 +409,7 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.closed_by_user_id !== undefined) dbUpdates.closed_by_user_id = updates.closed_by_user_id;
     if (updates.closing_notes !== undefined) dbUpdates.closing_notes = updates.closing_notes;
     if (updates.closeout_checklist_completed !== undefined) dbUpdates.closeout_checklist_completed = updates.closeout_checklist_completed;
+    if (updates.closing_checklist !== undefined) dbUpdates.closing_checklist = updates.closing_checklist as any;
     
     const { error } = await WorkOrdersService.update(id, dbUpdates);
     if (error) throw error;
