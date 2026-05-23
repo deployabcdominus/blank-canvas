@@ -4,6 +4,7 @@ import { motion, useSpring, useTransform } from "framer-motion";
 interface AnimatedCounterProps {
   value: number;
   className?: string;
+  isCurrency?: boolean;
 }
 
 export const AnimatedCounter = ({ value, className = "" }: AnimatedCounterProps) => {
