@@ -124,6 +124,24 @@ export default function WorkOrderDetail() {
   const mockupInputRef = useRef<HTMLInputElement>(null);
   const additionalMockupInputRef = useRef<HTMLInputElement>(null);
 
+  // Phase 4: Closing state
+  const [closingSaving, setClosingSaving] = useState(false);
+  const [closingStatus, setClosingStatus] = useState("Not Ready");
+  const [clientAccepted, setClientAccepted] = useState(false);
+  const [paymentReceived, setPaymentReceived] = useState(false);
+  const [balanceDue, setBalanceDue] = useState(0);
+  const [acceptanceMethod, setClientAcceptanceMethod] = useState("Signature");
+  const [acceptedByName, setAcceptedByClientName] = useState("");
+  const [closingNotes, setClosingNotes] = useState("");
+  const [reopenReason, setReopenReason] = useState("");
+  const [isReopenDialogOpen, setIsReopenDialogOpen] = useState(false);
+  const [checklist, setChecklist] = useState({
+    site_cleaned: false,
+    final_photos_reviewed: false,
+    permit_closed: false,
+    tools_returned: false,
+  });
+
   // Load order data into local state
   useEffect(() => {
     if (!order) return;
@@ -139,6 +157,15 @@ export default function WorkOrderDetail() {
     setQcSignerName(raw.qc_signer_name || null);
     setQcSignedAt(raw.qc_signed_at || null);
     setDesignNotes(order.design_notes || "");
+    // Phase 4 init
+    setClosingStatus(order.closing_status || "Not Ready");
+    setClientAccepted(order.client_accepted || false);
+    setPaymentReceived(order.final_payment_received || false);
+    setBalanceDue(order.final_balance_due || 0);
+    setClientAcceptanceMethod(order.client_acceptance_method || "Signature");
+    setAcceptedByClientName(order.accepted_by_client_name || "");
+    setClosingNotes(order.closing_notes || "");
+    if (raw.closing_checklist) setChecklist(raw.closing_checklist);
   }, [order]);
 
   // Load assignee name
@@ -305,6 +332,103 @@ export default function WorkOrderDetail() {
     toast.success("Mockup removed");
     await refreshOrders();
   }, [order, refreshOrders]);
+
+  // Phase 4: Closing Handlers
+  const handleClosingUpdate = useCallback(async (updates: Partial<WorkOrder>) => {
+    if (!order) return;
+    setClosingSaving(true);
+    try {
+      await updateOrder(order.id, updates);
+      toast.success("Closing details updated");
+      refreshOrders();
+    } catch {
+      toast.error("Failed to update closing details");
+    } finally {
+      setClosingSaving(false);
+    }
+  }, [order, updateOrder, refreshOrders]);
+
+  const handleCloseProject = useCallback(async () => {
+    if (!order || !isAdmin) return;
+    
+    // Validations
+    if (!allQcPassed) { toast.error("QC must be completed first"); return; }
+    if (!order.poi_token_used && poiPhotos.length === 0) { toast.error("Installation photos required"); return; }
+    if (!clientAccepted) { toast.error("Client acceptance required"); return; }
+    if (order.final_payment_required && !paymentReceived) { toast.error("Final payment required"); return; }
+
+    setClosingSaving(true);
+    try {
+      const { error } = await supabase.from("production_orders").update({
+        closing_status: "Closed",
+        closed_at: new Date().toISOString(),
+        closed_by_user_id: (await supabase.auth.getUser()).data.user?.id,
+        status: "Completada", // Ensure main status is ready
+      } as any).eq("id", order.id);
+
+      if (error) throw error;
+
+      // Log history
+      await supabase.from("project_closing_history").insert({
+        company_id: companyId,
+        production_order_id: order.id,
+        action: "Closed",
+        new_closing_status: "Closed",
+        performed_by_user_id: (await supabase.auth.getUser()).data.user?.id,
+        notes: closingNotes,
+      } as any);
+
+      toast.success("Project officially closed");
+      refreshOrders();
+    } catch {
+      toast.error("Failed to close project");
+    } finally {
+      setClosingSaving(false);
+    }
+  }, [order, isAdmin, allQcPassed, poiPhotos.length, clientAccepted, paymentReceived, closingNotes, companyId, refreshOrders]);
+
+  const handleReopenProject = useCallback(async () => {
+    if (!order || !isAdmin || !reopenReason) return;
+
+    setClosingSaving(true);
+    try {
+      const { error } = await supabase.from("production_orders").update({
+        closing_status: "Reopened",
+        closed_at: null,
+        closed_by_user_id: null,
+      } as any).eq("id", order.id);
+
+      if (error) throw error;
+
+      // Log history
+      await supabase.from("project_closing_history").insert({
+        company_id: companyId,
+        production_order_id: order.id,
+        action: "Reopened",
+        new_closing_status: "Reopened",
+        performed_by_user_id: (await supabase.auth.getUser()).data.user?.id,
+        notes: reopenReason,
+      } as any);
+
+      toast.success("Project reopened");
+      setReopenReason("");
+      setIsReopenDialogOpen(false);
+      refreshOrders();
+    } catch {
+      toast.error("Failed to reopen project");
+    } finally {
+      setClosingSaving(false);
+    }
+  }, [order, isAdmin, reopenReason, companyId, refreshOrders]);
+
+  const toggleChecklist = useCallback(async (key: string) => {
+    if (!order) return;
+    const updated = { ...checklist, [key as keyof typeof checklist]: !checklist[key as keyof typeof checklist] };
+    setChecklist(updated);
+    await supabase.from("production_orders").update({
+      closing_checklist: updated,
+    } as any).eq("id", order.id);
+  }, [order, checklist]);
 
   // All images for fullscreen navigation
   const allImages = useMemo(() => {
