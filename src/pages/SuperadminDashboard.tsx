@@ -357,12 +357,19 @@ export default function SuperadminDashboard() {
       </div>
 
       {activeTab === "overview" && (
-        <SuperadminOverview
-          companies={companies} allUsers={allUsers} setTab={setTab}
-          onSelectCompany={handleSelectCompanyWithFetch}
-          setShowCreateCompany={setShowCreateCompany}
-        />
+        <Suspense fallback={
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        }>
+          <SuperadminOverview
+            companies={companies} allUsers={allUsers} setTab={setTab}
+            onSelectCompany={handleSelectCompanyWithFetch}
+            setShowCreateCompany={setShowCreateCompany}
+          />
+        </Suspense>
       )}
+
       {activeTab === "companies" && (
         <SuperadminCompanies
           companies={companies} search={search} setSearch={setSearch}
