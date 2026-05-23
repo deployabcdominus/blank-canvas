@@ -6,14 +6,14 @@ const corsHeaders = {
 }
 
 const FALLBACK_MESSAGES = [
-  "Um novo dia, uma nova oportunidade de fazer a diferença.",
-  "Pequenos passos levam a grandes conquistas.",
-  "A inclusão começa com a empatia.",
-  "Cada pessoa tem um potencial único a ser descoberto.",
-  "Diversidade é a nossa maior força.",
-  "Hoje é um bom dia para criar impacto positivo.",
-  "Conexões verdadeiras transformam vidas.",
-  "O conhecimento compartilhado multiplica oportunidades.",
+  'Um novo dia, uma nova oportunidade de fazer a diferença.',
+  'Pequenos passos levam a grandes conquistas.',
+  'A inclusão começa com a empatia.',
+  'Cada pessoa tem um potencial único a ser descoberto.',
+  'Diversidade é a nossa maior força.',
+  'Hoje é um bom dia para criar impacto positivo.',
+  'Conexões verdadeiras transformam vidas.',
+  'O conhecimento compartilhado multiplica oportunidades.',
 ]
 
 async function fetchMotivationalMessage(): Promise<string> {
