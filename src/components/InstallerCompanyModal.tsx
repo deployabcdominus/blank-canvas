@@ -21,6 +21,9 @@ const makeFormSchema = (isEn: boolean) => z.object({
   email: z.string().email(isEn ? "Invalid email" : "Email inválido"),
   phone: z.string().min(10, isEn ? "Phone must be at least 10 digits" : "El teléfono debe tener al menos 10 dígitos"),
   contact: z.string().optional(),
+  address: z.string().optional(),
+  notes: z.string().optional(),
+  active_status: z.enum(["active", "inactive"]).default("active"),
   services: z.array(z.string()).min(1, isEn ? "Select at least one service" : "Seleccione al menos un servicio")
 });
 
@@ -50,9 +53,11 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
     if (company) {
       setValue("name", company.name); setValue("email", company.email || "");
       setValue("phone", company.phone || ""); setValue("contact", company.contact || "");
+      setValue("address", company.address || ""); setValue("notes", company.notes || "");
+      setValue("active_status", (company.active_status as any) || "active");
       setValue("services", company.services || []); setSelectedServices(company.services || []);
       setLogoPreview(company.logoUrl || null); setLogoFile(company.logoUrl || null);
-    } else { reset(); setSelectedServices([]); setLogoPreview(null); setLogoFile(null); }
+    } else { reset(); setSelectedServices([]); setLogoPreview(null); setLogoFile(null); setValue("active_status", "active"); }
   }, [company, setValue, reset]);
 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +85,17 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
   };
 
   const onSubmit = (data: FormData) => {
-    const companyData = { name: data.name, email: data.email, phone: data.phone, contact: data.contact || "", logoUrl: logoFile || undefined, services: selectedServices };
+    const companyData = { 
+      name: data.name, 
+      email: data.email, 
+      phone: data.phone, 
+      contact: data.contact || "", 
+      address: data.address || "",
+      notes: data.notes || "",
+      active_status: data.active_status,
+      logoUrl: logoFile || undefined, 
+      services: selectedServices 
+    };
     if (company) {
       updateCompany(company.id, companyData);
       toast({ title: t.installerCompanyModal.toastUpdated, description: t.installerCompanyModal.toastUpdatedDesc });
@@ -146,6 +161,28 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
               <Input id="contact" placeholder={t.installerCompanyModal.contactPlaceholder} {...register("contact")} />
             </div>
           </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="address" className="text-sm font-medium text-foreground">{isEn ? "Address" : "Dirección"}</Label>
+              <Input id="address" placeholder={isEn ? "Company physical address" : "Dirección de la empresa"} {...register("address")} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="notes" className="text-sm font-medium text-foreground">{isEn ? "Notes" : "Notas"}</Label>
+              <Textarea id="notes" placeholder={isEn ? "Internal notes about this company" : "Notas internas sobre esta empresa"} {...register("notes")} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="active_status" className="text-sm font-medium text-foreground">{isEn ? "Status" : "Estado"}</Label>
+              <Select value={watch("active_status")} onValueChange={(v) => setValue("active_status", v as any)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">{isEn ? "Active" : "Activo"}</SelectItem>
+                  <SelectItem value="inactive">{isEn ? "Inactive" : "Inactivo"}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
           <div className="space-y-2">
             <Label className="text-sm font-medium text-foreground">{t.installerCompanyModal.servicesLabel}</Label>
