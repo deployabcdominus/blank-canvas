@@ -162,7 +162,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           {noAccess ? (
             <span className="font-bold text-3xl leading-none tracking-tight text-amber-400/60">—</span>
           ) : (
-            <AnimatedCounter value={value} className="font-bold text-3xl leading-none tracking-tight text-zinc-100" />
+            <AnimatedCounter value={value} isCurrency={isCurrency} className="font-bold text-3xl leading-none tracking-tight text-zinc-100" />
           )}
           {!noAccess && delta !== undefined && (
             <div className="mb-0.5">
