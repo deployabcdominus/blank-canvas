@@ -34,6 +34,20 @@ export interface Proposal {
   approvalToken: string | null;
   mockupUrl: string | null;
   hasOrder: boolean;
+  
+  // New approval workflow fields
+  sentVia?: string;
+  externalSentReference?: string;
+  sentNotes?: string;
+  clientApproved?: boolean;
+  clientApprovalDate?: string | null;
+  initialPaymentRequired?: boolean;
+  initialPaymentReceived?: boolean;
+  initialPaymentAmount?: number | null;
+  adminOverrideApproval?: boolean;
+  adminOverrideBy?: string | null;
+  adminOverrideReason?: string | null;
+  approvedForProduction?: boolean;
 }
 
 interface ProposalsContextType {
@@ -103,6 +117,18 @@ const mapRow = (row: ProposalWithRelations, orderProposalIds: Set<string>): Prop
     approvalToken: row.approval_token || null,
     mockupUrl: row.mockup_url || null,
     hasOrder: orderProposalIds.has(row.id),
+    sentVia: row.sent_via || undefined,
+    externalSentReference: row.external_sent_reference || undefined,
+    sentNotes: row.sent_notes || undefined,
+    clientApproved: !!row.client_approved,
+    clientApprovalDate: row.client_approval_date || null,
+    initialPaymentRequired: row.initial_payment_required ?? true,
+    initialPaymentReceived: !!row.initial_payment_received,
+    initialPaymentAmount: row.initial_payment_amount != null ? Number(row.initial_payment_amount) : null,
+    adminOverrideApproval: !!row.admin_override_approval,
+    adminOverrideBy: row.admin_override_by || null,
+    adminOverrideReason: row.admin_override_reason || null,
+    approvedForProduction: !!row.approved_for_production,
   };
 };
 
@@ -159,6 +185,18 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
       sent_date: proposal.sentDate,
       sent_method: proposal.sentMethod,
       lead_id: proposal.leadId || null,
+      sent_via: proposal.sentVia || null,
+      external_sent_reference: proposal.externalSentReference || null,
+      sent_notes: proposal.sentNotes || null,
+      client_approved: proposal.clientApproved || false,
+      client_approval_date: proposal.clientApprovalDate || null,
+      initial_payment_required: proposal.initialPaymentRequired ?? true,
+      initial_payment_received: proposal.initialPaymentReceived || false,
+      initial_payment_amount: proposal.initialPaymentAmount || null,
+      admin_override_approval: proposal.adminOverrideApproval || false,
+      admin_override_by: proposal.adminOverrideBy || null,
+      admin_override_reason: proposal.adminOverrideReason || null,
+      approved_for_production: proposal.approvedForProduction || false,
     });
 
     if (error) throw error;
@@ -176,6 +214,18 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (updates.status !== undefined) dbUpdates.status = updates.status;
     if (updates.sentDate !== undefined) dbUpdates.sent_date = updates.sentDate;
     if (updates.sentMethod !== undefined) dbUpdates.sent_method = updates.sentMethod;
+    if (updates.sentVia !== undefined) dbUpdates.sent_via = updates.sentVia;
+    if (updates.externalSentReference !== undefined) dbUpdates.external_sent_reference = updates.externalSentReference;
+    if (updates.sentNotes !== undefined) dbUpdates.sent_notes = updates.sentNotes;
+    if (updates.clientApproved !== undefined) dbUpdates.client_approved = updates.clientApproved;
+    if (updates.clientApprovalDate !== undefined) dbUpdates.client_approval_date = updates.clientApprovalDate;
+    if (updates.initialPaymentRequired !== undefined) dbUpdates.initial_payment_required = updates.initialPaymentRequired;
+    if (updates.initialPaymentReceived !== undefined) dbUpdates.initial_payment_received = updates.initialPaymentReceived;
+    if (updates.initialPaymentAmount !== undefined) dbUpdates.initial_payment_amount = updates.initialPaymentAmount;
+    if (updates.adminOverrideApproval !== undefined) dbUpdates.admin_override_approval = updates.adminOverrideApproval;
+    if (updates.adminOverrideBy !== undefined) dbUpdates.admin_override_by = updates.adminOverrideBy;
+    if (updates.adminOverrideReason !== undefined) dbUpdates.admin_override_reason = updates.adminOverrideReason;
+    if (updates.approvedForProduction !== undefined) dbUpdates.approved_for_production = updates.approvedForProduction;
 
     const { error } = await ProposalsService.update(id, dbUpdates);
     if (error) throw error;
