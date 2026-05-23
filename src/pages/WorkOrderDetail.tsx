@@ -84,7 +84,7 @@ export default function WorkOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { orders, updateOrder, refreshOrders } = useWorkOrders();
-  const { companyId, canEdit } = useUserRole();
+  const { companyId, canEdit, isAdmin, canViewFinancials } = useUserRole();
   const { company } = useCompany();
 
   const order = useMemo(() => orders.find(o => o.id === id), [orders, id]);
