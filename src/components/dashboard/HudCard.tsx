@@ -61,7 +61,7 @@ const TrendDelta = ({ delta }: { delta: number }) => {
   );
 };
 
-export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, noAccess, delta, sparkline }: HudCardProps) => {
+export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, noAccess, delta, sparkline, isCurrency }: HudCardProps) => {
   const { t } = useLanguage();
   const [glowPulse, setGlowPulse] = useState(false);
   const prevValue = useRef(value);
