@@ -124,6 +124,9 @@ const Dashboard = () => {
           </Suspense>
         )}
 
+        <AttentionNeededPanel leads={leads} proposals={proposals} orders={orders} installations={installations} />
+
+
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
           {stats.map((stat, index) => (
