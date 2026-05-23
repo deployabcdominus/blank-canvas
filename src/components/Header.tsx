@@ -10,9 +10,10 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings, User, Menu } from "lucide-react";
+import { LogOut, Settings, User, Menu, Search } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { GlobalSearch } from "./GlobalSearch";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
