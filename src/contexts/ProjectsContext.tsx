@@ -19,6 +19,7 @@ export interface Project {
   folderFullPath: string | null;
   createdAt: string;
   updatedAt: string;
+  pilotTag: string | null;
   // Joined
   clientName?: string;
 }
@@ -66,6 +67,7 @@ const mapRow = (row: ProjectWithRelations): Project => {
     folderFullPath: row.folder_full_path,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    pilotTag: row.pilot_tag,
     clientName,
   };
 };
