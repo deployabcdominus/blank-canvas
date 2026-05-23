@@ -164,7 +164,10 @@ const Dashboard = () => {
 
         )}
 
-        <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-4 px-1">{t.nav.production} Pipeline</h2>
+          <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
+        </div>
       </ResponsiveLayout>
     </PageTransition>
   );

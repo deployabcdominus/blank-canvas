@@ -154,6 +154,12 @@ export default function Settings() {
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="company_profile">
+              <Building2 className="w-4 h-4 mr-2" />
+              Company Details
+            </TabsTrigger>
+          )}
+          {isAdmin && !isSuperadmin && (
             <TabsTrigger value="catalogos">
               <List className="w-4 h-4 mr-2" />
               {t.settings.tabs.catalogs}
@@ -342,6 +348,55 @@ export default function Settings() {
             </Card>
           </div>
         </TabsContent>
+
+        {isAdmin && !isSuperadmin && (
+          <TabsContent value="company_profile">
+            <Card>
+              <CardHeader>
+                <CardTitle>Company Details</CardTitle>
+                <CardDescription>Public information for your signage business.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Public Email</Label>
+                    <Input 
+                      value={company?.email || ""} 
+                      onChange={(e) => updateCompanySettings({ email: e.target.value })}
+                      placeholder="contact@company.com" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Public Phone</Label>
+                    <Input 
+                      value={company?.phone || ""} 
+                      onChange={(e) => updateCompanySettings({ phone: e.target.value })}
+                      placeholder="+1 (555) 000-0000" 
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Business Address</Label>
+                  <Input 
+                    value={company?.address || ""} 
+                    onChange={(e) => updateCompanySettings({ address: e.target.value })}
+                    placeholder="123 Sign St, Production City" 
+                  />
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/5">
+                  <div className="space-y-0.5">
+                    <Label>Auto-create Production Orders</Label>
+                    <p className="text-xs text-muted-foreground">Automatically generate orders when proposals are approved.</p>
+                  </div>
+                  <Switch 
+                    checked={(company as any)?.auto_create_production_orders} 
+                    onCheckedChange={(v) => updateCompanySettings({ auto_create_production_orders: v })} 
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
 
         {isAdmin && !isSuperadmin && (
           <TabsContent value="organizacion">
