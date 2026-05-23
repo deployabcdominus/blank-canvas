@@ -53,31 +53,30 @@ const Dashboard = () => {
 
 
   const stats = useMemo(() => {
-    const activeLeads = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
-    const leadsFollowUp = leads.filter(l => l.follow_up_required).length;
-    const inProduction = orders.filter(o => ["En Producción", "En Progreso", "In Production"].includes(o.status || o.internal_status)).length;
-    const readyForInstall = orders.filter(o => o.status === "Completada" || o.internal_status === "Ready for Install").length;
-    const waitingForAcceptance = orders.filter(o => o.closing_status === "Waiting for Client Acceptance").length;
-    const waitingForPayment = orders.filter(o => o.closing_status === "Waiting for Final Payment").length;
+    const activeLeadsCount = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
+    const leadsFollowUpCount = leads.filter(l => l.followUpRequired).length;
+    const inProductionCount = orders.filter(o => ["En Producción", "En Progreso", "In Production"].includes(o.status || o.internal_status)).length;
+    const readyForInstallCount = orders.filter(o => o.status === "Completada" || o.internal_status === "Ready for Install").length;
+    const waitingForAcceptanceCount = orders.filter(o => o.closing_status === "Waiting for Client Acceptance").length;
     
     const now = new Date();
     const start = startOfMonth(now);
     const end = endOfMonth(now);
-    const closedThisMonth = orders.filter(o => o.closing_status === "Closed" && o.closed_at && isWithinInterval(new Date(o.closed_at), { start, end })).length;
+    const closedThisMonthCount = orders.filter(o => o.closing_status === "Closed" && o.closed_at && isWithinInterval(new Date(o.closed_at), { start, end })).length;
 
-    const totalEstimatedRevenue = proposals.reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
-    const approvedProposalValue = proposals.filter((p: any) => p.status === "Aprobada").reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
-    const pendingBalance = orders.reduce((acc: number, o: any) => acc + (Number(o.final_balance_due) || 0), 0);
+    const totalEstimatedRevenueVal = proposals.reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
+    const approvedProposalValueVal = proposals.filter((p: any) => p.status === "Aprobada").reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
+    const pendingBalanceVal = orders.reduce((acc: number, o: any) => acc + (Number(o.final_balance_due) || 0), 0);
 
     return [
-      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${leadsFollowUp} need follow-up`, value: activeLeads, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "production" as KanbanColumn, label: "In Production", desc: `${inProduction} orders active`, value: inProduction, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
-      { key: "install" as KanbanColumn, label: "Ready to Install", desc: `${readyForInstall} pending schedule`, value: readyForInstall, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "closed" as KanbanColumn, label: "Closed MTD", desc: "Successfully completed", value: closedThisMonth, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "revenue" as any, label: "Total Estimated", desc: "Pipeline value", value: `$${(totalEstimatedRevenue / 1000).toFixed(1)}k`, icon: TrendingUp, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "approved" as any, label: "Approved Value", desc: "Booked business", value: `$${(approvedProposalValue / 1000).toFixed(1)}k`, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "balance" as any, label: "Pending Balance", desc: "Awaiting payment", value: `$${(pendingBalance / 1000).toFixed(1)}k`, icon: DollarSign, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "pending" as any, label: "Acceptance Pending", desc: "Awaiting client", value: waitingForAcceptance, icon: ClipboardList, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${leadsFollowUpCount} need follow-up`, value: activeLeadsCount, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "production" as KanbanColumn, label: "In Production", desc: `${inProductionCount} orders active`, value: inProductionCount, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
+      { key: "install" as KanbanColumn, label: "Ready to Install", desc: `${readyForInstallCount} pending schedule`, value: readyForInstallCount, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "closed" as KanbanColumn, label: "Closed MTD", desc: "Successfully completed", value: closedThisMonthCount, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "revenue" as any, label: "Total Estimated", desc: "Pipeline value", value: totalEstimatedRevenueVal, icon: TrendingUp, accent: "hud-indigo", isCurrency: true },
+      { key: "approved" as any, label: "Approved Value", desc: "Booked business", value: approvedProposalValueVal, icon: CheckCircle2, accent: "hud-green", isCurrency: true },
+      { key: "balance" as any, label: "Pending Balance", desc: "Awaiting payment", value: pendingBalanceVal, icon: DollarSign, accent: "hud-amber", isCurrency: true },
+      { key: "pending" as any, label: "Acceptance Pending", desc: "Awaiting client", value: waitingForAcceptanceCount, icon: ClipboardList, accent: "hud-cyan" },
     ];
   }, [leads, orders, proposals, t]);
 
