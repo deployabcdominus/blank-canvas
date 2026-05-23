@@ -385,7 +385,6 @@ export default function WorkOrderDetail() {
 
       if (error) throw error;
 
-      // Log history
       await supabase.from("project_closing_history").insert({
         company_id: companyId,
         production_order_id: order.id,
@@ -417,7 +416,6 @@ export default function WorkOrderDetail() {
 
       if (error) throw error;
 
-      // Log history
       await supabase.from("project_closing_history").insert({
         company_id: companyId,
         production_order_id: order.id,
