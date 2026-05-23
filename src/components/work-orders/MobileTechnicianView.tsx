@@ -87,7 +87,9 @@ export default function MobileTechnicianView() {
   const { companyId } = useUserRole();
   const { company } = useCompany();
   const labels = useIndustryLabels();
+  const { t, locale } = useLanguage();
   const [tab, setTab] = useState<MobileTab>("task");
+
   const [orders, setOrders] = useState<OrderData[]>(() => {
     const saved = localStorage.getItem("cached_tech_orders");
     return saved ? JSON.parse(saved) : [];
@@ -156,7 +158,7 @@ export default function MobileTechnicianView() {
       if (newStatus === "En Progreso") updates.start_date = new Date().toISOString();
       await supabase.from("production_orders").update(updates).eq("id", selectedOrder.id);
       setSelectedOrder(prev => prev ? { ...prev, status: newStatus, ...updates } : null);
-      toast({ title: newStatus === "Finalizada" ? "✅ Orden finalizada" : "▶️ Orden iniciada" });
+      toast({ title: newStatus === "Finalizada" ? `✅ ${t.technician.actions.finish.replace(" Orden", "")}` : `▶️ ${t.technician.actions.start.replace(" Orden", "")}` });
       loadOrders();
     } catch {
       toast({ title: "Error", variant: "destructive" });
@@ -206,21 +208,22 @@ export default function MobileTechnicianView() {
     return (
       <div className="min-h-screen bg-zinc-950 text-foreground">
         <div className="safe-top px-4 pt-6 pb-3">
-          <h1 className="text-xl font-bold">Mis {labels.workOrders}</h1>
+          <h1 className="text-xl font-bold">{locale === 'en' ? 'My ' : 'Mis '}{labels.workOrders}</h1>
           <div className="flex items-center justify-between mt-1">
-            <p className="text-xs text-muted-foreground">Órdenes asignadas a ti</p>
+            <p className="text-xs text-muted-foreground">{t.technician.subtitle}</p>
             {lastSync && (
               <p className="text-[10px] text-muted-foreground/60 italic">
-                Sinc: {new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {t.technician.sync}: {new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </p>
             )}
           </div>
+
         </div>
         <div className="px-4 space-y-3 pb-8">
           {orders.length === 0 && (
             <div className="text-center py-16">
               <ClipboardList className="w-10 h-10 mx-auto text-muted-foreground/30 mb-3" />
-              <p className="text-sm text-muted-foreground">No tienes órdenes asignadas</p>
+              <p className="text-sm text-muted-foreground">{t.technician.noOrders}</p>
             </div>
           )}
           {orders.map(o => (
@@ -255,10 +258,11 @@ export default function MobileTechnicianView() {
 
   /* ── Order Detail ── */
   const tabs: { id: MobileTab; label: string; icon: React.ElementType }[] = [
-    { id: "task", label: "Mi Tarea", icon: ClipboardList },
-    { id: "details", label: "Detalles", icon: FileText },
-    { id: "photos", label: "Evidencia", icon: Camera },
+    { id: "task", label: t.technician.myTask, icon: ClipboardList },
+    { id: "details", label: t.technician.details, icon: FileText },
+    { id: "photos", label: t.technician.photos, icon: Camera },
   ];
+
 
   return (
     <div className="min-h-screen bg-zinc-950 text-foreground flex flex-col">
@@ -287,19 +291,20 @@ export default function MobileTechnicianView() {
             <motion.div key="task" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-4 py-3">
               {/* Status card */}
               <div className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-xl">
-                <p className="text-xs text-muted-foreground mb-1">Estado actual</p>
+                <p className="text-xs text-muted-foreground mb-1">{t.technician.currentStatus}</p>
                 <p className="text-lg font-bold">{selectedOrder.status}</p>
                 {selectedOrder.estimated_delivery && (
                   <p className="text-xs text-muted-foreground mt-2">
-                    Entrega: {new Date(selectedOrder.estimated_delivery).toLocaleDateString("es")}
+                    {t.technician.delivery}: {new Date(selectedOrder.estimated_delivery).toLocaleDateString(locale)}
                   </p>
                 )}
+
               </div>
 
               {/* Progress */}
               <div className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03]">
                 <div className="flex justify-between text-xs mb-2">
-                  <span className="text-muted-foreground">Progreso</span>
+                  <span className="text-muted-foreground">{t.technician.progress}</span>
                   <span className="font-semibold">{selectedOrder.progress}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
@@ -313,7 +318,7 @@ export default function MobileTechnicianView() {
               {/* Notes */}
               {selectedOrder.notes && (
                 <div className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03]">
-                  <p className="text-xs text-muted-foreground mb-1">Notas</p>
+                  <p className="text-xs text-muted-foreground mb-1">{t.technician.notes}</p>
                   <p className="text-sm leading-relaxed">{selectedOrder.notes}</p>
                 </div>
               )}
@@ -325,7 +330,7 @@ export default function MobileTechnicianView() {
             <motion.div key="details" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-4 py-3">
               <div className="flex items-center gap-2 mb-1">
                 <Wrench className="w-4 h-4 text-orange-400" strokeWidth={1.5} />
-                <h3 className="text-sm font-semibold">Ficha Técnica</h3>
+                <h3 className="text-sm font-semibold">{t.technician.techSheet}</h3>
               </div>
 
               {/* Dynamic fields — single column for mobile */}
@@ -364,7 +369,7 @@ export default function MobileTechnicianView() {
                       {field.type === "select" ? (
                         <Select value={String(val)} onValueChange={v => setTechDetails(prev => ({ ...prev, [field.key]: v }))}>
                           <SelectTrigger className="h-11 text-base bg-white/[0.03] border-white/[0.08]">
-                            <SelectValue placeholder="Seleccionar" />
+                            <SelectValue placeholder={t.common.all} />
                           </SelectTrigger>
                           <SelectContent>
                             {(field.options || []).map(opt => (
