@@ -48,6 +48,7 @@ export interface Proposal {
   adminOverrideBy?: string | null;
   adminOverrideReason?: string | null;
   approvedForProduction?: boolean;
+  pilot_tag?: string | null;
 }
 
 interface ProposalsContextType {
@@ -129,6 +130,7 @@ const mapRow = (row: ProposalWithRelations, orderProposalIds: Set<string>): Prop
     adminOverrideBy: row.admin_override_by || null,
     adminOverrideReason: row.admin_override_reason || null,
     approvedForProduction: !!row.approved_for_production,
+    pilot_tag: row.pilot_tag,
   };
 };
 
@@ -197,6 +199,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
       admin_override_by: proposal.adminOverrideBy || null,
       admin_override_reason: proposal.adminOverrideReason || null,
       approved_for_production: proposal.approvedForProduction || false,
+      pilot_tag: proposal.pilot_tag || null,
     });
 
     if (error) throw error;
@@ -226,6 +229,7 @@ export const ProposalsProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (updates.adminOverrideBy !== undefined) dbUpdates.admin_override_by = updates.adminOverrideBy;
     if (updates.adminOverrideReason !== undefined) dbUpdates.admin_override_reason = updates.adminOverrideReason;
     if (updates.approvedForProduction !== undefined) dbUpdates.approved_for_production = updates.approvedForProduction;
+    if (updates.pilot_tag !== undefined) dbUpdates.pilot_tag = updates.pilot_tag;
 
     const { error } = await ProposalsService.update(id, dbUpdates);
     if (error) throw error;
