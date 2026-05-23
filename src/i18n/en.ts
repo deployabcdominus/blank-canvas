@@ -1328,7 +1328,90 @@ export const en = {
     title: "SignFlow | The All-in-One Operations & Workflow OS",
     description: "Scale your service business with SignFlow. Professional workflow management for IT, HVAC, and Signage industries. Secure your plan today.",
   },
+
+  /* ── Production ── */
+  production: {
+    title: "Production",
+    operatorStation: {
+      title: "Workshop Control Center",
+      departments: {
+        all: "All",
+        cnc: "CNC",
+        electrical: "Electrical",
+        graphics: "Graphics",
+        quality: "Quality Control",
+        general: "General",
+      },
+      leaderboardTitle: "Workshop Leaderboard",
+      leaderboardSubtitle: "The one who completes the most tasks this week wins Friday's lunch 🍕",
+      noActivity: "No activity in the leaderboard yet",
+      level: "Level",
+      xpToday: "XP Today",
+      tasksCompleted: "Tasks Completed",
+      activeTasks: "Active Tasks",
+      priority: {
+        urgent: "Urgent",
+        high: "High",
+        medium: "Medium",
+        low: "Low",
+      },
+      toasts: {
+        unstoppable: "Unstoppable! The admin already saw it on the dashboard",
+        taskCrushed: "Task crushed! The workshop needs you",
+        lightningFast: "Lightning fast! Are you human or robot?",
+        fridayLunch: "One step closer to Friday's free lunch!",
+        perfect: "Perfect! No errors, that's how it's done",
+        mvp: "Almost the MVP of the week!",
+      },
+    },
+    filters: {
+      filter: "Filters",
+      searchPlaceholder: "Search by client, project...",
+
+      sort: {
+        newest: "Newest",
+        oldest: "Oldest",
+        priority: "Priority",
+        targetDate: "Target date",
+        status: "Status",
+      },
+      status: {
+        materialsOrdered: "Materials Ordered",
+        inProduction: "In Production",
+        qualityControl: "Quality Control",
+        produced: "Produced",
+      },
+      from: "From",
+      to: "To",
+    },
+    tableView: {
+      client: "Client",
+      project: "Project",
+      status: "Status",
+      materials: "Materials",
+      progress: "Progress",
+      startDate: "Start Date",
+      estimatedDate: "Estimated Date",
+      actions: {
+        open: "Open",
+        print: "Print",
+        share: "Share",
+        markProduced: "Mark Produced",
+      },
+    },
+    timeline: {
+      noSteps: "No steps defined for this order",
+      stepsOf: "of {{total}} steps",
+      status: {
+        ready: "✓ Ready",
+        inProgress: "⚡ In Progress",
+        pending: "Pending",
+      },
+    },
+  },
 };
+
+
 
 // Use a deep string type so both locales can have different values
 type DeepStringify<T> = T extends string

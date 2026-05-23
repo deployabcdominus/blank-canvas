@@ -9,14 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-const getDepartments = (isEn: boolean) => [
-  { value: "all", label: isEn ? "All" : "Todos", icon: "🏭" },
-  { value: "cnc", label: "CNC", icon: "⚙️" },
-  { value: "electrical", label: isEn ? "Electrical" : "Eléctrico", icon: "⚡" },
-  { value: "graphics", label: isEn ? "Graphics" : "Gráficos", icon: "🎨" },
-  { value: "qa", label: isEn ? "Quality" : "Calidad", icon: "✅" },
-  { value: "general", label: "General", icon: "📋" },
+const getDepartments = (t: any) => [
+  { value: "all", label: t.production.operatorStation.departments.all, icon: "🏭" },
+  { value: "cnc", label: t.production.operatorStation.departments.cnc, icon: "⚙️" },
+  { value: "electrical", label: t.production.operatorStation.departments.electrical, icon: "⚡" },
+  { value: "graphics", label: t.production.operatorStation.departments.graphics, icon: "🎨" },
+  { value: "qa", label: t.production.operatorStation.departments.quality, icon: "✅" },
+  { value: "general", label: t.production.operatorStation.departments.general, icon: "📋" },
 ];
+
 
 const PRIORITY_BADGE: Record<string, string> = {
   urgente: "bg-red-500/15 text-red-400 border-red-500/30",
@@ -25,13 +26,14 @@ const PRIORITY_BADGE: Record<string, string> = {
   baja: "bg-muted text-muted-foreground border-border",
 };
 
-const getToasts = (isEn: boolean) => [
-  { emoji: "🔥", msg: isEn ? "Unstoppable! The admin already saw it on the dashboard" : "¡Imparable! El admin ya lo vio en el dashboard" },
-  { emoji: "💪", msg: isEn ? "Task crushed! The workshop needs you" : "¡Tarea aplastada! El taller te necesita" },
-  { emoji: "⚡", msg: isEn ? "Lightning fast! Are you human or robot?" : "¡Rapidísimo! ¿Eres humano o robot?" },
-  { emoji: "🏆", msg: isEn ? "One step closer to Friday's free lunch!" : "¡Un paso más al almuerzo gratis del viernes!" },
-  { emoji: "🎯", msg: isEn ? "Perfect! No errors, that's how it's done" : "¡Perfecto! Sin errores, así se hace" },
+const getToasts = (t: any) => [
+  { emoji: "🔥", msg: t.production.operatorStation.toasts.unstoppable },
+  { emoji: "💪", msg: t.production.operatorStation.toasts.taskCrushed },
+  { emoji: "⚡", msg: t.production.operatorStation.toasts.lightningFast },
+  { emoji: "🏆", msg: t.production.operatorStation.toasts.fridayLunch },
+  { emoji: "🎯", msg: t.production.operatorStation.toasts.perfect },
 ];
+
 
 function Confetti({ active }: { active: boolean }) {
   const colors = ["#7C3AED", "#A78BFA", "#16A34A", "#F59E0B", "#14B8A6", "#EC4899"];
@@ -63,10 +65,10 @@ function Confetti({ active }: { active: boolean }) {
 export default function OperatorStation() {
   const { companyId } = useUserRole();
   const { user } = useAuth();
-  const { locale } = useLanguage();
-  const isEn = locale === "en";
-  const DEPARTMENTS = getDepartments(isEn);
-  const TOASTS = getToasts(isEn);
+  const { locale, t } = useLanguage();
+  const DEPARTMENTS = getDepartments(t);
+  const TOASTS = getToasts(t);
+
   const { data: stats } = useWorkerStatsQuery(user?.id, companyId);
   const { steps: tasks, startTaskMutation, completeTaskMutation } = useProductionStepsQuery(companyId, user?.id);
   const [department, setDepartment] = useState("all");
@@ -108,13 +110,13 @@ export default function OperatorStation() {
       <div className="rounded-2xl bg-card/80 backdrop-blur-xl border border-border p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-2xl font-black text-foreground">{isEn ? `Hey, ${userName}! 🤙` : `¡Buenas, ${userName}! 🤙`}</h1>
+            <h1 className="text-2xl font-black text-foreground">{locale === "en" ? `Hey, ${userName}! 🤙` : `¡Buenas, ${userName}! 🤙`}</h1>
             <div className="flex gap-2 mt-2 flex-wrap">
               <span className="text-xs font-bold bg-primary/10 text-primary px-3 py-1 rounded-full">
-                {isEn ? "Level" : "Nivel"} {stats?.level ?? 1} · {stats?.level_title ?? (isEn ? "Apprentice" : "Aprendiz")}
+                {t.production.operatorStation.level} {stats?.level ?? 1} · {stats?.level_title ?? (locale === "en" ? "Apprentice" : "Aprendiz")}
               </span>
               <span className="text-xs font-bold bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full">
-                {stats?.tasks_today ?? 0} {isEn ? "today ✅" : "hoy ✅"}
+                {stats?.tasks_today ?? 0} {locale === "en" ? "today ✅" : "hoy ✅"}
               </span>
             </div>
           </div>
@@ -122,7 +124,7 @@ export default function OperatorStation() {
             <div className="text-2xl font-black text-amber-400 flex items-center gap-1">
               <Flame size={20} /> {stats?.streak_days ?? 0}
             </div>
-            <div className="text-[10px] font-bold text-amber-500/70 uppercase">{isEn ? "streak" : "racha"}</div>
+            <div className="text-[10px] font-bold text-amber-500/70 uppercase">{locale === "en" ? "streak" : "racha"}</div>
           </div>
         </div>
         <div>
@@ -157,10 +159,11 @@ export default function OperatorStation() {
       <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
         <Filter size={14} />
         {filtered.length === 0
-          ? (isEn ? "🎉 All done! You're the MVP 🏆" : "🎉 ¡Todo listo! Eres el MVP 🏆")
-          : isEn
+          ? (locale === "en" ? "🎉 All done! You're the MVP 🏆" : "🎉 ¡Todo listo! Eres el MVP 🏆")
+          : locale === "en"
             ? `${filtered.length} pending task${filtered.length !== 1 ? "s" : ""}`
             : `${filtered.length} tarea${filtered.length !== 1 ? "s" : ""} pendiente${filtered.length !== 1 ? "s" : ""}`}
+
       </div>
 
       {/* Task Cards */}
@@ -184,7 +187,7 @@ export default function OperatorStation() {
               <span className="truncate max-w-[200px]">{task.order_client}</span>
             </div>
             <Badge className={`text-[10px] font-bold border ${PRIORITY_BADGE[task.order_priority] || PRIORITY_BADGE.media}`}>
-              {task.order_priority?.toUpperCase()}
+              {t.production.operatorStation.priority[task.order_priority as keyof typeof t.production.operatorStation.priority]?.toUpperCase() || task.order_priority?.toUpperCase()}
             </Badge>
           </div>
 
@@ -216,14 +219,14 @@ export default function OperatorStation() {
               onClick={() => completeTask(task.id)}
               className="w-full py-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-black text-xl flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/25 transition-all duration-150"
             >
-              <Check size={24} /> {isEn ? "COMPLETED!" : "¡COMPLETADO!"}
+              <Check size={24} /> {locale === "en" ? "COMPLETED!" : "¡COMPLETADO!"}
             </button>
           ) : (
             <button
               onClick={() => startTask(task.id)}
               className="w-full py-5 rounded-xl bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-black text-xl flex items-center justify-center gap-3 shadow-lg shadow-primary/25 transition-all duration-150"
             >
-              ▶️ {isEn ? "START" : "EMPEZAR"}
+              ▶️ {locale === "en" ? "START" : "EMPEZAR"}
             </button>
           )}
         </div>
@@ -232,8 +235,9 @@ export default function OperatorStation() {
       {filtered.length === 0 && tasks.length === 0 && (
         <div className="text-center py-12 space-y-2">
           <div className="text-5xl">☕</div>
-          <div className="text-lg font-bold text-foreground">{isEn ? "You have no assigned tasks" : "No tienes tareas asignadas"}</div>
-          <div className="text-sm text-muted-foreground">{isEn ? "Talk to your admin to get stages assigned to you" : "Habla con tu admin para que te asigne etapas"}</div>
+          <div className="text-lg font-bold text-foreground">{locale === "en" ? "You have no assigned tasks" : "No tienes tareas asignadas"}</div>
+          <div className="text-sm text-muted-foreground">{locale === "en" ? "Talk to your admin to get stages assigned to you" : "Habla con tu admin para que te asigne etapas"}</div>
+
         </div>
       )}
     </div>

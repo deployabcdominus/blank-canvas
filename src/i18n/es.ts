@@ -1330,4 +1330,87 @@ export const es: TranslationKeys = {
     title: "SignFlow | El SO de Operaciones y Flujo de Trabajo Todo-en-Uno",
     description: "Escala tu negocio de servicios con SignFlow. Gestión profesional de flujos de trabajo para industrias de IT, HVAC y Señalética. Asegura tu plan hoy.",
   },
+
+  /* ── Production ── */
+  production: {
+    title: "Producción",
+    operatorStation: {
+      title: "Centro de Control de Taller",
+      departments: {
+        all: "Todos",
+        cnc: "CNC",
+        electrical: "Eléctrico",
+        graphics: "Gráficos",
+        quality: "Control de Calidad",
+        general: "General",
+      },
+      leaderboardTitle: "Leaderboard del Taller",
+      leaderboardSubtitle: "El que más tareas completa esta semana gana el almuerzo del viernes 🍕",
+      noActivity: "No hay actividad en el leaderboard aún",
+      level: "Nivel",
+      xpToday: "XP Hoy",
+      tasksCompleted: "Tareas Completadas",
+      activeTasks: "Tareas Activas",
+      priority: {
+        urgent: "Urgente",
+        high: "Alta",
+        medium: "Media",
+        low: "Baja",
+      },
+      toasts: {
+        unstoppable: "¡Imparable! El admin ya lo vio en el dashboard",
+        taskCrushed: "¡Tarea aplastada! El taller te necesita",
+        lightningFast: "¡Rapidísimo! ¿Eres humano o robot?",
+        fridayLunch: "¡Un paso más al almuerzo gratis del viernes!",
+        perfect: "¡Perfecto! Sin errores, así se hace",
+        mvp: "¡Ya casi eres el MVP de la semana!",
+      },
+    },
+    filters: {
+      filter: "Filtros",
+      searchPlaceholder: "Buscar por cliente, proyecto...",
+
+      sort: {
+        newest: "Más recientes",
+        oldest: "Más antiguas",
+        priority: "Prioridad",
+        targetDate: "Fecha objetivo",
+        status: "Estado",
+      },
+      status: {
+        materialsOrdered: "Materiales Pedidos",
+        inProduction: "En Producción",
+        qualityControl: "Control de Calidad",
+        produced: "Producido",
+      },
+      from: "Desde",
+      to: "Hasta",
+    },
+    tableView: {
+      client: "Cliente",
+      project: "Proyecto",
+      status: "Estado",
+      materials: "Materiales",
+      progress: "Progreso",
+      startDate: "F. Inicio",
+      estimatedDate: "F. Estimada",
+      actions: {
+        open: "Abrir",
+        print: "Imprimir",
+        share: "Compartir",
+        markProduced: "Marcar Producido",
+      },
+    },
+    timeline: {
+      noSteps: "No hay etapas definidas para esta orden",
+      stepsOf: "{{completed}} de {{total}} etapas",
+      status: {
+        ready: "✓ Listo",
+        inProgress: "⚡ En curso",
+        pending: "Pendiente",
+      },
+    },
+  },
 } as const;
+
+

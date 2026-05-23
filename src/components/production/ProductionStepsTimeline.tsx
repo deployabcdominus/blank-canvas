@@ -1,8 +1,12 @@
 import { useProductionSteps } from "@/hooks/useProductionSteps";
 import { Check, Clock, Zap, User } from "lucide-react";
+import { useT } from "@/i18n/LanguageContext";
+
 
 export default function ProductionStepsTimeline({ orderId }: { orderId: string }) {
   const { steps, loading, progress } = useProductionSteps(orderId);
+  const t = useT();
+
 
   if (loading) {
     return (
@@ -17,8 +21,9 @@ export default function ProductionStepsTimeline({ orderId }: { orderId: string }
   if (steps.length === 0) {
     return (
       <div className="text-center py-6 text-muted-foreground text-sm">
-        No hay etapas definidas para esta orden
+        {t.production.timeline.noSteps}
       </div>
+
     );
   }
 
@@ -28,7 +33,7 @@ export default function ProductionStepsTimeline({ orderId }: { orderId: string }
       <div>
         <div className="flex justify-between text-xs mb-1">
           <span className="text-muted-foreground font-semibold">
-            {steps.filter(s => s.status === "completed").length} de {steps.length} etapas
+            {t.production.timeline.stepsOf.replace("{{completed}}", steps.filter(s => s.status === "completed").length.toString()).replace("{{total}}", steps.length.toString())}
           </span>
           <span className="font-bold text-foreground">{progress}%</span>
         </div>
@@ -69,8 +74,9 @@ export default function ProductionStepsTimeline({ orderId }: { orderId: string }
                     ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
                     : "bg-muted text-muted-foreground"
                 }`}>
-                  {step.status === "completed" ? "✓ Listo" :
-                   step.status === "in_progress" ? "⚡ En curso" : "Pendiente"}
+                  {step.status === "completed" ? t.production.timeline.status.ready :
+                   step.status === "in_progress" ? t.production.timeline.status.inProgress : t.production.timeline.status.pending}
+
                 </span>
               </div>
               {step.assigned_name && (
