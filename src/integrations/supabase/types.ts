@@ -1290,6 +1290,30 @@ export type Database = {
           },
         ]
       }
+      system_heartbeats: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          metadata: Json | null
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          source?: string | null
+        }
+        Relationships: []
+      }
       team_allocations: {
         Row: {
           company_id: string
