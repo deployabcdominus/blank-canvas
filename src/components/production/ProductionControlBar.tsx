@@ -15,19 +15,20 @@ import { useLanguage } from "@/i18n/LanguageContext";
 export type SortKey = "newest" | "oldest" | "priority" | "targetDate" | "status";
 export type ViewMode = "cards" | "list";
 
-const STATUS_OPTIONS = [
+const getStatusOptions = (t: any) => [
   "Materiales Pedidos",
   "En Producción",
   "Control de Calidad",
   "Producido",
 ];
 
-const STATUS_LABELS_EN: Record<string, string> = {
-  "Materiales Pedidos": "Materials Ordered",
-  "En Producción": "In Production",
-  "Control de Calidad": "Quality Control",
-  "Producido": "Produced",
-};
+const getStatusLabels = (t: any): Record<string, string> => ({
+  "Materiales Pedidos": t.production.filters.status.materialsOrdered,
+  "En Producción": t.production.filters.status.inProduction,
+  "Control de Calidad": t.production.filters.status.qualityControl,
+  "Producido": t.production.filters.status.produced,
+});
+
 
 interface ProductionControlBarProps {
   search: string;
@@ -56,16 +57,18 @@ export function ProductionControlBar({
   totalItems, showing,
 }: ProductionControlBarProps) {
   const [showFilters, setShowFilters] = useState(false);
-  const { locale } = useLanguage();
-  const isEn = locale === "en";
+  const { locale, t } = useLanguage();
+  const STATUS_OPTIONS = getStatusOptions(t);
+  const STATUS_LABELS = getStatusLabels(t);
 
   const SORT_LABELS: Record<SortKey, string> = {
-    newest: isEn ? "Newest" : "Más recientes",
-    oldest: isEn ? "Oldest" : "Más antiguas",
-    priority: isEn ? "Priority" : "Prioridad",
-    targetDate: isEn ? "Target date" : "Fecha objetivo",
-    status: isEn ? "Status" : "Estado",
+    newest: t.production.filters.sort.newest,
+    oldest: t.production.filters.sort.oldest,
+    priority: t.production.filters.sort.priority,
+    targetDate: t.production.filters.sort.targetDate,
+    status: t.production.filters.sort.status,
   };
+
   const hasFilters = statusFilter.length > 0 || dateFrom || dateTo;
 
   const toggleStatus = (s: string) => {
@@ -91,7 +94,7 @@ export function ProductionControlBar({
           <Input
             value={search}
             onChange={e => onSearchChange(e.target.value)}
-            placeholder={isEn ? "Search by client, project..." : "Buscar por cliente, proyecto..."}
+            placeholder={t.production.filters.searchPlaceholder}
             className="pl-10 glass h-9 text-sm"
           />
         </div>
@@ -122,7 +125,8 @@ export function ProductionControlBar({
           onClick={() => setShowFilters(!showFilters)}
         >
           <Filter className="w-3.5 h-3.5" />
-          {isEn ? "Filters" : "Filtros"}
+          {t.production.filters.filter}
+
           {hasFilters && (
             <Badge className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px] bg-primary text-primary-foreground">
               {statusFilter.length + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0)}
@@ -154,17 +158,18 @@ export function ProductionControlBar({
       {showFilters && (
         <div className="glass-card p-4 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isEn ? "Filters" : "Filtros"}</span>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t.production.filters.filter}</span>
             {hasFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs h-6 px-2 gap-1">
-                <X className="w-3 h-3" /> {isEn ? "Clear" : "Limpiar"}
+                <X className="w-3 h-3" /> {locale === "en" ? "Clear" : "Limpiar"}
               </Button>
             )}
+
           </div>
 
           {/* Status chips */}
           <div>
-            <span className="text-xs text-muted-foreground mb-1.5 block">{isEn ? "Status" : "Estado"}</span>
+            <span className="text-xs text-muted-foreground mb-1.5 block">{t.common.status}</span>
             <div className="flex flex-wrap gap-1.5">
               {STATUS_OPTIONS.map(s => (
                 <button
@@ -177,7 +182,7 @@ export function ProductionControlBar({
                       : "bg-muted/20 text-muted-foreground border-border/20 hover:bg-muted/40"
                   )}
                 >
-                  {isEn ? (STATUS_LABELS_EN[s] ?? s) : s}
+                  {STATUS_LABELS[s] || s}
                 </button>
               ))}
             </div>
@@ -185,8 +190,9 @@ export function ProductionControlBar({
 
           {/* Date range */}
           <div className="flex gap-3 items-end">
-            <DateField label={isEn ? "From" : "Desde"} value={dateFrom} onChange={onDateFromChange} compact />
-            <DateField label={isEn ? "To" : "Hasta"} value={dateTo} onChange={onDateToChange} compact />
+            <DateField label={t.production.filters.from} value={dateFrom} onChange={onDateFromChange} compact />
+            <DateField label={t.production.filters.to} value={dateTo} onChange={onDateToChange} compact />
+
           </div>
         </div>
       )}
