@@ -793,8 +793,9 @@ export default function WorkOrderDetail() {
                       <input
                         type="checkbox"
                         checked={!!qcChecklist[item.key]}
-                        onChange={() => toggleQc(item.key)}
-                        className="w-4 h-4 rounded accent-violet-500"
+                        onChange={() => !isClosed && toggleQc(item.key)}
+                        disabled={isClosed}
+                        className="w-4 h-4 rounded accent-violet-500 disabled:opacity-50"
                       />
                       <span className={`text-sm ${qcChecklist[item.key] ? "text-foreground" : "text-muted-foreground"}`}>
                         {item.label}
@@ -847,7 +848,7 @@ export default function WorkOrderDetail() {
                 {poiPhotos.length === 0 ? (
                   <div className="text-center py-6">
                     <p className="text-sm text-muted-foreground mb-3">No photos yet. Share the POI link with the installer.</p>
-                    <Button variant="outline" size="sm" onClick={generatePOI} className="border-violet-500/30 text-violet-400">
+                    <Button variant="outline" size="sm" onClick={generatePOI} disabled={isClosed} className="border-violet-500/30 text-violet-400">
                       <QrCode className="w-3.5 h-3.5 mr-1.5" /> Generate POI Link
                     </Button>
                   </div>
