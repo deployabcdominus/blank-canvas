@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { MapPin, Camera, Calendar, CheckCircle, Truck, Clock, Share2, Search, Trash2 } from "lucide-react";
 import { ScheduleInstallationModal } from "@/components/ScheduleInstallationModal";
 import { InstallationPhotos } from "@/components/InstallationPhotos";
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
