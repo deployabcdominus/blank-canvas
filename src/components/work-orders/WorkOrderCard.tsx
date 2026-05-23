@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useLanguage, useT } from "@/i18n/LanguageContext";
+import { useT } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { WorkOrder } from "@/contexts/WorkOrdersContext";
@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
-
 const getStatusConfig = (t: any) => ({
   "Pendiente":          { bg: "rgba(107,114,128,0.12)", color: "#6b7280", label: t.workOrders.statusLabels.pending },
   "En Progreso":        { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: t.workOrders.statusLabels.inProduction },
@@ -24,7 +23,6 @@ const getStatusConfig = (t: any) => ({
   "installed":          { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: t.workOrders.statusLabels.installed },
   "Instalado":         { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: t.workOrders.statusLabels.installed },
 });
-
 
 interface Props {
   order: WorkOrder;
@@ -38,7 +36,6 @@ interface Props {
   canEdit?: boolean;
 }
 
-
 function formatDelivery(date: string | null | undefined): string | null {
   if (!date) return null;
   try {
@@ -48,14 +45,12 @@ function formatDelivery(date: string | null | undefined): string | null {
   }
 }
 
-
 export function WorkOrderCard({
   order, index, assigneeName, onOpen, onGeneratePOI, onPrintSheet, onDelete, canDelete = false, canEdit = true,
 }: Props) {
   const navigate = useNavigate();
   const t = useT();
   const STATUS_CONFIG = getStatusConfig(t);
-
 
   const statusKey = order.poi_token_used ? "installed" : order.status;
   const status = STATUS_CONFIG[statusKey as keyof typeof STATUS_CONFIG] || STATUS_CONFIG["Pendiente"];
@@ -65,10 +60,11 @@ export function WorkOrderCard({
   const deliveryDate = order.estimatedDelivery || order.estimatedCompletion;
   const formattedDelivery = formatDelivery(deliveryDate);
   const progress = order.progress ?? 0;
-  const statusKey = order.poi_token_used ? "installed" : order.status;
-  const status = STATUS_CONFIG[statusKey as keyof typeof STATUS_CONFIG] || STATUS_CONFIG["Pendiente"];
-  const statusLabel = status.label;
 
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
       onClick={() => navigate(`/work-orders/${order.id}`)}
       className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col"
