@@ -804,14 +804,112 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
 
               {/* Right side info panels — 40% */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                    Project & Workflow
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", gap: "3px 6px", fontSize: 10 }}>
+                    <span style={{ fontWeight: 600, color: "#555" }}>Status:</span>
+                    <Select value={internalStatus} onValueChange={setInternalStatus}>
+                      <SelectTrigger className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900 font-bold">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Draft">Draft</SelectItem>
+                        <SelectItem value="Waiting for Design Details">Waiting for Design</SelectItem>
+                        <SelectItem value="Ready for Production">Ready for Production</SelectItem>
+                        <SelectItem value="In Production">In Production</SelectItem>
+                        <SelectItem value="Waiting for Materials">Waiting for Materials</SelectItem>
+                        <SelectItem value="On Hold">On Hold</SelectItem>
+                        <SelectItem value="Quality Check">Quality Check</SelectItem>
+                        <SelectItem value="Ready for Install">Ready for Install</SelectItem>
+                        <SelectItem value="Completed">Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <span style={{ fontWeight: 600, color: "#555" }}>Prep By:</span>
+                    <Select value={preparedBy} onValueChange={setPreparedBy}>
+                      <SelectTrigger className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Sales">Sales</SelectItem>
+                        <SelectItem value="Design">Design</SelectItem>
+                        <SelectItem value="Admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <span style={{ fontWeight: 600, color: "#555" }}>Design Rev:</span>
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" checked={designReviewReq} onChange={e => setDesignReviewReq(e.target.checked)} className="w-3 h-3" />
+                        <span className="text-[9px]">Required</span>
+                      </label>
+                      <label className="flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" checked={designReviewComp} onChange={e => setDesignReviewComp(e.target.checked)} className="w-3 h-3" />
+                        <span className="text-[9px]">Completed</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                    Final Dimensions & Type
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+                    <div className="space-y-0.5">
+                      <label className="text-[8px] font-bold text-zinc-400 uppercase">Width</label>
+                      <Input value={finalWidth} onChange={e => setFinalWidth(e.target.value)} className="h-5 text-[10px] border-zinc-300 bg-transparent" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <label className="text-[8px] font-bold text-zinc-400 uppercase">Height</label>
+                      <Input value={finalHeight} onChange={e => setFinalHeight(e.target.value)} className="h-5 text-[10px] border-zinc-300 bg-transparent" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <label className="text-[8px] font-bold text-zinc-400 uppercase">Unit</label>
+                      <Select value={measurementUnit} onValueChange={setMeasurementUnit}>
+                        <SelectTrigger className="h-5 text-[10px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="in">Inches</SelectItem>
+                          <SelectItem value="ft">Feet</SelectItem>
+                          <SelectItem value="cm">cm</SelectItem>
+                          <SelectItem value="m">m</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    <Select value={singleDouble} onValueChange={setSingleDouble}>
+                      <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Single">Single Sided</SelectItem>
+                        <SelectItem value="Double">Double Sided</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={indoorOutdoor} onValueChange={setIndoorOutdoor}>
+                      <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Indoor">Indoor</SelectItem>
+                        <SelectItem value="Outdoor">Outdoor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={illuminated} onValueChange={setIlluminated}>
+                      <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Illuminated">Illuminated</SelectItem>
+                        <SelectItem value="Non-Illuminated">Non-Illuminated</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 {/* Project Details */}
                 <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
                   <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
-                    Project Details
+                    Installation Site
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", gap: "3px 6px", fontSize: 10 }}>
-                    <span style={{ fontWeight: 600, color: "#555" }}>Client:</span>
-                    <span style={{ fontWeight: 700, color: "#1a1a2e" }}>{order.client}</span>
                     <span style={{ fontWeight: 600, color: "#555" }}>Site:</span>
                     <Input
                       value={siteAddress}
@@ -826,19 +924,19 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                       className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
                       placeholder="Contact name"
                     />
-                    <span style={{ fontWeight: 600, color: "#555" }}>Phone:</span>
+                    <span style={{ fontWeight: 600, color: "#555" }}>Surface:</span>
                     <Input
-                      value={contactPhone}
-                      onChange={e => setContactPhone(e.target.value)}
+                      value={installationSurface}
+                      onChange={e => setInstallationSurface(e.target.value)}
                       className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                      placeholder="Phone"
+                      placeholder="Wall, concrete, etc"
                     />
-                    <span style={{ fontWeight: 600, color: "#555" }}>Email:</span>
+                    <span style={{ fontWeight: 600, color: "#555" }}>Method:</span>
                     <Input
-                      value={contactEmail}
-                      onChange={e => setContactEmail(e.target.value)}
+                      value={mountingMethod}
+                      onChange={e => setMountingMethod(e.target.value)}
                       className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                      placeholder="Email"
+                      placeholder="Direct, studs, etc"
                     />
                   </div>
                 </div>
