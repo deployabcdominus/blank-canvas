@@ -20,7 +20,7 @@ export const useGlobalSearchQuery = (query: string) => {
       
       const [leads, proposals, orders, installations, clients, partners] = await Promise.all([
         supabase.from("leads").select("id, name, company, status").or(`name.ilike.${pattern},company.ilike.${pattern}`).is("deleted_at", null).limit(5),
-        supabase.from("proposals").select("id, client_id, proposal_number, status").or(`proposal_number.ilike.${pattern}`).limit(5),
+        supabase.from("proposals").select("id, client, project, status").or(`client.ilike.${pattern},project.ilike.${pattern}`).limit(5),
         supabase.from("production_orders").select("id, client, project, wo_number, status").or(`client.ilike.${pattern},project.ilike.${pattern},wo_number.ilike.${pattern}`).limit(5),
         supabase.from("installations").select("id, client, project, location, status").or(`client.ilike.${pattern},project.ilike.${pattern},location.ilike.${pattern}`).limit(5),
         supabase.from("clients").select("id, client_name").ilike("client_name", pattern).limit(5),
