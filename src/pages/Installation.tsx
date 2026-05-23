@@ -213,8 +213,10 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="glass-card p-6 hover:glow-pink transition-all duration-300"
+                className="glass-card overflow-hidden hover:glow-pink transition-all duration-300"
               >
+                <div className={cn("h-1.5 w-full", getStatusColor(installation.status))} />
+                <div className="p-6">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
