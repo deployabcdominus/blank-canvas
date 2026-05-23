@@ -1367,7 +1367,9 @@ export const es: TranslationKeys = {
       },
     },
     filters: {
+      filter: "Filtros",
       searchPlaceholder: "Buscar por cliente, proyecto...",
+
       sort: {
         newest: "Más recientes",
         oldest: "Más antiguas",
