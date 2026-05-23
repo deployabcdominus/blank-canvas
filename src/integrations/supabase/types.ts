@@ -1226,6 +1226,7 @@ export type Database = {
           painting_color: string | null
           painting_required: boolean | null
           permit_required: boolean | null
+          pilot_tag: string | null
           poi_completed_at: string | null
           poi_token: string | null
           poi_token_exp: string | null
@@ -1334,6 +1335,7 @@ export type Database = {
           painting_color?: string | null
           painting_required?: boolean | null
           permit_required?: boolean | null
+          pilot_tag?: string | null
           poi_completed_at?: string | null
           poi_token?: string | null
           poi_token_exp?: string | null
@@ -1442,6 +1444,7 @@ export type Database = {
           painting_color?: string | null
           painting_required?: boolean | null
           permit_required?: boolean | null
+          pilot_tag?: string | null
           poi_completed_at?: string | null
           poi_token?: string | null
           poi_token_exp?: string | null
@@ -1843,6 +1846,7 @@ export type Database = {
           lead_id: string | null
           mockup_url: string | null
           owner_user_id: string | null
+          pilot_tag: string | null
           project: string | null
           sent_date: string | null
           sent_method: string | null
@@ -1879,6 +1883,7 @@ export type Database = {
           lead_id?: string | null
           mockup_url?: string | null
           owner_user_id?: string | null
+          pilot_tag?: string | null
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null
@@ -1915,6 +1920,7 @@ export type Database = {
           lead_id?: string | null
           mockup_url?: string | null
           owner_user_id?: string | null
+          pilot_tag?: string | null
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null
