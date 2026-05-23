@@ -1,16 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { HudCard } from "@/components/dashboard/HudCard";
 import { HudPipeline } from "@/components/dashboard/HudPipeline";
-import { RevenueChart } from "@/components/dashboard/RevenueChart";
-import { WorkOrdersRadial } from "@/components/dashboard/WorkOrdersRadial";
-import { GeoHeatmap } from "@/components/dashboard/GeoHeatmap";
-import { AiBriefing } from "@/components/dashboard/AiBriefing";
-import { TeamActivityWidget } from "@/components/dashboard/TeamActivityWidget";
-import { KanbanColumn } from "@/components/PipelineKanban";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
@@ -21,9 +15,23 @@ import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { isThisMonth } from "date-fns";
-import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
-import { WeeklyReport } from "@/components/dashboard/WeeklyReport";
+
+// Lazy-loaded heavy components
+const RevenueChart = lazy(() => import("@/components/dashboard/RevenueChart").then(m => ({ default: m.RevenueChart })));
+const WorkOrdersRadial = lazy(() => import("@/components/dashboard/WorkOrdersRadial").then(m => ({ default: m.WorkOrdersRadial })));
+const GeoHeatmap = lazy(() => import("@/components/dashboard/GeoHeatmap").then(m => ({ default: m.GeoHeatmap })));
+const AiBriefing = lazy(() => import("@/components/dashboard/AiBriefing").then(m => ({ default: m.AiBriefing })));
+const TeamActivityWidget = lazy(() => import("@/components/dashboard/TeamActivityWidget").then(m => ({ default: m.TeamActivityWidget })));
+const WeeklyReport = lazy(() => import("@/components/dashboard/WeeklyReport").then(m => ({ default: m.WeeklyReport })));
+
+const WidgetLoader = () => (
+  <div className="flex items-center justify-center min-h-[200px] w-full bg-card/40 backdrop-blur-xl border border-border/50 rounded-2xl animate-pulse">
+    <Loader2 className="w-6 h-6 text-primary/40 animate-spin" />
+  </div>
+);
+
 
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
@@ -98,7 +106,12 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {isAdmin && <AiBriefing />}
+        {isAdmin && (
+          <Suspense fallback={<div className="h-32 w-full animate-pulse bg-muted/20 rounded-xl mb-6" />}>
+            <AiBriefing />
+          </Suspense>
+        )}
+
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
           {stats.map((stat, index) => (
@@ -107,18 +120,33 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 mb-6 md:mb-10">
-          {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
-          {canViewOperations && <WorkOrdersRadial orders={orders} />}
-          <GeoHeatmap installations={installations} />
+          <Suspense fallback={<WidgetLoader />}>
+            {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
+          </Suspense>
+          <Suspense fallback={<WidgetLoader />}>
+            {canViewOperations && <WorkOrdersRadial orders={orders} />}
+          </Suspense>
+          <Suspense fallback={<WidgetLoader />}>
+            <GeoHeatmap installations={installations} />
+          </Suspense>
+
         </div>
 
 
-        {isAdmin && <WeeklyReport />}
+        {isAdmin && (
+          <Suspense fallback={<WidgetLoader />}>
+            <WeeklyReport />
+          </Suspense>
+        )}
+
 
         {isAdmin && (
           <div className="mb-8">
-            <TeamActivityWidget />
+            <Suspense fallback={<WidgetLoader />}>
+              <TeamActivityWidget />
+            </Suspense>
           </div>
+
         )}
 
         <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
