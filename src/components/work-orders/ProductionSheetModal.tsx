@@ -5,8 +5,9 @@ import {
   X, Printer, Save, Loader2, CheckSquare, Square, User,
   MapPin, Phone, Mail, Wrench, Shield, ClipboardCheck,
   FileText, AlertCircle, Upload, Trash2, QrCode, Image, ExternalLink,
-  Pencil,
+  Pencil, AlertTriangle, Info,
 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -79,12 +80,17 @@ const QC_ITEMS = [
 ] as const;
 
 const MATERIAL_FIELDS = [
+  { key: "substrate_material", label: "SUBSTRATE" },
+  { key: "frame_material", label: "FRAME" },
   { key: "face_material_spec", label: "FACE" },
   { key: "returns_material_spec", label: "RETURNS" },
   { key: "backs_material_spec", label: "BACKS" },
   { key: "trim_cap_spec", label: "TRIM CAP" },
   { key: "led_mfg_spec", label: "LEDs" },
   { key: "power_supply_spec", label: "POWER SUPPLY" },
+  { key: "vinyl_brand", label: "VINYL BRAND" },
+  { key: "vinyl_color", label: "VINYL COLOR" },
+  { key: "print_material", label: "PRINT MEDIA" },
 ] as const;
 
 const STATUS_COLORS: Record<string, string> = {
@@ -154,7 +160,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [editNotes, setEditNotes] = useState("");
 
   // Form state
-  const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
+  const [materialSpecs, setMaterialSpecs] = useState<any>(defaultMaterialSpecs);
   const [staff, setStaff] = useState<ResponsibleStaff>(defaultStaff);
   const [qcChecklist, setQcChecklist] = useState<QCChecklist>(defaultQC);
   const [contactName, setContactName] = useState("");
@@ -162,6 +168,21 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [contactEmail, setContactEmail] = useState("");
   const [siteAddress, setSiteAddress] = useState("");
   const [projectName, setProjectName] = useState("");
+  // Phase 2 technical fields
+  const [finalWidth, setFinalWidth] = useState<number | string>("");
+  const [finalHeight, setFinalHeight] = useState<number | string>("");
+  const [measurementUnit, setMeasurementUnit] = useState("in");
+  const [singleDouble, setSingleDouble] = useState("Single");
+  const [indoorOutdoor, setIndoorOutdoor] = useState("Outdoor");
+  const [illuminated, setIlluminated] = useState("Non-Illuminated");
+  const [mountingMethod, setMountingMethod] = useState("");
+  const [installationSurface, setInstallationSurface] = useState("");
+  const [fabNotes, setFabNotes] = useState("");
+  const [prodWarnings, setProdWarnings] = useState("");
+  const [internalStatus, setInternalStatus] = useState("Ready for Production");
+  const [preparedBy, setPreparedBy] = useState("Sales");
+  const [designReviewReq, setDesignReviewReq] = useState(false);
+  const [designReviewComp, setDesignReviewComp] = useState(false);
 
   // Load operators
   useEffect(() => {
@@ -187,6 +208,11 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
       trim_cap_spec: raw.trim_cap_spec || "",
       led_mfg_spec: raw.led_mfg_spec || "",
       power_supply_spec: raw.power_supply_spec || "",
+      substrate_material: raw.substrate_material || "",
+      frame_material: raw.frame_material || "",
+      vinyl_brand: raw.vinyl_brand || "",
+      vinyl_color: raw.vinyl_color || "",
+      print_material: raw.print_material || "",
     });
     setStaff(raw.responsible_staff || defaultStaff);
     setQcChecklist(raw.qc_checklist || defaultQC);
@@ -195,6 +221,20 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setContactEmail(raw.contact_email || "");
     setSiteAddress(raw.site_address || "");
     setProjectName(raw.project_name || order.project || "");
+    setFinalWidth(raw.final_width || "");
+    setFinalHeight(raw.final_height || "");
+    setMeasurementUnit(raw.measurement_unit || "in");
+    setSingleDouble(raw.single_or_double_sided || "Single");
+    setIndoorOutdoor(raw.indoor_or_outdoor || "Outdoor");
+    setIlluminated(raw.illuminated_or_non || "Non-Illuminated");
+    setMountingMethod(raw.mounting_method || "");
+    setInstallationSurface(raw.installation_surface || "");
+    setFabNotes(raw.fabrication_notes || "");
+    setProdWarnings(raw.production_warnings || "");
+    setInternalStatus(raw.internal_status || "Ready for Production");
+    setPreparedBy(raw.prepared_by_department || "Sales");
+    setDesignReviewReq(raw.design_review_required || false);
+    setDesignReviewComp(raw.design_review_completed || false);
     setLocalBlueprintUrl(order.blueprintUrl || null);
     setSignatureUrl((order as any).qc_signature_url || null);
     setQcSignerName((order as any).qc_signer_name || null);
@@ -356,6 +396,11 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         trim_cap_spec: materialSpecs.trim_cap_spec,
         led_mfg_spec: materialSpecs.led_mfg_spec,
         power_supply_spec: materialSpecs.power_supply_spec,
+        substrate_material: materialSpecs.substrate_material,
+        frame_material: materialSpecs.frame_material,
+        vinyl_brand: materialSpecs.vinyl_brand,
+        vinyl_color: materialSpecs.vinyl_color,
+        print_material: materialSpecs.print_material,
         responsible_staff: staff as any,
         qc_checklist: qcChecklist as any,
         contact_name: contactName,
@@ -364,6 +409,20 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         site_address: siteAddress,
         project_name: projectName,
         wo_number: woNumber,
+        final_width: finalWidth === "" ? null : Number(finalWidth),
+        final_height: finalHeight === "" ? null : Number(finalHeight),
+        measurement_unit: measurementUnit,
+        single_or_double_sided: singleDouble,
+        indoor_or_outdoor: indoorOutdoor,
+        illuminated_or_non: illuminated,
+        mounting_method: mountingMethod,
+        installation_surface: installationSurface,
+        fabrication_notes: fabNotes,
+        production_warnings: prodWarnings,
+        internal_status: internalStatus,
+        prepared_by_department: preparedBy,
+        design_review_required: designReviewReq,
+        design_review_completed: designReviewComp,
       } as any).eq("id", order.id);
 
       if (error) throw error;
@@ -373,7 +432,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     } finally {
       setSaving(false);
     }
-  }, [order, materialSpecs, staff, qcChecklist, contactName, contactPhone, contactEmail, siteAddress, projectName, woNumber, toast]);
+  }, [order, materialSpecs, staff, qcChecklist, contactName, contactPhone, contactEmail, siteAddress, projectName, woNumber, toast, finalWidth, finalHeight, measurementUnit, singleDouble, indoorOutdoor, illuminated, mountingMethod, installationSurface, fabNotes, prodWarnings, internalStatus, preparedBy, designReviewReq, designReviewComp]);
 
   const handlePrint = useCallback(async () => {
     if (!order) return;
@@ -399,6 +458,18 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         companyName: company?.name || "MY COMPANY",
         companyLogoUrl: company?.logo_url || null,
         qcSignatureUrl: signatureUrl || null,
+        // Phase 2 additions
+        finalWidth: finalWidth || undefined,
+        finalHeight: finalHeight || undefined,
+        measurementUnit,
+        internalStatus,
+        preparedBy,
+        designReviewReq,
+        designReviewComp,
+        fabNotes,
+        prodWarnings,
+        mountingMethod,
+        installationSurface,
       });
       toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
     } catch (e: any) {
@@ -746,14 +817,112 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
 
               {/* Right side info panels — 40% */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                    Project & Workflow
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", gap: "3px 6px", fontSize: 10 }}>
+                    <span style={{ fontWeight: 600, color: "#555" }}>Status:</span>
+                    <Select value={internalStatus} onValueChange={setInternalStatus}>
+                      <SelectTrigger className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900 font-bold">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Draft">Draft</SelectItem>
+                        <SelectItem value="Waiting for Design Details">Waiting for Design</SelectItem>
+                        <SelectItem value="Ready for Production">Ready for Production</SelectItem>
+                        <SelectItem value="In Production">In Production</SelectItem>
+                        <SelectItem value="Waiting for Materials">Waiting for Materials</SelectItem>
+                        <SelectItem value="On Hold">On Hold</SelectItem>
+                        <SelectItem value="Quality Check">Quality Check</SelectItem>
+                        <SelectItem value="Ready for Install">Ready for Install</SelectItem>
+                        <SelectItem value="Completed">Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <span style={{ fontWeight: 600, color: "#555" }}>Prep By:</span>
+                    <Select value={preparedBy} onValueChange={setPreparedBy}>
+                      <SelectTrigger className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Sales">Sales</SelectItem>
+                        <SelectItem value="Design">Design</SelectItem>
+                        <SelectItem value="Admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <span style={{ fontWeight: 600, color: "#555" }}>Design Rev:</span>
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" checked={designReviewReq} onChange={e => setDesignReviewReq(e.target.checked)} className="w-3 h-3" />
+                        <span className="text-[9px]">Required</span>
+                      </label>
+                      <label className="flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" checked={designReviewComp} onChange={e => setDesignReviewComp(e.target.checked)} className="w-3 h-3" />
+                        <span className="text-[9px]">Completed</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                    Final Dimensions & Type
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+                    <div className="space-y-0.5">
+                      <label className="text-[8px] font-bold text-zinc-400 uppercase">Width</label>
+                      <Input value={finalWidth} onChange={e => setFinalWidth(e.target.value)} className="h-5 text-[10px] border-zinc-300 bg-transparent" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <label className="text-[8px] font-bold text-zinc-400 uppercase">Height</label>
+                      <Input value={finalHeight} onChange={e => setFinalHeight(e.target.value)} className="h-5 text-[10px] border-zinc-300 bg-transparent" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <label className="text-[8px] font-bold text-zinc-400 uppercase">Unit</label>
+                      <Select value={measurementUnit} onValueChange={setMeasurementUnit}>
+                        <SelectTrigger className="h-5 text-[10px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="in">Inches</SelectItem>
+                          <SelectItem value="ft">Feet</SelectItem>
+                          <SelectItem value="cm">cm</SelectItem>
+                          <SelectItem value="m">m</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    <Select value={singleDouble} onValueChange={setSingleDouble}>
+                      <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Single">Single Sided</SelectItem>
+                        <SelectItem value="Double">Double Sided</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={indoorOutdoor} onValueChange={setIndoorOutdoor}>
+                      <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Indoor">Indoor</SelectItem>
+                        <SelectItem value="Outdoor">Outdoor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={illuminated} onValueChange={setIlluminated}>
+                      <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Illuminated">Illuminated</SelectItem>
+                        <SelectItem value="Non-Illuminated">Non-Illuminated</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 {/* Project Details */}
                 <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
                   <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
-                    Project Details
+                    Installation Site
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", gap: "3px 6px", fontSize: 10 }}>
-                    <span style={{ fontWeight: 600, color: "#555" }}>Client:</span>
-                    <span style={{ fontWeight: 700, color: "#1a1a2e" }}>{order.client}</span>
                     <span style={{ fontWeight: 600, color: "#555" }}>Site:</span>
                     <Input
                       value={siteAddress}
@@ -768,19 +937,19 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                       className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
                       placeholder="Contact name"
                     />
-                    <span style={{ fontWeight: 600, color: "#555" }}>Phone:</span>
+                    <span style={{ fontWeight: 600, color: "#555" }}>Surface:</span>
                     <Input
-                      value={contactPhone}
-                      onChange={e => setContactPhone(e.target.value)}
+                      value={installationSurface}
+                      onChange={e => setInstallationSurface(e.target.value)}
                       className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                      placeholder="Phone"
+                      placeholder="Wall, concrete, etc"
                     />
-                    <span style={{ fontWeight: 600, color: "#555" }}>Email:</span>
+                    <span style={{ fontWeight: 600, color: "#555" }}>Method:</span>
                     <Input
-                      value={contactEmail}
-                      onChange={e => setContactEmail(e.target.value)}
+                      value={mountingMethod}
+                      onChange={e => setMountingMethod(e.target.value)}
                       className="h-5 text-[10px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900"
-                      placeholder="Email"
+                      placeholder="Direct, studs, etc"
                     />
                   </div>
                 </div>
@@ -807,19 +976,19 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               </div>
             </div>
 
-            {/* ═══ BOTTOM GRID: Staff + QC ═══ */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {/* ═══ BOTTOM GRID: Staff + QC + Notes ═══ */}
+            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: 10 }}>
               {/* Responsible Staff */}
               <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
-                  Responsible Staff
+                  Production Team
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   {STAFF_ROLES.map(({ key, label }) => {
                     const entry = staff[key as keyof ResponsibleStaff];
                     return (
-                      <div key={key} style={{ display: "grid", gridTemplateColumns: "100px 1fr 70px 24px", gap: 4, alignItems: "center" }}>
-                        <span style={{ fontSize: 9, fontWeight: 600, color: "#555" }}>{label}:</span>
+                      <div key={key} style={{ display: "grid", gridTemplateColumns: "85px 1fr 24px", gap: 4, alignItems: "center" }}>
+                        <span style={{ fontSize: 8, fontWeight: 600, color: "#555" }}>{label}:</span>
                         <Select
                           value={entry.user_id || "none"}
                           onValueChange={v => {
@@ -828,7 +997,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                             updateStaffField(key, "name", op?.name || "");
                           }}
                         >
-                          <SelectTrigger className="h-5 text-[9px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
+                          <SelectTrigger className="h-5 text-[8px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
                             <SelectValue placeholder="Assign..." />
                           </SelectTrigger>
                           <SelectContent>
@@ -836,27 +1005,13 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                             {operators.map(o => <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <Select
-                          value={entry.status}
-                          onValueChange={v => updateStaffField(key, "status", v)}
-                        >
-                          <SelectTrigger className="h-5 text-[8px] border-zinc-300 bg-transparent px-1 py-0 rounded-sm text-zinc-900">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="in_progress">In Progress</SelectItem>
-                            <SelectItem value="done">Done</SelectItem>
-                            <SelectItem value="verified">Verified</SelectItem>
-                          </SelectContent>
-                        </Select>
                         <button
                           onClick={() => updateStaffField(key, "is_verified", !entry.is_verified)}
                           style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                         >
                           {entry.is_verified
-                            ? <CheckSquare size={14} style={{ color: "#16a34a" }} />
-                            : <Square size={14} style={{ color: "#999" }} />
+                            ? <CheckSquare size={12} style={{ color: "#16a34a" }} />
+                            : <Square size={12} style={{ color: "#999" }} />
                           }
                         </button>
                       </div>
@@ -868,31 +1023,55 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               {/* QC Checklist */}
               <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
-                  QC Checklist
+                  QC & Checklist
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   {QC_ITEMS.map(item => (
                     <button
                       key={item.key}
                       onClick={() => toggleQC(item.key)}
                       className="flex items-center gap-2 text-left"
-                      style={{ fontSize: 10 }}
+                      style={{ fontSize: 9 }}
                     >
                       {qcChecklist[item.key as keyof QCChecklist]
-                        ? <CheckSquare size={14} style={{ color: "#16a34a" }} />
-                        : <Square size={14} style={{ color: "#999" }} />
+                        ? <CheckSquare size={13} style={{ color: "#16a34a" }} />
+                        : <Square size={13} style={{ color: "#999" }} />
                       }
-                      <span style={{
-                        color: qcChecklist[item.key as keyof QCChecklist] ? "#16a34a" : "#333",
-                        textDecoration: qcChecklist[item.key as keyof QCChecklist] ? "line-through" : "none",
-                        fontWeight: 500,
-                      }}>
-                        {item.label}
-                      </span>
+                      <span style={{ color: "#333", fontWeight: 500 }}>{item.label}</span>
                     </button>
                   ))}
+                  <div className="mt-2 pt-2 border-t border-zinc-100">
+                     <label className="text-[8px] font-bold text-zinc-400 uppercase block mb-1">Warnings</label>
+                     <Textarea 
+                       value={prodWarnings} 
+                       onChange={e => setProdWarnings(e.target.value)} 
+                       placeholder="Critical warnings..."
+                       className="min-h-[40px] text-[9px] p-1.5 border-zinc-300 bg-transparent text-red-600 font-bold"
+                     />
+                  </div>
+                </div>
+              </div>
 
-                  {/* Digital Signature Pad */}
+              {/* Fabrication Notes */}
+              <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px" }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                  Workshop Notes
+                </div>
+                <Textarea 
+                  value={fabNotes} 
+                  onChange={e => setFabNotes(e.target.value)} 
+                  placeholder="Additional construction or fabrication instructions..."
+                  className="min-h-[140px] text-[10px] p-2 border-zinc-300 bg-transparent"
+                />
+              </div>
+            </div>
+
+            <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px", marginTop: 10 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                Quality Control Signature
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 10 }}>
+                <div>
                   <QCSignaturePad
                     orderId={order.id}
                     companyId={order.companyId}
@@ -910,23 +1089,20 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                       }));
                     }}
                   />
-
-                  {/* Signature traceability info */}
                   {signatureUrl && qcSignerName && (
-                    <div style={{ fontSize: 9, color: "#555", marginTop: 2, fontStyle: "italic" }}>
+                    <div style={{ fontSize: 8, color: "#555", marginTop: 2, fontStyle: "italic" }}>
                       Signed by {qcSignerName} · {qcSignedAt ? new Date(qcSignedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—"}
                     </div>
                   )}
-
-                  {/* Status indicator */}
-                  {allQcPassed && (
-                    <div className="flex items-center gap-1.5" style={{ color: "#16a34a", fontSize: 10, fontWeight: 700, marginTop: 2 }}>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                  {allQcPassed ? (
+                    <div className="flex items-center gap-1.5" style={{ color: "#16a34a", fontSize: 10, fontWeight: 700 }}>
                       <ClipboardCheck size={14} /> ALL QC CHECKS PASSED
                     </div>
-                  )}
-                  {!allQcPassed && (
-                    <div className="flex items-center gap-1.5" style={{ color: "#d97706", fontSize: 9, marginTop: 2 }}>
-                      <AlertCircle size={12} /> Incomplete — order cannot be closed
+                  ) : (
+                    <div className="flex items-center gap-1.5" style={{ color: "#d97706", fontSize: 9 }}>
+                      <AlertCircle size={12} /> Pending QC completion
                     </div>
                   )}
                 </div>

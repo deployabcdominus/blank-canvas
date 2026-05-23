@@ -29,6 +29,18 @@ interface PdfData {
   companyName?: string;
   companyLogoUrl?: string | null;
   qcSignatureUrl?: string | null;
+  // Phase 2: Technical fields
+  finalWidth?: number | string;
+  finalHeight?: number | string;
+  measurementUnit?: string;
+  internalStatus?: string;
+  preparedBy?: string;
+  designReviewReq?: boolean;
+  designReviewComp?: boolean;
+  fabNotes?: string;
+  prodWarnings?: string;
+  mountingMethod?: string;
+  installationSurface?: string;
 }
 
 /* ── Color Palette ── */
@@ -223,7 +235,14 @@ export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
   ry = kvRow(doc, "Contact:", data.contactName, rightX + 2, ry);
   ry = kvRow(doc, "Phone:", data.contactPhone, rightX + 2, ry);
   ry = kvRow(doc, "Email:", data.contactEmail, rightX + 2, ry);
-  ry += 2;
+  ry += 1.5;
+  ry = sectionHeader(doc, "Build Workflow", rightX, ry, rightW);
+  ry = kvRow(doc, "Prep By:", data.preparedBy || "Sales", rightX + 2, ry);
+  ry = kvRow(doc, "Design Rev:", (data.designReviewReq ? "Required " : "") + (data.designReviewComp ? "✓" : "Pending"), rightX + 2, ry);
+  ry = kvRow(doc, "Dims:", `${data.finalWidth || "?"} x ${data.finalHeight || "?"} ${data.measurementUnit || "in"}`, rightX + 2, ry);
+  ry = kvRow(doc, "Surface:", data.installationSurface || "—", rightX + 2, ry);
+  ry = kvRow(doc, "Mounting:", data.mountingMethod || "—", rightX + 2, ry);
+  ry += 1.5;
 
   // Technical Specs / Materials
   ry = sectionHeader(doc, "Technical Specifications / Materials", rightX, ry, rightW);
@@ -234,6 +253,10 @@ export async function generateProductionSheetPDF(data: PdfData): Promise<void> {
     { label: "TRIM CAP:", key: "trim_cap_spec" },
     { label: "LEDs:", key: "led_mfg_spec" },
     { label: "PWR SUPPLY:", key: "power_supply_spec" },
+    { label: "SUBSTRATE:", key: "substrate_material" },
+    { label: "FRAME:", key: "frame_material" },
+    { label: "VINYL:", key: "vinyl_brand" },
+    { label: "PRINT:", key: "print_material" },
   ];
   matFields.forEach(f => {
     ry = kvRow(doc, f.label, data.materialSpecs[f.key] || "", rightX + 2, ry, 24);

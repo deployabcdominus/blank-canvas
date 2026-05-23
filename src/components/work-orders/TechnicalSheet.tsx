@@ -34,10 +34,10 @@ interface FieldDef {
 
 const INDUSTRY_FIELDS: Record<string, FieldDef[]> = {
   "Señalética y Publicidad": [
-    { key: "largo", label: "Largo", icon: Ruler, type: "number", placeholder: "0.00", unit: "m" },
-    { key: "ancho", label: "Ancho", icon: ArrowUpDown, type: "number", placeholder: "0.00", unit: "m" },
-    { key: "profundidad", label: "Profundidad", icon: Box, type: "number", placeholder: "0.00", unit: "m" },
-    { key: "material", label: "Material", icon: Hammer, type: "text", placeholder: "Ej: Acrílico, ACM, Vinil" },
+    { key: "final_width", label: "Final Width", icon: Ruler, type: "number", placeholder: "0.00", unit: "in" },
+    { key: "final_height", label: "Final Height", icon: ArrowUpDown, type: "number", placeholder: "0.00", unit: "in" },
+    { key: "substrate", label: "Substrate", icon: Box, type: "text", placeholder: "Ej: Aluminum, PVC" },
+    { key: "face_material", label: "Face Material", icon: Hammer, type: "text", placeholder: "Ej: Acrylic 3/16" },
   ],
   "Impresión / Producción": [
     { key: "largo", label: "Largo", icon: Ruler, type: "number", placeholder: "0.00", unit: "m" },
