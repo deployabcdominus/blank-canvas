@@ -5,6 +5,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { HudCard } from "@/components/dashboard/HudCard";
 import { HudPipeline } from "@/components/dashboard/HudPipeline";
+import { KanbanColumn } from "@/components/PipelineKanban";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
@@ -31,6 +32,7 @@ const WidgetLoader = () => (
     <Loader2 className="w-6 h-6 text-primary/40 animate-spin" />
   </div>
 );
+
 
 
 const Dashboard = () => {
