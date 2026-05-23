@@ -106,6 +106,16 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         <Badge variant="outline" className={`${statusColor} shrink-0 text-[11px]`}>
           <span className="flex items-center gap-1">{statusIcon}{getStatusLabel(proposal.status)}</span>
         </Badge>
+        {proposal.clientApproved && (
+           <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] ml-1">
+             OK
+           </Badge>
+        )}
+        {proposal.approvedForProduction && (
+           <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[9px] ml-1">
+             Prod
+           </Badge>
+        )}
       </div>
 
       {/* Project */}
