@@ -1054,7 +1054,12 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               </div>
             </div>
 
-                  {/* Digital Signature Pad */}
+            <div style={{ border: "1px solid #e5e5e5", borderRadius: 6, padding: "8px 10px", marginTop: 10 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
+                Quality Control Signature
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 10 }}>
+                <div>
                   <QCSignaturePad
                     orderId={order.id}
                     companyId={order.companyId}
@@ -1072,23 +1077,20 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                       }));
                     }}
                   />
-
-                  {/* Signature traceability info */}
                   {signatureUrl && qcSignerName && (
-                    <div style={{ fontSize: 9, color: "#555", marginTop: 2, fontStyle: "italic" }}>
+                    <div style={{ fontSize: 8, color: "#555", marginTop: 2, fontStyle: "italic" }}>
                       Signed by {qcSignerName} · {qcSignedAt ? new Date(qcSignedAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—"}
                     </div>
                   )}
-
-                  {/* Status indicator */}
-                  {allQcPassed && (
-                    <div className="flex items-center gap-1.5" style={{ color: "#16a34a", fontSize: 10, fontWeight: 700, marginTop: 2 }}>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                  {allQcPassed ? (
+                    <div className="flex items-center gap-1.5" style={{ color: "#16a34a", fontSize: 10, fontWeight: 700 }}>
                       <ClipboardCheck size={14} /> ALL QC CHECKS PASSED
                     </div>
-                  )}
-                  {!allQcPassed && (
-                    <div className="flex items-center gap-1.5" style={{ color: "#d97706", fontSize: 9, marginTop: 2 }}>
-                      <AlertCircle size={12} /> Incomplete — order cannot be closed
+                  ) : (
+                    <div className="flex items-center gap-1.5" style={{ color: "#d97706", fontSize: 9 }}>
+                      <AlertCircle size={12} /> Pending QC completion
                     </div>
                   )}
                 </div>
