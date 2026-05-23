@@ -108,6 +108,7 @@ export interface WorkOrder {
   closed_by_user_id?: string;
   closing_notes?: string;
   closeout_checklist_completed?: boolean;
+  closing_checklist?: Record<string, boolean>;
 }
 
 // Backward-compatible alias
