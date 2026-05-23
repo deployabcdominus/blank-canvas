@@ -1365,7 +1365,9 @@ export const en = {
       },
     },
     filters: {
+      filter: "Filters",
       searchPlaceholder: "Search by client, project...",
+
       sort: {
         newest: "Newest",
         oldest: "Oldest",

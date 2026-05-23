@@ -127,6 +127,7 @@ export function ProductionControlBar({
           <Filter className="w-3.5 h-3.5" />
           {t.production.filters.filter}
 
+
           {hasFilters && (
             <Badge className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px] bg-primary text-primary-foreground">
               {statusFilter.length + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0)}
