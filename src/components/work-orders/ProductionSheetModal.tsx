@@ -79,12 +79,17 @@ const QC_ITEMS = [
 ] as const;
 
 const MATERIAL_FIELDS = [
+  { key: "substrate_material", label: "SUBSTRATE" },
+  { key: "frame_material", label: "FRAME" },
   { key: "face_material_spec", label: "FACE" },
   { key: "returns_material_spec", label: "RETURNS" },
   { key: "backs_material_spec", label: "BACKS" },
   { key: "trim_cap_spec", label: "TRIM CAP" },
   { key: "led_mfg_spec", label: "LEDs" },
   { key: "power_supply_spec", label: "POWER SUPPLY" },
+  { key: "vinyl_brand", label: "VINYL BRAND" },
+  { key: "vinyl_color", label: "VINYL COLOR" },
+  { key: "print_material", label: "PRINT MEDIA" },
 ] as const;
 
 const STATUS_COLORS: Record<string, string> = {
@@ -154,7 +159,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [editNotes, setEditNotes] = useState("");
 
   // Form state
-  const [materialSpecs, setMaterialSpecs] = useState<MaterialSpecs>(defaultMaterialSpecs);
+  const [materialSpecs, setMaterialSpecs] = useState<any>(defaultMaterialSpecs);
   const [staff, setStaff] = useState<ResponsibleStaff>(defaultStaff);
   const [qcChecklist, setQcChecklist] = useState<QCChecklist>(defaultQC);
   const [contactName, setContactName] = useState("");
@@ -162,6 +167,21 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
   const [contactEmail, setContactEmail] = useState("");
   const [siteAddress, setSiteAddress] = useState("");
   const [projectName, setProjectName] = useState("");
+  // Phase 2 technical fields
+  const [finalWidth, setFinalWidth] = useState<number | string>("");
+  const [finalHeight, setFinalHeight] = useState<number | string>("");
+  const [measurementUnit, setMeasurementUnit] = useState("in");
+  const [singleDouble, setSingleDouble] = useState("Single");
+  const [indoorOutdoor, setIndoorOutdoor] = useState("Outdoor");
+  const [illuminated, setIlluminated] = useState("Non-Illuminated");
+  const [mountingMethod, setMountingMethod] = useState("");
+  const [installationSurface, setInstallationSurface] = useState("");
+  const [fabNotes, setFabNotes] = useState("");
+  const [prodWarnings, setProdWarnings] = useState("");
+  const [internalStatus, setInternalStatus] = useState("Ready for Production");
+  const [preparedBy, setPreparedBy] = useState("Sales");
+  const [designReviewReq, setDesignReviewReq] = useState(false);
+  const [designReviewComp, setDesignReviewComp] = useState(false);
 
   // Load operators
   useEffect(() => {
