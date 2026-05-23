@@ -1,22 +1,20 @@
-import { motion } from "framer-motion";
+import { useMemo } from "react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { useLeads } from "@/contexts/LeadsContext";
 import { useProposals } from "@/contexts/ProposalsContext";
 import { useWorkOrders } from "@/contexts/WorkOrdersContext";
-import { useInstallations } from "@/contexts/InstallationsContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { FileText, TrendingUp, Users, CheckCircle2, BarChart3, PieChart as PieChartIcon } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { FileText, TrendingUp, Users, CheckCircle2, BarChart3 } from "lucide-react";
 
 export default function Reports() {
   const { leads } = useLeads();
   const { proposals } = useProposals();
   const { orders } = useWorkOrders();
-  const { installations } = useInstallations();
-  const { isAdmin, canViewFinancials } = useUserRole();
+  const { isAdmin } = useUserRole();
   const { t } = useLanguage();
 
   const salesByPersonData = useMemo(() => {
@@ -57,8 +55,6 @@ export default function Reports() {
     <PageTransition>
       <ResponsiveLayout title="Operational Reports" subtitle="Analyze your business performance">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          
-          {/* Sales Performance */}
           <Card className="glass-card border-white/10">
             <CardHeader className="flex flex-row items-center gap-3">
               <TrendingUp className="w-5 h-5 text-violet-400" />
@@ -79,7 +75,6 @@ export default function Reports() {
             </CardContent>
           </Card>
 
-          {/* Production Status */}
           <Card className="glass-card border-white/10">
             <CardHeader className="flex flex-row items-center gap-3">
               <BarChart3 className="w-5 h-5 text-amber-400" />
@@ -117,12 +112,11 @@ export default function Reports() {
               </div>
             </CardContent>
           </Card>
-
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <MetricSmall label="Total Leads" value={leads.length} icon={Users} color="text-violet-400" />
-          <MetricSmall label="Active Proposals" value={proposals.filter(p => p.status === 'Enviada externamente').length} icon={FileText} color="text-blue-400" />
+          <MetricSmall label="Active Proposals" value={proposals.filter(p => (p.status as string) === 'Enviada externamente').length} icon={FileText} color="text-blue-400" />
           <MetricSmall label="Completed Jobs" value={orders.filter(o => o.closing_status === 'Closed').length} icon={CheckCircle2} color="text-emerald-400" />
           <MetricSmall label="Conversion Rate" value={`${leads.length ? Math.round((proposals.filter(p => p.status === 'Aprobada').length / leads.length) * 100) : 0}%`} icon={TrendingUp} color="text-pink-400" />
         </div>
@@ -142,5 +136,3 @@ function MetricSmall({ label, value, icon: Icon, color }: any) {
     </Card>
   );
 }
-
-import { useMemo } from "react";

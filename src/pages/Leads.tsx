@@ -38,8 +38,7 @@ const Leads = () => {
   const breakpoint = useBreakpoint();
   const { companyId, isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const { leads, isLoading, createLeadMutation, deleteLeadMutation, deleteLeadsMutation, clearLeadsMutation } = useLeadsQuery(companyId);
-  const { proposals } = useProposals();
-  const { addProposal } = useProposals();
+  const { proposals, addProposal } = useProposals();
   const limits = usePlanLimits();
 
   const { t } = useLanguage();
@@ -109,7 +108,7 @@ const Leads = () => {
       approvedAt: null,
       mockupUrl: null,
       owner_user_id: user?.id,
-    } as any);
+    });
 
     toast({ title: t.leads.toasts.proposalCreated, description: t.leads.toasts.proposalCreatedDesc });
     setTimeout(() => navigate('/proposals'), 1000);
