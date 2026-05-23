@@ -19,11 +19,21 @@ import { useLanguage } from "@/i18n/LanguageContext";
 const makeLeadFormSchema = (isEn: boolean) => z.object({
   name: z.string().min(2, isEn ? "Name must be at least 2 characters" : "El nombre debe tener al menos 2 caracteres"),
   company: z.string().min(2, isEn ? "Company name must be at least 2 characters" : "El nombre de la empresa debe tener al menos 2 caracteres"),
-  phone: z.string().min(10, isEn ? "Phone must be at least 10 digits" : "El teléfono debe tener al menos 10 dígitos"),
-  email: z.string().email(isEn ? "Email must have a valid format" : "El email debe tener un formato válido"),
-  signType: z.string().min(1, isEn ? "Select a service type" : "Seleccione un tipo de servicio"),
-  address: z.string().min(10, isEn ? "Address must be at least 10 characters" : "La dirección debe tener al menos 10 caracteres"),
-  website: z.string().url(isEn ? "Website must have a valid format" : "El sitio web debe tener un formato válido").optional().or(z.literal(""))
+  phone: z.string().optional(),
+  email: z.string().email(isEn ? "Email must have a valid format" : "El email debe tener un formato válido").optional().or(z.literal("")),
+  signType: z.string().optional(),
+  address: z.string().optional(),
+  website: z.string().url(isEn ? "Website must have a valid format" : "El sitio web debe tener un formato válido").optional().or(z.literal("")),
+  leadSource: z.string().optional(),
+  brokerName: z.string().optional(),
+  brokerPhone: z.string().optional(),
+  brokerEmail: z.string().optional(),
+  brokerNotes: z.string().optional(),
+  informalNotes: z.string().optional(),
+  agreedPrice: z.string().optional(),
+  intakeQuality: z.string().optional(),
+  followUpRequired: z.boolean().default(false),
+  followUpNotes: z.string().optional(),
 });
 
 type LeadFormData = z.infer<ReturnType<typeof makeLeadFormSchema>>;
@@ -51,8 +61,28 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
 
   const form = useForm<LeadFormData>({
     resolver: zodResolver(leadFormSchema),
-    defaultValues: { name: "", company: "", phone: "", email: "", signType: "", address: "", website: "" }
+    defaultValues: { 
+      name: "", 
+      company: "", 
+      phone: "", 
+      email: "", 
+      signType: "", 
+      address: "", 
+      website: "",
+      leadSource: "",
+      brokerName: "",
+      brokerPhone: "",
+      brokerEmail: "",
+      brokerNotes: "",
+      informalNotes: "",
+      agreedPrice: "",
+      intakeQuality: "partial",
+      followUpRequired: false,
+      followUpNotes: ""
+    }
   });
+
+  const watchSource = form.watch("leadSource");
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
@@ -103,7 +133,34 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
           .getPublicUrl(fileName);
         logoUrl = urlData.publicUrl;
       }
-      await onAddLead({ ...data, logoUrl });
+      
+      const leadData = {
+        name: data.name,
+        company: data.company,
+        service: data.signType || "",
+        status: "Nuevo",
+        contact: {
+          phone: data.phone || "",
+          email: data.email || "",
+          location: data.address || ""
+        },
+        value: data.agreedPrice || "0",
+        daysAgo: 0,
+        website: data.website,
+        logoUrl: logoUrl,
+        leadSource: data.leadSource,
+        brokerName: data.brokerName,
+        brokerPhone: data.brokerPhone,
+        brokerEmail: data.brokerEmail,
+        brokerNotes: data.brokerNotes,
+        informalNotes: data.informalNotes,
+        agreedPrice: data.agreedPrice ? parseFloat(data.agreedPrice) : undefined,
+        intakeQuality: data.intakeQuality,
+        followUpRequired: data.followUpRequired,
+        followUpNotes: data.followUpNotes
+      };
+
+      await onAddLead(leadData as any);
       form.reset();
       removeLogo();
       onClose();
@@ -132,42 +189,204 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
         </DialogHeader>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField control={form.control} name="name" render={({ field }) => (
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Basic Contact Section */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.basicContactSection}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="name" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.nameLabel}</FormLabel>
+                    <FormControl><Input placeholder={t.addLeadModal.namePlaceholder} className="min-h-[44px]" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="company" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.companyLabel}</FormLabel>
+                    <FormControl><Input placeholder={t.addLeadModal.companyPlaceholder} className="min-h-[44px]" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="phone" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.phoneLabel}</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder={t.addLeadModal.phonePlaceholder} className="min-h-[44px]" {...field}
+                        onChange={(e) => { field.onChange(formatPhone(e.target.value)); }} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="email" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.emailLabel}</FormLabel>
+                    <FormControl><Input type="email" placeholder={t.addLeadModal.emailPlaceholder} className="min-h-[44px]" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </div>
+              
+              <FormField control={form.control} name="address" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t.addLeadModal.nameLabel}</FormLabel>
-                  <FormControl><Input placeholder={t.addLeadModal.namePlaceholder} className="min-h-[44px]" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="company" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t.addLeadModal.companyLabel}</FormLabel>
-                  <FormControl><Input placeholder={t.addLeadModal.companyPlaceholder} className="min-h-[44px]" {...field} /></FormControl>
+                  <FormLabel>{t.addLeadModal.addressLabel}</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder={t.addLeadModal.addressPlaceholder} className="min-h-[80px] resize-none" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField control={form.control} name="phone" render={({ field }) => (
+            {/* Lead Source Section */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.leadSourceSection}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="leadSource" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.leadSourceLabel}</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="min-h-[44px]">
+                          <SelectValue placeholder={t.addLeadModal.leadSourcePlaceholder} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.entries(t.addLeadModal.sources).map(([key, label]) => (
+                          <SelectItem key={key} value={label}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                
+                <FormField control={form.control} name="signType" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.serviceLabel}</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="min-h-[44px]">
+                          <SelectValue placeholder={t.addLeadModal.servicePlaceholder} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {resolvedServices.map((type) => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </div>
+            </div>
+
+            {/* Broker Information Section (Conditional) */}
+            {(watchSource === "Broker" || watchSource === t.addLeadModal.sources.broker) && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.brokerSection}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="brokerName" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.addLeadModal.brokerNameLabel}</FormLabel>
+                      <FormControl><Input placeholder="..." className="min-h-[44px]" {...field} /></FormControl>
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="brokerPhone" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t.addLeadModal.brokerPhoneLabel}</FormLabel>
+                      <FormControl><Input type="tel" placeholder="..." className="min-h-[44px]" {...field} /></FormControl>
+                    </FormItem>
+                  )} />
+                </div>
+                <FormField control={form.control} name="brokerEmail" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.brokerEmailLabel}</FormLabel>
+                    <FormControl><Input type="email" placeholder="..." className="min-h-[44px]" {...field} /></FormControl>
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="brokerNotes" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.brokerNotesLabel}</FormLabel>
+                    <FormControl><Textarea placeholder="..." className="min-h-[60px]" {...field} /></FormControl>
+                  </FormItem>
+                )} />
+              </div>
+            )}
+
+            {/* Project Notes Section */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.projectNotesSection}</h4>
+              <FormField control={form.control} name="informalNotes" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t.addLeadModal.phoneLabel}</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder={t.addLeadModal.phonePlaceholder} className="min-h-[44px]" {...field}
-                      onChange={(e) => { field.onChange(formatPhone(e.target.value)); }} />
-                  </FormControl>
-                  <FormMessage />
+                  <FormLabel>{t.addLeadModal.informalNotesLabel}</FormLabel>
+                  <FormControl><Textarea placeholder="..." className="min-h-[80px]" {...field} /></FormControl>
                 </FormItem>
               )} />
-              <FormField control={form.control} name="email" render={({ field }) => (
+            </div>
+
+            {/* Price Agreement Section */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.priceAgreementSection}</h4>
+              <FormField control={form.control} name="agreedPrice" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t.addLeadModal.emailLabel}</FormLabel>
-                  <FormControl><Input type="email" placeholder={t.addLeadModal.emailPlaceholder} className="min-h-[44px]" {...field} /></FormControl>
-                  <FormMessage />
+                  <FormLabel>{t.addLeadModal.agreedPriceLabel}</FormLabel>
+                  <FormControl><Input type="number" step="0.01" placeholder="0.00" className="min-h-[44px]" {...field} /></FormControl>
                 </FormItem>
               )} />
+            </div>
+
+            {/* Assignment & Quality Section */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.assignmentSection}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="intakeQuality" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t.addLeadModal.intakeQualityLabel}</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="min-h-[44px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.entries(t.addLeadModal.intakeQualityOptions).map(([key, label]) => (
+                          <SelectItem key={key} value={key}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )} />
+              </div>
+              
+              <div className="flex items-center space-x-2 pt-2">
+                <FormField control={form.control} name="followUpRequired" render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <input 
+                        type="checkbox" 
+                        checked={field.value} 
+                        onChange={field.onChange} 
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary mt-1"
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">{t.addLeadModal.followUpRequiredLabel}</FormLabel>
+                  </FormItem>
+                )} />
+              </div>
+
+              {form.watch("followUpRequired") && (
+                <FormField control={form.control} name="followUpNotes" render={({ field }) => (
+                  <FormItem className="animate-in fade-in slide-in-from-top-2 duration-300">
+                    <FormLabel>{t.addLeadModal.followUpNotesLabel}</FormLabel>
+                    <FormControl><Textarea placeholder="..." className="min-h-[60px]" {...field} /></FormControl>
+                  </FormItem>
+                )} />
+              )}
             </div>
 
             {/* Logo upload */}
@@ -195,35 +414,6 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
               </div>
             </div>
 
-            <FormField control={form.control} name="signType" render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t.addLeadModal.serviceLabel}</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="min-h-[44px]">
-                      <SelectValue placeholder={t.addLeadModal.servicePlaceholder} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {resolvedServices.map((type) => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )} />
-
-            <FormField control={form.control} name="address" render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t.addLeadModal.addressLabel}</FormLabel>
-                <FormControl>
-                  <Textarea placeholder={t.addLeadModal.addressPlaceholder} className="min-h-[80px] resize-none" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-
             <FormField control={form.control} name="website" render={({ field }) => (
               <FormItem>
                 <FormLabel>{t.addLeadModal.websiteLabel}</FormLabel>
@@ -232,7 +422,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
               </FormItem>
             )} />
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t mt-4">
               <Button type="button" variant="outline" onClick={handleClose} className="min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
                 {t.addLeadModal.cancel}
               </Button>
