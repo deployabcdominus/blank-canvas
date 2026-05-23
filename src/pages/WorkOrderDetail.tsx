@@ -513,7 +513,10 @@ export default function WorkOrderDetail() {
               {/* Status dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 ${currentStatus.bg} ${currentStatus.text}`}>
+                  <button 
+                    disabled={isClosed}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 ${currentStatus.bg} ${currentStatus.text} disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
                     {currentStatus.label}
                   </button>
                 </DropdownMenuTrigger>
@@ -527,7 +530,13 @@ export default function WorkOrderDetail() {
               </DropdownMenu>
 
               {!editMode ? (
-                <Button variant="outline" size="sm" onClick={enterEdit} className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={enterEdit} 
+                  disabled={isClosed}
+                  className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10 disabled:opacity-50"
+                >
                   <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
                 </Button>
               ) : (
@@ -1143,6 +1152,7 @@ export default function WorkOrderDetail() {
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
                   onBlur={handleNotesBlur}
+                  disabled={isClosed}
                   placeholder="Add notes about this work order..."
                   className="min-h-[100px] text-sm"
                 />
