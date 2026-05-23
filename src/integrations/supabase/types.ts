@@ -439,15 +439,26 @@ export type Database = {
       }
       leads: {
         Row: {
+          agreed_price: number | null
           assigned_to_user_id: string | null
+          broker_email: string | null
+          broker_name: string | null
+          broker_notes: string | null
+          broker_phone: string | null
           client_id: string | null
           company: string | null
           company_id: string
           created_at: string
+          created_by_role: string | null
           created_by_user_id: string | null
           deleted_at: string | null
           email: string | null
+          follow_up_notes: string | null
+          follow_up_required: boolean | null
           id: string
+          informal_notes: string | null
+          intake_quality: string | null
+          lead_source: string | null
           location: string | null
           logo_url: string | null
           name: string
@@ -462,15 +473,26 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          agreed_price?: number | null
           assigned_to_user_id?: string | null
+          broker_email?: string | null
+          broker_name?: string | null
+          broker_notes?: string | null
+          broker_phone?: string | null
           client_id?: string | null
           company?: string | null
           company_id: string
           created_at?: string
+          created_by_role?: string | null
           created_by_user_id?: string | null
           deleted_at?: string | null
           email?: string | null
+          follow_up_notes?: string | null
+          follow_up_required?: boolean | null
           id?: string
+          informal_notes?: string | null
+          intake_quality?: string | null
+          lead_source?: string | null
           location?: string | null
           logo_url?: string | null
           name: string
@@ -485,15 +507,26 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          agreed_price?: number | null
           assigned_to_user_id?: string | null
+          broker_email?: string | null
+          broker_name?: string | null
+          broker_notes?: string | null
+          broker_phone?: string | null
           client_id?: string | null
           company?: string | null
           company_id?: string
           created_at?: string
+          created_by_role?: string | null
           created_by_user_id?: string | null
           deleted_at?: string | null
           email?: string | null
+          follow_up_notes?: string | null
+          follow_up_required?: boolean | null
           id?: string
+          informal_notes?: string | null
+          intake_quality?: string | null
+          lead_source?: string | null
           location?: string | null
           logo_url?: string | null
           name?: string
@@ -1164,20 +1197,32 @@ export type Database = {
       }
       proposals: {
         Row: {
+          admin_override_approval: boolean | null
+          admin_override_by: string | null
+          admin_override_reason: string | null
           approval_token: string | null
           approved_at: string | null
+          approved_for_production: boolean | null
           approved_total: number | null
           client: string
+          client_approval_date: string | null
+          client_approved: boolean | null
           company_id: string | null
           created_at: string
           description: string | null
+          external_sent_reference: string | null
           id: string
+          initial_payment_amount: number | null
+          initial_payment_received: boolean | null
+          initial_payment_required: boolean | null
           lead_id: string | null
           mockup_url: string | null
           owner_user_id: string | null
           project: string | null
           sent_date: string | null
           sent_method: string | null
+          sent_notes: string | null
+          sent_via: string | null
           signature_data: string | null
           signer_ip: string | null
           signer_name: string | null
@@ -1188,20 +1233,32 @@ export type Database = {
           value: number | null
         }
         Insert: {
+          admin_override_approval?: boolean | null
+          admin_override_by?: string | null
+          admin_override_reason?: string | null
           approval_token?: string | null
           approved_at?: string | null
+          approved_for_production?: boolean | null
           approved_total?: number | null
           client: string
+          client_approval_date?: string | null
+          client_approved?: boolean | null
           company_id?: string | null
           created_at?: string
           description?: string | null
+          external_sent_reference?: string | null
           id?: string
+          initial_payment_amount?: number | null
+          initial_payment_received?: boolean | null
+          initial_payment_required?: boolean | null
           lead_id?: string | null
           mockup_url?: string | null
           owner_user_id?: string | null
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null
+          sent_notes?: string | null
+          sent_via?: string | null
           signature_data?: string | null
           signer_ip?: string | null
           signer_name?: string | null
@@ -1212,20 +1269,32 @@ export type Database = {
           value?: number | null
         }
         Update: {
+          admin_override_approval?: boolean | null
+          admin_override_by?: string | null
+          admin_override_reason?: string | null
           approval_token?: string | null
           approved_at?: string | null
+          approved_for_production?: boolean | null
           approved_total?: number | null
           client?: string
+          client_approval_date?: string | null
+          client_approved?: boolean | null
           company_id?: string | null
           created_at?: string
           description?: string | null
+          external_sent_reference?: string | null
           id?: string
+          initial_payment_amount?: number | null
+          initial_payment_received?: boolean | null
+          initial_payment_required?: boolean | null
           lead_id?: string | null
           mockup_url?: string | null
           owner_user_id?: string | null
           project?: string | null
           sent_date?: string | null
           sent_method?: string | null
+          sent_notes?: string | null
+          sent_via?: string | null
           signature_data?: string | null
           signer_ip?: string | null
           signer_name?: string | null
