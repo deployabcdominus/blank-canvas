@@ -117,12 +117,9 @@ const Invite = () => {
   };
 
   const handleGoToLogin = () => {
-    // Preserve token for post-login redirect
-    sessionStorage.setItem("pendingInviteToken", token || "");
-    localStorage.setItem("invite_token", token || "");
-    localStorage.setItem("invite_email", invitation?.email || "");
     navigate(`/login?invite=${token}`);
   };
+
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
