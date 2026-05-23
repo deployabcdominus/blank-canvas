@@ -22,7 +22,7 @@ export default function Reports() {
   const salesByPersonData = useMemo(() => {
     const people: Record<string, { name: string, value: number, count: number }> = {};
     proposals.filter(p => p.status === "Aprobada").forEach(p => {
-      const name = p.owner_user_id || "Unassigned"; // In real app we would join with profiles
+      const name = (p as any).owner_user_id || "Unassigned"; // In real app we would join with profiles
       if (!people[name]) people[name] = { name, value: 0, count: 0 };
       people[name].value += Number(p.value) || 0;
       people[name].count += 1;
@@ -122,7 +122,7 @@ export default function Reports() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <MetricSmall label="Total Leads" value={leads.length} icon={Users} color="text-violet-400" />
-          <MetricSmall label="Active Proposals" value={proposals.filter(p => p.status === 'Enviada').length} icon={FileText} color="text-blue-400" />
+          <MetricSmall label="Active Proposals" value={proposals.filter(p => p.status === 'Enviada externamente').length} icon={FileText} color="text-blue-400" />
           <MetricSmall label="Completed Jobs" value={orders.filter(o => o.closing_status === 'Closed').length} icon={CheckCircle2} color="text-emerald-400" />
           <MetricSmall label="Conversion Rate" value={`${leads.length ? Math.round((proposals.filter(p => p.status === 'Aprobada').length / leads.length) * 100) : 0}%`} icon={TrendingUp} color="text-pink-400" />
         </div>
