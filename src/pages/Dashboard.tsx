@@ -15,9 +15,10 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { isThisMonth } from "date-fns";
-import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { isThisMonth, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Loader2, DollarSign, TrendingUp } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
+import { AttentionNeededPanel } from "@/components/dashboard/AttentionNeededPanel";
 
 // Lazy-loaded heavy components
 const RevenueChart = lazy(() => import("@/components/dashboard/RevenueChart").then(m => ({ default: m.RevenueChart })));
@@ -52,23 +53,32 @@ const Dashboard = () => {
 
 
   const stats = useMemo(() => {
-    const activeLeads = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
-    const inProgress = orders.filter(o => ["Pendiente", "En Producción", "QC", "En Progreso"].includes(o.status)).length;
-    const awaitingDelivery = orders.filter(o => o.status === "Listo").length;
-    const completedThisMonth = orders.filter(o => {
-      if (o.status === "Instalado" && o.startDate) {
-        try { return isThisMonth(new Date(o.startDate)); } catch { return false; }
-      }
-      return false;
-    }).length;
+    const activeLeadsCount = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
+    const leadsFollowUpCount = leads.filter(l => l.followUpRequired).length;
+    const inProductionCount = orders.filter(o => ["En Producción", "En Progreso", "In Production"].includes(o.status || o.internal_status)).length;
+    const readyForInstallCount = orders.filter(o => o.status === "Completada" || o.internal_status === "Ready for Install").length;
+    const waitingForAcceptanceCount = orders.filter(o => o.closing_status === "Waiting for Client Acceptance").length;
+    
+    const now = new Date();
+    const start = startOfMonth(now);
+    const end = endOfMonth(now);
+    const closedThisMonthCount = orders.filter(o => o.closing_status === "Closed" && o.closed_at && isWithinInterval(new Date(o.closed_at), { start, end })).length;
+
+    const totalEstimatedRevenueVal = proposals.reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
+    const approvedProposalValueVal = proposals.filter((p: any) => p.status === "Aprobada").reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
+    const pendingBalanceVal = orders.reduce((acc: number, o: any) => acc + (Number(o.final_balance_due) || 0), 0);
 
     return [
-      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: t.dashboard.noProposal, value: activeLeads, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "work-orders" as KanbanColumn, label: t.dashboard.inProgress, desc: t.dashboard.ordersInProgress, value: inProgress, icon: ClipboardList, accent: "hud-amber", delta: 100, sparkline: [0, 0, 0, 0, 1, 0, 1] },
-      { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${leadsFollowUpCount} need follow-up`, value: activeLeadsCount, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "production" as KanbanColumn, label: "In Production", desc: `${inProductionCount} orders active`, value: inProductionCount, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
+      { key: "install" as KanbanColumn, label: "Ready to Install", desc: `${readyForInstallCount} pending schedule`, value: readyForInstallCount, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "closed" as KanbanColumn, label: "Closed MTD", desc: "Successfully completed", value: closedThisMonthCount, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "revenue" as any, label: "Total Estimated", desc: "Pipeline value", value: totalEstimatedRevenueVal, icon: TrendingUp, accent: "hud-indigo", isCurrency: true },
+      { key: "approved" as any, label: "Approved Value", desc: "Booked business", value: approvedProposalValueVal, icon: CheckCircle2, accent: "hud-green", isCurrency: true },
+      { key: "balance" as any, label: "Pending Balance", desc: "Awaiting payment", value: pendingBalanceVal, icon: DollarSign, accent: "hud-amber", isCurrency: true },
+      { key: "pending" as any, label: "Acceptance Pending", desc: "Awaiting client", value: waitingForAcceptanceCount, icon: ClipboardList, accent: "hud-cyan" },
     ];
-  }, [leads, orders, t]);
+  }, [leads, orders, proposals, t]);
 
   const handleKpiClick = (key: KanbanColumn) => {
     setActiveFilter(prev => (prev === key ? null : key));
@@ -114,10 +124,13 @@ const Dashboard = () => {
           </Suspense>
         )}
 
+        <AttentionNeededPanel leads={leads} proposals={proposals} orders={orders} installations={installations} />
+
+
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
           {stats.map((stat, index) => (
-            <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} delta={stat.delta} sparkline={stat.sparkline} />
+            <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} isCurrency={(stat as any).isCurrency} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} delta={stat.delta} sparkline={stat.sparkline} />
           ))}
         </div>
 
@@ -151,7 +164,10 @@ const Dashboard = () => {
 
         )}
 
-        <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-4 px-1">{t.nav.production} Pipeline</h2>
+          <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
+        </div>
       </ResponsiveLayout>
     </PageTransition>
   );

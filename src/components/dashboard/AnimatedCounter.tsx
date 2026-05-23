@@ -4,9 +4,10 @@ import { motion, useSpring, useTransform } from "framer-motion";
 interface AnimatedCounterProps {
   value: number;
   className?: string;
+  isCurrency?: boolean;
 }
 
-export const AnimatedCounter = ({ value, className = "" }: AnimatedCounterProps) => {
+export const AnimatedCounter = ({ value, className = "", isCurrency = false }: AnimatedCounterProps) => {
   const [showPulse, setShowPulse] = useState(false);
   const prevValue = useRef(value);
   const spring = useSpring(0, { stiffness: 80, damping: 20 });
@@ -42,7 +43,7 @@ export const AnimatedCounter = ({ value, className = "" }: AnimatedCounterProps)
       } : {}}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      {rendered}
+      {isCurrency ? `$${(rendered / 1000).toFixed(1)}k` : rendered}
     </motion.span>
   );
 };

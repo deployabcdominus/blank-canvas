@@ -32,6 +32,7 @@ const WorkOrderDetail = lazy(() => import("./pages/WorkOrderDetail"));
 const Installation = lazy(() => import("./pages/Installation"));
 const InstallerCompanies = lazy(() => import("./pages/InstallerCompanies"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Reports = lazy(() => import("./pages/Reports"));
 const Clients = lazy(() => import("./pages/Clients"));
 const ClientDetail = lazy(() => import("./pages/ClientDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
@@ -159,7 +160,8 @@ const App = () => {
                           <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
                           <Route path="/tecnico" element={<MobileTechnicianView />} />
                           <Route path="/audit-log" element={<AuditLog />} />
-                          <Route path="/settings" element={<Settings />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/reports" element={<Reports />} />
                         </Route>
 
                         <Route path="*" element={<NotFound />} />

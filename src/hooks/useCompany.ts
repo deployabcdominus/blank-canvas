@@ -15,6 +15,12 @@ interface CompanyData {
   subscription_status: string | null;
   stripe_customer_id: string | null;
   subscription_end_date: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  default_currency?: string | null;
+  auto_create_production_orders?: boolean;
+  design_review_by_default?: boolean;
 }
 
 export function useCompany() {
@@ -39,7 +45,7 @@ export function useCompany() {
       if (profile?.company_id) {
         const { data: companyData } = await (supabase as any)
           .from('companies')
-          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types, industry, plan_id, subscription_status, stripe_customer_id, subscription_end_date')
+          .select('id, name, logo_url, brand_color, enable_network_index, network_base_path, service_types, industry, plan_id, subscription_status, stripe_customer_id, subscription_end_date, address, phone, email, default_currency, auto_create_production_orders, design_review_by_default')
           .eq('id', profile.company_id)
           .maybeSingle();
 
@@ -76,7 +82,7 @@ export function useCompany() {
     setCompany(prev => prev ? { ...prev, name: newName } : null);
   };
 
-  const updateCompanySettings = async (updates: { enable_network_index?: boolean; network_base_path?: string | null; service_types?: string[] }) => {
+  const updateCompanySettings = async (updates: Partial<CompanyData>) => {
     if (!company) throw new Error('No company found');
     const { error } = await supabase.from('companies').update(updates as any).eq('id', company.id);
     if (error) throw error;

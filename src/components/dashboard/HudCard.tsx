@@ -8,6 +8,7 @@ interface HudCardProps {
   label: string;
   desc: string;
   value: number;
+  isCurrency?: boolean;
   icon: LucideIcon;
   isActive: boolean;
   onClick: () => void;
@@ -60,7 +61,7 @@ const TrendDelta = ({ delta }: { delta: number }) => {
   );
 };
 
-export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, noAccess, delta, sparkline }: HudCardProps) => {
+export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, index, noAccess, delta, sparkline, isCurrency }: HudCardProps) => {
   const { t } = useLanguage();
   const [glowPulse, setGlowPulse] = useState(false);
   const prevValue = useRef(value);
@@ -161,7 +162,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           {noAccess ? (
             <span className="font-bold text-3xl leading-none tracking-tight text-amber-400/60">—</span>
           ) : (
-            <AnimatedCounter value={value} className="font-bold text-3xl leading-none tracking-tight text-zinc-100" />
+            <AnimatedCounter value={value} isCurrency={isCurrency} className="font-bold text-3xl leading-none tracking-tight text-zinc-100" />
           )}
           {!noAccess && delta !== undefined && (
             <div className="mb-0.5">

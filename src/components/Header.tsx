@@ -10,9 +10,10 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings, User, Menu } from "lucide-react";
+import { LogOut, Settings, User, Menu, Search } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { GlobalSearch } from "./GlobalSearch";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -54,6 +55,10 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
             </div>
           )}
           <h1 className="md:hidden text-lg font-bold truncate">{FIXED_BRANDING.appName}</h1>
+          
+          <div className="hidden md:flex ml-4">
+            <GlobalSearch />
+          </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
