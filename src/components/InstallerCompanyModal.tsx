@@ -49,7 +49,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(formSchema) });
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(formSchema) });
 
   useEffect(() => {
     if (company) {
