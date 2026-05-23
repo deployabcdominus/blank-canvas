@@ -15,6 +15,8 @@ import { compressImage } from "@/lib/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCatalog } from "@/hooks/useCatalog";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const makeFormSchema = (isEn: boolean) => z.object({
   name: z.string().min(2, isEn ? "Name must be at least 2 characters" : "El nombre debe tener al menos 2 caracteres"),
