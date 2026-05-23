@@ -64,6 +64,18 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
   const navigate = useNavigate();
   const availableServices = getAvailableForInstallation();
 
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<FormData>({ 
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      permitRequired: false,
+      customerPresence: false
+    }
+  });
+
+  const watchedDate = watch("date");
+  const watchedServiceId = watch("serviceId");
+  const watchedInstallerCompanyId = watch("installerCompanyId");
+
   const { data: installers = [] } = useQuery({
     queryKey: ['installers', watchedInstallerCompanyId],
     queryFn: async () => {
@@ -79,17 +91,6 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
     enabled: !!watchedInstallerCompanyId && watchedInstallerCompanyId !== "none"
   });
 
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<FormData>({ 
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      permitRequired: false,
-      customerPresence: false
-    }
-  });
-
-  const watchedDate = watch("date");
-  const watchedServiceId = watch("serviceId");
-  const watchedInstallerCompanyId = watch("installerCompanyId");
   const selectedService = availableServices.find(s => s.id.toString() === watchedServiceId);
   const selectedCompany = companies.find(c => c.id.toString() === watchedInstallerCompanyId);
 
