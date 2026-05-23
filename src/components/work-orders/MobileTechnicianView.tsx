@@ -93,14 +93,14 @@ export default function MobileTechnicianView() {
   const { t, locale } = useLanguage();
   const [tab, setTab] = useState<MobileTab>("task");
 
-
-
   const [orders, setOrders] = useState<OrderData[]>(() => {
+    // Only storing order skeleton, not sensitive info
     const saved = localStorage.getItem("cached_tech_orders");
     return saved ? JSON.parse(saved) : [];
   });
   const [lastSync, setLastSync] = useState<string | null>(localStorage.getItem("tech_orders_last_sync"));
   const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
+
   const [techDetails, setTechDetails] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);

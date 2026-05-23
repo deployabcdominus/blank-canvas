@@ -1,26 +1,37 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { PageTransition } from "@/components/PageTransition";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { LogIn, User, Eye, EyeOff, Lock } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { hasCompany } from "@/lib/auth-helpers";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Eye, EyeOff, Loader2, LogIn, Lock } from "lucide-react";
+import { motion } from "framer-motion";
 import { getHomeRouteForUser } from "@/lib/role-redirect";
+import { hasCompany } from "@/lib/auth-helpers";
 import { Checkbox } from "@/components/ui/checkbox";
+import { PageTransition } from "@/components/PageTransition";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const { signIn } = useAuth();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  const inviteToken = searchParams.get("invite") || searchParams.get("token");
+
+  useEffect(() => {
+    // Clean up potentially sensitive data from storage on reach
+    localStorage.removeItem("invite_token");
+    localStorage.removeItem("invite_email");
+    sessionStorage.removeItem("pendingInviteToken");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,13 +45,9 @@ const Login = () => {
         description: "Inicio de sesión exitoso.",
       });
 
-      // Check for pending invite token
-      const pendingToken = sessionStorage.getItem("pendingInviteToken") || localStorage.getItem("invite_token");
-      if (pendingToken) {
-        sessionStorage.removeItem("pendingInviteToken");
-        localStorage.removeItem("invite_token");
-        localStorage.removeItem("invite_email");
-        navigate(`/invite?token=${pendingToken}`);
+      // If there's an invite token in the URL, pass it to the invite validation page
+      if (inviteToken) {
+        navigate(`/invite?token=${inviteToken}`);
         setIsLoading(false);
         return;
       }
@@ -87,7 +94,6 @@ const Login = () => {
   return (
     <PageTransition>
       <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-        {/* Ambient background decorative blob */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
         
         <div className="w-full max-w-md relative z-10">
