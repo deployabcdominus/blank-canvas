@@ -39,9 +39,9 @@ export const useGlobalSearchQuery = (query: string) => {
 
       (proposals.data || []).forEach(p => results.push({
         id: p.id,
-        name: p.proposal_number || `Propuesta ${p.id.slice(0, 8)}`,
+        name: p.client,
         type: "proposal",
-        description: `Proposal · ${p.status}`,
+        description: `Proposal · ${p.project || p.status}`,
         path: `/proposals?id=${p.id}`,
       }));
 
