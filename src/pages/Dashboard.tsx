@@ -15,9 +15,10 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { isThisMonth } from "date-fns";
-import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { isThisMonth, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Loader2, DollarSign, TrendingUp } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
+import { AttentionNeededPanel } from "@/components/dashboard/AttentionNeededPanel";
 
 // Lazy-loaded heavy components
 const RevenueChart = lazy(() => import("@/components/dashboard/RevenueChart").then(m => ({ default: m.RevenueChart })));
