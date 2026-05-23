@@ -174,13 +174,11 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   blueprintUrl: row.blueprint_url || null,
   annotations: Array.isArray(row.annotations) ? (row.annotations as any[]) : [],
   technicalDetails: (row.technical_details as Record<string, any>) || {},
-  // Sync JSONB technical details with top-level columns for signage if columns are null
+  // Production Sheet fields
+  face_material_spec: row.face_material_spec || (row.technical_details as any)?.face_material || '',
+  substrate_material: row.substrate_material || (row.technical_details as any)?.substrate || '',
   final_width: row.final_width || (row.technical_details as any)?.final_width || undefined,
   final_height: row.final_height || (row.technical_details as any)?.final_height || undefined,
-  substrate_material: row.substrate_material || (row.technical_details as any)?.substrate || '',
-  face_material_spec: row.face_material_spec || (row.technical_details as any)?.face_material || '',
-  // Production Sheet fields
-  face_material_spec: row.face_material_spec || '',
   returns_material_spec: row.returns_material_spec || '',
   backs_material_spec: row.backs_material_spec || '',
   trim_cap_spec: row.trim_cap_spec || '',
@@ -206,13 +204,10 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   prepared_by_department: (row.prepared_by_department as any) || 'Sales',
   design_review_required: row.design_review_required || false,
   design_review_completed: row.design_review_completed || false,
-  final_width: row.final_width || undefined,
-  final_height: row.final_height || undefined,
   measurement_unit: row.measurement_unit || 'in',
   single_or_double_sided: row.single_or_double_sided || 'Single',
   indoor_or_outdoor: row.indoor_or_outdoor || 'Outdoor',
   illuminated_or_non: row.illuminated_or_non || 'Non-Illuminated',
-  substrate_material: row.substrate_material || '',
   frame_material: row.frame_material || '',
   mounting_method: row.mounting_method || '',
   installation_surface: row.installation_surface || '',
@@ -318,7 +313,6 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
       if (updates.technicalDetails.substrate) dbUpdates.substrate_material = String(updates.technicalDetails.substrate);
       if (updates.technicalDetails.face_material) dbUpdates.face_material_spec = String(updates.technicalDetails.face_material);
     }
-    if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails as any;
     
     // Phase 2 mappings
     if (updates.internal_status !== undefined) dbUpdates.internal_status = updates.internal_status;
