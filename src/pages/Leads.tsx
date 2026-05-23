@@ -38,7 +38,8 @@ const Leads = () => {
   const breakpoint = useBreakpoint();
   const { companyId, isAdmin, isComercial, canEdit, canManageLeads, isViewer } = useUserRole();
   const { leads, isLoading, createLeadMutation, deleteLeadMutation, deleteLeadsMutation, clearLeadsMutation } = useLeadsQuery(companyId);
-  const { proposals, addProposal } = useProposals();
+  const { proposals } = useProposals();
+  const { addProposal } = useProposals();
   const limits = usePlanLimits();
 
   const { t } = useLanguage();

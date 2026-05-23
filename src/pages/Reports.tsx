@@ -22,7 +22,7 @@ export default function Reports() {
   const salesByPersonData = useMemo(() => {
     const people: Record<string, { name: string, value: number, count: number }> = {};
     proposals.filter(p => p.status === "Aprobada").forEach(p => {
-      const name = (p as any).owner_user_id || "Unassigned"; // In real app we would join with profiles
+      const name = (p as any).owner_user_id || "Unassigned";
       if (!people[name]) people[name] = { name, value: 0, count: 0 };
       people[name].value += Number(p.value) || 0;
       people[name].count += 1;
