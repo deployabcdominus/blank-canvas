@@ -43,7 +43,7 @@ export const AnimatedCounter = ({ value, className = "", isCurrency = false }: A
       } : {}}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      {rendered}
+      {isCurrency ? `$${(rendered / 1000).toFixed(1)}k` : rendered}
     </motion.span>
   );
 };
