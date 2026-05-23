@@ -169,9 +169,15 @@ export type Database = {
       }
       companies: {
         Row: {
+          address: string | null
+          auto_create_production_orders: boolean | null
           billing_type: string | null
           brand_color: string | null
+          company_settings: Json | null
           created_at: string
+          default_currency: string | null
+          design_review_by_default: boolean | null
+          email: string | null
           enable_network_index: boolean | null
           id: string
           industry: string | null
@@ -179,6 +185,7 @@ export type Database = {
           logo_url: string | null
           name: string
           network_base_path: string | null
+          phone: string | null
           plan_id: string | null
           proposal_terms: string | null
           service_types: string[] | null
@@ -189,9 +196,15 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          address?: string | null
+          auto_create_production_orders?: boolean | null
           billing_type?: string | null
           brand_color?: string | null
+          company_settings?: Json | null
           created_at?: string
+          default_currency?: string | null
+          design_review_by_default?: boolean | null
+          email?: string | null
           enable_network_index?: boolean | null
           id?: string
           industry?: string | null
@@ -199,6 +212,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           network_base_path?: string | null
+          phone?: string | null
           plan_id?: string | null
           proposal_terms?: string | null
           service_types?: string[] | null
@@ -209,9 +223,15 @@ export type Database = {
           user_id: string
         }
         Update: {
+          address?: string | null
+          auto_create_production_orders?: boolean | null
           billing_type?: string | null
           brand_color?: string | null
+          company_settings?: Json | null
           created_at?: string
+          default_currency?: string | null
+          design_review_by_default?: boolean | null
+          email?: string | null
           enable_network_index?: boolean | null
           id?: string
           industry?: string | null
@@ -219,6 +239,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           network_base_path?: string | null
+          phone?: string | null
           plan_id?: string | null
           proposal_terms?: string | null
           service_types?: string[] | null
@@ -2203,9 +2224,15 @@ export type Database = {
           p_user_id: string
         }
         Returns: {
+          address: string | null
+          auto_create_production_orders: boolean | null
           billing_type: string | null
           brand_color: string | null
+          company_settings: Json | null
           created_at: string
+          default_currency: string | null
+          design_review_by_default: boolean | null
+          email: string | null
           enable_network_index: boolean | null
           id: string
           industry: string | null
@@ -2213,6 +2240,7 @@ export type Database = {
           logo_url: string | null
           name: string
           network_base_path: string | null
+          phone: string | null
           plan_id: string | null
           proposal_terms: string | null
           service_types: string[] | null
