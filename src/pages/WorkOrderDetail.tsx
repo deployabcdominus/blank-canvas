@@ -5,6 +5,7 @@ import {
   ChevronLeft, Pencil, Printer, QrCode, Calendar, User, Save,
   CheckCircle, ShieldCheck, Circle, Loader2, Clock, X, Wrench,
   Upload, Maximize2, Plus, Trash2, ChevronRight, ChevronLeftIcon,
+  AlertCircle, AlertTriangle, ShieldAlert,
 } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
@@ -22,6 +23,11 @@ import {
   Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList,
   BreadcrumbPage, BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useWorkOrders, type WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useProductionSteps } from "@/hooks/useProductionSteps";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -38,6 +44,17 @@ const STATUS_OPTIONS = [
   { value: "Control de Calidad", label: "QC", bg: "bg-amber-500/20", text: "text-amber-400" },
   { value: "Completada", label: "Ready", bg: "bg-emerald-500/20", text: "text-emerald-400" },
   { value: "Instalado", label: "Installed", bg: "bg-violet-500/20", text: "text-white" },
+];
+
+const CLOSING_STATUS_OPTIONS = [
+  { value: "Not Ready", label: "Not Ready", color: "bg-zinc-500/20 text-zinc-400" },
+  { value: "Ready for Client Acceptance", label: "Ready for Acceptance", color: "bg-blue-500/20 text-blue-400" },
+  { value: "Waiting for Client Acceptance", label: "Waiting for Acceptance", color: "bg-amber-500/20 text-amber-400" },
+  { value: "Waiting for Final Payment", label: "Waiting for Payment", color: "bg-violet-500/20 text-violet-400" },
+  { value: "Ready to Close", label: "Ready to Close", color: "bg-emerald-500/20 text-emerald-400" },
+  { value: "Closed", label: "Closed", color: "bg-emerald-600 text-white" },
+  { value: "Reopened", label: "Reopened", color: "bg-red-500/20 text-red-400" },
+  { value: "Canceled", label: "Canceled", color: "bg-zinc-800 text-zinc-500" },
 ];
 
 const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
@@ -84,7 +101,7 @@ export default function WorkOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { orders, updateOrder, refreshOrders } = useWorkOrders();
-  const { companyId, canEdit } = useUserRole();
+  const { companyId, canEdit, isAdmin, canViewFinancials } = useUserRole();
   const { company } = useCompany();
 
   const order = useMemo(() => orders.find(o => o.id === id), [orders, id]);
@@ -124,6 +141,24 @@ export default function WorkOrderDetail() {
   const mockupInputRef = useRef<HTMLInputElement>(null);
   const additionalMockupInputRef = useRef<HTMLInputElement>(null);
 
+  // Phase 4: Closing state
+  const [closingSaving, setClosingSaving] = useState(false);
+  const [closingStatus, setClosingStatus] = useState("Not Ready");
+  const [clientAccepted, setClientAccepted] = useState(false);
+  const [paymentReceived, setPaymentReceived] = useState(false);
+  const [balanceDue, setBalanceDue] = useState(0);
+  const [acceptanceMethod, setClientAcceptanceMethod] = useState("Signature");
+  const [acceptedByName, setAcceptedByClientName] = useState("");
+  const [closingNotes, setClosingNotes] = useState("");
+  const [reopenReason, setReopenReason] = useState("");
+  const [isReopenDialogOpen, setIsReopenDialogOpen] = useState(false);
+  const [checklist, setChecklist] = useState({
+    site_cleaned: false,
+    final_photos_reviewed: false,
+    permit_closed: false,
+    tools_returned: false,
+  });
+
   // Load order data into local state
   useEffect(() => {
     if (!order) return;
@@ -139,6 +174,15 @@ export default function WorkOrderDetail() {
     setQcSignerName(raw.qc_signer_name || null);
     setQcSignedAt(raw.qc_signed_at || null);
     setDesignNotes(order.design_notes || "");
+    // Phase 4 init
+    setClosingStatus(order.closing_status || "Not Ready");
+    setClientAccepted(order.client_accepted || false);
+    setPaymentReceived(order.final_payment_received || false);
+    setBalanceDue(order.final_balance_due || 0);
+    setClientAcceptanceMethod(order.client_acceptance_method || "Signature");
+    setAcceptedByClientName(order.accepted_by_client_name || "");
+    setClosingNotes(order.closing_notes || "");
+    if (raw.closing_checklist) setChecklist(raw.closing_checklist);
   }, [order]);
 
   // Load assignee name
@@ -306,6 +350,101 @@ export default function WorkOrderDetail() {
     await refreshOrders();
   }, [order, refreshOrders]);
 
+  // Phase 4: Closing Handlers
+  const handleClosingUpdate = useCallback(async (updates: Partial<WorkOrder>) => {
+    if (!order) return;
+    setClosingSaving(true);
+    try {
+      await updateOrder(order.id, updates);
+      toast.success("Closing details updated");
+      refreshOrders();
+    } catch {
+      toast.error("Failed to update closing details");
+    } finally {
+      setClosingSaving(false);
+    }
+  }, [order, updateOrder, refreshOrders]);
+
+  const handleCloseProject = useCallback(async () => {
+    if (!order || !isAdmin) return;
+    
+    // Validations
+    if (!allQcPassed) { toast.error("QC must be completed first"); return; }
+    if (!order.poi_token_used && poiPhotos.length === 0) { toast.error("Installation photos required"); return; }
+    if (!clientAccepted) { toast.error("Client acceptance required"); return; }
+    if (order.final_payment_required && !paymentReceived) { toast.error("Final payment required"); return; }
+
+    setClosingSaving(true);
+    try {
+      const { error } = await supabase.from("production_orders").update({
+        closing_status: "Closed",
+        closed_at: new Date().toISOString(),
+        closed_by_user_id: (await supabase.auth.getUser()).data.user?.id,
+        status: "Completada", // Ensure main status is ready
+      } as any).eq("id", order.id);
+
+      if (error) throw error;
+
+      await supabase.from("project_closing_history").insert({
+        company_id: companyId,
+        production_order_id: order.id,
+        action: "Closed",
+        new_closing_status: "Closed",
+        performed_by_user_id: (await supabase.auth.getUser()).data.user?.id,
+        notes: closingNotes,
+      } as any);
+
+      toast.success("Project officially closed");
+      refreshOrders();
+    } catch {
+      toast.error("Failed to close project");
+    } finally {
+      setClosingSaving(false);
+    }
+  }, [order, isAdmin, allQcPassed, poiPhotos.length, clientAccepted, paymentReceived, closingNotes, companyId, refreshOrders]);
+
+  const handleReopenProject = useCallback(async () => {
+    if (!order || !isAdmin || !reopenReason) return;
+
+    setClosingSaving(true);
+    try {
+      const { error } = await supabase.from("production_orders").update({
+        closing_status: "Reopened",
+        closed_at: null,
+        closed_by_user_id: null,
+      } as any).eq("id", order.id);
+
+      if (error) throw error;
+
+      await supabase.from("project_closing_history").insert({
+        company_id: companyId,
+        production_order_id: order.id,
+        action: "Reopened",
+        new_closing_status: "Reopened",
+        performed_by_user_id: (await supabase.auth.getUser()).data.user?.id,
+        notes: reopenReason,
+      } as any);
+
+      toast.success("Project reopened");
+      setReopenReason("");
+      setIsReopenDialogOpen(false);
+      refreshOrders();
+    } catch {
+      toast.error("Failed to reopen project");
+    } finally {
+      setClosingSaving(false);
+    }
+  }, [order, isAdmin, reopenReason, companyId, refreshOrders]);
+
+  const toggleChecklist = useCallback(async (key: string) => {
+    if (!order) return;
+    const updated = { ...checklist, [key as keyof typeof checklist]: !checklist[key as keyof typeof checklist] };
+    setChecklist(updated);
+    await supabase.from("production_orders").update({
+      closing_checklist: updated,
+    } as any).eq("id", order.id);
+  }, [order, checklist]);
+
   // All images for fullscreen navigation
   const allImages = useMemo(() => {
     if (!order) return [];
@@ -329,6 +468,7 @@ export default function WorkOrderDetail() {
   const raw = order as any;
   const woNumber = raw.wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
   const statusKey = order.poi_token_used ? "Instalado" : order.status;
+  const isClosed = closingStatus === "Closed";
   const currentStatus = STATUS_OPTIONS.find(s => s.value === statusKey) || STATUS_OPTIONS[0];
   const progress = stepsProgress || order.progress || 0;
   const priorityInfo = PRIORITY_CONFIG[order.priority || "media"] || PRIORITY_CONFIG.media;
@@ -371,7 +511,10 @@ export default function WorkOrderDetail() {
               {/* Status dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 ${currentStatus.bg} ${currentStatus.text}`}>
+                  <button 
+                    disabled={isClosed}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 ${currentStatus.bg} ${currentStatus.text} disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
                     {currentStatus.label}
                   </button>
                 </DropdownMenuTrigger>
@@ -385,7 +528,13 @@ export default function WorkOrderDetail() {
               </DropdownMenu>
 
               {!editMode ? (
-                <Button variant="outline" size="sm" onClick={enterEdit} className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={enterEdit} 
+                  disabled={isClosed}
+                  className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10 disabled:opacity-50"
+                >
                   <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
                 </Button>
               ) : (
@@ -642,8 +791,9 @@ export default function WorkOrderDetail() {
                       <input
                         type="checkbox"
                         checked={!!qcChecklist[item.key]}
-                        onChange={() => toggleQc(item.key)}
-                        className="w-4 h-4 rounded accent-violet-500"
+                        onChange={() => !isClosed && toggleQc(item.key)}
+                        disabled={isClosed}
+                        className="w-4 h-4 rounded accent-violet-500 disabled:opacity-50"
                       />
                       <span className={`text-sm ${qcChecklist[item.key] ? "text-foreground" : "text-muted-foreground"}`}>
                         {item.label}
@@ -696,7 +846,7 @@ export default function WorkOrderDetail() {
                 {poiPhotos.length === 0 ? (
                   <div className="text-center py-6">
                     <p className="text-sm text-muted-foreground mb-3">No photos yet. Share the POI link with the installer.</p>
-                    <Button variant="outline" size="sm" onClick={generatePOI} className="border-violet-500/30 text-violet-400">
+                    <Button variant="outline" size="sm" onClick={generatePOI} disabled={isClosed} className="border-violet-500/30 text-violet-400">
                       <QrCode className="w-3.5 h-3.5 mr-1.5" /> Generate POI Link
                     </Button>
                   </div>
@@ -719,6 +869,186 @@ export default function WorkOrderDetail() {
                   </div>
                 )}
               </SectionCard>
+
+              {/* ═══ CLOSING & FINANCIALS ═══ */}
+              <SectionCard className={closingStatus === "Closed" ? "border-emerald-500/30 bg-emerald-500/5" : ""}>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Closing & Financials</h2>
+                  <Badge className={`${CLOSING_STATUS_OPTIONS.find(s => s.value === closingStatus)?.color} border-0`}>
+                    {closingStatus}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Client Acceptance */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-wider uppercase text-violet-400/80">Client Acceptance</p>
+                    <div className="flex items-center gap-3">
+                      <Checkbox 
+                        id="clientAccepted" 
+                        checked={clientAccepted} 
+                        onCheckedChange={(v) => {
+                          setClientAccepted(!!v);
+                          handleClosingUpdate({ client_accepted: !!v, client_acceptance_date: !!v ? new Date().toISOString() : null });
+                        }} 
+                      />
+                      <Label htmlFor="clientAccepted" className="text-sm font-medium">Client has accepted project</Label>
+                    </div>
+                    
+                    {clientAccepted && (
+                      <div className="space-y-3 pl-7 animate-in fade-in slide-in-from-top-1">
+                        <div className="grid grid-cols-2 gap-2">
+                          <Field label="Method">
+                            <Select value={acceptanceMethod} onValueChange={(v) => {
+                              setClientAcceptanceMethod(v);
+                              handleClosingUpdate({ client_acceptance_method: v });
+                            }}>
+                              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Signature">Digital Signature</SelectItem>
+                                <SelectItem value="Email">Email Approval</SelectItem>
+                                <SelectItem value="In Person">In Person</SelectItem>
+                                <SelectItem value="Phone">Phone / Text</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </Field>
+                          <Field label="Accepted By">
+                            <Input 
+                              value={acceptedByName} 
+                              onChange={e => setAcceptedByClientName(e.target.value)}
+                              onBlur={() => handleClosingUpdate({ accepted_by_client_name: acceptedByName })}
+                              className="h-8 text-xs" 
+                              placeholder="Customer Name"
+                            />
+                          </Field>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Financial Closing */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold tracking-wider uppercase text-violet-400/80">Financial Settlement</p>
+                    {canViewFinancials ? (
+                      <>
+                        <div className="flex items-center justify-between py-2 border-b border-white/5">
+                          <span className="text-sm text-muted-foreground">Balance Due</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold text-foreground">$</span>
+                            <Input 
+                              type="number"
+                              value={balanceDue}
+                              onChange={e => setBalanceDue(Number(e.target.value))}
+                              onBlur={() => handleClosingUpdate({ final_balance_due: balanceDue })}
+                              className="h-7 w-24 text-xs text-right bg-transparent border-white/10"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 py-1">
+                          <Checkbox 
+                            id="paymentReceived" 
+                            checked={paymentReceived} 
+                            onCheckedChange={(v) => {
+                              setPaymentReceived(!!v);
+                              handleClosingUpdate({ 
+                                final_payment_received: !!v, 
+                                final_payment_date: !!v ? new Date().toISOString() : null,
+                                final_payment_amount: !!v ? balanceDue : 0
+                              });
+                            }} 
+                          />
+                          <Label htmlFor="paymentReceived" className="text-sm font-medium">Final payment received</Label>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic">You don't have permission to view financial details.</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Closeout Checklist */}
+                <div className="mt-8 pt-6 border-t border-white/5">
+                  <p className="text-[10px] font-bold tracking-wider uppercase text-violet-400/80 mb-4">Closeout Checklist</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {Object.entries(checklist).map(([key, val]) => (
+                      <label key={key} className="flex items-center gap-2 cursor-pointer group">
+                        <Checkbox 
+                          checked={val} 
+                          onCheckedChange={() => toggleChecklist(key)}
+                          className="w-3.5 h-3.5"
+                        />
+                        <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors capitalize">
+                          {key.replace(/_/g, " ")}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Final Actions */}
+                <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="flex-1">
+                    {!allQcPassed && <p className="text-[10px] text-amber-400 flex items-center gap-1.5"><AlertCircle className="w-3 h-3" /> QC must be completed before closing</p>}
+                    {allQcPassed && !clientAccepted && <p className="text-[10px] text-amber-400 flex items-center gap-1.5"><AlertCircle className="w-3 h-3" /> Waiting for client acceptance</p>}
+                    {allQcPassed && clientAccepted && paymentReceived && <p className="text-[10px] text-emerald-400 flex items-center gap-1.5"><CheckCircle className="w-3 h-3" /> Ready to close project</p>}
+                  </div>
+
+                  <div className="flex gap-2 shrink-0">
+                    {closingStatus === "Closed" ? (
+                      isAdmin && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setIsReopenDialogOpen(true)}
+                          className="text-xs border-red-500/30 text-red-400 hover:bg-red-500/10"
+                        >
+                          Reopen Project
+                        </Button>
+                      )
+                    ) : (
+                      <Button 
+                        onClick={handleCloseProject}
+                        disabled={closingSaving || !allQcPassed || !clientAccepted || (order.final_payment_required && !paymentReceived)}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 px-6 font-bold shadow-lg shadow-emerald-900/20"
+                      >
+                        {closingSaving ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5 mr-2" />}
+                        OFFICIALLY CLOSE PROJECT
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </SectionCard>
+
+              {/* Reopen Dialog */}
+              <Dialog open={isReopenDialogOpen} onOpenChange={setIsReopenDialogOpen}>
+                <DialogContent className="bg-zinc-900 border-white/10 text-white">
+                  <DialogHeader>
+                    <DialogTitle>Reopen Project</DialogTitle>
+                    <DialogDescription className="text-zinc-400">
+                      Please provide a reason for reopening this project. This will be recorded in the audit trail.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <Textarea 
+                      value={reopenReason} 
+                      onChange={e => setReopenReason(e.target.value)}
+                      placeholder="Reason for reopening..."
+                      className="min-h-[100px] bg-black/20 border-white/10"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsReopenDialogOpen(false)}>Cancel</Button>
+                    <Button 
+                      onClick={handleReopenProject} 
+                      disabled={!reopenReason || closingSaving}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      {closingSaving ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : "Reopen Project"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* RIGHT COL – 40% (2/5) */}
@@ -821,6 +1151,7 @@ export default function WorkOrderDetail() {
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
                   onBlur={handleNotesBlur}
+                  disabled={isClosed}
                   placeholder="Add notes about this work order..."
                   className="min-h-[100px] text-sm"
                 />
