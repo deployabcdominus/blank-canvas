@@ -459,8 +459,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         companyLogoUrl: company?.logo_url || null,
         qcSignatureUrl: signatureUrl || null,
         // Phase 2 additions
-        finalWidth,
-        finalHeight,
+        finalWidth: finalWidth || undefined,
+        finalHeight: finalHeight || undefined,
         measurementUnit,
         internalStatus,
         preparedBy,
