@@ -364,6 +364,27 @@ export const es: TranslationKeys = {
       clientAndOrderCreated: "Cliente registrado y Orden de Trabajo generada con éxito para",
       autoOrderNote: "Orden generada automáticamente desde propuesta aprobada manualmente.",
     },
+    form: {
+      sentViaLabel: "Enviado por",
+      externalRefLabel: "Referencia externa",
+      sentNotesLabel: "Notas de envío",
+      initialPaymentRequiredLabel: "Requiere pago inicial",
+      initialPaymentAmountLabel: "Monto pago inicial",
+      adminOverrideLabel: "Aprobación por Admin (Override)",
+      adminOverrideReasonLabel: "Razón del Override",
+      approvedForProductionLabel: "Aprobado para Producción",
+      clientApprovedLabel: "Cliente aprobó",
+      approvalDateLabel: "Fecha de aprobación",
+      paymentReceivedLabel: "Pago recibido",
+      sentViaOptions: {
+        intuit: "Intuit / QuickBooks",
+        whatsapp: "WhatsApp",
+        email: "Email",
+        sms: "SMS",
+        pdf: "PDF / Manual",
+        other: "Otro"
+      }
+    }
   },
 
   /* ── Work Orders ── */
@@ -1101,6 +1122,40 @@ export const es: TranslationKeys = {
     toastSuccessDesc: "{{name}} fue agregado a la lista de leads.",
     toastError: "Error al agregar lead",
     toastErrorDesc: "Intente nuevamente.",
+    basicContactSection: "Contacto Básico",
+    leadSourceSection: "Fuente del Lead",
+    brokerSection: "Información del Broker",
+    projectNotesSection: "Notas del Proyecto",
+    priceAgreementSection: "Acuerdo de Precio",
+    assignmentSection: "Asignación y Seguimiento",
+    leadSourceLabel: "Origen del Lead",
+    leadSourcePlaceholder: "Seleccione origen",
+    brokerNameLabel: "Nombre del Broker",
+    brokerPhoneLabel: "Teléfono del Broker",
+    brokerEmailLabel: "Email del Broker",
+    brokerNotesLabel: "Notas del Broker",
+    informalNotesLabel: "Notas informales / Intake",
+    agreedPriceLabel: "Precio Acordado",
+    intakeQualityLabel: "Calidad de Entrada",
+    followUpRequiredLabel: "Requiere Seguimiento",
+    followUpNotesLabel: "Notas de Seguimiento",
+    intakeQualityOptions: {
+      complete: "Completa",
+      partial: "Parcial",
+      needs_follow_up: "Pendiente"
+    },
+    sources: {
+      whatsapp: "WhatsApp",
+      gmail: "Gmail",
+      phone: "Llamada",
+      sms: "SMS",
+      paper: "Papel / Nota",
+      broker: "Broker",
+      walkin: "Presencial",
+      referral: "Referido",
+      website: "Sitio Web",
+      other: "Otro"
+    }
   },
 
   /* ── EditLeadModal ── */

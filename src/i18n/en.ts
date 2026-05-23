@@ -362,6 +362,27 @@ export const en = {
       clientAndOrderCreated: "Client registered and Work Order created successfully for",
       autoOrderNote: "Order automatically generated from manually approved proposal.",
     },
+    form: {
+      sentViaLabel: "Sent via",
+      externalRefLabel: "External reference",
+      sentNotesLabel: "Sent notes",
+      initialPaymentRequiredLabel: "Initial payment required",
+      initialPaymentAmountLabel: "Initial payment amount",
+      adminOverrideLabel: "Admin Override Approval",
+      adminOverrideReasonLabel: "Override reason",
+      approvedForProductionLabel: "Approved for Production",
+      clientApprovedLabel: "Client Approved",
+      approvalDateLabel: "Approval Date",
+      paymentReceivedLabel: "Payment Received",
+      sentViaOptions: {
+        intuit: "Intuit / QuickBooks",
+        whatsapp: "WhatsApp",
+        email: "Email",
+        sms: "SMS",
+        pdf: "PDF / Manual",
+        other: "Other"
+      }
+    }
   },
 
   /* ── Work Orders ── */
@@ -1099,6 +1120,40 @@ export const en = {
     toastSuccessDesc: "{{name}} was added to the leads list.",
     toastError: "Error adding lead",
     toastErrorDesc: "Please try again.",
+    basicContactSection: "Basic Contact",
+    leadSourceSection: "Lead Source",
+    brokerSection: "Broker Information",
+    projectNotesSection: "Project Notes",
+    priceAgreementSection: "Price Agreement",
+    assignmentSection: "Assignment & Follow-up",
+    leadSourceLabel: "Lead Source",
+    leadSourcePlaceholder: "Select source",
+    brokerNameLabel: "Broker Name",
+    brokerPhoneLabel: "Broker Phone",
+    brokerEmailLabel: "Broker Email",
+    brokerNotesLabel: "Broker Notes",
+    informalNotesLabel: "Informal Notes / Intake",
+    agreedPriceLabel: "Agreed Price",
+    intakeQualityLabel: "Intake Quality",
+    followUpRequiredLabel: "Follow-up Required",
+    followUpNotesLabel: "Follow-up Notes",
+    intakeQualityOptions: {
+      complete: "Complete",
+      partial: "Partial",
+      needs_follow_up: "Needs Follow-up"
+    },
+    sources: {
+      whatsapp: "WhatsApp",
+      gmail: "Gmail",
+      phone: "Phone Call",
+      sms: "SMS",
+      paper: "Paper / Note",
+      broker: "Broker",
+      walkin: "Walk-in",
+      referral: "Referral",
+      website: "Website",
+      other: "Other"
+    }
   },
 
   /* ── EditLeadModal ── */

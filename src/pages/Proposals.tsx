@@ -61,8 +61,11 @@ const Proposals = () => {
     const previousProposal = proposals.find(p => p.id === id);
     await updateProposalMutation.mutateAsync({ id, updates: rest });
 
-    // Auto-create client + work order when manually approved
-    if (rest.status === 'Aprobada' && previousProposal?.status !== 'Aprobada') {
+    // Auto-create client + work order when manually approved or marked for production
+    const wasJustApproved = (rest.status === 'Aprobada' && previousProposal?.status !== 'Aprobada') || 
+                            (rest.approvedForProduction === true && !previousProposal?.approvedForProduction);
+
+    if (wasJustApproved) {
       let clientId: string | null = null;
       const clientName = rest.client || previousProposal?.client || '';
 
@@ -124,6 +127,10 @@ const Proposals = () => {
       const today = new Date().toISOString().split('T')[0];
       const endDate = new Date();
       endDate.setDate(endDate.getDate() + 7);
+      
+      // Inherit initial payment and override info for the work order audit
+      const approvalMethod = rest.adminOverrideApproval ? 'admin_override' : 'standard';
+      
       await addOrder({
         client: clientName,
         project: rest.project || previousProposal?.project || '',
@@ -134,7 +141,7 @@ const Proposals = () => {
         startDate: today,
         estimatedCompletion: endDate.toISOString().split('T')[0],
         projectId: null,
-        notes: t.proposals.toasts.autoOrderNote,
+        notes: rest.sentNotes || t.proposals.toasts.autoOrderNote,
         priority: 'media',
         proposalId: id,
       });
@@ -143,7 +150,12 @@ const Proposals = () => {
         entityType: 'propuesta',
         entityId: id,
         entityLabel: clientName,
-        details: { method: 'manual', auto_work_order: true, auto_client: !!clientId },
+        details: { 
+          method: approvalMethod, 
+          auto_work_order: true, 
+          auto_client: !!clientId,
+          override_reason: rest.adminOverrideReason 
+        },
       });
 
       await refreshClients();

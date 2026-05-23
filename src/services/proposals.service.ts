@@ -72,7 +72,7 @@ export const ProposalsService = {
       .single();
 
     if (result.data) {
-      const isApproved = updates.status === 'approved' || updates.status === 'Aprobada';
+      const isApproved = updates.status === 'approved' || updates.status === 'Aprobada' || updates.approved_for_production === true;
       
       await logAudit({
         action: isApproved ? 'aprobado' : 'editado',

@@ -17,6 +17,16 @@ export interface Lead {
   value: string;
   daysAgo: number;
   source?: string;
+  leadSource?: string;
+  brokerName?: string;
+  brokerPhone?: string;
+  brokerEmail?: string;
+  brokerNotes?: string;
+  informalNotes?: string;
+  agreedPrice?: number;
+  intakeQuality?: string;
+  followUpRequired?: boolean;
+  followUpNotes?: string;
   notes?: string;
   website?: string;
   logoUrl?: string;
@@ -25,6 +35,7 @@ export interface Lead {
   assignedToUserId?: string;
   clientId?: string;
   projectId?: string;
+  createdByRole?: string;
   /** Resolved client name (from clients table when linked) */
   resolvedName?: string;
   resolvedCompany?: string;
@@ -91,6 +102,16 @@ const mapRow = (item: LeadWithClient): Lead => {
     value: item.value || '',
     daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
     source: item.source || undefined,
+    leadSource: item.lead_source || undefined,
+    brokerName: item.broker_name || undefined,
+    brokerPhone: item.broker_phone || undefined,
+    brokerEmail: item.broker_email || undefined,
+    brokerNotes: item.broker_notes || undefined,
+    informalNotes: item.informal_notes || undefined,
+    agreedPrice: item.agreed_price || undefined,
+    intakeQuality: item.intake_quality || undefined,
+    followUpRequired: !!item.follow_up_required,
+    followUpNotes: item.follow_up_notes || undefined,
     notes: item.notes || undefined,
     website: hasClient && client ? (client.website || item.website || undefined) : (item.website || undefined),
     logoUrl: hasClient && client ? (client.logo_url || item.logo_url || undefined) : (item.logo_url || undefined),
@@ -99,6 +120,7 @@ const mapRow = (item: LeadWithClient): Lead => {
     assignedToUserId: item.assigned_to_user_id || undefined,
     clientId: item.client_id || undefined,
     projectId: item.project_id || undefined,
+    createdByRole: item.created_by_role || undefined,
     resolvedName: hasClient && client ? (client.contact_name || client.client_name) : undefined,
     resolvedCompany: hasClient && client ? client.client_name : undefined,
   };
@@ -174,7 +196,18 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
       location: lead.contact.location,
       value: lead.value,
       website: lead.website,
-      logo_url: lead.logoUrl
+      logo_url: lead.logoUrl,
+      lead_source: lead.leadSource,
+      broker_name: lead.brokerName,
+      broker_phone: lead.brokerPhone,
+      broker_email: lead.brokerEmail,
+      broker_notes: lead.brokerNotes,
+      informal_notes: lead.informalNotes,
+      agreed_price: lead.agreedPrice,
+      intake_quality: lead.intakeQuality,
+      follow_up_required: lead.followUpRequired,
+      follow_up_notes: lead.followUpNotes,
+      created_by_role: lead.createdByRole
     });
 
     if (error) {
@@ -203,6 +236,17 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({ children }) => {
     if (updates.logoUrl !== undefined) dbUpdates.logo_url = updates.logoUrl;
     if (updates.clientId !== undefined) dbUpdates.client_id = updates.clientId;
     if (updates.projectId !== undefined) dbUpdates.project_id = updates.projectId;
+    if (updates.leadSource !== undefined) dbUpdates.lead_source = updates.leadSource;
+    if (updates.brokerName !== undefined) dbUpdates.broker_name = updates.brokerName;
+    if (updates.brokerPhone !== undefined) dbUpdates.broker_phone = updates.brokerPhone;
+    if (updates.brokerEmail !== undefined) dbUpdates.broker_email = updates.brokerEmail;
+    if (updates.brokerNotes !== undefined) dbUpdates.broker_notes = updates.brokerNotes;
+    if (updates.informalNotes !== undefined) dbUpdates.informal_notes = updates.informalNotes;
+    if (updates.agreedPrice !== undefined) dbUpdates.agreed_price = updates.agreedPrice;
+    if (updates.intakeQuality !== undefined) dbUpdates.intake_quality = updates.intakeQuality;
+    if (updates.followUpRequired !== undefined) dbUpdates.follow_up_required = updates.followUpRequired;
+    if (updates.followUpNotes !== undefined) dbUpdates.follow_up_notes = updates.followUpNotes;
+    if (updates.createdByRole !== undefined) dbUpdates.created_by_role = updates.createdByRole;
     
     if (updates.contact) {
       if (updates.contact.phone !== undefined) dbUpdates.phone = updates.contact.phone;
