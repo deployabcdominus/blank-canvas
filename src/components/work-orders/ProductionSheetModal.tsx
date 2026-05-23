@@ -207,6 +207,11 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
       trim_cap_spec: raw.trim_cap_spec || "",
       led_mfg_spec: raw.led_mfg_spec || "",
       power_supply_spec: raw.power_supply_spec || "",
+      substrate_material: raw.substrate_material || "",
+      frame_material: raw.frame_material || "",
+      vinyl_brand: raw.vinyl_brand || "",
+      vinyl_color: raw.vinyl_color || "",
+      print_material: raw.print_material || "",
     });
     setStaff(raw.responsible_staff || defaultStaff);
     setQcChecklist(raw.qc_checklist || defaultQC);
@@ -215,6 +220,20 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     setContactEmail(raw.contact_email || "");
     setSiteAddress(raw.site_address || "");
     setProjectName(raw.project_name || order.project || "");
+    setFinalWidth(raw.final_width || "");
+    setFinalHeight(raw.final_height || "");
+    setMeasurementUnit(raw.measurement_unit || "in");
+    setSingleDouble(raw.single_or_double_sided || "Single");
+    setIndoorOutdoor(raw.indoor_or_outdoor || "Outdoor");
+    setIlluminated(raw.illuminated_or_non || "Non-Illuminated");
+    setMountingMethod(raw.mounting_method || "");
+    setInstallationSurface(raw.installation_surface || "");
+    setFabNotes(raw.fabrication_notes || "");
+    setProdWarnings(raw.production_warnings || "");
+    setInternalStatus(raw.internal_status || "Ready for Production");
+    setPreparedBy(raw.prepared_by_department || "Sales");
+    setDesignReviewReq(raw.design_review_required || false);
+    setDesignReviewComp(raw.design_review_completed || false);
     setLocalBlueprintUrl(order.blueprintUrl || null);
     setSignatureUrl((order as any).qc_signature_url || null);
     setQcSignerName((order as any).qc_signer_name || null);
@@ -376,6 +395,11 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         trim_cap_spec: materialSpecs.trim_cap_spec,
         led_mfg_spec: materialSpecs.led_mfg_spec,
         power_supply_spec: materialSpecs.power_supply_spec,
+        substrate_material: materialSpecs.substrate_material,
+        frame_material: materialSpecs.frame_material,
+        vinyl_brand: materialSpecs.vinyl_brand,
+        vinyl_color: materialSpecs.vinyl_color,
+        print_material: materialSpecs.print_material,
         responsible_staff: staff as any,
         qc_checklist: qcChecklist as any,
         contact_name: contactName,
@@ -384,6 +408,20 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         site_address: siteAddress,
         project_name: projectName,
         wo_number: woNumber,
+        final_width: finalWidth === "" ? null : Number(finalWidth),
+        final_height: finalHeight === "" ? null : Number(finalHeight),
+        measurement_unit: measurementUnit,
+        single_or_double_sided: singleDouble,
+        indoor_or_outdoor: indoorOutdoor,
+        illuminated_or_non: illuminated,
+        mounting_method: mountingMethod,
+        installation_surface: installationSurface,
+        fabrication_notes: fabNotes,
+        production_warnings: prodWarnings,
+        internal_status: internalStatus,
+        prepared_by_department: preparedBy,
+        design_review_required: designReviewReq,
+        design_review_completed: designReviewComp,
       } as any).eq("id", order.id);
 
       if (error) throw error;
