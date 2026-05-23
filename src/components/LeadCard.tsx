@@ -112,12 +112,19 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
               </div>
             )}
             <div className="min-w-0">
-              <h3
-                id={`lead-${lead.id}-company`}
-                className="text-base font-bold truncate text-zinc-100"
-              >
-                {lead.company}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3
+                  id={`lead-${lead.id}-company`}
+                  className="text-base font-bold truncate text-zinc-100"
+                >
+                  {lead.company}
+                </h3>
+                {lead.brokerName && (
+                  <Badge variant="outline" className="text-[9px] bg-violet-500/10 text-violet-400 border-violet-500/20 px-1 py-0 h-4">
+                    Broker
+                  </Badge>
+                )}
+              </div>
               <p className="text-zinc-400 text-sm truncate">{lead.name}</p>
             </div>
           </div>
