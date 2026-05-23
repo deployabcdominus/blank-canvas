@@ -52,6 +52,43 @@ export interface WorkOrder {
   // Design workspace fields
   mockup_urls?: string[];
   design_notes?: string;
+  // Phase 2: Production Workflow Fields
+  internal_status?: string;
+  prepared_by_department?: 'Design' | 'Sales' | 'Admin';
+  design_review_required?: boolean;
+  design_review_completed?: boolean;
+  final_width?: number;
+  final_height?: number;
+  measurement_unit?: string;
+  single_or_double_sided?: string;
+  indoor_or_outdoor?: string;
+  illuminated_or_non?: string;
+  substrate_material?: string;
+  frame_material?: string;
+  mounting_method?: string;
+  installation_surface?: string;
+  electrical_required?: boolean;
+  permit_required?: boolean;
+  fabrication_notes?: string;
+  production_warnings?: string;
+  vinyl_required?: boolean;
+  vinyl_brand?: string;
+  vinyl_color?: string;
+  vinyl_finish?: string;
+  vinyl_notes?: string;
+  print_required?: boolean;
+  print_material?: string;
+  print_quality?: string;
+  laminate_required?: boolean;
+  laminate_type?: string;
+  print_notes?: string;
+  cutting_required?: boolean;
+  cnc_required?: boolean;
+  welding_required?: boolean;
+  painting_required?: boolean;
+  painting_color?: string;
+  target_completion_date?: string;
+  actual_completion_date?: string;
 }
 
 // Backward-compatible alias
@@ -81,20 +118,38 @@ export const useWorkOrders = () => {
 // Backward-compatible alias
 export const useProductionOrders = useWorkOrders;
 
-// Map DB statuses to new generic statuses
+// Internal statuses for workshop flow
+export const PRODUCTION_STATUSES = [
+  'Draft',
+  'Waiting for Design Details',
+  'Ready for Production',
+  'In Production',
+  'Waiting for Materials',
+  'On Hold',
+  'Quality Check',
+  'Ready for Install',
+  'Completed',
+  'Canceled'
+] as const;
+
+export type ProductionStatus = typeof PRODUCTION_STATUSES[number];
+
+// Map legacy DB statuses to new statuses for display
 const STATUS_MAP_FROM_DB: Record<string, string> = {
-  'Aguardando Início': 'Pendiente',
-  'Materiales Pedidos': 'Pendiente',
-  'En Producción': 'En Progreso',
-  'Control de Calidad': 'Control de Calidad',
-  'Producido': 'Completada',
+  'Aguardando Início': 'Ready for Production',
+  'Materiales Pedidos': 'Waiting for Materials',
+  'En Producción': 'In Production',
+  'En Progreso': 'In Production',
+  'Control de Calidad': 'Quality Check',
+  'Producido': 'Completed',
 };
 
+// Keep DB compatible for now while we transition
 const STATUS_MAP_TO_DB: Record<string, string> = {
-  'Pendiente': 'Pendiente',
-  'En Progreso': 'En Progreso',
-  'Control de Calidad': 'Control de Calidad',
-  'Completada': 'Completada',
+  'Ready for Production': 'Pendiente',
+  'In Production': 'En Progreso',
+  'Quality Check': 'Control de Calidad',
+  'Completed': 'Completada',
 };
 
 const mapRow = (row: WorkOrderRow): WorkOrder => ({
@@ -142,6 +197,42 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   // Design workspace fields
   mockup_urls: Array.isArray(row.mockup_urls) ? (row.mockup_urls as string[]) : [],
   design_notes: row.design_notes || '',
+  internal_status: row.internal_status || 'Draft',
+  prepared_by_department: (row.prepared_by_department as any) || 'Sales',
+  design_review_required: row.design_review_required || false,
+  design_review_completed: row.design_review_completed || false,
+  final_width: row.final_width || undefined,
+  final_height: row.final_height || undefined,
+  measurement_unit: row.measurement_unit || 'in',
+  single_or_double_sided: row.single_or_double_sided || 'Single',
+  indoor_or_outdoor: row.indoor_or_outdoor || 'Outdoor',
+  illuminated_or_non: row.illuminated_or_non || 'Non-Illuminated',
+  substrate_material: row.substrate_material || '',
+  frame_material: row.frame_material || '',
+  mounting_method: row.mounting_method || '',
+  installation_surface: row.installation_surface || '',
+  electrical_required: row.electrical_required || false,
+  permit_required: row.permit_required || false,
+  fabrication_notes: row.fabrication_notes || '',
+  production_warnings: row.production_warnings || '',
+  vinyl_required: row.vinyl_required || false,
+  vinyl_brand: row.vinyl_brand || '',
+  vinyl_color: row.vinyl_color || '',
+  vinyl_finish: row.vinyl_finish || '',
+  vinyl_notes: row.vinyl_notes || '',
+  print_required: row.print_required || false,
+  print_material: row.print_material || '',
+  print_quality: row.print_quality || '',
+  laminate_required: row.laminate_required || false,
+  laminate_type: row.laminate_type || '',
+  print_notes: row.print_notes || '',
+  cutting_required: row.cutting_required || false,
+  cnc_required: row.cnc_required || false,
+  welding_required: row.welding_required || false,
+  painting_required: row.painting_required || false,
+  painting_color: row.painting_color || '',
+  target_completion_date: row.target_completion_date || null,
+  actual_completion_date: row.actual_completion_date || null,
 });
 
 export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
