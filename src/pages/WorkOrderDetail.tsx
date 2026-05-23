@@ -470,6 +470,7 @@ export default function WorkOrderDetail() {
   const raw = order as any;
   const woNumber = raw.wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
   const statusKey = order.poi_token_used ? "Instalado" : order.status;
+  const isClosed = closingStatus === "Closed";
   const currentStatus = STATUS_OPTIONS.find(s => s.value === statusKey) || STATUS_OPTIONS[0];
   const progress = stepsProgress || order.progress || 0;
   const priorityInfo = PRIORITY_CONFIG[order.priority || "media"] || PRIORITY_CONFIG.media;
