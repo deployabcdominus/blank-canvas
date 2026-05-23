@@ -174,6 +174,11 @@ const mapRow = (row: WorkOrderRow): WorkOrder => ({
   blueprintUrl: row.blueprint_url || null,
   annotations: Array.isArray(row.annotations) ? (row.annotations as any[]) : [],
   technicalDetails: (row.technical_details as Record<string, any>) || {},
+  // Sync JSONB technical details with top-level columns for signage if columns are null
+  final_width: row.final_width || (row.technical_details as any)?.final_width || undefined,
+  final_height: row.final_height || (row.technical_details as any)?.final_height || undefined,
+  substrate_material: row.substrate_material || (row.technical_details as any)?.substrate || '',
+  face_material_spec: row.face_material_spec || (row.technical_details as any)?.face_material || '',
   // Production Sheet fields
   face_material_spec: row.face_material_spec || '',
   returns_material_spec: row.returns_material_spec || '',
@@ -305,6 +310,14 @@ export const WorkOrdersProvider: React.FC<{ children: ReactNode }> = ({ children
     if (updates.installerCompanyId !== undefined) dbUpdates.installer_company_id = updates.installerCompanyId;
     if (updates.blueprintUrl !== undefined) dbUpdates.blueprint_url = updates.blueprintUrl;
     if (updates.annotations !== undefined) dbUpdates.annotations = updates.annotations as any;
+    if (updates.technicalDetails !== undefined) {
+      dbUpdates.technical_details = updates.technicalDetails as any;
+      // Sync signage specific fields from JSONB back to columns if they exist
+      if (updates.technicalDetails.final_width) dbUpdates.final_width = Number(updates.technicalDetails.final_width);
+      if (updates.technicalDetails.final_height) dbUpdates.final_height = Number(updates.technicalDetails.final_height);
+      if (updates.technicalDetails.substrate) dbUpdates.substrate_material = String(updates.technicalDetails.substrate);
+      if (updates.technicalDetails.face_material) dbUpdates.face_material_spec = String(updates.technicalDetails.face_material);
+    }
     if (updates.technicalDetails !== undefined) dbUpdates.technical_details = updates.technicalDetails as any;
     
     // Phase 2 mappings
