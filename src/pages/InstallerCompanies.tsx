@@ -119,8 +119,8 @@ const InstallerCompanies = () => {
                 <TableRow className="bg-muted/50">
                   <TableHead className="w-16">Logo</TableHead>
                   <TableHead>{isEn ? "Company Name" : "Nombre de la Empresa"}</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>{isEn ? "Phone" : "Teléfono"}</TableHead>
+                  <TableHead>Email / {isEn ? "Phone" : "Teléfono"}</TableHead>
+                  <TableHead>{isEn ? "Status" : "Estado"}</TableHead>
                   <TableHead className="w-24">{isEn ? "Actions" : "Acciones"}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -145,8 +145,17 @@ const InstallerCompanies = () => {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>{company.email || "-"}</TableCell>
-                    <TableCell>{company.phone || "-"}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="text-xs">{company.email || "-"}</span>
+                        <span className="text-xs text-muted-foreground">{company.phone || "-"}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={company.active_status === 'active' ? 'outline' : 'secondary'} className={company.active_status === 'active' ? 'bg-mint/10 text-mint-foreground border-mint/20' : ''}>
+                        {company.active_status === 'active' ? (isEn ? "Active" : "Activo") : (isEn ? "Inactive" : "Inactivo")}
+                      </Badge>
+                    </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         {canEdit && (

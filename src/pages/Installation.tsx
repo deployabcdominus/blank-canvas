@@ -62,8 +62,11 @@ const Installation = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Scheduled": return "bg-soft-blue text-soft-blue-foreground";
-      case "In Progress": return "bg-lavender text-lavender-foreground";
+      case "Installer Assigned": return "bg-lavender text-lavender-foreground";
+      case "In Progress": return "bg-violet-500/20 text-violet-300";
+      case "Completed Pending Review": return "bg-amber-500/20 text-amber-300";
       case "Completed": return "bg-mint text-mint-foreground";
+      case "Needs Follow-up": return "bg-red-500/20 text-red-300";
       default: return "bg-muted text-muted-foreground";
     }
   };
