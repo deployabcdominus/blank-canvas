@@ -186,6 +186,7 @@ ${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
               </Select>
               {errors.serviceId && <p className="text-sm text-destructive">{errors.serviceId.message}</p>}
             </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
