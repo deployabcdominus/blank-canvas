@@ -13,10 +13,13 @@ import { Calendar } from "@/components/ui/calendar";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from "@/integrations/supabase/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CalendarIcon, Copy, Settings } from "lucide-react";
+import { CalendarIcon, Copy, Settings, Check } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 const makeFormSchema = (isEn: boolean) => z.object({
   serviceId: z.string().min(1, isEn ? "Select a service" : "Seleccione un servicio"),
   installerCompanyId: z.string().min(1, isEn ? "Select a subcontractor" : "Seleccione un subcontratista"),
+  installerId: z.string().optional(),
   date: z.date({ required_error: isEn ? "Select a date" : "Seleccione una fecha" }),
   time: z.string().min(1, isEn ? "Enter the time" : "Informe el horario"),
   address: z.string().min(1, isEn ? "Address is required" : "La dirección es obligatoria"),
@@ -32,6 +36,12 @@ const makeFormSchema = (isEn: boolean) => z.object({
   contactPhone: z.string().optional(),
   contactEmail: z.string().optional(),
   notes: z.string().optional(),
+  accessNotes: z.string().optional(),
+  parkingNotes: z.string().optional(),
+  specialInstructions: z.string().optional(),
+  requiredTools: z.string().optional(),
+  permitRequired: z.boolean().default(false),
+  customerPresence: z.boolean().default(false),
 });
 
 type FormData = z.infer<ReturnType<typeof makeFormSchema>>;
@@ -54,7 +64,28 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
   const navigate = useNavigate();
   const availableServices = getAvailableForInstallation();
 
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(formSchema) });
+  const { data: installers = [] } = useQuery({
+    queryKey: ['installers', watchedInstallerCompanyId],
+    queryFn: async () => {
+      if (!watchedInstallerCompanyId || watchedInstallerCompanyId === "none") return [];
+      const { data, error } = await supabase
+        .from('installers')
+        .select('*')
+        .eq('installer_company_id', watchedInstallerCompanyId)
+        .eq('active_status', 'active');
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!watchedInstallerCompanyId && watchedInstallerCompanyId !== "none"
+  });
+
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<FormData>({ 
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      permitRequired: false,
+      customerPresence: false
+    }
+  });
 
   const watchedDate = watch("date");
   const watchedServiceId = watch("serviceId");
@@ -125,6 +156,21 @@ ${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
               {errors.installerCompanyId && <p className="text-sm text-destructive">{errors.installerCompanyId.message}</p>}
             </div>
             <div className="space-y-2">
+              <Label htmlFor="installer_person" className="text-sm font-medium text-foreground">{isEn ? "Specific Installer" : "Instalador Específico"}</Label>
+              <Select onValueChange={(value) => setValue("installerId", value === "none" ? undefined : value)}>
+                <SelectTrigger className="bg-white border-input"><SelectValue placeholder={isEn ? "Select person (optional)" : "Seleccionar persona (opcional)"} /></SelectTrigger>
+                <SelectContent className="bg-white border shadow-lg z-50">
+                  <SelectItem value="none">{isEn ? "Any" : "Cualquiera"}</SelectItem>
+                  {installers.map((i: any) => (
+                    <SelectItem key={i.id} value={i.id}>{i.installer_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
               <Label htmlFor="service" className="text-sm font-medium text-foreground">{t.scheduleInstallationModal.serviceLabel}</Label>
               <Select onValueChange={(value) => setValue("serviceId", value)}>
                 <SelectTrigger className="bg-white border-input"><SelectValue placeholder={t.scheduleInstallationModal.servicePlaceholder} /></SelectTrigger>
@@ -140,7 +186,6 @@ ${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
               </Select>
               {errors.serviceId && <p className="text-sm text-destructive">{errors.serviceId.message}</p>}
             </div>
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -187,6 +232,39 @@ ${watch("notes") ? `${tm.shareNotes} ${watch("notes")}` : ""}
                 <Input id="contactEmail" type="email" placeholder={t.scheduleInstallationModal.contactEmailPlaceholder} className="bg-white border-input" {...register("contactEmail")} />
               </div>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="accessNotes" className="text-sm font-medium text-foreground">{isEn ? "Access Notes" : "Notas de Acceso"}</Label>
+              <Input id="accessNotes" placeholder={isEn ? "Key codes, gate instructions" : "Códigos de llave, instrucciones de portón"} className="bg-white border-input" {...register("accessNotes")} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="parkingNotes" className="text-sm font-medium text-foreground">{isEn ? "Parking" : "Estacionamiento"}</Label>
+              <Input id="parkingNotes" placeholder={isEn ? "Where to park the truck" : "Donde estacionar el camión"} className="bg-white border-input" {...register("parkingNotes")} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="specialInstructions" className="text-sm font-medium text-foreground">{isEn ? "Special Instructions" : "Instrucciones Especiales"}</Label>
+              <Input id="specialInstructions" className="bg-white border-input" {...register("specialInstructions")} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="requiredTools" className="text-sm font-medium text-foreground">{isEn ? "Required Tools" : "Herramientas Requeridas"}</Label>
+              <Input id="requiredTools" placeholder={isEn ? "Ladders, bucket truck, etc" : "Escaleras, camión grúa, etc"} className="bg-white border-input" {...register("requiredTools")} />
+            </div>
+          </div>
+
+          <div className="flex gap-6 py-2">
+             <div className="flex items-center space-x-2">
+               <Checkbox id="permitRequired" checked={watch("permitRequired")} onCheckedChange={(v) => setValue("permitRequired", !!v)} />
+               <Label htmlFor="permitRequired" className="text-sm font-normal cursor-pointer">{isEn ? "Permit Required" : "Permiso Requerido"}</Label>
+             </div>
+             <div className="flex items-center space-x-2">
+               <Checkbox id="customerPresence" checked={watch("customerPresence")} onCheckedChange={(v) => setValue("customerPresence", !!v)} />
+               <Label htmlFor="customerPresence" className="text-sm font-normal cursor-pointer">{isEn ? "Customer Presence Required" : "Presencia del Cliente Requerida"}</Label>
+             </div>
           </div>
 
           <div className="space-y-2">
