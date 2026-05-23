@@ -458,11 +458,9 @@ export default function WorkOrderDetail() {
 
   // All images for fullscreen navigation
   const allImages = useMemo(() => {
-    if (!order) return [];
-    const raw = order as any;
     const imgs: string[] = [];
-    if (order.blueprintUrl) imgs.push(order.blueprintUrl);
-    if (Array.isArray(order.mockup_urls)) imgs.push(...order.mockup_urls);
+    if (order?.blueprintUrl) imgs.push(order.blueprintUrl);
+    if (Array.isArray(order?.mockup_urls)) imgs.push(...order!.mockup_urls);
     return imgs;
   }, [order]);
 
@@ -481,9 +479,9 @@ export default function WorkOrderDetail() {
   const statusKey = order.poi_token_used ? "Instalado" : order.status;
   const isClosed = closingStatus === "Closed";
   const currentStatus = STATUS_OPTIONS.find(s => s.value === statusKey) || STATUS_OPTIONS[0];
-  const progress = stepsProgress || order.progress || 0;
+  const progress = stepsProgress ?? order.progress ?? 0;
   const priorityInfo = PRIORITY_CONFIG[order.priority || "media"] || PRIORITY_CONFIG.media;
-  const responsibleStaff = raw.responsible_staff;
+  const responsibleStaff = (order as any).responsible_staff;
 
   const fmtDate = (d: string | null | undefined) => {
     if (!d) return null;
@@ -1134,12 +1132,15 @@ export default function WorkOrderDetail() {
                 <SectionCard>
                   <h2 className={SECTION_TITLE} style={SECTION_TITLE_COLOR}>Team</h2>
                   <div className="space-y-2">
-                    {Object.entries(responsibleStaff).map(([role, entry]: [string, any]) => {
+                    {Object.entries(responsibleStaff || {}).map(([role, entry]: [string, any]) => {
                       if (!entry?.name) return null;
+                      const initials = entry.name
+                        ? entry.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
+                        : "?";
                       return (
                         <div key={role} className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0" style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa" }}>
-                            {entry.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()}
+                            {initials}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-foreground truncate">{entry.name}</p>
