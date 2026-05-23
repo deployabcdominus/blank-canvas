@@ -1386,6 +1386,31 @@ export const es: TranslationKeys = {
       from: "Desde",
       to: "Hasta",
     },
+    tableView: {
+      client: "Cliente",
+      project: "Proyecto",
+      status: "Estado",
+      materials: "Materiales",
+      progress: "Progreso",
+      startDate: "F. Inicio",
+      estimatedDate: "F. Estimada",
+      actions: {
+        open: "Abrir",
+        print: "Imprimir",
+        share: "Compartir",
+        markProduced: "Marcar Producido",
+      },
+    },
+    timeline: {
+      noSteps: "No hay etapas definidas para esta orden",
+      stepsOf: "{{completed}} de {{total}} etapas",
+      status: {
+        ready: "✓ Listo",
+        inProgress: "⚡ En curso",
+        pending: "Pendiente",
+      },
+    },
   },
 } as const;
+
 

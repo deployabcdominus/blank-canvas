@@ -3,6 +3,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Eye, Printer, Share2, CheckCircle } from "lucide-react";
+import { useT } from "@/i18n/LanguageContext";
+
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -22,22 +24,31 @@ interface Props {
 }
 
 export function ProductionTableView({ orders, onOpen, onMarkBuilt }: Props) {
+  const t = useT();
+  const STATUS_LABELS: Record<string, string> = {
+    "Materiales Pedidos": t.production.filters.status.materialsOrdered,
+    "En Producción": t.production.filters.status.inProduction,
+    "Control de Calidad": t.production.filters.status.qualityControl,
+    "Producido": t.production.filters.status.produced,
+  };
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <div className="glass-card rounded-2xl overflow-hidden border border-border/50">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-border/50">
-              <TableHead className="text-xs font-medium text-muted-foreground">Cliente</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground">Proyecto</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground">Estado</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground text-center">Materiales</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground text-center">Progreso</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground">F. Inicio</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground">F. Estimada</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">{t.production.tableView.client}</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">{t.production.tableView.project}</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">{t.production.tableView.status}</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground text-center">{t.production.tableView.materials}</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground text-center">{t.production.tableView.progress}</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">{t.production.tableView.startDate}</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground">{t.production.tableView.estimatedDate}</TableHead>
               <TableHead className="text-xs font-medium text-muted-foreground w-12"></TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {orders.map(order => (
               <TableRow key={order.id} className="group border-border/30 hover:bg-accent/30 transition-colors cursor-pointer" onClick={() => onOpen?.(order)}>
@@ -45,7 +56,7 @@ export function ProductionTableView({ orders, onOpen, onMarkBuilt }: Props) {
                 <TableCell className="text-sm text-muted-foreground">{order.project}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className={`text-[10px] ${STATUS_COLORS[order.status] || ""}`}>
-                    {order.status}
+                    {STATUS_LABELS[order.status] || order.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
@@ -63,15 +74,16 @@ export function ProductionTableView({ orders, onOpen, onMarkBuilt }: Props) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={e => { e.stopPropagation(); onOpen?.(order); }}>
-                        <Eye className="w-3.5 h-3.5 mr-2" /> Abrir
+                        <Eye className="w-3.5 h-3.5 mr-2" /> {t.production.tableView.actions.open}
                       </DropdownMenuItem>
-                      <DropdownMenuItem><Printer className="w-3.5 h-3.5 mr-2" /> Imprimir</DropdownMenuItem>
-                      <DropdownMenuItem><Share2 className="w-3.5 h-3.5 mr-2" /> Compartir</DropdownMenuItem>
+                      <DropdownMenuItem><Printer className="w-3.5 h-3.5 mr-2" /> {t.production.tableView.actions.print}</DropdownMenuItem>
+                      <DropdownMenuItem><Share2 className="w-3.5 h-3.5 mr-2" /> {t.production.tableView.actions.share}</DropdownMenuItem>
                       {order.status === "Control de Calidad" && onMarkBuilt && (
                         <DropdownMenuItem onClick={e => { e.stopPropagation(); onMarkBuilt(order.id); }}>
-                          <CheckCircle className="w-3.5 h-3.5 mr-2" /> Marcar Producido
+                          <CheckCircle className="w-3.5 h-3.5 mr-2" /> {t.production.tableView.actions.markProduced}
                         </DropdownMenuItem>
                       )}
+
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

@@ -1384,8 +1384,33 @@ export const en = {
       from: "From",
       to: "To",
     },
+    tableView: {
+      client: "Client",
+      project: "Project",
+      status: "Status",
+      materials: "Materials",
+      progress: "Progress",
+      startDate: "Start Date",
+      estimatedDate: "Estimated Date",
+      actions: {
+        open: "Open",
+        print: "Print",
+        share: "Share",
+        markProduced: "Mark Produced",
+      },
+    },
+    timeline: {
+      noSteps: "No steps defined for this order",
+      stepsOf: "of {{total}} steps",
+      status: {
+        ready: "✓ Ready",
+        inProgress: "⚡ In Progress",
+        pending: "Pending",
+      },
+    },
   },
 };
+
 
 
 // Use a deep string type so both locales can have different values
