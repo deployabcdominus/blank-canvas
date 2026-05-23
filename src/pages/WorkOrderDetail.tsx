@@ -1084,6 +1084,9 @@ export default function WorkOrderDetail() {
                           </SelectContent>
                         </Select>
                       </Field>
+                      <Form {...form}>
+                        <PilotTagSelector control={form.control} />
+                      </Form>
                       <Field label="Delivery Date"><Input type="date" value={editFields.estimated_delivery} onChange={e => setEditFields(p => ({ ...p, estimated_delivery: e.target.value }))} /></Field>
                       <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 12, marginTop: 4 }} />
                       <Field label="Site Address"><Input value={editFields.site_address} onChange={e => setEditFields(p => ({ ...p, site_address: e.target.value }))} /></Field>
