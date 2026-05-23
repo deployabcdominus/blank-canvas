@@ -1050,13 +1050,24 @@ export type Database = {
       }
       production_orders: {
         Row: {
+          accepted_by_client_name: string | null
           actual_completion_date: string | null
           annotations: Json | null
           assigned_to_user_id: string | null
           backs_material_spec: string | null
           blueprint_url: string | null
           client: string
+          client_acceptance_date: string | null
+          client_acceptance_method: string | null
+          client_acceptance_notes: string | null
+          client_acceptance_required: boolean | null
+          client_accepted: boolean | null
           client_id: string | null
+          closed_at: string | null
+          closed_by_user_id: string | null
+          closeout_checklist_completed: boolean | null
+          closing_notes: string | null
+          closing_status: string | null
           cnc_required: boolean | null
           company_id: string
           contact_email: string | null
@@ -1074,7 +1085,14 @@ export type Database = {
           estimated_delivery: string | null
           fabrication_notes: string | null
           face_material_spec: string | null
+          final_balance_due: number | null
           final_height: number | null
+          final_payment_amount: number | null
+          final_payment_date: string | null
+          final_payment_method: string | null
+          final_payment_received: boolean | null
+          final_payment_reference: string | null
+          final_payment_required: boolean | null
           final_width: number | null
           frame_material: string | null
           id: string
@@ -1139,13 +1157,24 @@ export type Database = {
           wo_number: string | null
         }
         Insert: {
+          accepted_by_client_name?: string | null
           actual_completion_date?: string | null
           annotations?: Json | null
           assigned_to_user_id?: string | null
           backs_material_spec?: string | null
           blueprint_url?: string | null
           client: string
+          client_acceptance_date?: string | null
+          client_acceptance_method?: string | null
+          client_acceptance_notes?: string | null
+          client_acceptance_required?: boolean | null
+          client_accepted?: boolean | null
           client_id?: string | null
+          closed_at?: string | null
+          closed_by_user_id?: string | null
+          closeout_checklist_completed?: boolean | null
+          closing_notes?: string | null
+          closing_status?: string | null
           cnc_required?: boolean | null
           company_id: string
           contact_email?: string | null
@@ -1163,7 +1192,14 @@ export type Database = {
           estimated_delivery?: string | null
           fabrication_notes?: string | null
           face_material_spec?: string | null
+          final_balance_due?: number | null
           final_height?: number | null
+          final_payment_amount?: number | null
+          final_payment_date?: string | null
+          final_payment_method?: string | null
+          final_payment_received?: boolean | null
+          final_payment_reference?: string | null
+          final_payment_required?: boolean | null
           final_width?: number | null
           frame_material?: string | null
           id?: string
@@ -1228,13 +1264,24 @@ export type Database = {
           wo_number?: string | null
         }
         Update: {
+          accepted_by_client_name?: string | null
           actual_completion_date?: string | null
           annotations?: Json | null
           assigned_to_user_id?: string | null
           backs_material_spec?: string | null
           blueprint_url?: string | null
           client?: string
+          client_acceptance_date?: string | null
+          client_acceptance_method?: string | null
+          client_acceptance_notes?: string | null
+          client_acceptance_required?: boolean | null
+          client_accepted?: boolean | null
           client_id?: string | null
+          closed_at?: string | null
+          closed_by_user_id?: string | null
+          closeout_checklist_completed?: boolean | null
+          closing_notes?: string | null
+          closing_status?: string | null
           cnc_required?: boolean | null
           company_id?: string
           contact_email?: string | null
@@ -1252,7 +1299,14 @@ export type Database = {
           estimated_delivery?: string | null
           fabrication_notes?: string | null
           face_material_spec?: string | null
+          final_balance_due?: number | null
           final_height?: number | null
+          final_payment_amount?: number | null
+          final_payment_date?: string | null
+          final_payment_method?: string | null
+          final_payment_received?: boolean | null
+          final_payment_reference?: string | null
+          final_payment_required?: boolean | null
           final_width?: number | null
           frame_material?: string | null
           id?: string
@@ -1460,6 +1514,57 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_closing_history: {
+        Row: {
+          action: string
+          company_id: string
+          created_at: string
+          id: string
+          new_closing_status: string | null
+          notes: string | null
+          performed_by_user_id: string | null
+          previous_closing_status: string | null
+          production_order_id: string
+        }
+        Insert: {
+          action: string
+          company_id: string
+          created_at?: string
+          id?: string
+          new_closing_status?: string | null
+          notes?: string | null
+          performed_by_user_id?: string | null
+          previous_closing_status?: string | null
+          production_order_id: string
+        }
+        Update: {
+          action?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          new_closing_status?: string | null
+          notes?: string | null
+          performed_by_user_id?: string | null
+          previous_closing_status?: string | null
+          production_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_closing_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_closing_history_production_order_id_fkey"
+            columns: ["production_order_id"]
+            isOneToOne: false
+            referencedRelation: "production_orders"
             referencedColumns: ["id"]
           },
         ]
