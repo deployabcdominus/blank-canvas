@@ -432,7 +432,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     } finally {
       setSaving(false);
     }
-  }, [order, materialSpecs, staff, qcChecklist, contactName, contactPhone, contactEmail, siteAddress, projectName, woNumber, toast]);
+  }, [order, materialSpecs, staff, qcChecklist, contactName, contactPhone, contactEmail, siteAddress, projectName, woNumber, toast, finalWidth, finalHeight, measurementUnit, singleDouble, indoorOutdoor, illuminated, mountingMethod, installationSurface, fabNotes, prodWarnings, internalStatus, preparedBy, designReviewReq, designReviewComp]);
 
   const handlePrint = useCallback(async () => {
     if (!order) return;
@@ -458,6 +458,18 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         companyName: company?.name || "MY COMPANY",
         companyLogoUrl: company?.logo_url || null,
         qcSignatureUrl: signatureUrl || null,
+        // Phase 2 additions
+        finalWidth,
+        finalHeight,
+        measurementUnit,
+        internalStatus,
+        preparedBy,
+        designReviewReq,
+        designReviewComp,
+        fabNotes,
+        prodWarnings,
+        mountingMethod,
+        installationSurface,
       });
       toast({ title: "PDF generado", description: "La hoja de producción fue descargada." });
     } catch (e: any) {
