@@ -15,6 +15,7 @@ import { useCatalog } from "@/hooks/useCatalog";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "@/lib/image";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { PilotTagSelector } from "./pilot/PilotTagSelector";
 
 const makeLeadFormSchema = (isEn: boolean) => z.object({
   name: z.string().min(1, isEn ? "Name is required" : "El nombre es obligatorio"),
@@ -347,6 +348,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
             <div className="space-y-4">
               <h4 className="text-sm font-semibold border-b pb-1 text-primary">{t.addLeadModal.assignmentSection}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <PilotTagSelector control={form.control} />
                 <FormField control={form.control} name="intakeQuality" render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t.addLeadModal.intakeQualityLabel}</FormLabel>
