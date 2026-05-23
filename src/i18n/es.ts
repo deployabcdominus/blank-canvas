@@ -1410,7 +1410,45 @@ export const es: TranslationKeys = {
         pending: "Pendiente",
       },
     },
+    workOrders: {
+      statusLabels: {
+        pending: "Pendiente",
+        inProduction: "En Producción",
+        qc: "QC",
+        ready: "Listo",
+        installed: "Instalado",
+      },
+      details: {
+        viewDetails: "Ver Detalles",
+        generatePoi: "Generar Enlace POI",
+        printSheet: "Imprimir Hoja de Producción",
+        unassigned: "Sin asignar",
+        noDate: "Sin fecha",
+        qcSigned: "QC Firmado",
+        installed: "Instalado",
+      },
+    },
+    technician: {
+      title: "Mis Órdenes de Servicio",
+      subtitle: "Órdenes asignadas a ti",
+      sync: "Sinc",
+      noOrders: "No tienes órdenes asignadas",
+      currentStatus: "Estado actual",
+      delivery: "Entrega",
+      progress: "Progreso",
+      notes: "Notas",
+      techSheet: "Ficha Técnica",
+      photos: "Evidencia",
+      myTask: "Mi Tarea",
+      details: "Detalles",
+      actions: {
+        start: "Iniciar Orden",
+        finish: "Finalizar Orden",
+        saving: "Guardando...",
+      },
+    },
   },
 } as const;
+
 
 

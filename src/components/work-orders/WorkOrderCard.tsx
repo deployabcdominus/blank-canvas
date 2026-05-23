@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/i18n/LanguageContext";
+import { useT } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { WorkOrder } from "@/contexts/WorkOrdersContext";
@@ -13,21 +13,16 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
-const STATUS_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
-  // Pendiente → gray
-  "Pendiente":          { bg: "rgba(107,114,128,0.12)", color: "#6b7280", label: "Pendiente" },
-  // En Progreso / En Producción → blue
-  "En Progreso":        { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: "En Producción" },
-  "En Producción":      { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: "En Producción" },
-  // Control de Calidad → yellow
-  "Control de Calidad": { bg: "rgba(245,158,11,0.12)", color: "#f59e0b", label: "QC" },
-  // Completada / Listo → green
-  "Completada":         { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: "Listo" },
-  "Listo":              { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: "Listo" },
-  // Installed / Instalado → purple
-  "installed":          { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: "Instalado" },
-  "Instalado":         { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: "Instalado" },
-};
+const getStatusConfig = (t: any) => ({
+  "Pendiente":          { bg: "rgba(107,114,128,0.12)", color: "#6b7280", label: t.workOrders.statusLabels.pending },
+  "En Progreso":        { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: t.workOrders.statusLabels.inProduction },
+  "En Producción":      { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: t.workOrders.statusLabels.inProduction },
+  "Control de Calidad": { bg: "rgba(245,158,11,0.12)", color: "#f59e0b", label: t.workOrders.statusLabels.qc },
+  "Completada":         { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: t.workOrders.statusLabels.ready },
+  "Listo":              { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: t.workOrders.statusLabels.ready },
+  "installed":          { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: t.workOrders.statusLabels.installed },
+  "Instalado":         { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: t.workOrders.statusLabels.installed },
+});
 
 interface Props {
   order: WorkOrder;
@@ -50,23 +45,19 @@ function formatDelivery(date: string | null | undefined): string | null {
   }
 }
 
-const STATUS_LABELS_EN: Record<string, string> = {
-  "Pendiente": "Pending",
-  "En Producción": "In Production",
-  "QC": "QC",
-  "Listo": "Ready",
-  "Instalado": "Installed",
-};
-
 export function WorkOrderCard({
   order, index, assigneeName, onOpen, onGeneratePOI, onPrintSheet, onDelete, canDelete = false, canEdit = true,
 }: Props) {
   const navigate = useNavigate();
-  const { locale } = useLanguage();
-  const isEn = locale === "en";
+  const t = useT();
+  const STATUS_CONFIG = getStatusConfig(t);
+
+
+
   const statusKey = order.poi_token_used ? "installed" : order.status;
-  const status = STATUS_CONFIG[statusKey] || STATUS_CONFIG["Pendiente"];
-  const statusLabel = isEn ? (STATUS_LABELS_EN[status.label] ?? status.label) : status.label;
+  const status = STATUS_CONFIG[statusKey as keyof typeof STATUS_CONFIG] || STATUS_CONFIG["Pendiente"];
+  const statusLabel = status.label;
+
   const woLabel = order.wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
   const deliveryDate = order.estimatedDelivery || order.estimatedCompletion;
   const formattedDelivery = formatDelivery(deliveryDate);
@@ -131,12 +122,13 @@ export function WorkOrderCard({
       <div className="flex items-center gap-4 text-xs flex-wrap">
         <span className="flex items-center gap-1.5" style={{ color: formattedDelivery ? "#9ca3af" : "#4b5563" }}>
           <Calendar className="w-3.5 h-3.5" />
-          {formattedDelivery || "No date"}
+          {formattedDelivery || (t as any).workOrders.details.noDate}
         </span>
         <span className="flex items-center gap-1.5" style={{ color: assigneeName ? "#9ca3af" : "#4b5563" }}>
           <User className="w-3.5 h-3.5" />
-          {assigneeName || "Unassigned"}
+          {assigneeName || (t as any).workOrders.details.unassigned}
         </span>
+
         {order.product_type && (
           <span className="flex items-center gap-1.5 text-zinc-400">
             <Wrench className="w-3.5 h-3.5" />
@@ -154,7 +146,7 @@ export function WorkOrderCard({
               style={{ background: "rgba(88,28,135,0.4)", color: "#c4b5fd" }}
             >
               <ShieldCheck className="w-2.5 h-2.5" />
-              QC Signed
+              {(t as any).workOrders.details.qcSigned}
             </span>
           )}
           {order.poi_token_used && (
@@ -163,7 +155,7 @@ export function WorkOrderCard({
               style={{ background: "rgba(6,78,59,0.5)", color: "#6ee7b7" }}
             >
               <CheckCircle className="w-2.5 h-2.5" />
-              Installed
+              {(t as any).workOrders.details.installed}
             </span>
           )}
         </div>
@@ -175,18 +167,20 @@ export function WorkOrderCard({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onOpen?.(order); }}>
-              <Eye className="w-3.5 h-3.5 mr-2" /> View Details
+              <Eye className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.viewDetails}
             </DropdownMenuItem>
             {canEdit && (
               <>
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onGeneratePOI?.(order); }}>
-                  <QrCode className="w-3.5 h-3.5 mr-2" /> Generate POI Link
+                  <QrCode className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.generatePoi}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onPrintSheet?.(order); }}>
-                  <Printer className="w-3.5 h-3.5 mr-2" /> Print Production Sheet
+                  <Printer className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.printSheet}
                 </DropdownMenuItem>
               </>
             )}
+
+
             {canDelete && onDelete && (
               <>
                 <DropdownMenuSeparator />
