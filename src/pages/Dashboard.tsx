@@ -54,22 +54,32 @@ const Dashboard = () => {
 
   const stats = useMemo(() => {
     const activeLeads = leads.filter(l => l.status !== "Convertido" && l.status !== "Perdido").length;
-    const inProgress = orders.filter(o => ["Pendiente", "En Producción", "QC", "En Progreso"].includes(o.status)).length;
-    const awaitingDelivery = orders.filter(o => o.status === "Listo").length;
-    const completedThisMonth = orders.filter(o => {
-      if (o.status === "Instalado" && o.startDate) {
-        try { return isThisMonth(new Date(o.startDate)); } catch { return false; }
-      }
-      return false;
-    }).length;
+    const leadsFollowUp = leads.filter(l => l.follow_up_required).length;
+    const inProduction = orders.filter(o => ["En Producción", "En Progreso", "In Production"].includes(o.status || o.internal_status)).length;
+    const readyForInstall = orders.filter(o => o.status === "Completada" || o.internal_status === "Ready for Install").length;
+    const waitingForAcceptance = orders.filter(o => o.closing_status === "Waiting for Client Acceptance").length;
+    const waitingForPayment = orders.filter(o => o.closing_status === "Waiting for Final Payment").length;
+    
+    const now = new Date();
+    const start = startOfMonth(now);
+    const end = endOfMonth(now);
+    const closedThisMonth = orders.filter(o => o.closing_status === "Closed" && o.closed_at && isWithinInterval(new Date(o.closed_at), { start, end })).length;
+
+    const totalEstimatedRevenue = proposals.reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
+    const approvedProposalValue = proposals.filter((p: any) => p.status === "Aprobada").reduce((acc: number, p: any) => acc + (Number(p.value) || 0), 0);
+    const pendingBalance = orders.reduce((acc: number, o: any) => acc + (Number(o.final_balance_due) || 0), 0);
 
     return [
-      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: t.dashboard.noProposal, value: activeLeads, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "work-orders" as KanbanColumn, label: t.dashboard.inProgress, desc: t.dashboard.ordersInProgress, value: inProgress, icon: ClipboardList, accent: "hud-amber", delta: 100, sparkline: [0, 0, 0, 0, 1, 0, 1] },
-      { key: "entrega" as KanbanColumn, label: t.dashboard.awaitingDelivery, desc: t.dashboard.scheduledPending, value: awaitingDelivery, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "completado" as KanbanColumn, label: t.dashboard.completed, desc: t.dashboard.thisMonth, value: completedThisMonth, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${leadsFollowUp} need follow-up`, value: activeLeads, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "production" as KanbanColumn, label: "In Production", desc: `${inProduction} orders active`, value: inProduction, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
+      { key: "install" as KanbanColumn, label: "Ready to Install", desc: `${readyForInstall} pending schedule`, value: readyForInstall, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "closed" as KanbanColumn, label: "Closed MTD", desc: "Successfully completed", value: closedThisMonth, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "revenue" as any, label: "Total Estimated", desc: "Pipeline value", value: `$${(totalEstimatedRevenue / 1000).toFixed(1)}k`, icon: TrendingUp, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "approved" as any, label: "Approved Value", desc: "Booked business", value: `$${(approvedProposalValue / 1000).toFixed(1)}k`, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "balance" as any, label: "Pending Balance", desc: "Awaiting payment", value: `$${(pendingBalance / 1000).toFixed(1)}k`, icon: DollarSign, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "pending" as any, label: "Acceptance Pending", desc: "Awaiting client", value: waitingForAcceptance, icon: ClipboardList, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
     ];
-  }, [leads, orders, t]);
+  }, [leads, orders, proposals, t]);
 
   const handleKpiClick = (key: KanbanColumn) => {
     setActiveFilter(prev => (prev === key ? null : key));
