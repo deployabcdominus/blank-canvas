@@ -94,6 +94,7 @@ export default function MobileTechnicianView() {
   const [tab, setTab] = useState<MobileTab>("task");
 
 
+
   const [orders, setOrders] = useState<OrderData[]>(() => {
     const saved = localStorage.getItem("cached_tech_orders");
     return saved ? JSON.parse(saved) : [];

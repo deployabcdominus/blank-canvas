@@ -53,6 +53,7 @@ export function WorkOrderCard({
   const STATUS_CONFIG = getStatusConfig(t);
 
 
+
   const statusKey = order.poi_token_used ? "installed" : order.status;
   const status = STATUS_CONFIG[statusKey as keyof typeof STATUS_CONFIG] || STATUS_CONFIG["Pendiente"];
   const statusLabel = status.label;
