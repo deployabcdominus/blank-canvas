@@ -173,10 +173,10 @@ export default function WorkOrderDetail() {
     const raw = order as any;
     setNotes(order.notes || "");
     setQcChecklist({
-      design_verified: raw.qc_checklist?.design_verified || false,
-      material_specs_confirmed: raw.qc_checklist?.material_specs_confirmed || false,
-      wiring_test_passed: raw.qc_checklist?.wiring_test_passed || false,
-      final_sign_cleaned: raw.qc_checklist?.final_sign_cleaned || false,
+      design_verified: raw?.qc_checklist?.design_verified || false,
+      material_specs_confirmed: raw?.qc_checklist?.material_specs_confirmed || false,
+      wiring_test_passed: raw?.qc_checklist?.wiring_test_passed || false,
+      final_sign_cleaned: raw?.qc_checklist?.final_sign_cleaned || false,
     });
     setSignatureUrl(raw.qc_signature_url || null);
     setQcSignerName(raw.qc_signer_name || null);
@@ -190,7 +190,7 @@ export default function WorkOrderDetail() {
     setClientAcceptanceMethod(order.client_acceptance_method || "Signature");
     setAcceptedByClientName(order.accepted_by_client_name || "");
     setClosingNotes(order.closing_notes || "");
-    if (raw.closing_checklist) setChecklist(raw.closing_checklist);
+    if (raw?.closing_checklist) setChecklist(raw.closing_checklist);
     setPilotTag(order.pilot_tag || null);
     form.setValue("pilotTag", order.pilot_tag || "");
   }, [order]);
@@ -799,12 +799,12 @@ export default function WorkOrderDetail() {
                     <label key={item.key} className="flex items-center gap-3 cursor-pointer py-1.5 px-2 rounded-lg hover:bg-white/[0.02] transition-colors">
                       <input
                         type="checkbox"
-                        checked={!!qcChecklist[item.key]}
+                        checked={!!qcChecklist?.[item.key]}
                         onChange={() => !isClosed && toggleQc(item.key)}
                         disabled={isClosed}
                         className="w-4 h-4 rounded accent-violet-500 disabled:opacity-50"
                       />
-                      <span className={`text-sm ${qcChecklist[item.key] ? "text-foreground" : "text-muted-foreground"}`}>
+                      <span className={`text-sm ${qcChecklist?.[item.key] ? "text-foreground" : "text-muted-foreground"}`}>
                         {item.label}
                       </span>
                     </label>
@@ -1119,8 +1119,8 @@ export default function WorkOrderDetail() {
                   {MATERIAL_FIELDS.map(f => (
                     <div key={f.key}>
                       <p className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground mb-1">{f.label}</p>
-                      <p className={`text-[13px] break-words ${(order as any)[f.key] ? "text-foreground" : "text-zinc-600"}`}>
-                        {(order as any)[f.key] || "—"}
+                      <p className={`text-[13px] break-words ${(order as any)?.[f.key] ? "text-foreground" : "text-zinc-600"}`}>
+                        {(order as any)?.[f.key] || "—"}
                       </p>
                     </div>
                   ))}
