@@ -9,8 +9,10 @@ export interface InstallerCompany {
   contact: string;
   phone?: string;
   email?: string;
+  address?: string;
+  notes?: string;
   logoUrl?: string;
-  // defaultPassword removed for security
+  active_status?: 'active' | 'inactive';
   services?: string[];
 }
 
@@ -54,7 +56,7 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
       try {
         const { data, error } = await supabase
           .from('installer_companies')
-          .select('id, name, contact, email, logo_url, services');
+          .select('id, name, contact, email, logo_url, services, phone, address, notes, active_status');
 
         if (error) throw error;
 
@@ -63,9 +65,12 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
             id: company.id,
             name: company.name,
             contact: company.contact || '',
-            phone: company.contact,
+            phone: company.phone || company.contact,
             email: company.email,
+            address: company.address,
+            notes: company.notes,
             logoUrl: company.logo_url,
+            active_status: (company.active_status as any) || 'active',
             services: company.services,
           })));
         }
@@ -92,8 +97,12 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
           name: company.name,
           contact: company.contact,
           email: company.email,
+          phone: company.phone,
+          address: company.address,
+          notes: company.notes,
           logo_url: company.logoUrl,
           services: company.services,
+          active_status: company.active_status || 'active',
         })
         .select()
         .single();
@@ -105,10 +114,12 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
           id: data.id,
           name: data.name,
           contact: data.contact || '',
-          phone: data.contact,
+          phone: data.phone || data.contact,
           email: data.email,
+          address: data.address,
+          notes: data.notes,
           logoUrl: data.logo_url,
-          // defaultPassword intentionally not loaded
+          active_status: (data.active_status as any) || 'active',
           services: data.services,
         }]);
       }
@@ -128,8 +139,12 @@ export const InstallerCompaniesProvider: React.FC<{ children: ReactNode }> = ({ 
           name: updates.name,
           contact: updates.contact,
           email: updates.email,
+          phone: updates.phone,
+          address: updates.address,
+          notes: updates.notes,
           logo_url: updates.logoUrl,
           services: updates.services,
+          active_status: updates.active_status,
         })
         .eq('id', id);
 

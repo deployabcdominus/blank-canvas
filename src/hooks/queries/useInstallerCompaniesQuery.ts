@@ -16,8 +16,11 @@ export const useInstallerCompaniesQuery = (companyId: string | null) => {
         id: item.id,
         name: item.name,
         contact: item.contact,
-        phone: item.contact,
+        phone: item.phone || item.contact,
         email: item.email,
+        address: item.address,
+        notes: item.notes,
+        active_status: item.active_status || 'active',
         logoUrl: item.logo_url,
         services: item.services || [],
       }));

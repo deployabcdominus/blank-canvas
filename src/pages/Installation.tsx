@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { MapPin, Camera, Calendar, CheckCircle, Truck, Clock, Share2, Search, Trash2 } from "lucide-react";
 import { ScheduleInstallationModal } from "@/components/ScheduleInstallationModal";
 import { InstallationPhotos } from "@/components/InstallationPhotos";
+import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
@@ -62,8 +63,11 @@ const Installation = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Scheduled": return "bg-soft-blue text-soft-blue-foreground";
-      case "In Progress": return "bg-lavender text-lavender-foreground";
+      case "Installer Assigned": return "bg-lavender text-lavender-foreground";
+      case "In Progress": return "bg-violet-500/20 text-violet-300";
+      case "Completed Pending Review": return "bg-amber-500/20 text-amber-300";
       case "Completed": return "bg-mint text-mint-foreground";
+      case "Needs Follow-up": return "bg-red-500/20 text-red-300";
       default: return "bg-muted text-muted-foreground";
     }
   };
@@ -97,12 +101,25 @@ const Installation = () => {
       user_id: user.id,
       client: data.service.client,
       project: data.service.project,
-      status: "Scheduled" as const,
+      status: "Scheduled" as any,
       location: data.address,
-      scheduled_date: data.date.toISOString(),
+      scheduled_date: new Date(data.date.setHours(parseInt(data.time.split(':')[0]), parseInt(data.time.split(':')[1]))).toISOString(),
       team: data.installerCompany.contact,
-      notes: data.notes || `Empresa instaladora: ${data.installerCompany.name}. ${data.contactName ? `Contacto: ${data.contactName}` : ''}${data.contactPhone ? ` - ${data.contactPhone}` : ''}${data.contactEmail ? ` - ${data.contactEmail}` : ''}`,
-      project_id: null,
+      notes: data.notes,
+      work_order_id: data.service.id,
+      project_id: data.service.projectId || null,
+      installer_company_id: data.installerCompanyId,
+      assigned_installer_id: data.installerId,
+      installation_address: data.address,
+      installation_time_window: data.time,
+      site_contact_name: data.contactName,
+      site_contact_phone: data.contactPhone,
+      access_notes: data.accessNotes,
+      parking_notes: data.parkingNotes,
+      special_instructions: data.specialInstructions,
+      required_tools_or_equipment: data.requiredTools,
+      permit_required: data.permitRequired,
+      customer_presence_required: data.customerPresence,
     });
   };
 
@@ -197,8 +214,10 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="glass-card p-6 hover:glow-pink transition-all duration-300"
+                className="glass-card overflow-hidden hover:glow-pink transition-all duration-300"
               >
+                <div className={cn("h-1.5 w-full", getStatusColor(installation.status))} />
+                <div className="p-6">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
@@ -301,7 +320,8 @@ ${installation.notes ? `Observaciones: ${installation.notes}` : ''}
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </div>
+            </motion.div>
               ))
             )}
           </div>

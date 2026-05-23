@@ -232,56 +232,150 @@ export type Database = {
       }
       installations: {
         Row: {
+          access_notes: string | null
+          assigned_installer_id: string | null
           client: string
           company_id: string
+          completed_at: string | null
+          confirmation_notes: string | null
+          confirmed_at: string | null
+          confirmed_by_admin_id: string | null
           created_at: string
+          created_by_user_id: string | null
+          customer_presence_required: boolean | null
           id: string
+          installation_address: string | null
+          installation_notes: string | null
+          installation_time_window: string | null
+          installer_company_id: string | null
+          linked_lead_id: string | null
+          linked_proposal_id: string | null
           location: string | null
           notes: string | null
+          parking_notes: string | null
+          permit_required: boolean | null
           photos: string[] | null
           project: string | null
           project_id: string | null
+          required_tools_or_equipment: string | null
           scheduled_date: string | null
+          site_contact_name: string | null
+          site_contact_phone: string | null
+          special_instructions: string | null
           status: string | null
           team: string | null
+          updated_at: string | null
           user_id: string
+          work_order_id: string | null
         }
         Insert: {
+          access_notes?: string | null
+          assigned_installer_id?: string | null
           client: string
           company_id: string
+          completed_at?: string | null
+          confirmation_notes?: string | null
+          confirmed_at?: string | null
+          confirmed_by_admin_id?: string | null
           created_at?: string
+          created_by_user_id?: string | null
+          customer_presence_required?: boolean | null
           id?: string
+          installation_address?: string | null
+          installation_notes?: string | null
+          installation_time_window?: string | null
+          installer_company_id?: string | null
+          linked_lead_id?: string | null
+          linked_proposal_id?: string | null
           location?: string | null
           notes?: string | null
+          parking_notes?: string | null
+          permit_required?: boolean | null
           photos?: string[] | null
           project?: string | null
           project_id?: string | null
+          required_tools_or_equipment?: string | null
           scheduled_date?: string | null
+          site_contact_name?: string | null
+          site_contact_phone?: string | null
+          special_instructions?: string | null
           status?: string | null
           team?: string | null
+          updated_at?: string | null
           user_id: string
+          work_order_id?: string | null
         }
         Update: {
+          access_notes?: string | null
+          assigned_installer_id?: string | null
           client?: string
           company_id?: string
+          completed_at?: string | null
+          confirmation_notes?: string | null
+          confirmed_at?: string | null
+          confirmed_by_admin_id?: string | null
           created_at?: string
+          created_by_user_id?: string | null
+          customer_presence_required?: boolean | null
           id?: string
+          installation_address?: string | null
+          installation_notes?: string | null
+          installation_time_window?: string | null
+          installer_company_id?: string | null
+          linked_lead_id?: string | null
+          linked_proposal_id?: string | null
           location?: string | null
           notes?: string | null
+          parking_notes?: string | null
+          permit_required?: boolean | null
           photos?: string[] | null
           project?: string | null
           project_id?: string | null
+          required_tools_or_equipment?: string | null
           scheduled_date?: string | null
+          site_contact_name?: string | null
+          site_contact_phone?: string | null
+          special_instructions?: string | null
           status?: string | null
           team?: string | null
+          updated_at?: string | null
           user_id?: string
+          work_order_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "installations_assigned_installer_id_fkey"
+            columns: ["assigned_installer_id"]
+            isOneToOne: false
+            referencedRelation: "installers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "installations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "installations_installer_company_id_fkey"
+            columns: ["installer_company_id"]
+            isOneToOne: false
+            referencedRelation: "installer_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "installations_linked_lead_id_fkey"
+            columns: ["linked_lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "installations_linked_proposal_id_fkey"
+            columns: ["linked_proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
             referencedColumns: ["id"]
           },
           {
@@ -291,10 +385,19 @@ export type Database = {
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "installations_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "production_orders"
+            referencedColumns: ["id"]
+          },
         ]
       }
       installer_companies: {
         Row: {
+          active_status: string | null
+          address: string | null
           company_id: string | null
           contact: string | null
           created_at: string
@@ -302,10 +405,14 @@ export type Database = {
           id: string
           logo_url: string | null
           name: string
+          notes: string | null
+          phone: string | null
           services: string[] | null
           user_id: string
         }
         Insert: {
+          active_status?: string | null
+          address?: string | null
           company_id?: string | null
           contact?: string | null
           created_at?: string
@@ -313,10 +420,14 @@ export type Database = {
           id?: string
           logo_url?: string | null
           name: string
+          notes?: string | null
+          phone?: string | null
           services?: string[] | null
           user_id: string
         }
         Update: {
+          active_status?: string | null
+          address?: string | null
           company_id?: string | null
           contact?: string | null
           created_at?: string
@@ -324,6 +435,8 @@ export type Database = {
           id?: string
           logo_url?: string | null
           name?: string
+          notes?: string | null
+          phone?: string | null
           services?: string[] | null
           user_id?: string
         }
@@ -333,6 +446,63 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      installers: {
+        Row: {
+          active_status: string | null
+          company_id: string
+          created_at: string
+          email: string | null
+          id: string
+          installer_company_id: string
+          installer_name: string
+          notes: string | null
+          phone: string | null
+          role_or_specialty: string | null
+          updated_at: string
+        }
+        Insert: {
+          active_status?: string | null
+          company_id: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          installer_company_id: string
+          installer_name: string
+          notes?: string | null
+          phone?: string | null
+          role_or_specialty?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active_status?: string | null
+          company_id?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          installer_company_id?: string
+          installer_name?: string
+          notes?: string | null
+          phone?: string | null
+          role_or_specialty?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "installers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "installers_installer_company_id_fkey"
+            columns: ["installer_company_id"]
+            isOneToOne: false
+            referencedRelation: "installer_companies"
             referencedColumns: ["id"]
           },
         ]
@@ -1294,6 +1464,76 @@ export type Database = {
           },
         ]
       }
+      project_media: {
+        Row: {
+          caption: string | null
+          company_id: string
+          file_url: string
+          id: string
+          installation_job_id: string | null
+          media_type: string
+          notes: string | null
+          storage_path: string | null
+          uploaded_at: string
+          uploaded_by_role: string | null
+          uploaded_by_user_id: string | null
+          visible_to_admin: boolean | null
+          work_order_id: string | null
+        }
+        Insert: {
+          caption?: string | null
+          company_id: string
+          file_url: string
+          id?: string
+          installation_job_id?: string | null
+          media_type: string
+          notes?: string | null
+          storage_path?: string | null
+          uploaded_at?: string
+          uploaded_by_role?: string | null
+          uploaded_by_user_id?: string | null
+          visible_to_admin?: boolean | null
+          work_order_id?: string | null
+        }
+        Update: {
+          caption?: string | null
+          company_id?: string
+          file_url?: string
+          id?: string
+          installation_job_id?: string | null
+          media_type?: string
+          notes?: string | null
+          storage_path?: string | null
+          uploaded_at?: string
+          uploaded_by_role?: string | null
+          uploaded_by_user_id?: string | null
+          visible_to_admin?: boolean | null
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_media_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_media_installation_job_id_fkey"
+            columns: ["installation_job_id"]
+            isOneToOne: false
+            referencedRelation: "installations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_media_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "production_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           assigned_to_user_id: string | null
@@ -1911,6 +2151,10 @@ export type Database = {
       manter_bd_ativo: { Args: never; Returns: undefined }
       recalc_project_progress: {
         Args: { p_project_id: string }
+        Returns: undefined
+      }
+      seed_installer_companies: {
+        Args: { target_company_id: string; target_user_id: string }
         Returns: undefined
       }
       validate_poi_token: {
