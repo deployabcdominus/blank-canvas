@@ -40,6 +40,8 @@ export interface Lead {
 export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
 export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
 
+export type ProposalSortKey = "updated" | "amount_desc" | "amount_asc" | "status" | "sent_date";
+
 export interface ProposalLead {
   name: string;
   company: string;
