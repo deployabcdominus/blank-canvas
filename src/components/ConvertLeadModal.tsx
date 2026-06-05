@@ -34,8 +34,14 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   const { createProposalMutation } = useProposalsQuery(companyId);
   const { updateLeadMutation } = useLeadsQuery(companyId);
 
-  const addClient = (c: any) => createClientMutation.mutateAsync(c);
-  const addProject = (p: any) => createProjectMutation.mutateAsync(p);
+  const addClient = async (c: any) => {
+    const res = await createClientMutation.mutateAsync(c);
+    return res.data;
+  };
+  const addProject = async (p: any) => {
+    const res = await createProjectMutation.mutateAsync(p);
+    return res.data;
+  };
   const addProposal = (p: any) => createProposalMutation.mutateAsync(p);
   const updateLead = (id: string, updates: any) => updateLeadMutation.mutateAsync({ id, updates });
 

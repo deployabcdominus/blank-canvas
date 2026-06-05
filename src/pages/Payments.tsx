@@ -50,7 +50,7 @@ const Payments = () => {
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(p => {
-        const info = proposalMap.get(p.proposalId);
+        const info = proposalMap.get(p.proposal_id);
         return (
           info?.client.toLowerCase().includes(q) ||
           info?.project.toLowerCase().includes(q) ||
@@ -61,12 +61,12 @@ const Payments = () => {
     }
     if (methodFilter.length > 0) result = result.filter(p => methodFilter.includes(p.method));
     if (statusFilter.length > 0) result = result.filter(p => statusFilter.includes(p.status));
-    if (dateFrom) result = result.filter(p => p.paidAt >= dateFrom);
-    if (dateTo) result = result.filter(p => p.paidAt <= dateTo + "T23:59:59");
+    if (dateFrom) result = result.filter(p => p.paid_at >= dateFrom);
+    if (dateTo) result = result.filter(p => p.paid_at <= dateTo + "T23:59:59");
     result.sort((a, b) => {
       switch (sort) {
-        case "date_desc": return b.paidAt.localeCompare(a.paidAt);
-        case "date_asc": return a.paidAt.localeCompare(b.paidAt);
+        case "date_desc": return b.paid_at.localeCompare(a.paid_at);
+        case "date_asc": return a.paid_at.localeCompare(b.paid_at);
         case "amount_desc": return b.amount - a.amount;
         case "amount_asc": return a.amount - b.amount;
         default: return 0;
