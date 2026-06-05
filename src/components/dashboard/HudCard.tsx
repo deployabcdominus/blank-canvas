@@ -131,7 +131,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: glowPulse ? 0.7 : 0.4 }}
-          className={`absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent ${
+          className={`absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent ${
             glowPulse ? "via-violet-500" : "via-primary"
           } to-transparent`}
         />

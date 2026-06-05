@@ -32,7 +32,7 @@ export function ProductionCompactCard({ order, index, onOpen, onMarkBuilt }: Pro
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
-      className="glass-card p-4 hover:glow-lavender transition-all duration-200 hover:-translate-y-0.5 flex flex-col gap-3"
+      className="glass-card p-3 md:p-4 hover:glow-lavender transition-all duration-200 hover:-translate-y-0.5 flex flex-col gap-3 w-full"
     >
       {/* Top row */}
       <div className="flex items-start justify-between gap-2">
