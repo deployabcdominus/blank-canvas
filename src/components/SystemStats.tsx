@@ -8,6 +8,7 @@ import { useInstallerCompaniesQuery } from "@/hooks/queries/useInstallerCompanie
 import { statsConfig } from "@/constants/landingPageData";
 
 export const SystemStats = () => {
+  const { companyId } = useUserRole();
   const { leads } = useLeadsQuery(companyId);
   const { proposals } = useProposalsQuery(companyId);
   const { orders } = useWorkOrdersQuery(companyId);

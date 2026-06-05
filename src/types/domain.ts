@@ -219,6 +219,8 @@ export interface Project {
   clientName?: string;
 }
 
+export type ProjectStatus = 'Lead' | 'Proposal' | 'Production' | 'Installation' | 'Completed';
+
 export interface Payment {
   id: string;
   proposalId: string;
