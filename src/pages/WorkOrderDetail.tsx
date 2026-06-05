@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useWorkOrders, type WorkOrder } from "@/contexts/WorkOrdersContext";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useProductionSteps } from "@/hooks/useProductionSteps";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
