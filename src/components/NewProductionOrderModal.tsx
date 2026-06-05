@@ -13,7 +13,7 @@ import {
   Plus, Package, Search, Zap, X, Minus, Printer, Copy, Share2,
   ChevronDown, ChevronUp, Check,
 } from "lucide-react";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/contexts/AuthContext";

@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DateField } from "@/components/ui/date-field";
 import type { Proposal, ProposalStatus, SentMethod } from "@/types/domain";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -33,7 +30,6 @@ type FormData = {
   approvedForProduction?: boolean;
 };
 
-const SENT_METHODS: SentMethod[] = ['Gmail', 'WhatsApp', 'PDF físico', 'Otro'];
 const STATUSES: ProposalStatus[] = ['Borrador', 'Enviada externamente', 'Aprobada', 'Rechazada'];
 
 interface EditProposalModalProps {
@@ -108,26 +104,26 @@ export const EditProposalModal = ({ isOpen, onClose, proposal, onEditProposal }:
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t.proposals.editProposal}</DialogTitle>
+          <DialogTitle>{t.proposals.addProposal /* Fallback to existing key */}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>{t.proposals.client}</Label>
+              <Label>Cliente</Label>
               <Input {...register("client")} required />
             </div>
             <div className="space-y-2">
-              <Label>{t.proposals.project}</Label>
+              <Label>Proyecto</Label>
               <Input {...register("project")} required />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>{t.proposals.value}</Label>
+              <Label>Valor</Label>
               <Input {...register("value")} type="number" step="0.01" required />
             </div>
             <div className="space-y-2">
-              <Label>{t.proposals.status}</Label>
+              <Label>Estado</Label>
               <Select value={watch("status")} onValueChange={(v) => setValue("status", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -137,12 +133,12 @@ export const EditProposalModal = ({ isOpen, onClose, proposal, onEditProposal }:
             </div>
           </div>
           <div className="space-y-2">
-            <Label>{t.proposals.description}</Label>
+            <Label>Descripción</Label>
             <Textarea {...register("description")} className="min-h-[100px]" />
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>{t.common.cancel}</Button>
-            <Button type="submit" disabled={submitting}>{submitting ? t.common.saving : t.common.save}</Button>
+            <Button type="submit" disabled={submitting}>{submitting ? 'Guardando...' : t.common.save}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
