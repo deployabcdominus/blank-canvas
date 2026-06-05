@@ -1,9 +1,10 @@
 
-import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client } from '@/types/domain';
+import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client, Project } from '@/types/domain';
 import { LeadRow } from '@/services/leads.service';
 import { ProposalRow } from '@/services/proposals.service';
 import { WorkOrderRow } from '@/services/work-orders.service';
 import { ClientRow } from '@/services/clients.service';
+import { ProjectRow } from '@/services/projects.service';
 
 export const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Ready for Production',
@@ -227,3 +228,26 @@ export const mapClientRow = (row: ClientRow): Client => ({
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
+
+export const mapProjectRow = (row: any): Project => {
+  const clientName = row.clients?.client_name
+    || row.leads?.[0]?.company
+    || row.leads?.[0]?.name
+    || undefined;
+
+  return {
+    id: row.id,
+    companyId: row.company_id,
+    clientId: row.client_id,
+    projectName: row.project_name,
+    installAddress: row.install_address || '',
+    status: row.status || 'Lead',
+    ownerUserId: row.owner_user_id,
+    assignedToUserId: row.assigned_to_user_id,
+    folderRelativePath: row.folder_relative_path,
+    folderFullPath: row.folder_full_path,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    clientName,
+  };
+};
