@@ -85,7 +85,7 @@ const ClientDetail = () => {
     const totalProposalValue = clientProposals.reduce((s, p) => s + p.value, 0);
     const approvedProposals = clientProposals.filter((p) => p.status === "Aprobada");
     const approvedValue = approvedProposals.reduce((s, p) => s + (p.approvedTotal ?? p.value), 0);
-    const totalPaid = approvedProposals.reduce((s, p) => s + payments.filter((pay) => pay.proposal_id === p.id && pay.status === "received").reduce((ps, pay) => ps + pay.amount, 0), 0);
+    const totalPaid = approvedProposals.reduce((s, p) => s + payments.filter((pay) => pay.proposalId === p.id && pay.status === "received").reduce((ps, pay) => ps + pay.amount, 0), 0);
     const conversionRate = clientProposals.length > 0 ? Math.round((approvedProposals.length / clientProposals.length) * 100) : 0;
     const byStatus: Record<string, number> = {};
     clientProjects.forEach((p) => { byStatus[p.status] = (byStatus[p.status] || 0) + 1; });

@@ -48,7 +48,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
   
   const getTotalPaidForProposal = (proposalId: string) => {
     return payments
-      .filter(p => p.proposal_id === proposalId && p.status === 'Completed')
+      .filter(p => p.proposalId === proposalId && p.status === 'Completed')
       .reduce((sum, p) => sum + p.amount, 0);
   };
   const { t } = useLanguage();
