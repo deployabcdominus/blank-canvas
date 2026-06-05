@@ -1,103 +1,8 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { WorkOrdersService, WorkOrderInsert, WorkOrderUpdate } from '@/services/work-orders.service';
-import { Database, Json } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
-
-interface WorkOrderMapped {
-  id: string;
-  client: string;
-  project: string;
-  serviceType: string;
-  status: string;
-  progress: number;
-  materials: any[];
-  startDate: string;
-  estimatedCompletion: string;
-  companyId: string;
-  ownerUserId: string | null;
-  projectId: string | null;
-  proposalId: string | null;
-  notes: string | null;
-  priority: string;
-  estimatedDelivery: string | null;
-  assignedToUserId: string | null;
-  installerCompanyId: string | null;
-  blueprintUrl: string | null;
-  annotations: any[];
-  technicalDetails: Record<string, any>;
-  face_material_spec: string;
-  returns_material_spec: string;
-  backs_material_spec: string;
-  trim_cap_spec: string;
-  led_mfg_spec: string;
-  power_supply_spec: string;
-  responsible_staff: Json | null;
-  qc_checklist: Json | null;
-  wo_number: string | null;
-  contact_name: string;
-  contact_phone: string;
-  contact_email: string;
-  site_address: string;
-  project_name: string;
-  poi_token_used: boolean;
-  poi_completed_at: string | null;
-  qc_signature_url: string | null;
-  product_type: string | null;
-  mockup_urls: string[];
-  design_notes: string;
-}
-
-const STATUS_MAP_FROM_DB: Record<string, string> = {
-  'Aguardando Início': 'Pendiente',
-  'Materiales Pedidos': 'Pendiente',
-  'En Producción': 'En Progreso',
-  'Control de Calidad': 'Control de Calidad',
-  'Producido': 'Completada',
-};
-
-const mapRow = (row: Database['public']['Tables']['production_orders']['Row']): WorkOrderMapped => ({
-  id: row.id,
-  client: row.client || '', 
-  project: row.project || '',
-  serviceType: '',
-  status: STATUS_MAP_FROM_DB[row.status || ''] || row.status || 'Pendiente',
-  progress: row.progress || 0,
-  materials: Array.isArray(row.materials) ? row.materials : [],
-  startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
-  estimatedCompletion: row.end_date ? new Date(row.end_date).toISOString().split('T')[0] : '',
-  companyId: row.company_id,
-  ownerUserId: row.owner_user_id,
-  projectId: row.project_id,
-  proposalId: row.proposal_id || null,
-  notes: row.notes || null,
-  priority: row.priority || 'media',
-  estimatedDelivery: row.estimated_delivery || null,
-  assignedToUserId: row.assigned_to_user_id || null,
-  installerCompanyId: row.installer_company_id || null,
-  blueprintUrl: row.blueprint_url || null,
-  annotations: Array.isArray(row.annotations) ? row.annotations : [],
-  technicalDetails: (row.technical_details as Record<string, any>) || {},
-  face_material_spec: row.face_material_spec || '',
-  returns_material_spec: row.returns_material_spec || '',
-  backs_material_spec: row.backs_material_spec || '',
-  trim_cap_spec: row.trim_cap_spec || '',
-  led_mfg_spec: row.led_mfg_spec || '',
-  power_supply_spec: row.power_supply_spec || '',
-  responsible_staff: row.responsible_staff || null,
-  qc_checklist: row.qc_checklist,
-  wo_number: row.wo_number,
-  contact_name: row.contact_name || '',
-  contact_phone: row.contact_phone || '',
-  contact_email: row.contact_email || '',
-  site_address: row.site_address || '',
-  project_name: row.project_name || '',
-  poi_token_used: row.poi_token_used || false,
-  poi_completed_at: row.poi_completed_at || null,
-  qc_signature_url: row.qc_signature_url || null,
-  product_type: row.product_type || null,
-  mockup_urls: Array.isArray(row.mockup_urls) ? (row.mockup_urls as string[]) : [],
-  design_notes: row.design_notes || '',
-});
+import { mapWorkOrderRow } from '@/lib/mappings';
 
 export const useWorkOrdersQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();
@@ -108,7 +13,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
       if (!companyId) return [];
       const { data, error } = await WorkOrdersService.getAll(companyId);
       if (error) throw error;
-      return (data || []).map(mapRow);
+      return (data || []).map(mapWorkOrderRow);
     },
     enabled: !!companyId,
   });

@@ -1,6 +1,9 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProposalsService, ProposalInsert, ProposalUpdate } from '@/services/proposals.service';
 import { toast } from 'sonner';
+import { mapProposalRow } from '@/lib/mappings';
+import { Proposal } from '@/types/domain';
 
 export const useProposalsQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();
@@ -8,10 +11,18 @@ export const useProposalsQuery = (companyId: string | null) => {
   const proposalsQuery = useQuery({
     queryKey: ['proposals', companyId],
     queryFn: async () => {
-      if (!companyId) return { proposals: [], orders: [] };
+      if (!companyId) return { proposals: [] as Proposal[], orders: [] };
       const res = await ProposalsService.getAll(companyId);
       if (res.error) throw res.error;
-      return res;
+      
+      const orderProposalIds = new Set<string>(
+        (res.orders || []).map(o => o.proposal_id).filter((id): id is string => !!id)
+      );
+
+      return {
+        proposals: (res.proposals || []).map(p => mapProposalRow(p, orderProposalIds)),
+        orders: res.orders || []
+      };
     },
     enabled: !!companyId,
   });
@@ -51,7 +62,8 @@ export const useProposalsQuery = (companyId: string | null) => {
   });
 
   return {
-    proposalsData: proposalsQuery.data || { proposals: [], orders: [] },
+    proposals: proposalsQuery.data?.proposals || [],
+    orders: proposalsQuery.data?.orders || [],
     isLoading: proposalsQuery.isLoading,
     proposalsQuery,
     createProposalMutation,
