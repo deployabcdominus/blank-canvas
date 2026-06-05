@@ -140,11 +140,12 @@ const canSee = (item: NavItem, role: string | null) => {
 
 /* ─── Nav Item ─── */
 
-function SidebarNavItem({ item, location, industryLabels }: {
+const SidebarNavItem = memo(({ item, location, industryLabels }: {
   item: NavItem;
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
-}) {
+}) => {
+
   const active = isActivePath(location, item.path);
   const label = getLabel(item, industryLabels);
   return (
@@ -176,15 +177,19 @@ function SidebarNavItem({ item, location, industryLabels }: {
       </span>
     </NavLink>
   );
-}
+});
+
+SidebarNavItem.displayName = "SidebarNavItem";
+
 
 /* ─── Collapsible Group ─── */
 
-function SidebarCollapsibleGroup({ group, isOpen, onToggle, location, role, industryLabels }: {
+const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role, industryLabels }: {
   group: NavGroup; isOpen: boolean; onToggle: () => void;
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels;
-}) {
+}) => {
+
   const visibleItems = group.items.filter(i => canSee(i, role));
   if (visibleItems.length === 0) return null;
 
@@ -228,7 +233,10 @@ function SidebarCollapsibleGroup({ group, isOpen, onToggle, location, role, indu
       </div>
     </div>
   );
-}
+});
+
+SidebarCollapsibleGroup.displayName = "SidebarCollapsibleGroup";
+
 
 /* ─── Platform Nav ─── */
 
