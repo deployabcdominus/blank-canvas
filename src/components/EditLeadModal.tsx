@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCatalog } from "@/hooks/useCatalog";
-import { useLeads, Lead } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { Lead } from "@/types/domain";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -147,8 +148,11 @@ const ActivityItem = ({ event, isLast }: { event: ActivityEvent; isLast: boolean
 export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }: EditLeadModalProps) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { updateLead, leads, setLeads } = useLeads();
-  const { addProposal, proposals } = useProposals();
+  const { updateLeadMutation, leads, leadsQuery } = useLeadsQuery(null);
+  const { createProposalMutation, proposals } = useProposalsQuery(null);
+  const updateLead = async (id: string, updates: any) => updateLeadMutation.mutateAsync({ id, updates });
+  const addProposal = async (p: any) => createProposalMutation.mutateAsync(p);
+  const setLeads = () => leadsQuery.refetch();
   const { isAdmin } = useUserRole();
   const { items: services } = useCatalog("lead_service");
   const { items: sources } = useCatalog("lead_source");

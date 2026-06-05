@@ -1,0 +1,220 @@
+
+export interface Lead {
+  id: string;
+  name: string;
+  company: string;
+  service: string;
+  status: string;
+  contact: {
+    phone: string;
+    email: string;
+    location: string;
+  };
+  value: string;
+  daysAgo: number;
+  source?: string;
+  leadSource?: string;
+  brokerName?: string;
+  brokerPhone?: string;
+  brokerEmail?: string;
+  brokerNotes?: string;
+  informalNotes?: string;
+  agreedPrice?: number;
+  intakeQuality?: string;
+  followUpRequired?: boolean;
+  followUpNotes?: string;
+  notes?: string;
+  website?: string;
+  logoUrl?: string;
+  companyId?: string;
+  createdByUserId?: string;
+  assignedToUserId?: string;
+  clientId?: string;
+  projectId?: string;
+  createdByRole?: string;
+  resolvedName?: string;
+  resolvedCompany?: string;
+  pilot_tag?: string | null;
+}
+
+export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
+export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
+export type ProposalSortKey = "updated" | "amount_desc" | "amount_asc" | "status" | "sent_date";
+
+export interface ProposalLead {
+  name: string;
+  company: string;
+  logoUrl: string | null;
+  clientName?: string;
+  clientPhone?: string;
+  clientEmail?: string;
+}
+
+export interface Proposal {
+  id: string;
+  client: string;
+  project: string;
+  value: number;
+  description: string;
+  status: ProposalStatus;
+  sentDate: string | null;
+  sentMethod: SentMethod | null;
+  createdAt: string;
+  updatedAt: string | null;
+  leadId: string | null;
+  lead: ProposalLead | null;
+  approvedTotal: number | null;
+  approvedAt: string | null;
+  approvalToken: string | null;
+  mockupUrl: string | null;
+  hasOrder: boolean;
+  sentVia?: string;
+  externalSentReference?: string;
+  sentNotes?: string;
+  clientApproved?: boolean;
+  clientApprovalDate?: string | null;
+  initialPaymentRequired?: boolean;
+  initialPaymentReceived?: boolean;
+  initialPaymentAmount?: number | null;
+  adminOverrideApproval?: boolean;
+  adminOverrideBy?: string | null;
+  adminOverrideReason?: string | null;
+  approvedForProduction?: boolean;
+  pilot_tag?: string | null;
+}
+
+export interface WorkOrder {
+  id: string;
+  client: string;
+  project: string;
+  serviceType: string;
+  status: string;
+  progress: number;
+  materials: Array<{
+    item: string;
+    quantity: string;
+    status: string;
+  }>;
+  startDate: string;
+  estimatedCompletion: string;
+  companyId: string | null;
+  ownerUserId: string | null;
+  projectId: string | null;
+  proposalId?: string | null;
+  notes?: string | null;
+  priority?: string | null;
+  estimatedDelivery?: string | null;
+  assignedToUserId?: string | null;
+  installerCompanyId?: string | null;
+  blueprintUrl?: string | null;
+  annotations?: any[];
+  technicalDetails?: Record<string, any>;
+  face_material_spec?: string;
+  returns_material_spec?: string;
+  backs_material_spec?: string;
+  trim_cap_spec?: string;
+  led_mfg_spec?: string;
+  power_supply_spec?: string;
+  responsible_staff?: any;
+  qc_checklist?: any;
+  wo_number?: string;
+  contact_name?: string;
+  contact_phone?: string;
+  contact_email?: string;
+  site_address?: string;
+  project_name?: string;
+  poi_token_used?: boolean;
+  poi_completed_at?: string | null;
+  qc_signature_url?: string | null;
+  product_type?: string | null;
+  mockup_urls?: string[];
+  design_notes?: string;
+  internal_status?: string;
+  prepared_by_department?: 'Design' | 'Sales' | 'Admin';
+  design_review_required?: boolean;
+  design_review_completed?: boolean;
+  final_width?: number;
+  final_height?: number;
+  measurement_unit?: string;
+  single_or_double_sided?: string;
+  indoor_or_outdoor?: string;
+  illuminated_or_non?: string;
+  substrate_material?: string;
+  frame_material?: string;
+  mounting_method?: string;
+  installation_surface?: string;
+  electrical_required?: boolean;
+  permit_required?: boolean;
+  fabrication_notes?: string;
+  production_warnings?: string;
+  vinyl_required?: boolean;
+  vinyl_brand?: string;
+  vinyl_color?: string;
+  vinyl_finish?: string;
+  vinyl_notes?: string;
+  print_required?: boolean;
+  print_material?: string;
+  print_quality?: string;
+  laminate_required?: boolean;
+  laminate_type?: string;
+  print_notes?: string;
+  cutting_required?: boolean;
+  cnc_required?: boolean;
+  welding_required?: boolean;
+  painting_required?: boolean;
+  painting_color?: string;
+  target_completion_date?: string;
+  actual_completion_date?: string;
+  client_acceptance_required?: boolean;
+  client_accepted?: boolean;
+  client_acceptance_date?: string;
+  client_acceptance_method?: string;
+  client_acceptance_notes?: string;
+  accepted_by_client_name?: string;
+  final_balance_due?: number;
+  final_payment_required?: boolean;
+  final_payment_received?: boolean;
+  final_payment_amount?: number;
+  final_payment_date?: string;
+  final_payment_method?: string;
+  final_payment_reference?: string;
+  closing_status?: string;
+  closed_at?: string;
+  closed_by_user_id?: string;
+  closing_notes?: string;
+  closeout_checklist_completed?: boolean;
+  closing_checklist?: Record<string, boolean>;
+  pilot_tag?: string | null;
+}
+
+export interface Client {
+  id: string;
+  clientName: string;
+  contactName: string | null;
+  primaryEmail: string | null;
+  primaryPhone: string | null;
+  address: string | null;
+  website: string | null;
+  serviceType: string | null;
+  notes: string | null;
+  logoUrl: string | null;
+  companyId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Project {
+  id: string;
+  companyId: string;
+  clientId: string | null;
+  projectName: string;
+  installAddress: string;
+  status: string;
+  ownerUserId: string | null;
+  assignedToUserId: string | null;
+  folderRelativePath: string | null;
+  folderFullPath: string | null;
+  createdAt: string;
+  updatedAt: string;
+  clientName?: string;
+}

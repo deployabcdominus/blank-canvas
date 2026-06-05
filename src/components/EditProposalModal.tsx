@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DateField } from "@/components/ui/date-field";
-import type { Proposal, ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
+import type { Proposal, ProposalStatus, SentMethod } from "@/types/domain";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 type FormData = {

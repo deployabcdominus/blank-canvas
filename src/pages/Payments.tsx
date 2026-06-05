@@ -22,8 +22,7 @@ const Payments = () => {
   const { company } = useCompany();
   const companyId = company?.id || null;
   const { payments, isLoading: loading, deletePaymentMutation } = usePaymentsQuery(companyId);
-  const { proposalsData } = useProposalsQuery(companyId);
-  const proposals = proposalsData.proposals;
+  const { proposals } = useProposalsQuery(companyId);
   const { canDelete, role, loading: roleLoading } = useUserRole();
   const { toast } = useToast();
   const { locale } = useLanguage();

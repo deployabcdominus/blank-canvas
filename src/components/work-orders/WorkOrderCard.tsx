@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useT } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { WorkOrder } from "@/contexts/WorkOrdersContext";
+import { WorkOrder } from "@/types/domain";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";

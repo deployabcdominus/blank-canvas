@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLeads } from '@/contexts/LeadsContext';
+import { useLeadsQuery } from '@/hooks/queries/useLeadsQuery';
 import { toast } from '@/hooks/use-toast';
 import { useLanguage } from '@/i18n/LanguageContext';
 
@@ -27,7 +27,8 @@ export function AssignLeadModal({ isOpen, onClose, leadId, currentAssignee }: As
   const m = t.assignLeadModal;
 
   const { user } = useAuth();
-  const { assignLead } = useLeads();
+  const { updateLeadMutation } = useLeadsQuery(null);
+  const assignLead = async (id: string, userId: string | null) => updateLeadMutation.mutateAsync({ id, updates: { assigned_to_user_id: userId } });
   const [members, setMembers] = useState<CompanyMember[]>([]);
   const [selectedMember, setSelectedMember] = useState<string>(currentAssignee || 'none');
   const [loading, setLoading] = useState(false);

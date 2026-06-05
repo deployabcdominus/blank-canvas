@@ -1,6 +1,8 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClientsService, ClientInsert, ClientUpdate } from '@/services/clients.service';
 import { toast } from 'sonner';
+import { mapClientRow } from '@/lib/mappings';
 
 export const useClientsQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();
@@ -11,21 +13,7 @@ export const useClientsQuery = (companyId: string | null) => {
       if (!companyId) return [];
       const { data, error } = await ClientsService.getAll(companyId);
       if (error) throw error;
-      return (data || []).map(row => ({
-        id: row.id,
-        clientName: row.client_name,
-        contactName: row.contact_name,
-        primaryEmail: row.primary_email,
-        primaryPhone: row.primary_phone,
-        address: row.address,
-        website: row.website,
-        serviceType: row.service_type,
-        notes: row.notes,
-        logoUrl: row.logo_url,
-        companyId: row.company_id,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at,
-      }));
+      return (data || []).map(mapClientRow);
     },
     enabled: !!companyId,
   });

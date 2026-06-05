@@ -1,6 +1,6 @@
 import { Users, FileText, CheckCircle, DollarSign } from "lucide-react";
-import { Lead } from "@/contexts/LeadsContext";
-import { Proposal } from "@/contexts/ProposalsContext";
+import { Lead, Proposal } from "@/types/domain";
+
 
 interface LeadsKPIBarProps {
   leads: Lead[];

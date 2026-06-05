@@ -1,0 +1,253 @@
+
+import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client, Project } from '@/types/domain';
+import { LeadRow } from '@/services/leads.service';
+import { ProposalRow } from '@/services/proposals.service';
+import { WorkOrderRow } from '@/services/work-orders.service';
+import { ClientRow } from '@/services/clients.service';
+import { ProjectRow } from '@/services/projects.service';
+
+export const STATUS_MAP_FROM_DB: Record<string, string> = {
+  'Aguardando Início': 'Ready for Production',
+  'Materiales Pedidos': 'Waiting for Materials',
+  'En Producción': 'In Production',
+  'En Progreso': 'In Production',
+  'Control de Calidad': 'Quality Check',
+  'Producido': 'Completed',
+};
+
+export const STATUS_MAP_TO_DB: Record<string, string> = {
+  'Ready for Production': 'Pendiente',
+  'In Production': 'En Progreso',
+  'Quality Check': 'Control de Calidad',
+  'Completed': 'Completada',
+};
+
+export const mapLeadRow = (item: any): Lead => {
+  const client = item.clients;
+  const hasClient = !!client && !!item.client_id;
+  
+  return {
+    id: item.id,
+    name: hasClient && client ? (client.contact_name || client.client_name || item.name) : (item.name || ''),
+    company: hasClient && client ? (client.client_name || item.company || '') : (item.company || ''),
+    service: item.service || '',
+    status: item.status || 'Nuevo',
+    contact: {
+      phone: hasClient && client ? (client.primary_phone || item.phone || '') : (item.phone || ''),
+      email: hasClient && client ? (client.primary_email || item.email || '') : (item.email || ''),
+      location: hasClient && client ? (client.address || item.location || '') : (item.location || ''),
+    },
+    value: item.value || '',
+    daysAgo: Math.floor((Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24)),
+    source: item.source || undefined,
+    leadSource: item.lead_source || undefined,
+    brokerName: item.broker_name || undefined,
+    brokerPhone: item.broker_phone || undefined,
+    brokerEmail: item.broker_email || undefined,
+    brokerNotes: item.broker_notes || undefined,
+    informalNotes: item.informal_notes || undefined,
+    agreedPrice: item.agreed_price || undefined,
+    intakeQuality: item.intake_quality || undefined,
+    followUpRequired: !!item.follow_up_required,
+    followUpNotes: item.follow_up_notes || undefined,
+    notes: item.notes || undefined,
+    website: hasClient && client ? (client.website || item.website || undefined) : (item.website || undefined),
+    logoUrl: hasClient && client ? (client.logo_url || item.logo_url || undefined) : (item.logo_url || undefined),
+    companyId: item.company_id || undefined,
+    createdByUserId: item.created_by_user_id || undefined,
+    assignedToUserId: item.assigned_to_user_id || undefined,
+    clientId: item.client_id || undefined,
+    projectId: item.project_id || undefined,
+    createdByRole: item.created_by_role || undefined,
+    resolvedName: hasClient && client ? (client.contact_name || client.client_name) : undefined,
+    resolvedCompany: hasClient && client ? client.client_name : undefined,
+    pilot_tag: item.pilot_tag,
+  };
+};
+
+export const mapProposalRow = (row: any, orderProposalIds: Set<string>): Proposal => {
+  const leadData = row.leads;
+  const clientData = leadData?.clients;
+  const resolvedClient = clientData
+    ? clientData.client_name || row.client
+    : row.client;
+
+  return {
+    id: row.id,
+    client: resolvedClient,
+    project: row.project,
+    value: Number(row.value),
+    description: row.description || '',
+    status: row.status as ProposalStatus,
+    sentDate: row.sent_date,
+    sentMethod: row.sent_method as SentMethod | null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at || null,
+    leadId: row.lead_id || null,
+    lead: leadData ? {
+      name: clientData?.contact_name || clientData?.client_name || leadData.name,
+      company: clientData?.client_name || leadData.company || '',
+      logoUrl: clientData?.logo_url || leadData.logo_url || null,
+      clientName: clientData?.client_name || undefined,
+      clientPhone: clientData?.primary_phone || undefined,
+      clientEmail: clientData?.primary_email || undefined,
+    } : null,
+    approvedTotal: row.approved_total != null ? Number(row.approved_total) : null,
+    approvedAt: row.approved_at || null,
+    approvalToken: row.approval_token || null,
+    mockupUrl: row.mockup_url || null,
+    hasOrder: orderProposalIds.has(row.id),
+    sentVia: row.sent_via || undefined,
+    externalSentReference: row.external_sent_reference || undefined,
+    sentNotes: row.sent_notes || undefined,
+    clientApproved: !!row.client_approved,
+    clientApprovalDate: row.client_approval_date || null,
+    initialPaymentRequired: row.initial_payment_required ?? true,
+    initialPaymentReceived: !!row.initial_payment_received,
+    initialPaymentAmount: row.initial_payment_amount != null ? Number(row.initial_payment_amount) : null,
+    adminOverrideApproval: !!row.admin_override_approval,
+    adminOverrideBy: row.admin_override_by || null,
+    adminOverrideReason: row.admin_override_reason || null,
+    approvedForProduction: !!row.approved_for_production,
+    pilot_tag: row.pilot_tag,
+  };
+};
+
+export const mapWorkOrderRow = (row: WorkOrderRow): WorkOrder => ({
+  id: row.id,
+  client: row.client,
+  project: row.project || '',
+  serviceType: '',
+  status: row.status ? (STATUS_MAP_FROM_DB[row.status] || row.status) : 'Pendiente',
+  progress: row.progress || 0,
+  materials: Array.isArray(row.materials) ? (row.materials as any[]) : [],
+  startDate: row.start_date ? new Date(row.start_date).toISOString().split('T')[0] : '',
+  estimatedCompletion: row.end_date ? new Date(row.end_date).toISOString().split('T')[0] : '',
+  companyId: row.company_id,
+  ownerUserId: row.owner_user_id,
+  projectId: row.project_id,
+  proposalId: row.proposal_id || null,
+  notes: row.notes || null,
+  priority: row.priority || 'media',
+  estimatedDelivery: row.estimated_delivery || null,
+  assignedToUserId: row.assigned_to_user_id || null,
+  installerCompanyId: row.installer_company_id || null,
+  blueprintUrl: row.blueprint_url || null,
+  annotations: Array.isArray(row.annotations) ? (row.annotations as any[]) : [],
+  technicalDetails: (row.technical_details as Record<string, any>) || {},
+  face_material_spec: row.face_material_spec || (row.technical_details as any)?.face_material || '',
+  substrate_material: row.substrate_material || (row.technical_details as any)?.substrate || '',
+  final_width: row.final_width || (row.technical_details as any)?.final_width || undefined,
+  final_height: row.final_height || (row.technical_details as any)?.final_height || undefined,
+  returns_material_spec: row.returns_material_spec || '',
+  backs_material_spec: row.backs_material_spec || '',
+  trim_cap_spec: row.trim_cap_spec || '',
+  led_mfg_spec: row.led_mfg_spec || '',
+  power_supply_spec: row.power_supply_spec || '',
+  responsible_staff: row.responsible_staff || null,
+  qc_checklist: row.qc_checklist || null,
+  wo_number: row.wo_number || null,
+  contact_name: row.contact_name || '',
+  contact_phone: row.contact_phone || '',
+  contact_email: row.contact_email || '',
+  site_address: row.site_address || '',
+  project_name: row.project_name || '',
+  poi_token_used: row.poi_token_used || false,
+  poi_completed_at: row.poi_completed_at || null,
+  qc_signature_url: row.qc_signature_url || null,
+  product_type: row.product_type || null,
+  mockup_urls: Array.isArray(row.mockup_urls) ? (row.mockup_urls as string[]) : [],
+  design_notes: row.design_notes || '',
+  internal_status: row.internal_status || 'Draft',
+  prepared_by_department: (row.prepared_by_department as any) || 'Sales',
+  design_review_required: row.design_review_required || false,
+  design_review_completed: row.design_review_completed || false,
+  measurement_unit: row.measurement_unit || 'in',
+  single_or_double_sided: row.single_or_double_sided || 'Single',
+  indoor_or_outdoor: row.indoor_or_outdoor || 'Outdoor',
+  illuminated_or_non: row.illuminated_or_non || 'Non-Illuminated',
+  frame_material: row.frame_material || '',
+  mounting_method: row.mounting_method || '',
+  installation_surface: row.installation_surface || '',
+  electrical_required: row.electrical_required || false,
+  permit_required: row.permit_required || false,
+  fabrication_notes: row.fabrication_notes || '',
+  production_warnings: row.production_warnings || '',
+  vinyl_required: row.vinyl_required || false,
+  vinyl_brand: row.vinyl_brand || '',
+  vinyl_color: row.vinyl_color || '',
+  vinyl_finish: row.vinyl_finish || '',
+  vinyl_notes: row.vinyl_notes || '',
+  print_required: row.print_required || false,
+  print_material: row.print_material || '',
+  print_quality: row.print_quality || '',
+  laminate_required: row.laminate_required || false,
+  laminate_type: row.laminate_type || '',
+  print_notes: row.print_notes || '',
+  cutting_required: row.cutting_required || false,
+  cnc_required: row.cnc_required || false,
+  welding_required: row.welding_required || false,
+  painting_required: row.painting_required || false,
+  painting_color: row.painting_color || '',
+  target_completion_date: row.target_completion_date || null,
+  actual_completion_date: row.actual_completion_date || null,
+  client_acceptance_required: row.client_acceptance_required ?? true,
+  client_accepted: row.client_accepted || false,
+  client_acceptance_date: row.client_acceptance_date || null,
+  client_acceptance_method: row.client_acceptance_method || '',
+  client_acceptance_notes: row.client_acceptance_notes || '',
+  accepted_by_client_name: row.accepted_by_client_name || '',
+  final_balance_due: row.final_balance_due || 0,
+  final_payment_required: row.final_payment_required ?? true,
+  final_payment_received: row.final_payment_received || false,
+  final_payment_amount: row.final_payment_amount || 0,
+  final_payment_date: row.final_payment_date || null,
+  final_payment_method: row.final_payment_method || '',
+  final_payment_reference: row.final_payment_reference || '',
+  closing_status: row.closing_status || 'Not Ready',
+  closed_at: row.closed_at || null,
+  closed_by_user_id: row.closed_by_user_id || null,
+  closing_notes: row.closing_notes || '',
+  closeout_checklist_completed: row.closeout_checklist_completed || false,
+  closing_checklist: (row.closing_checklist as Record<string, boolean>) || {},
+  pilot_tag: row.pilot_tag,
+});
+
+export const mapClientRow = (row: ClientRow): Client => ({
+  id: row.id,
+  clientName: row.client_name,
+  contactName: row.contact_name,
+  primaryEmail: row.primary_email,
+  primaryPhone: row.primary_phone,
+  address: row.address,
+  website: row.website,
+  serviceType: row.service_type,
+  notes: row.notes,
+  logoUrl: row.logo_url,
+  companyId: row.company_id,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+export const mapProjectRow = (row: any): Project => {
+  const clientName = row.clients?.client_name
+    || row.leads?.[0]?.company
+    || row.leads?.[0]?.name
+    || undefined;
+
+  return {
+    id: row.id,
+    companyId: row.company_id,
+    clientId: row.client_id,
+    projectName: row.project_name,
+    installAddress: row.install_address || '',
+    status: row.status || 'Lead',
+    ownerUserId: row.owner_user_id,
+    assignedToUserId: row.assigned_to_user_id,
+    folderRelativePath: row.folder_relative_path,
+    folderFullPath: row.folder_full_path,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    clientName,
+  };
+};
