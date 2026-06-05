@@ -165,6 +165,13 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_clients_company"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
         ]
       }
       companies: {
@@ -736,6 +743,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_leads_company"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "leads_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -1145,6 +1159,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_production_history_company"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "production_order_status_history_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
@@ -1490,6 +1511,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_production_orders_company"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "production_orders_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -1808,6 +1836,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_projects_company"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "projects_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -1936,6 +1971,13 @@ export type Database = {
           value?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_proposals_company"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "proposals_company_id_fkey"
             columns: ["company_id"]
