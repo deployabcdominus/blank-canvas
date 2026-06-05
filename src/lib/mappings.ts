@@ -5,7 +5,6 @@ import { ProposalRow } from '@/services/proposals.service';
 import { WorkOrderRow } from '@/services/work-orders.service';
 import { ClientRow } from '@/services/clients.service';
 
-
 export const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Ready for Production',
   'Materiales Pedidos': 'Waiting for Materials',
@@ -211,4 +210,20 @@ export const mapWorkOrderRow = (row: WorkOrderRow): WorkOrder => ({
   closeout_checklist_completed: row.closeout_checklist_completed || false,
   closing_checklist: (row.closing_checklist as Record<string, boolean>) || {},
   pilot_tag: row.pilot_tag,
+});
+
+export const mapClientRow = (row: ClientRow): Client => ({
+  id: row.id,
+  clientName: row.client_name,
+  contactName: row.contact_name,
+  primaryEmail: row.primary_email,
+  primaryPhone: row.primary_phone,
+  address: row.address,
+  website: row.website,
+  serviceType: row.service_type,
+  notes: row.notes,
+  logoUrl: row.logo_url,
+  companyId: row.company_id,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
 });
