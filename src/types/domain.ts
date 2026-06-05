@@ -185,3 +185,19 @@ export interface WorkOrder {
   closing_checklist?: Record<string, boolean>;
   pilot_tag?: string | null;
 }
+
+export interface Client {
+  id: string;
+  clientName: string;
+  contactName: string | null;
+  primaryEmail: string | null;
+  primaryPhone: string | null;
+  address: string | null;
+  website: string | null;
+  serviceType: string | null;
+  notes: string | null;
+  logoUrl: string | null;
+  companyId: string;
+  createdAt: string;
+  updatedAt: string;
+}
