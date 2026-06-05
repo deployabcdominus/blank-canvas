@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { DateField } from "@/components/ui/date-field";
 import { toast } from "sonner";
-import type { Proposal, ProposalStatus, SentMethod } from "@/contexts/ProposalsContext";
+import { Proposal, ProposalStatus, SentMethod } from "@/types/domain";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
 import { SmartEntitySearch, type EntityResult } from "@/components/SmartEntitySearch";
@@ -40,7 +40,6 @@ interface AddProposalModalProps {
   onCreateClient?: (name: string) => void;
 }
 
-const SENT_METHODS: SentMethod[] = ['Gmail', 'WhatsApp', 'PDF físico', 'Otro'];
 const STATUSES: ProposalStatus[] = ['Borrador', 'Enviada externamente', 'Aprobada', 'Rechazada'];
 
 export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onClose, onAddProposal, onCreateClient }) => {
@@ -122,10 +121,8 @@ export const AddProposalModal: React.FC<AddProposalModalProps> = ({ isOpen, onCl
   };
 
   const handleCreateNew = (name: string) => {
-    // Set as a temporary entity so the form can proceed
     setSelectedEntity({ id: "", name, type: "client" });
     setEntityError(null);
-    // Optionally trigger create-client modal
     if (onCreateClient) {
       onCreateClient(name);
     }
