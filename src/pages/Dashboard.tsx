@@ -6,11 +6,11 @@ import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { HudCard } from "@/components/dashboard/HudCard";
 import { HudPipeline } from "@/components/dashboard/HudPipeline";
 import { KanbanColumn } from "@/components/PipelineKanban";
-import { useLeads } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
-import { useWorkOrders } from "@/contexts/WorkOrdersContext";
-import { useInstallations } from "@/contexts/InstallationsContext";
-import { usePayments } from "@/contexts/PaymentsContext";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
+import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
+import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
@@ -45,11 +45,11 @@ const Dashboard = () => {
 
   const hasNoCompany = !roleLoading && !companyId && !isSuperadmin;
 
-  const { leads } = useLeads();
-  const { proposals } = useProposals();
-  const { orders } = useWorkOrders();
-  const { installations } = useInstallations();
-  const { payments } = usePayments();
+  const { leads } = useLeadsQuery(companyId);
+  const { proposals } = useProposalsQuery(companyId);
+  const { orders } = useWorkOrdersQuery(companyId);
+  const { installations } = useInstallationsQuery(companyId);
+  const { payments } = usePaymentsQuery(companyId);
 
 
   const stats = useMemo(() => {

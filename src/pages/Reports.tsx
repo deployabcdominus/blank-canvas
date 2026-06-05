@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
-import { useLeads } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
-import { useWorkOrders } from "@/contexts/WorkOrdersContext";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,9 +11,10 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { FileText, TrendingUp, Users, CheckCircle2, BarChart3 } from "lucide-react";
 
 export default function Reports() {
-  const { leads } = useLeads();
-  const { proposals } = useProposals();
-  const { orders } = useWorkOrders();
+  const { isAdmin, companyId } = useUserRole();
+  const { leads } = useLeadsQuery(companyId);
+  const { proposals } = useProposalsQuery(companyId);
+  const { orders } = useWorkOrdersQuery(companyId);
   const { isAdmin } = useUserRole();
   const { t } = useLanguage();
 

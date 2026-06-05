@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lead } from "@/contexts/LeadsContext";
-import { Proposal } from "@/contexts/ProposalsContext";
-import { WorkOrder } from "@/contexts/WorkOrdersContext";
-import { Installation } from "@/contexts/InstallationsContext";
+import { Lead, Proposal, WorkOrder } from "@/types/domain";
+import { Installation } from "@/hooks/queries/useInstallationsQuery";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, FileText, ClipboardList, MapPin, CheckCircle2, AlertTriangle } from "lucide-react";
 import { KanbanColumn } from "@/components/PipelineKanban";
