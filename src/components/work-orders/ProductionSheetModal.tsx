@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
-import { type WorkOrder } from "@/contexts/WorkOrdersContext";
+import { type WorkOrder } from "@/types/domain";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";

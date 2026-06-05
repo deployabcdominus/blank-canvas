@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Installation } from "@/contexts/InstallationsContext";
+import { Installation } from "@/types/domain";
 import { MapPin, ExternalLink, Loader2 } from "lucide-react";
 import { batchGeocode } from "@/hooks/useGeocoding";
 import L from "leaflet";

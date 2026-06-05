@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
+import { useInstallerCompaniesQuery } from "@/hooks/queries/useInstallerCompaniesQuery";
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from "@/integrations/supabase/client";
 import { useForm } from "react-hook-form";
@@ -59,7 +59,7 @@ export const ScheduleInstallationModal: React.FC<ScheduleInstallationModalProps>
   const { companyId } = useUserRole();
   const { orders } = useWorkOrdersQuery(companyId);
   const getAvailableForInstallation = () => orders.filter(o => o.status === "En Progreso" || o.status === "Completada");
-  const { companies } = useInstallerCompanies();
+  const { installerCompanies: companies } = useInstallerCompaniesQuery(companyId);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const navigate = useNavigate();
   const availableServices = getAvailableForInstallation();

@@ -16,7 +16,7 @@ export const SystemModules = () => {
   const { proposals } = useProposalsQuery(companyId);
   const { orders } = useWorkOrdersQuery(companyId);
   const { installations } = useInstallationsQuery(companyId);
-  const { companies } = useInstallerCompaniesQuery(companyId);
+  const { installerCompanies: companies } = useInstallerCompaniesQuery(companyId);
 
   const moduleCounts = [leads.length, proposals.length, orders.length, installations.length, 0, companies.length];
 

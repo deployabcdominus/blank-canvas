@@ -1,4 +1,4 @@
-import { WorkOrder } from "@/contexts/WorkOrdersContext";
+import { WorkOrder } from "@/types/domain";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

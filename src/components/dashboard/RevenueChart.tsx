@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { Proposal } from "@/contexts/ProposalsContext";
-import { Payment } from "@/contexts/PaymentsContext";
+import { Proposal, Payment } from "@/types/domain";
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { TrendingUp, AlertCircle } from "lucide-react";
