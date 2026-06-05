@@ -113,9 +113,9 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
             className="fixed left-0 top-0 w-80 h-full sidebar-premium z-50 p-5 flex flex-col"
           >
-            <div className="flex items-center justify-between mb-6 flex-shrink-0">
-              <BrandLogo size={36} showText variant="iconWithText" textClassName="text-xl" />
-              <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-muted/30 rounded-xl" aria-label="Cerrar menú">
+            <div className="flex items-center justify-between mb-4 flex-shrink-0">
+              <BrandLogo size={32} showText variant="iconWithText" textClassName="text-lg" />
+              <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-muted/30 rounded-xl h-9 w-9" aria-label="Cerrar menú">
                 <X className="w-5 h-5" />
               </Button>
             </div>

@@ -97,7 +97,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
 
       {/* Header: Company + Lead Status */}
       <div>
-        <div className={`flex items-start justify-between mb-3 ${isMobile ? 'flex-col gap-2' : ''} ${onSelect ? 'pl-6' : ''}`}>
+        <div className={`flex items-start justify-between mb-3 gap-2 ${onSelect ? 'pl-6' : ''}`}>
           <div className="flex items-center gap-3 min-w-0">
             {lead.logoUrl ? (
               <ImageWithFallback 
@@ -233,7 +233,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
       </div>
 
       {/* Footer */}
-      <div className={`flex items-center justify-between pt-3 border-t border-white/[0.06] ${isMobile ? 'flex-col gap-3' : ''}`} onClick={e => e.stopPropagation()}>
+      <div className={`flex items-center justify-between pt-3 border-t border-white/[0.06] gap-3`} onClick={e => e.stopPropagation()}>
         <span className="text-xs text-zinc-600">
           {daysAgoText}
         </span>
