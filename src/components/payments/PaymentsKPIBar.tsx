@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Payment } from "@/contexts/PaymentsContext";
+import { Payment } from "@/types/domain";
 import { DollarSign, TrendingUp, Clock, CreditCard } from "lucide-react";
 
 interface Props {
