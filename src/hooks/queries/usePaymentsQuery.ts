@@ -1,6 +1,6 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaymentsService, PaymentInsert } from '@/services/payments.service';
+import { mapPaymentRow } from '@/lib/mappings';
 import { toast } from 'sonner';
 
 export const usePaymentsQuery = (companyId: string | null) => {
@@ -12,7 +12,7 @@ export const usePaymentsQuery = (companyId: string | null) => {
       if (!companyId) return [];
       const { data, error } = await PaymentsService.getAll(companyId);
       if (error) throw error;
-      return data || [];
+      return (data || []).map(mapPaymentRow);
     },
     enabled: !!companyId,
   });
