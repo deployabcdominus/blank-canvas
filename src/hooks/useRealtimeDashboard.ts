@@ -1,32 +1,24 @@
 import { useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useLeads } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
-import { useWorkOrders } from "@/contexts/WorkOrdersContext";
-import { useInstallations } from "@/contexts/InstallationsContext";
-import { usePayments } from "@/contexts/PaymentsContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function useRealtimeDashboard() {
   const { companyId } = useUserRole();
-  const { refreshLeads } = useLeads();
-  const { refreshProposals } = useProposals();
-  const { refreshOrders } = useWorkOrders();
-  const { refreshInstallations } = useInstallations();
-  const { refreshPayments } = usePayments();
-
+  const queryClient = useQueryClient();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleChange = useCallback(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      refreshLeads();
-      refreshProposals();
-      refreshOrders();
-      refreshInstallations();
-      refreshPayments();
+      queryClient.invalidateQueries({ queryKey: ['leads', companyId] });
+      queryClient.invalidateQueries({ queryKey: ['proposals', companyId] });
+      queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
+      queryClient.invalidateQueries({ queryKey: ['installations', companyId] });
+      queryClient.invalidateQueries({ queryKey: ['payments', companyId] });
+      queryClient.invalidateQueries({ queryKey: ['projects', companyId] });
     }, 500);
-  }, [refreshLeads, refreshProposals, refreshOrders, refreshInstallations, refreshPayments]);
+  }, [queryClient, companyId]);
 
   useEffect(() => {
     if (!companyId) return;
