@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { memo } from "react";
+
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -19,7 +21,7 @@ interface HeaderProps {
   onMenuToggle?: () => void;
 }
 
-export const Header = ({ onMenuToggle }: HeaderProps) => {
+export const Header = memo(({ onMenuToggle }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isDashboard = location.pathname === '/dashboard';
@@ -96,4 +98,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
       </div>
     </motion.header>
   );
-};
+});
+
+Header.displayName = "Header";
+

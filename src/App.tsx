@@ -13,6 +13,8 @@ import { PublicRoute } from "@/components/PublicRoute";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 import { lazy, Suspense } from "react";
+import { NavigationProgressBar } from "@/components/NavigationProgressBar";
+
 const Index = lazy(() => import("./pages/Index"));
 const PostPaymentSetup = lazy(() => import("./pages/PostPaymentSetup"));
 const Checkout = lazy(() => import("./pages/Checkout"));
@@ -49,6 +51,7 @@ const POIPage = lazy(() => import("./pages/POIPage"));
 const PrintPage = lazy(() => import("./pages/PrintPage"));
 
 const PilotDashboard = lazy(() => import("./pages/PilotDashboard"));
+
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
     <div className="relative w-12 h-12">
@@ -62,58 +65,14 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 5,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 30, // 30 minutes
+      retry: 1,
     },
   },
 });
 
 const App = () => {
-  const isPOIRoute = window.location.pathname.startsWith("/poi/");
-  const isProposalRoute = window.location.pathname.startsWith("/p/");
-  const isPrintRoute = window.location.pathname.startsWith("/print/");
-
-  if (isPOIRoute) {
-    return (
-      <GlobalErrorBoundary>
-        <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/poi/:orderId" element={<POIPage />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </GlobalErrorBoundary>
-    );
-  }
-
-  if (isProposalRoute) {
-    return (
-      <GlobalErrorBoundary>
-        <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/p/:proposalId" element={<ProposalApproval />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </GlobalErrorBoundary>
-    );
-  }
-
-  if (isPrintRoute) {
-    return (
-      <GlobalErrorBoundary>
-        <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/print/:orderId" element={<PrintPage />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </GlobalErrorBoundary>
-    );
-  }
-
   return (
     <GlobalErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -124,9 +83,11 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
+                  <NavigationProgressBar />
                   <AnimatePresence mode="wait">
                     <Suspense fallback={<PageLoader />}>
                       <Routes>
+                        {/* Landing & Public Routes */}
                         <Route path="/" element={<Index />} />
                         <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
                         <Route path="/success" element={<Success />} />
@@ -136,12 +97,17 @@ const App = () => {
                         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
+                        
+                        {/* Specialized/External Public Routes */}
                         <Route path="/p/:proposalId" element={<ProposalApproval />} />
                         <Route path="/poi/:orderId" element={<POIPage />} />
+                        <Route path="/print/:orderId" element={<PrintPage />} />
 
+                        {/* Superadmin Routes */}
                         <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
                         <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
+                        {/* Tenant Routes */}
                         <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
                           <Route path="/dashboard" element={<Dashboard />} />
                           <Route path="/clients" element={<Clients />} />
@@ -161,11 +127,12 @@ const App = () => {
                           <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
                           <Route path="/tecnico" element={<MobileTechnicianView />} />
                           <Route path="/audit-log" element={<AuditLog />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/pilot" element={<PilotDashboard />} />
+                          <Route path="/settings" element={<Settings />} />
+                          <Route path="/reports" element={<Reports />} />
+                          <Route path="/pilot" element={<PilotDashboard />} />
                         </Route>
 
+                        {/* Fallback */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>

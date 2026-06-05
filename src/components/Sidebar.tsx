@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import type { IndustryLabels } from "@/hooks/useIndustryLabels";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,7 +26,7 @@ import {
   type NavItem, type NavGroup,
 } from "@/constants/navigation";
 
-export const Sidebar = () => {
+export const Sidebar = memo(() => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
@@ -35,6 +35,27 @@ export const Sidebar = () => {
   const { fullName, email, initials } = useUserProfile();
   const industryLabels = useIndustryLabels();
   const { t } = useLanguage();
+
+  const localizedGroups = useMemo(() => {
+    let groups = tenantGroups.map((g, i) => ({
+      ...g,
+      groupLabel: i === 0 ? t.nav.principal
+        : i === 1 ? t.nav.crmSales
+        : i === 2 ? t.nav.production
+        : t.nav.administration,
+    }));
+    
+    if (isAdmin && groups[3]) {
+      const recycleItem = {
+        path: "/leads/recycle-bin",
+        label: "Papelera",
+        icon: Recycle,
+        roles: ["admin", "superadmin"],
+      } as any;
+      groups = groups.map((g, idx) => idx === 3 ? { ...g, items: [...g.items, recycleItem] } : g);
+    }
+    return groups;
+  }, [t.nav, isAdmin]);
 
   if (roleLoading) return null;
 
@@ -61,43 +82,24 @@ export const Sidebar = () => {
         </div>
       </div>
 
-      {/* Build i18n-aware groups */}
-      {(() => {
-        let localizedGroups = tenantGroups.map((g, i) => ({
-          ...g,
-          groupLabel: i === 0 ? t.nav.principal
-            : i === 1 ? t.nav.crmSales
-            : i === 2 ? t.nav.production
-            : t.nav.administration,
-        }));
-        if (isAdmin && localizedGroups[3]) {
-          const recycleItem = {
-            path: "/leads/recycle-bin",
-            label: "Papelera",
-            icon: Recycle,
-            roles: ["admin", "superadmin"],
-          } as any;
-          localizedGroups = localizedGroups.map((g, idx) => idx === 3 ? { ...g, items: [...g.items, recycleItem] } : g);
-        }
-        return isSuperadmin ? (
-          <SidebarPlatformNav
-            items={platformItems}
-            location={location}
-            industryLabels={industryLabels}
-            platformLabel={t.nav.platform}
-          />
-        ) : (
-          <SidebarTenantNav
-            groups={localizedGroups}
-            utilityItems={utilityItems}
-            location={location}
-            role={role}
-            industryLabels={industryLabels}
-            isAdmin={isAdmin}
-            adjustmentsLabel={t.nav.adjustments}
-          />
-        );
-      })()}
+      {isSuperadmin ? (
+        <SidebarPlatformNav
+          items={platformItems}
+          location={location}
+          industryLabels={industryLabels}
+          platformLabel={t.nav.platform}
+        />
+      ) : (
+        <SidebarTenantNav
+          groups={localizedGroups}
+          utilityItems={utilityItems}
+          location={location}
+          role={role}
+          industryLabels={industryLabels}
+          isAdmin={isAdmin}
+          adjustmentsLabel={t.nav.adjustments}
+        />
+      )}
 
       {/* User footer */}
       <SidebarUserFooter
@@ -115,7 +117,10 @@ export const Sidebar = () => {
       />
     </motion.aside>
   );
-};
+});
+
+Sidebar.displayName = "Sidebar";
+
 
 /* ─── Helpers ─── */
 
@@ -135,11 +140,12 @@ const canSee = (item: NavItem, role: string | null) => {
 
 /* ─── Nav Item ─── */
 
-function SidebarNavItem({ item, location, industryLabels }: {
+const SidebarNavItem = memo(({ item, location, industryLabels }: {
   item: NavItem;
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
-}) {
+}) => {
+
   const active = isActivePath(location, item.path);
   const label = getLabel(item, industryLabels);
   return (
@@ -171,15 +177,19 @@ function SidebarNavItem({ item, location, industryLabels }: {
       </span>
     </NavLink>
   );
-}
+});
+
+SidebarNavItem.displayName = "SidebarNavItem";
+
 
 /* ─── Collapsible Group ─── */
 
-function SidebarCollapsibleGroup({ group, isOpen, onToggle, location, role, industryLabels }: {
+const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role, industryLabels }: {
   group: NavGroup; isOpen: boolean; onToggle: () => void;
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels;
-}) {
+}) => {
+
   const visibleItems = group.items.filter(i => canSee(i, role));
   if (visibleItems.length === 0) return null;
 
@@ -223,7 +233,10 @@ function SidebarCollapsibleGroup({ group, isOpen, onToggle, location, role, indu
       </div>
     </div>
   );
-}
+});
+
+SidebarCollapsibleGroup.displayName = "SidebarCollapsibleGroup";
+
 
 /* ─── Platform Nav ─── */
 

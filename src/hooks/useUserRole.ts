@@ -23,9 +23,16 @@ interface UserRoleData {
 
 export function useUserRole(): UserRoleData {
   const { user } = useAuth();
-  const [role, setRole] = useState<AppRole | null>(null);
-  const [companyId, setCompanyId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<AppRole | null>(() => {
+    if (!user) return null;
+    const cached = sessionStorage.getItem(`user_role_${user.id}`);
+    return (cached as AppRole) || null;
+  });
+  const [companyId, setCompanyId] = useState<string | null>(() => {
+    if (!user) return null;
+    return sessionStorage.getItem(`company_id_${user.id}`);
+  });
+  const [loading, setLoading] = useState(!role && user !== null);
   const resolvedUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -37,15 +44,12 @@ export function useUserRole(): UserRoleData {
       return;
     }
 
-    if (resolvedUserIdRef.current === user.id) {
+    if (resolvedUserIdRef.current === user.id && role) {
       setLoading(false);
       return;
     }
 
     const load = async () => {
-      if (!resolvedUserIdRef.current) {
-        setLoading(true);
-      }
       try {
         const [roleResult, profileResult] = await Promise.all([
           supabase
@@ -63,9 +67,13 @@ export function useUserRole(): UserRoleData {
 
         resolvedUserIdRef.current = user.id;
         const resolvedRole = (roleResult.data?.role as AppRole) || null;
+        const resolvedCompanyId = profileResult.data?.company_id || null;
         
         setRole(resolvedRole);
-        setCompanyId(profileResult.data?.company_id || null);
+        setCompanyId(resolvedCompanyId);
+        
+        if (resolvedRole) sessionStorage.setItem(`user_role_${user.id}`, resolvedRole);
+        if (resolvedCompanyId) sessionStorage.setItem(`company_id_${user.id}`, resolvedCompanyId);
       } catch (e) {
         // Silent error handling for roles
       } finally {
@@ -74,7 +82,8 @@ export function useUserRole(): UserRoleData {
     };
 
     load();
-  }, [user]);
+  }, [user, role]);
+
 
   const isSuperadmin = role === 'superadmin';
   const isAdmin = role === 'admin' || role === 'superadmin';

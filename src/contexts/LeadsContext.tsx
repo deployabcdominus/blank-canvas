@@ -71,7 +71,7 @@ export const useLeads = () => {
   return context;
 };
 
-const PAGE_SIZE = 500;
+const PAGE_SIZE = 100;
 
 type LeadWithClient = LeadRow & {
   clients?: {
