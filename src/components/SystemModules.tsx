@@ -1,22 +1,22 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLeads } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useInstallations } from "@/contexts/InstallationsContext";
-import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
+import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
+import { useInstallerCompaniesQuery } from "@/hooks/queries/useInstallerCompaniesQuery";
 import { systemModulesConfig } from "@/constants/landingPageData";
 
 export const SystemModules = () => {
   const navigate = useNavigate();
-  const { leads } = useLeads();
-  const { proposals } = useProposals();
   const { companyId } = useUserRole();
+  const { leads } = useLeadsQuery(companyId);
+  const { proposals } = useProposalsQuery(companyId);
   const { orders } = useWorkOrdersQuery(companyId);
-  const { installations } = useInstallations();
-  const { companies } = useInstallerCompanies();
+  const { installations } = useInstallationsQuery(companyId);
+  const { companies } = useInstallerCompaniesQuery(companyId);
 
   const moduleCounts = [leads.length, proposals.length, orders.length, installations.length, 0, companies.length];
 

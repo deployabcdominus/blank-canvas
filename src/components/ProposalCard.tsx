@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Proposal, ProposalStatus } from "@/contexts/ProposalsContext";
-import { usePayments } from "@/contexts/PaymentsContext";
+import { Proposal, ProposalStatus } from "@/types/domain";
+import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   Clock, CheckCircle, XCircle, Send, Edit2, Trash2, Factory,
@@ -42,7 +43,14 @@ interface ProposalCardProps {
 }
 
 export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder, onRegisterPayment }: ProposalCardProps) => {
-  const { getTotalPaidForProposal } = usePayments();
+  const { companyId } = useUserRole();
+  const { payments } = usePaymentsQuery(companyId);
+  
+  const getTotalPaidForProposal = (proposalId: string) => {
+    return payments
+      .filter(p => p.proposal_id === proposalId && p.status === 'Completed')
+      .reduce((sum, p) => sum + p.amount, 0);
+  };
   const { t } = useLanguage();
 
   const statusColor = STATUS_COLORS[proposal.status] || STATUS_COLORS['Borrador'];
