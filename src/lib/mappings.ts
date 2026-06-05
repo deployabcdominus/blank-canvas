@@ -284,6 +284,11 @@ export const mapInstallationRow = (row: any): Installation => ({
   installationAddress: row.installation_address,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
+  // Added for component compatibility
+  address: row.location || row.installation_address || '',
+  technician: row.team || '',
+  scheduledTime: row.scheduled_date ? new Date(row.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+  photos: row.photos || [],
 });
 
 export const mapInstallerCompanyRow = (row: any): InstallerCompany => ({
@@ -296,5 +301,7 @@ export const mapInstallerCompanyRow = (row: any): InstallerCompany => ({
   address: row.address,
   notes: row.notes,
   activeStatus: row.active_status,
-  created_at: row.created_at,
+  logoUrl: row.logo_url,
+  services: row.services || [],
+  createdAt: row.created_at,
 });
