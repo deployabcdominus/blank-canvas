@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { InstallerCompaniesService, InstallerCompanyInsert, InstallerCompanyUpdate } from '@/services/installer-companies.service';
+import { mapInstallerCompanyRow } from '@/lib/mappings';
 import { toast } from 'sonner';
 
 export const useInstallerCompaniesQuery = (companyId: string | null) => {
@@ -11,19 +12,7 @@ export const useInstallerCompaniesQuery = (companyId: string | null) => {
       if (!companyId) return [];
       const { data, error } = await InstallerCompaniesService.getAll(companyId);
       if (error) throw error;
-      
-      return (data || []).map(item => ({
-        id: item.id,
-        name: item.name,
-        contact: item.contact,
-        phone: item.phone || item.contact,
-        email: item.email,
-        address: item.address,
-        notes: item.notes,
-        active_status: item.active_status || 'active',
-        logoUrl: item.logo_url,
-        services: item.services || [],
-      }));
+      return (data || []).map(mapInstallerCompanyRow);
     },
     enabled: !!companyId,
   });
