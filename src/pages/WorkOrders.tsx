@@ -1,10 +1,10 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+
+import { useMemo, useState, useEffect } from "react";
 import { PageTransition } from "@/components/PageTransition";
 import { ResponsiveLayout } from "@/components/ResponsiveLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NewWorkOrderModal } from "@/components/NewWorkOrderModal";
-import { WorkOrder } from "@/contexts/WorkOrdersContext";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
@@ -16,7 +16,6 @@ import { WorkOrdersPagination } from "@/components/work-orders/WorkOrdersPaginat
 import { EditWorkOrderModal } from "@/components/work-orders/EditWorkOrderModal";
 import { ProductionSheetModal } from "@/components/work-orders/ProductionSheetModal";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import {
   ClipboardList, Package, Plus, Trash2, Search, X,
   LayoutGrid, List,
@@ -28,6 +27,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useWorkOrderFilters } from "@/hooks/useWorkOrderFilters";
+import { useWorkOrderActions } from "@/hooks/useWorkOrderActions";
 
 type ViewMode = "cards" | "list";
 
@@ -41,28 +42,20 @@ const STATUS_OPTIONS = [
 ];
 
 const WorkOrders = () => {
-  const [isNewOrderModalOpen, setIsNewOrderModalOpen] = useState(false);
-  const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const { companyId, canEdit, canDelete, isAdmin } = useUserRole();
   const { orders, isLoading, updateWorkOrderMutation, deleteWorkOrderMutation, clearWorkOrdersMutation, workOrdersQuery } = useWorkOrdersQuery(companyId);
   const refreshOrders = () => workOrdersQuery.refetch();
 
+  const filter = useWorkOrderFilters(orders);
+  const actions = useWorkOrderActions(
+    companyId,
+    { updateWorkOrderMutation, deleteWorkOrderMutation, clearWorkOrdersMutation }
+  );
+
   const limits = usePlanLimits();
   const { t } = useLanguage();
-
-  const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("cards");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [assigneeFilter, setAssigneeFilter] = useState("all");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
-  const [completeConfirmId, setCompleteConfirmId] = useState<string | null>(null);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
-  const [editOrder, setEditOrder] = useState<WorkOrder | null>(null);
-  const [editOrderMode, setEditOrderMode] = useState(false);
-  const [sheetOrder, setSheetOrder] = useState<WorkOrder | null>(null);
 
-  // Resolve assignee names
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
   const assigneeIds = useMemo(() => {
     const ids = new Set<string>();
@@ -89,87 +82,13 @@ const WorkOrders = () => {
     return Object.entries(profileMap).map(([id, name]) => ({ id, name }));
   }, [profileMap]);
 
-  const generatePOIToken = useCallback(async (order: WorkOrder) => {
-    const token = crypto.randomUUID();
-    const exp = new Date();
-    exp.setHours(exp.getHours() + 72);
-    const { error } = await supabase
-      .from("production_orders")
-      .update({
-        poi_token: token,
-        poi_token_exp: exp.toISOString(),
-        poi_token_used: false,
-      })
-      .eq("id", order.id);
-    if (error) {
-      toast.error("Failed to generate POI link");
-      return;
-    }
-    const url = `${window.location.origin}/poi/${order.id}?token=${token}`;
-    await navigator.clipboard.writeText(url);
-    toast.success("POI link copied — valid 72 hours");
-  }, []);
-
-  const confirmMarkCompleted = async () => {
-    if (!completeConfirmId) return;
-    try {
-      await updateWorkOrderMutation.mutateAsync({ id: completeConfirmId, updates: { status: "Completada", progress: 100 } });
-      toast.success("Order marked as completed");
-    } catch {
-      toast.error("Could not complete order");
-    }
-    setCompleteConfirmId(null);
-  };
-
-  const confirmDeleteSingle = async () => {
-    if (!deleteConfirmId) return;
-    try {
-      await deleteWorkOrderMutation.mutateAsync(deleteConfirmId);
-      toast.success("Order deleted");
-    } catch {
-      toast.error("Could not delete order");
-    }
-    setDeleteConfirmId(null);
-  };
-
-  const handleClearOrders = () => {
-    if (companyId) clearWorkOrdersMutation.mutate(companyId);
-    setIsClearDialogOpen(false);
-    toast.success("All orders cleared");
-  };
-
-  const processed = useMemo(() => {
-    let result = [...orders];
-    if (search) {
-      const q = search.toLowerCase();
-      result = result.filter(o =>
-        o.client.toLowerCase().includes(q) ||
-        o.project.toLowerCase().includes(q) ||
-        (o.wo_number || "").toLowerCase().includes(q)
-      );
-    }
-    if (statusFilter !== "all") {
-      if (statusFilter === "installed") {
-        result = result.filter(o => o.poi_token_used);
-      } else {
-        result = result.filter(o => o.status === statusFilter && !o.poi_token_used);
-      }
-    }
-    if (assigneeFilter !== "all") {
-      result = result.filter(o => o.assignedToUserId === assigneeFilter);
-    }
-    result.sort((a, b) => b.id.localeCompare(a.id));
-    return result;
-  }, [orders, search, statusFilter, assigneeFilter]);
-
-  const totalPages = Math.ceil(processed.length / pageSize);
-  const safePage = Math.min(page, Math.max(totalPages, 1));
-  const paginated = processed.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const totalPages = Math.ceil(filter.processed.length / filter.pageSize);
+  const safePage = Math.min(filter.page, Math.max(totalPages, 1));
+  const paginated = filter.processed.slice((safePage - 1) * filter.pageSize, safePage * filter.pageSize);
 
   return (
     <PageTransition>
       <ResponsiveLayout>
-        {/* Header */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <h1 className="text-2xl font-bold mb-1">Work Orders</h1>
@@ -177,13 +96,13 @@ const WorkOrders = () => {
           </div>
           <div className="flex gap-2">
             {orders.length > 0 && isAdmin && (
-              <Button onClick={() => setIsClearDialogOpen(true)} variant="outline">
+              <Button onClick={() => actions.setIsClearDialogOpen(true)} variant="outline">
                 <Trash2 className="w-4 h-4 mr-2" /> Clear all
               </Button>
             )}
             {canEdit && (
               <Button
-                onClick={() => setIsNewOrderModalOpen(true)}
+                onClick={() => actions.setIsNewOrderModalOpen(true)}
                 disabled={limits.work_orders.isAtLimit}
                 title={limits.work_orders.isAtLimit ? t.workOrders.limitReached : undefined}
               >
@@ -195,36 +114,35 @@ const WorkOrders = () => {
 
         <PlanLimitBanner entity="work_orders" />
 
-        {orders.length === 0 ? (
+        {orders.length === 0 && !isLoading ? (
           <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,92,246,0.15)" }}>
             <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-lg font-semibold mb-2">No work orders yet</h3>
             <p className="text-muted-foreground mb-4">Create your first production order</p>
             {canEdit && (
-              <Button onClick={() => setIsNewOrderModalOpen(true)}>
+              <Button onClick={() => actions.setIsNewOrderModalOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" /> New Order
               </Button>
             )}
           </div>
         ) : (
           <>
-            {/* Filters */}
             <div className="flex items-center gap-3 mb-5 flex-wrap">
               <div className="relative min-w-[200px] max-w-sm flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search by client or project..."
-                  value={search}
-                  onChange={e => { setSearch(e.target.value); setPage(1); }}
+                  value={filter.search}
+                  onChange={e => { filter.setSearch(e.target.value); filter.setPage(1); }}
                   className="pl-9 pr-8"
                 />
-                {search && (
-                  <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                {filter.search && (
+                  <button onClick={() => filter.setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                     <X className="h-4 w-4" />
                   </button>
                 )}
               </div>
-              <Select value={statusFilter} onValueChange={v => { setStatusFilter(v); setPage(1); }}>
+              <Select value={filter.statusFilter} onValueChange={v => { filter.setStatusFilter(v); filter.setPage(1); }}>
                 <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {STATUS_OPTIONS.map(o => (
@@ -232,7 +150,7 @@ const WorkOrders = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={assigneeFilter} onValueChange={v => { setAssigneeFilter(v); setPage(1); }}>
+              <Select value={filter.assigneeFilter} onValueChange={v => { filter.setAssigneeFilter(v); filter.setPage(1); }}>
                 <SelectTrigger className="w-40"><SelectValue placeholder="Assignee" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Assignees</SelectItem>
@@ -269,10 +187,10 @@ const WorkOrders = () => {
                     assigneeName={order.assignedToUserId ? profileMap[order.assignedToUserId] : undefined}
                     canDelete={canDelete}
                     canEdit={canEdit}
-                    onOpen={(o) => setSheetOrder(o)}
-                    onGeneratePOI={generatePOIToken}
-                    onPrintSheet={(o) => setSheetOrder(o)}
-                    onDelete={(id) => setDeleteConfirmId(id)}
+                    onOpen={(o) => actions.setSheetOrder(o)}
+                    onGeneratePOI={actions.generatePOIToken}
+                    onPrintSheet={(o) => actions.setSheetOrder(o)}
+                    onDelete={(id) => actions.setDeleteConfirmId(id)}
                   />
                 ))}
               </div>
@@ -282,39 +200,38 @@ const WorkOrders = () => {
                 profileMap={profileMap}
                 canEdit={canEdit}
                 canDelete={canDelete}
-                onMarkBuilt={(id) => setCompleteConfirmId(id)}
-                onDelete={(id) => setDeleteConfirmId(id)}
-                onEdit={(o) => { setEditOrder(o); setEditOrderMode(true); }}
-                onOpen={(o) => setSheetOrder(o)}
-                onGeneratePOI={generatePOIToken}
+                onMarkBuilt={(id) => actions.setCompleteConfirmId(id)}
+                onDelete={(id) => actions.setDeleteConfirmId(id)}
+                onEdit={(o) => { actions.setEditOrder(o); actions.setEditOrderMode(true); }}
+                onOpen={(o) => actions.setSheetOrder(o)}
+                onGeneratePOI={actions.generatePOIToken}
               />
             )}
             <WorkOrdersPagination
               currentPage={safePage}
-              totalItems={processed.length}
-              pageSize={pageSize}
-              onPageChange={setPage}
-              onPageSizeChange={s => { setPageSize(s); setPage(1); }}
+              totalItems={filter.processed.length}
+              pageSize={filter.pageSize}
+              onPageChange={filter.setPage}
+              onPageSizeChange={s => { filter.setPageSize(s); filter.setPage(1); }}
             />
           </>
         )}
 
-        <NewWorkOrderModal isOpen={isNewOrderModalOpen} onClose={() => setIsNewOrderModalOpen(false)} />
+        <NewWorkOrderModal isOpen={actions.isNewOrderModalOpen} onClose={() => actions.setIsNewOrderModalOpen(false)} />
         <EditWorkOrderModal
-          order={editOrder}
-          isOpen={!!editOrder}
-          onClose={() => setEditOrder(null)}
-          startInEditMode={editOrderMode}
+          order={actions.editOrder}
+          isOpen={!!actions.editOrder}
+          onClose={() => actions.setEditOrder(null)}
+          startInEditMode={actions.editOrderMode}
         />
         <ProductionSheetModal
-          order={sheetOrder}
-          isOpen={!!sheetOrder}
-          onClose={() => setSheetOrder(null)}
+          order={actions.sheetOrder}
+          isOpen={!!actions.sheetOrder}
+          onClose={() => actions.setSheetOrder(null)}
           onRefreshOrder={refreshOrders}
         />
 
-        {/* Clear ALL */}
-        <AlertDialog open={isClearDialogOpen} onOpenChange={setIsClearDialogOpen}>
+        <AlertDialog open={actions.isClearDialogOpen} onOpenChange={actions.setIsClearDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Clear all work orders?</AlertDialogTitle>
@@ -322,15 +239,14 @@ const WorkOrders = () => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleClearOrders} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogAction onClick={actions.handleClearOrders} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                 Clear all
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Complete confirm */}
-        <AlertDialog open={!!completeConfirmId} onOpenChange={(open) => { if (!open) setCompleteConfirmId(null); }}>
+        <AlertDialog open={!!actions.completeConfirmId} onOpenChange={(open) => { if (!open) actions.setCompleteConfirmId(null); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Mark this order as completed?</AlertDialogTitle>
@@ -338,13 +254,12 @@ const WorkOrders = () => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmMarkCompleted}>Confirm</AlertDialogAction>
+              <AlertDialogAction onClick={actions.confirmMarkCompleted}>Confirm</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Delete confirm */}
-        <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
+        <AlertDialog open={!!actions.deleteConfirmId} onOpenChange={(open) => { if (!open) actions.setDeleteConfirmId(null); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete this work order?</AlertDialogTitle>
@@ -352,7 +267,7 @@ const WorkOrders = () => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogAction onClick={actions.confirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                 Delete
               </AlertDialogAction>
             </AlertDialogFooter>
