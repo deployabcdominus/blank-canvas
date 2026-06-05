@@ -255,21 +255,20 @@ export const mapProjectRow = (row: any): Project => {
   };
 };
 
-export const mapPaymentRow = (row: PaymentRow): Payment => ({
+export const mapPaymentRow = (row: any): Payment => ({
   id: row.id,
   proposal_id: row.proposal_id,
   amount: Number(row.amount),
   currency: row.currency,
   paid_at: row.paid_at,
-  payment_method: row.payment_method,
-  reference: row.reference,
-  notes: row.notes,
+  method: row.method,
+  note: row.note,
   company_id: row.company_id,
   created_at: row.created_at,
-  updated_at: row.updated_at,
+  status: row.status,
 });
 
-export const mapInstallationRow = (row: InstallationRow): Installation => ({
+export const mapInstallationRow = (row: any): Installation => ({
   id: row.id,
   company_id: row.company_id,
   project_id: row.project_id,
@@ -278,23 +277,24 @@ export const mapInstallationRow = (row: InstallationRow): Installation => ({
   status: row.status,
   scheduled_date: row.scheduled_date,
   completed_at: row.completed_at,
-  assigned_to_user_id: row.assigned_to_user_id,
+  assigned_installer_id: row.assigned_installer_id,
   installer_company_id: row.installer_company_id,
   notes: row.notes,
   location: row.location,
+  installation_address: row.installation_address,
   created_at: row.created_at,
   updated_at: row.updated_at,
 });
 
-export const mapInstallerCompanyRow = (row: InstallerCompanyRow): InstallerCompany => ({
+export const mapInstallerCompanyRow = (row: any): InstallerCompany => ({
   id: row.id,
   company_id: row.company_id,
   name: row.name,
-  contact_name: row.contact_name,
+  contact: row.contact,
   email: row.email,
   phone: row.phone,
   address: row.address,
   notes: row.notes,
+  active_status: row.active_status,
   created_at: row.created_at,
-  updated_at: row.updated_at,
 });
