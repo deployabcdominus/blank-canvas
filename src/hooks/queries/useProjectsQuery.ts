@@ -1,8 +1,23 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProjectsService, ProjectInsert, ProjectUpdate } from '@/services/projects.service';
 import { toast } from 'sonner';
 import { mapProjectRow } from '@/lib/mappings';
+
+export interface Project {
+  id: string;
+  companyId: string;
+  clientId: string | null;
+  projectName: string;
+  installAddress: string;
+  status: string;
+  ownerUserId: string | null;
+  assignedToUserId: string | null;
+  folderRelativePath: string | null;
+  folderFullPath: string | null;
+  createdAt: string;
+  updatedAt: string;
+  clientName?: string;
+}
 
 export const useProjectsQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();

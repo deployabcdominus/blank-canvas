@@ -1,8 +1,8 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClientsService, ClientInsert, ClientUpdate } from '@/services/clients.service';
 import { toast } from 'sonner';
 import { mapClientRow } from '@/lib/mappings';
+import { Client } from '@/types/domain';
 
 export const useClientsQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();
