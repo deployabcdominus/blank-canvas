@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { usePayments, PaymentMethod } from "@/contexts/PaymentsContext";
-import { Proposal } from "@/contexts/ProposalsContext";
+import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
+import { Proposal } from "@/types/domain";
 import { toast } from "sonner";
 import { DollarSign, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,15 +18,21 @@ interface RegisterPaymentModalProps {
   companyId: string | null;
 }
 
-const METHOD_KEYS: PaymentMethod[] = ['cash', 'zelle', 'card', 'transfer', 'check', 'other'];
+const METHOD_KEYS: string[] = ['cash', 'zelle', 'card', 'transfer', 'check', 'other'];
 
 export const RegisterPaymentModal = ({ isOpen, onClose, proposal, companyId }: RegisterPaymentModalProps) => {
   const { t } = useLanguage();
   const m = t.registerPaymentModal;
 
-  const { addPayment, getTotalPaidForProposal } = usePayments();
+  const { payments, createPaymentMutation } = usePaymentsQuery(companyId);
+  const addPayment = (p: any) => createPaymentMutation.mutateAsync(p);
+  const getTotalPaidForProposal = (proposalId: string) => {
+    return payments
+      .filter(p => p.proposal_id === proposalId && p.status === 'Completed')
+      .reduce((sum, p) => sum + p.amount, 0);
+  };
   const [amount, setAmount] = useState("");
-  const [method, setMethod] = useState<PaymentMethod>("transfer");
+  const [method, setMethod] = useState<string>("transfer");
   const [paidAt, setPaidAt] = useState(new Date().toISOString().split('T')[0]);
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
