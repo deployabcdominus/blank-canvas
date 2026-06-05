@@ -10,7 +10,7 @@ import { useClientsQuery } from "@/hooks/queries/useClientsQuery";
 import { useProjectsQuery } from "@/hooks/queries/useProjectsQuery";
 import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
-import { Client, Project, Proposal } from "@/types/domain";
+import { Client, Project, Proposal, ProjectStatus } from "@/types/domain";
 import { ClientAvatar } from "@/components/clients/ClientAvatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
