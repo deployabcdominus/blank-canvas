@@ -218,3 +218,47 @@ export interface Project {
   updatedAt: string;
   clientName?: string;
 }
+
+export interface Payment {
+  id: string;
+  proposal_id: string;
+  amount: number;
+  currency: string;
+  paid_at: string;
+  payment_method: string;
+  reference?: string | null;
+  notes?: string | null;
+  company_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Installation {
+  id: string;
+  company_id: string;
+  project_id: string | null;
+  client: string;
+  project: string;
+  status: string;
+  scheduled_date: string | null;
+  completed_at: string | null;
+  assigned_to_user_id: string | null;
+  installer_company_id: string | null;
+  notes: string | null;
+  location: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface InstallerCompany {
+  id: string;
+  company_id: string;
+  name: string;
+  contact_name: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
