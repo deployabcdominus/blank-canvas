@@ -16,7 +16,6 @@ export default function Reports() {
   const { proposals } = useProposalsQuery(companyId);
   const { orders } = useWorkOrdersQuery(companyId);
   const { t } = useLanguage();
-  const { t } = useLanguage();
 
   const salesByPersonData = useMemo(() => {
     const people: Record<string, { name: string, value: number, count: number }> = {};

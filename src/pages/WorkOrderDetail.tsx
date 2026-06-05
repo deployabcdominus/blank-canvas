@@ -103,8 +103,10 @@ function SectionCard({ children, className = "" }: { children: React.ReactNode; 
 export default function WorkOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { orders, updateOrder, refreshOrders } = useWorkOrders();
   const { companyId, canEdit, isAdmin, canViewFinancials } = useUserRole();
+  const { orders, updateWorkOrderMutation, workOrdersQuery } = useWorkOrdersQuery(companyId);
+  const refreshOrders = () => workOrdersQuery.refetch();
+  const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
   const { company } = useCompany();
 
   const order = useMemo(() => orders.find(o => o.id === id), [orders, id]);
@@ -362,7 +364,7 @@ export default function WorkOrderDetail() {
   }, [order, refreshOrders]);
 
   // Phase 4: Closing Handlers
-  const handleClosingUpdate = useCallback(async (updates: Partial<WorkOrder>) => {
+  const handleClosingUpdate = useCallback(async (updates: Partial<any>) => {
     if (!order) return;
     setClosingSaving(true);
     try {
