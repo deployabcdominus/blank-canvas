@@ -282,15 +282,15 @@ const Leads = () => {
           <AlertDialog open={actions.isConfirmClearOpen} onOpenChange={actions.setIsConfirmClearOpen}>
             <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
               <AlertDialogHeader>
-                <AlertDialogTitle>{t.leads.clearConfirmTitle}</AlertDialogTitle>
+                <AlertDialogTitle>{t.leads.clearAllTitle}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  {t.leads.clearConfirmDesc}
+                  {t.leads.clearAllDesc}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-white/5 border-white/10">{t.leads.cancel}</AlertDialogCancel>
+                <AlertDialogCancel className="bg-white/5 border-white/10">{t.common.cancel}</AlertDialogCancel>
                 <AlertDialogAction onClick={actions.handleClearLeads} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  {t.leads.confirmClear}
+                  {t.leads.clearAllConfirm}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -299,19 +299,20 @@ const Leads = () => {
           <AlertDialog open={actions.isConfirmDeleteOpen} onOpenChange={actions.setIsConfirmDeleteOpen}>
             <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
               <AlertDialogHeader>
-                <AlertDialogTitle>{t.leads.deleteConfirmTitle}</AlertDialogTitle>
+                <AlertDialogTitle>{t.leads.deleteTitle}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  {t.leads.deleteConfirmDesc}
+                  {t.leads.deleteDesc}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-white/5 border-white/10">{t.leads.cancel}</AlertDialogCancel>
+                <AlertDialogCancel className="bg-white/5 border-white/10">{t.common.cancel}</AlertDialogCancel>
                 <AlertDialogAction onClick={actions.handleConfirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  {t.leads.confirmDelete}
+                  {t.common.delete}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+
         </main>
       </div>
     </PageTransition>
