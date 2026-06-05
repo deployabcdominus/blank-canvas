@@ -39,7 +39,6 @@ export interface Lead {
 
 export type ProposalStatus = 'Borrador' | 'Enviada externamente' | 'Aprobada' | 'Rechazada';
 export type SentMethod = 'Gmail' | 'WhatsApp' | 'PDF físico' | 'Otro';
-
 export type ProposalSortKey = "updated" | "amount_desc" | "amount_asc" | "status" | "sent_date";
 
 export interface ProposalLead {
@@ -202,4 +201,20 @@ export interface Client {
   companyId: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Project {
+  id: string;
+  companyId: string;
+  clientId: string | null;
+  projectName: string;
+  installAddress: string;
+  status: string;
+  ownerUserId: string | null;
+  assignedToUserId: string | null;
+  folderRelativePath: string | null;
+  folderFullPath: string | null;
+  createdAt: string;
+  updatedAt: string;
+  clientName?: string;
 }
