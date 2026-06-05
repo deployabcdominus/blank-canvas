@@ -10,7 +10,7 @@ import { useClientsQuery } from "@/hooks/queries/useClientsQuery";
 import { useProjectsQuery } from "@/hooks/queries/useProjectsQuery";
 import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
-import { Client, Project, Proposal } from "@/types/domain";
+import { Client, Project, Proposal, ProjectStatus } from "@/types/domain";
 import { ClientAvatar } from "@/components/clients/ClientAvatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -85,7 +85,7 @@ const ClientDetail = () => {
     const totalProposalValue = clientProposals.reduce((s, p) => s + p.value, 0);
     const approvedProposals = clientProposals.filter((p) => p.status === "Aprobada");
     const approvedValue = approvedProposals.reduce((s, p) => s + (p.approvedTotal ?? p.value), 0);
-    const totalPaid = approvedProposals.reduce((s, p) => s + payments.filter((pay) => pay.proposal_id === p.id && pay.status === "received").reduce((ps, pay) => ps + pay.amount, 0), 0);
+    const totalPaid = approvedProposals.reduce((s, p) => s + payments.filter((pay) => pay.proposalId === p.id && pay.status === "received").reduce((ps, pay) => ps + pay.amount, 0), 0);
     const conversionRate = clientProposals.length > 0 ? Math.round((approvedProposals.length / clientProposals.length) * 100) : 0;
     const byStatus: Record<string, number> = {};
     clientProjects.forEach((p) => { byStatus[p.status] = (byStatus[p.status] || 0) + 1; });
@@ -286,7 +286,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         </Badge>
       </div>
       <div className="mb-2">
-        <VisualStatusTracker currentStatus={project.status} compact />
+        <VisualStatusTracker currentStatus={project.status as ProjectStatus} compact />
       </div>
       {project.installAddress && (
         <p className="text-xs text-muted-foreground flex items-center gap-1 mb-1">

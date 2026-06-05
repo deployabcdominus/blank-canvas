@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useCatalog } from "@/hooks/useCatalog";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
-import { WorkOrder } from "@/contexts/WorkOrdersContext";
+import { WorkOrder } from "@/types/domain";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";

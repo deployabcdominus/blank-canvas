@@ -1,5 +1,5 @@
 import { FileText, ExternalLink, CheckCircle, DollarSign } from "lucide-react";
-import { Proposal } from "@/contexts/ProposalsContext";
+import { Proposal } from "@/types/domain";
 
 interface ProposalsKPIBarProps {
   proposals: Proposal[];

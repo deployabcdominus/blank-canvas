@@ -152,8 +152,8 @@ const InstallerCompanies = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={company.active_status === 'active' ? 'outline' : 'secondary'} className={company.active_status === 'active' ? 'bg-mint/10 text-mint-foreground border-mint/20' : ''}>
-                        {company.active_status === 'active' ? (isEn ? "Active" : "Activo") : (isEn ? "Inactive" : "Inactivo")}
+                      <Badge variant={company.activeStatus === 'active' ? 'outline' : 'secondary'} className={company.activeStatus === 'active' ? 'bg-mint/10 text-mint-foreground border-mint/20' : ''}>
+                        {company.activeStatus === 'active' ? (isEn ? "Active" : "Activo") : (isEn ? "Inactive" : "Inactivo")}
                       </Badge>
                     </TableCell>
                     <TableCell>

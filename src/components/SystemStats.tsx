@@ -1,19 +1,19 @@
 import { motion } from "framer-motion";
-import { useLeads } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useInstallations } from "@/contexts/InstallationsContext";
-import { useInstallerCompanies } from "@/contexts/InstallerCompaniesContext";
+import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
+import { useInstallerCompaniesQuery } from "@/hooks/queries/useInstallerCompaniesQuery";
 import { statsConfig } from "@/constants/landingPageData";
 
 export const SystemStats = () => {
-  const { leads } = useLeads();
-  const { proposals } = useProposals();
   const { companyId } = useUserRole();
+  const { leads } = useLeadsQuery(companyId);
+  const { proposals } = useProposalsQuery(companyId);
   const { orders } = useWorkOrdersQuery(companyId);
-  const { installations } = useInstallations();
-  const { companies } = useInstallerCompanies();
+  const { installations } = useInstallationsQuery(companyId);
+  const { installerCompanies: companies } = useInstallerCompaniesQuery(companyId);
 
   const statsValues = [leads.length, proposals.length, orders.length, installations.length, 0, companies.length];
 

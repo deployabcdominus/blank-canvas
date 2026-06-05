@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Payment } from "@/contexts/PaymentsContext";
+import { Payment } from "@/types/domain";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";

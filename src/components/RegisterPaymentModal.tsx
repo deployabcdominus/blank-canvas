@@ -28,7 +28,7 @@ export const RegisterPaymentModal = ({ isOpen, onClose, proposal, companyId }: R
   const addPayment = (p: any) => createPaymentMutation.mutateAsync(p);
   const getTotalPaidForProposal = (proposalId: string) => {
     return payments
-      .filter(p => p.proposal_id === proposalId && p.status === 'Completed')
+      .filter(p => p.proposalId === proposalId && p.status === 'Completed')
       .reduce((sum, p) => sum + p.amount, 0);
   };
   const [amount, setAmount] = useState("");

@@ -1,10 +1,13 @@
 
-import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client, Project } from '@/types/domain';
+import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client, Project, Payment, Installation, InstallerCompany } from '@/types/domain';
 import { LeadRow } from '@/services/leads.service';
 import { ProposalRow } from '@/services/proposals.service';
 import { WorkOrderRow } from '@/services/work-orders.service';
 import { ClientRow } from '@/services/clients.service';
 import { ProjectRow } from '@/services/projects.service';
+import { PaymentRow } from '@/services/payments.service';
+import { InstallationRow } from '@/services/installations.service';
+import { InstallerCompanyRow } from '@/services/installer-companies.service';
 
 export const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Ready for Production',
@@ -251,3 +254,54 @@ export const mapProjectRow = (row: any): Project => {
     clientName,
   };
 };
+
+export const mapPaymentRow = (row: any): Payment => ({
+  id: row.id,
+  proposalId: row.proposal_id,
+  amount: Number(row.amount),
+  currency: row.currency,
+  paidAt: row.paid_at,
+  method: row.method,
+  note: row.note,
+  companyId: row.company_id,
+  createdAt: row.created_at,
+  status: row.status,
+});
+
+export const mapInstallationRow = (row: any): Installation => ({
+  id: row.id,
+  companyId: row.company_id,
+  projectId: row.project_id,
+  client: row.client,
+  project: row.project,
+  status: row.status,
+  scheduledDate: row.scheduled_date,
+  completedAt: row.completed_at,
+  assignedInstallerId: row.assigned_installer_id,
+  installerCompanyId: row.installer_company_id,
+  notes: row.notes,
+  location: row.location,
+  installationAddress: row.installation_address,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+  // Added for component compatibility
+  address: row.location || row.installation_address || '',
+  technician: row.team || '',
+  scheduledTime: row.scheduled_date ? new Date(row.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+  photos: row.photos || [],
+});
+
+export const mapInstallerCompanyRow = (row: any): InstallerCompany => ({
+  id: row.id,
+  companyId: row.company_id,
+  name: row.name,
+  contact: row.contact,
+  email: row.email,
+  phone: row.phone,
+  address: row.address,
+  notes: row.notes,
+  activeStatus: row.active_status,
+  logoUrl: row.logo_url,
+  services: row.services || [],
+  createdAt: row.created_at,
+});

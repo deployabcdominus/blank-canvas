@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, Megaphone, FileText, Cog, Truck } from "lucide-react";
-import type { ProjectStatus } from "@/contexts/ProjectsContext";
+import type { ProjectStatus } from "@/types/domain";
 
 const STAGES: { key: ProjectStatus; label: string; icon: typeof Megaphone }[] = [
   { key: "Lead", label: "Lead", icon: Megaphone },

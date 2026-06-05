@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useInstallerCompanies, InstallerCompany } from "@/contexts/InstallerCompaniesContext";
+import { useInstallerCompaniesQuery } from "@/hooks/queries/useInstallerCompaniesQuery";
+import { InstallerCompany } from "@/types/domain";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -41,7 +43,10 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
   const { t, locale } = useLanguage();
   const isEn = locale === "en";
   const formSchema = makeFormSchema(isEn);
-  const { addCompany, updateCompany } = useInstallerCompanies();
+  const { companyId } = useUserRole();
+  const { createInstallerCompanyMutation, updateInstallerCompanyMutation } = useInstallerCompaniesQuery(companyId);
+  const addCompany = (data: any) => createInstallerCompanyMutation.mutateAsync(data);
+  const updateCompany = (id: string, updates: any) => updateInstallerCompanyMutation.mutateAsync({ id, updates });
   const fallbackServices = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
   const serviceTypes = catalogServices.length > 0 ? catalogServices.map(s => s.label) : fallbackServices;
@@ -56,7 +61,7 @@ export const InstallerCompanyModal: React.FC<InstallerCompanyModalProps> = ({ is
       setValue("name", company.name); setValue("email", company.email || "");
       setValue("phone", company.phone || ""); setValue("contact", company.contact || "");
       setValue("address", company.address || ""); setValue("notes", company.notes || "");
-      setValue("active_status", (company.active_status as any) || "active");
+      setValue("active_status", (company.activeStatus as any) || "active");
       setValue("services", company.services || []); setSelectedServices(company.services || []);
       setLogoPreview(company.logoUrl || null); setLogoFile(company.logoUrl || null);
     } else { reset(); setSelectedServices([]); setLogoPreview(null); setLogoFile(null); setValue("active_status", "active"); }

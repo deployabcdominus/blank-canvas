@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
-import { WorkOrder } from "@/contexts/WorkOrdersContext";
+import { WorkOrder } from "@/types/domain";
 import { Target } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 

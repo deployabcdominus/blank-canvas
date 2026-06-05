@@ -218,3 +218,56 @@ export interface Project {
   updatedAt: string;
   clientName?: string;
 }
+
+export type ProjectStatus = 'Lead' | 'Proposal' | 'Production' | 'Installation' | 'Completed';
+
+export interface Payment {
+  id: string;
+  proposalId: string;
+  amount: number;
+  currency: string | null;
+  paidAt: string;
+  method: string;
+  note?: string | null;
+  companyId: string;
+  createdAt: string;
+  status: string | null;
+}
+
+export interface Installation {
+  id: string;
+  companyId: string;
+  projectId: string | null;
+  client: string;
+  project: string | null;
+  status: string | null;
+  scheduledDate: string | null;
+  completedAt: string | null;
+  assignedInstallerId: string | null;
+  installerCompanyId: string | null;
+  notes: string | null;
+  location: string | null;
+  installationAddress: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+  // Added for component compatibility
+  address?: string;
+  technician?: string;
+  scheduledTime?: string;
+  photos?: string[];
+}
+
+export interface InstallerCompany {
+  id: string;
+  companyId: string | null;
+  name: string;
+  contact: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  notes: string | null;
+  activeStatus: string | null;
+  logoUrl?: string | null;
+  services?: string[];
+  createdAt: string;
+}

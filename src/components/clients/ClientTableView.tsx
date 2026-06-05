@@ -1,4 +1,4 @@
-import { Client } from "@/contexts/ClientsContext";
+import { Client } from "@/types/domain";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,4 @@
-import { Proposal, ProposalStatus } from "@/contexts/ProposalsContext";
-import { usePayments } from "@/contexts/PaymentsContext";
+import { Proposal, ProposalStatus } from "@/types/domain";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,7 @@ interface Props {
 }
 
 export function ProposalsTableView({ proposals, onEdit, onDelete, onCreateOrder, onRegisterPayment }: Props) {
-  const { getTotalPaidForProposal } = usePayments();
+  
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
