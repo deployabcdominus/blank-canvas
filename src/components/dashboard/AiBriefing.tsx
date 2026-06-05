@@ -135,7 +135,7 @@ export function AiBriefing() {
       const thirtyDaysAgo = subDays(now, 30).toISOString();
       const recentLeads = leads.slice(0, 20).map(l => ({ name: l.name, status: l.status, value: l.value, service: l.service }));
       const recentProposals = proposals.filter(p => p.createdAt > thirtyDaysAgo).map(p => ({ client: p.client, value: p.value, status: p.status, sentDate: p.sentDate }));
-      const recentPayments = payments.filter(p => p.createdAt > thirtyDaysAgo).map(p => ({ amount: p.amount, status: p.status, paidAt: p.paidAt }));
+      const recentPayments = payments.filter(p => p.created_at > thirtyDaysAgo).map(p => ({ amount: p.amount, status: p.status, paidAt: p.paid_at }));
       const clientList = clients.slice(0, 20).map(c => ({ name: c.clientName }));
 
       const businessData = {
