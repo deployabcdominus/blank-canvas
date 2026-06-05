@@ -13,7 +13,7 @@ import {
   Plus, Package, Search, Zap, X, Minus, Printer, Copy, Share2,
   ChevronDown, ChevronUp, Check,
 } from "lucide-react";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/contexts/AuthContext";
@@ -223,7 +223,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const { companyId } = useUserRole();
-  const { proposals } = useProposals();
+  const { proposals } = useProposalsQuery(companyId);
   const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();

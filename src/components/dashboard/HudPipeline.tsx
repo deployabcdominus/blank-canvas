@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lead } from "@/contexts/LeadsContext";
-import { Proposal } from "@/contexts/ProposalsContext";
-import { WorkOrder } from "@/contexts/WorkOrdersContext";
-import { Installation } from "@/contexts/InstallationsContext";
+import { Lead, Proposal, WorkOrder } from "@/types/domain";
+import { Installation } from "@/hooks/queries/useInstallationsQuery";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, FileText, ClipboardList, MapPin, CheckCircle2, AlertTriangle } from "lucide-react";
 import { KanbanColumn } from "@/components/PipelineKanban";
@@ -109,14 +107,14 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
         {activeFilter && <span className="text-[10px] md:text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
       </div>
 
-      <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2">
+      <div className="flex gap-2 md:gap-3 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory">
         <AnimatePresence mode="popLayout">
           {visibleCols.map(col => {
             const colCards = cards.filter(c => c.column === col.key);
             const Icon = col.icon;
             const accentColor = `hsl(var(${col.accentVar}))`;
             return (
-              <motion.div key={col.key} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="flex-1 min-w-[200px]">
+              <motion.div key={col.key} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="flex-1 min-w-[240px] md:min-w-[280px] snap-start">
                 <div
                   className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl border"
                   style={{

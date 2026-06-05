@@ -49,7 +49,7 @@ export const LeadsKPIBar = ({ leads, proposals, isMobile }: LeadsKPIBarProps) =>
   ];
 
   return (
-    <div className={`grid gap-4 mb-6 ${isMobile ? 'grid-cols-2' : 'grid-cols-4'}`}>
+    <div className={`grid gap-3 md:gap-4 mb-6 ${isMobile ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-4'}`}>
       {kpis.map((kpi) => (
         <div
           key={kpi.label}

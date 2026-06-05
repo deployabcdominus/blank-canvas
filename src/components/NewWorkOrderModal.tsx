@@ -16,7 +16,7 @@ import {
   ChevronDown, ChevronUp, Check, Upload, Maximize2, Save,
   ClipboardList, Factory, StickyNote, Ruler, Calendar,
 } from "lucide-react";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorkOrdersQuery } from "@/hooks/queries/useWorkOrdersQuery";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -223,9 +223,9 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, onClose }) => {
   const { t, locale } = useLanguage();
   const isEn = locale === "en";
-  const { proposals } = useProposals();
-  const { user } = useAuth();
   const { companyId } = useUserRole();
+  const { proposals } = useProposalsQuery(companyId);
+  const { user } = useAuth();
   const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();

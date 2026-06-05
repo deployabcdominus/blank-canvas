@@ -7,13 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import { useClients } from "@/contexts/ClientsContext";
-import { useProjects } from "@/contexts/ProjectsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
-import { useLeads, Lead } from "@/contexts/LeadsContext";
+import { useClientsQuery } from "@/hooks/queries/useClientsQuery";
+import { useProjectsQuery } from "@/hooks/queries/useProjectsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { Lead } from "@/types/domain";
 
 interface ConvertLeadModalProps {
   isOpen: boolean;
@@ -26,10 +28,23 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   const m = t.convertLeadModal;
 
   const { user } = useAuth();
-  const { clients, addClient } = useClients();
-  const { addProject } = useProjects();
-  const { addProposal } = useProposals();
-  const { updateLead } = useLeads();
+  const { companyId } = useUserRole();
+  const { clients, createClientMutation } = useClientsQuery(companyId);
+  const { createProjectMutation } = useProjectsQuery(companyId);
+  const { createProposalMutation } = useProposalsQuery(companyId);
+  const { updateLeadMutation } = useLeadsQuery(companyId);
+
+  const addClient = async (c: any) => {
+    const res = await createClientMutation.mutateAsync(c);
+    return res.data;
+  };
+  const addProject = async (p: any) => {
+    const res = await createProjectMutation.mutateAsync(p);
+    return res.data;
+  };
+  const addProposal = (p: any) => createProposalMutation.mutateAsync(p);
+  const updateLead = (id: string, updates: any) => updateLeadMutation.mutateAsync({ id, updates });
+
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -46,9 +61,9 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   };
 
   // Pre-fill when lead changes
-  const prevLeadId = useState<string | null>(null);
-  if (lead && lead.id !== prevLeadId[0]) {
-    prevLeadId[1](lead.id);
+  const [prevLeadId, setPrevLeadId] = useState<string | null>(null);
+  if (lead && lead.id !== prevLeadId) {
+    setPrevLeadId(lead.id);
     setProjectName(lead.service || lead.name);
     if (lead.company) setNewClientName(lead.company);
     setSelectedClientId('');
@@ -65,15 +80,16 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
       if (mode === 'new') {
         if (!newClientName.trim()) throw new Error(m.clientNameRequired);
         const newClient = await addClient({
-          clientName: newClientName.trim(),
-          contactName: lead.name || null,
-          primaryEmail: lead.contact.email || null,
-          primaryPhone: lead.contact.phone || null,
+          client_name: newClientName.trim(),
+          contact_name: lead.name || null,
+          primary_email: lead.contact.email || null,
+          primary_phone: lead.contact.phone || null,
           address: lead.contact.location || null,
           website: lead.website || null,
-          serviceType: lead.service || null,
+          service_type: lead.service || null,
           notes: lead.notes || null,
-          logoUrl: lead.logoUrl || null,
+          logo_url: lead.logoUrl || null,
+          company_id: companyId || '',
         });
         if (!newClient?.id) throw new Error(m.errorNoClientId);
         clientId = newClient.id;
@@ -84,15 +100,13 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
 
       // Step 2: Create project
       const project = await addProject({
-        clientId,
-        projectName: projectName.trim() || lead.service || m.projectFallback,
-        installAddress: lead.contact.location || '',
+        client_id: clientId,
+        project_name: projectName.trim() || lead.service || m.projectFallback,
+        install_address: lead.contact.location || '',
         status: 'Lead',
-        ownerUserId: user.id,
-        assignedToUserId: lead.assignedToUserId || null,
-        folderRelativePath: null,
-        folderFullPath: null,
-        pilotTag: lead.pilot_tag || null,
+        owner_user_id: user.id,
+        assigned_to_user_id: lead.assignedToUserId || null,
+        company_id: companyId || '',
       });
       if (!project?.id) throw new Error(m.errorNoProjectId);
 
@@ -106,17 +120,11 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         await addProposal({
           client: proposalClientName,
           project: projectName.trim() || lead.service || m.projectFallback,
-          value: lead.value ? parseFloat(lead.value) || 0 : 0,
+          value: lead.value ? parseFloat(lead.value.replace(/[^0-9.]/g, '')) || 0 : 0,
           description: lead.notes || lead.service || '',
           status: 'Borrador',
-          sentDate: null,
-          sentMethod: null,
-          leadId: lead.id,
-          updatedAt: null,
-          lead: null,
-          approvedTotal: null,
-          approvedAt: null,
-          mockupUrl: null,
+          lead_id: lead.id,
+          company_id: companyId || '',
         });
       } catch (proposalErr: any) {
         const msg = proposalErr?.message || 'Error desconocido';
@@ -131,9 +139,9 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
       // Step 4: Mark lead as converted
       await updateLead(lead.id, {
         status: 'Convertido',
-        clientId: clientId,
-        projectId: project.id,
-      } as any);
+        client_id: clientId,
+        project_id: project.id,
+      });
 
       toast({ title: m.successTitle, description: m.successDesc });
       onClose();

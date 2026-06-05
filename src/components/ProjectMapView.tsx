@@ -1,9 +1,11 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useProjects, Project } from "@/contexts/ProjectsContext";
-import { useInstallations } from "@/contexts/InstallationsContext";
-import { usePayments } from "@/contexts/PaymentsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useProjectsQuery } from "@/hooks/queries/useProjectsQuery";
+import { Project } from "@/types/domain";
+import { useInstallationsQuery } from "@/hooks/queries/useInstallationsQuery";
+import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { useUserRole } from "@/hooks/useUserRole";
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap, useMapEvents } from "react-leaflet";
 import { LatLngBounds } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -95,10 +97,11 @@ function ComplianceInfo({ address, installDate, tc }: { address: string; install
 export const ProjectMapView = () => {
   const { t } = useLanguage();
   const tc = t.projectMap;
-  const { projects } = useProjects();
-  const { installations } = useInstallations();
-  const { payments } = usePayments();
-  const { proposals } = useProposals();
+  const { companyId } = useUserRole();
+  const { projects } = useProjectsQuery(companyId);
+  const { installations } = useInstallationsQuery(companyId);
+  const { payments } = usePaymentsQuery(companyId);
+  const { proposals } = useProposalsQuery(companyId);
 
   const getStatusLabel = (key: string) =>
     key === "Lead" ? "Lead" : (tc.statusLabels as any)[key] ?? key;

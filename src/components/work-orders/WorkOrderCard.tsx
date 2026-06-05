@@ -69,12 +69,12 @@ export function WorkOrderCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
       onClick={() => navigate(`/work-orders/${order.id}`)}
-      className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col"
+      className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col w-full"
       style={{
         background: "rgba(255,255,255,0.03)",
         border: "1px solid rgba(139,92,246,0.2)",
         borderRadius: 12,
-        padding: 20,
+        padding: "16px",
         gap: 12,
       }}
       onMouseEnter={(e) => {
@@ -88,7 +88,7 @@ export function WorkOrderCard({
     >
       {/* Row 1: Header — Client + Status */}
       <div className="flex items-start justify-between gap-2">
-        <h3 className="text-lg font-semibold text-white truncate min-w-0 flex-1">{order.client}</h3>
+        <h3 className="text-base md:text-lg font-semibold text-white truncate min-w-0 flex-1">{order.client}</h3>
         <Badge className={`border-0 text-[10px] shrink-0 font-semibold`} style={{ background: status.bg, color: status.color }}>
           {statusLabel}
         </Badge>

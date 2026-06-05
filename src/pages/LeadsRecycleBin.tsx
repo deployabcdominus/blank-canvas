@@ -4,7 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/PageTransition";
 import { Sidebar } from "@/components/Sidebar";
 import { MobileMenu } from "@/components/MobileMenu";
-import { useLeads, Lead } from "@/contexts/LeadsContext";
+import { Lead } from "@/types/domain";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { LeadsService } from "@/services/leads.service";
+import { mapLeadRow } from "@/lib/mappings";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useBreakpoint } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
@@ -24,8 +27,25 @@ import { useLanguage } from "@/i18n/LanguageContext";
 const LeadsRecycleBin = () => {
   const navigate = useNavigate();
   const breakpoint = useBreakpoint();
-  const { fetchDeletedLeads, restoreLead, permanentDeleteLead, refreshLeads } = useLeads();
-  const { isAdmin } = useUserRole();
+  const { companyId, isAdmin } = useUserRole();
+  const { leadsQuery } = useLeadsQuery(companyId);
+  const refreshLeads = () => leadsQuery.refetch();
+
+  const fetchDeletedLeads = useCallback(async () => {
+    if (!companyId) return [];
+    const { data } = await LeadsService.getDeleted(companyId);
+    return (data || []).map(mapLeadRow);
+  }, [companyId]);
+
+  const restoreLead = async (id: string) => {
+    await LeadsService.restore(id);
+    refreshLeads();
+  };
+
+  const permanentDeleteLead = async (id: string) => {
+    await LeadsService.permanentDelete(id);
+    refreshLeads();
+  };
   const { locale } = useLanguage();
   const isEn = locale === "en";
   const [deletedLeads, setDeletedLeads] = useState<Lead[]>([]);

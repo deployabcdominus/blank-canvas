@@ -427,11 +427,11 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
               </FormItem>
             )} />
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t mt-4">
-              <Button type="button" variant="outline" onClick={handleClose} className="min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
+            <div className="flex flex-col sm:flex-row gap-2 pt-6 border-t mt-4">
+              <Button type="button" variant="outline" onClick={handleClose} className="min-h-[44px] flex-1 sm:w-auto" disabled={isLoading}>
                 {t.addLeadModal.cancel}
               </Button>
-              <Button type="submit" className="min-h-[44px] sm:w-auto w-full" disabled={isLoading}>
+              <Button type="submit" className="min-h-[44px] flex-1 sm:w-auto" disabled={isLoading}>
                 {isLoading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t.addLeadModal.saving}</>) : t.addLeadModal.save}
               </Button>
             </div>

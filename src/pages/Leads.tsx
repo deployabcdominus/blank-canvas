@@ -1,10 +1,12 @@
-
+/**
+ * Leads Page - Main CRM entry point.
+ */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/use-mobile";
 import { Lead } from "@/types/domain";
 import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
-import { useProposals } from "@/contexts/ProposalsContext";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
 import { PlanLimitBanner } from "@/components/PlanLimitBanner";
@@ -39,7 +41,8 @@ const Leads = () => {
   const breakpoint = useBreakpoint();
   const { companyId, isAdmin, isComercial, canEdit, canManageLeads } = useUserRole();
   const { leads, isLoading, createLeadMutation, deleteLeadMutation, deleteLeadsMutation, clearLeadsMutation } = useLeadsQuery(companyId);
-  const { proposals, addProposal } = useProposals();
+  const { proposals, createProposalMutation } = useProposalsQuery(companyId);
+  const addProposal = (p: any) => createProposalMutation.mutateAsync(p);
   const limits = usePlanLimits();
   const { t } = useLanguage();
 
