@@ -11,11 +11,11 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { FileText, TrendingUp, Users, CheckCircle2, BarChart3 } from "lucide-react";
 
 export default function Reports() {
-  const { isAdmin, companyId } = useUserRole();
+  const { isAdmin: isUserAdmin, companyId } = useUserRole();
   const { leads } = useLeadsQuery(companyId);
   const { proposals } = useProposalsQuery(companyId);
   const { orders } = useWorkOrdersQuery(companyId);
-  const { isAdmin } = useUserRole();
+  const { t } = useLanguage();
   const { t } = useLanguage();
 
   const salesByPersonData = useMemo(() => {
@@ -40,7 +40,7 @@ export default function Reports() {
 
   const COLORS = ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe'];
 
-  if (!isAdmin) {
+  if (!isUserAdmin) {
     return (
       <ResponsiveLayout>
         <div className="flex flex-col items-center justify-center py-20 text-center">
