@@ -9,10 +9,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useCompany } from "@/hooks/useCompany";
-import { useLeads } from "@/contexts/LeadsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
-import { usePayments } from "@/contexts/PaymentsContext";
-import { useClients } from "@/contexts/ClientsContext";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { usePaymentsQuery } from "@/hooks/queries/usePaymentsQuery";
+import { useClientsQuery } from "@/hooks/queries/useClientsQuery";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,10 +52,11 @@ function BriefingContent({ text }: { text: string }) {
 export function AiBriefing() {
   const { fullName } = useUserProfile();
   const { company } = useCompany();
-  const { leads } = useLeads();
-  const { proposals } = useProposals();
-  const { payments } = usePayments();
-  const { clients } = useClients();
+  const { companyId } = useUserRole();
+  const { leads } = useLeadsQuery(companyId);
+  const { proposals } = useProposalsQuery(companyId);
+  const { payments } = usePaymentsQuery(companyId);
+  const { clients } = useClientsQuery(companyId);
   const { toast } = useToast();
   const { t } = useLanguage();
   const tc = t.aiBriefing;

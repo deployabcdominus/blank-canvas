@@ -148,12 +148,12 @@ const ActivityItem = ({ event, isLast }: { event: ActivityEvent; isLast: boolean
 export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }: EditLeadModalProps) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { updateLeadMutation, leads, leadsQuery } = useLeadsQuery(null);
-  const { createProposalMutation, proposals } = useProposalsQuery(null);
+  const { companyId, isAdmin } = useUserRole();
+  const { updateLeadMutation, leads, leadsQuery } = useLeadsQuery(companyId);
+  const { createProposalMutation, proposals } = useProposalsQuery(companyId);
   const updateLead = async (id: string, updates: any) => updateLeadMutation.mutateAsync({ id, updates });
   const addProposal = async (p: any) => createProposalMutation.mutateAsync(p);
   const setLeads = () => leadsQuery.refetch();
-  const { isAdmin } = useUserRole();
   const { items: services } = useCatalog("lead_service");
   const { items: sources } = useCatalog("lead_source");
   const { items: statuses } = useCatalog("lead_status");
@@ -358,7 +358,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, startInEditMode = false }
       const { error } = await supabase.from("leads").delete().eq("id", lead.id);
       if (error) throw error;
       toast({ title: t.editLeadModal.toastDeleted });
-      setLeads(leads.filter(l => l.id !== lead.id));
+      setLeads();
       onClose();
     } catch {
       toast({ title: t.editLeadModal.toastDeleteError, variant: "destructive" });

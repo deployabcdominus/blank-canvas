@@ -7,10 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import { useClients } from "@/contexts/ClientsContext";
-import { useProjects } from "@/contexts/ProjectsContext";
-import { useProposals } from "@/contexts/ProposalsContext";
-import { useLeads, Lead } from "@/contexts/LeadsContext";
+import { useClientsQuery } from "@/hooks/queries/useClientsQuery";
+import { useProjectsQuery } from "@/hooks/queries/useProjectsQuery";
+import { useProposalsQuery } from "@/hooks/queries/useProposalsQuery";
+import { useLeadsQuery } from "@/hooks/queries/useLeadsQuery";
+import { Lead } from "@/types/domain";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -26,10 +27,16 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
   const m = t.convertLeadModal;
 
   const { user } = useAuth();
-  const { clients, addClient } = useClients();
-  const { addProject } = useProjects();
-  const { addProposal } = useProposals();
-  const { updateLead } = useLeads();
+  const { companyId } = useUserRole();
+  const { clients, createClientMutation } = useClientsQuery(companyId);
+  const { createProjectMutation } = useProjectsQuery(companyId);
+  const { createProposalMutation } = useProposalsQuery(companyId);
+  const { updateLeadMutation } = useLeadsQuery(companyId);
+
+  const addClient = (c: any) => createClientMutation.mutateAsync(c);
+  const addProject = (p: any) => createProjectMutation.mutateAsync(p);
+  const addProposal = (p: any) => createProposalMutation.mutateAsync(p);
+  const updateLead = (id: string, updates: any) => updateLeadMutation.mutateAsync({ id, updates });
   const { toast } = useToast();
   const navigate = useNavigate();
 

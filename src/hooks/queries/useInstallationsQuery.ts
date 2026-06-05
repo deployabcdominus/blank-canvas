@@ -1,6 +1,37 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { InstallationsService, InstallationInsert, InstallationUpdate } from '@/services/installations.service';
-import { toast } from 'sonner';
+
+export interface Installation {
+  id: string;
+  client: string;
+  project: string;
+  status: "Scheduled" | "In Progress" | "Completed" | "Installer Assigned" | "Completed Pending Review" | "Needs Follow-up" | "Canceled";
+  address: string;
+  scheduledDate: string;
+  scheduledTime: string;
+  technician: string;
+  notes: string;
+  projectId: string | null;
+  photos: string[];
+  installer_company_id: string | null;
+  assigned_installer_id: string | null;
+  installation_address: string | null;
+  installation_time_window: string | null;
+  site_contact_name: string | null;
+  site_contact_phone: string | null;
+  access_notes: string | null;
+  parking_notes: string | null;
+  installation_notes: string | null;
+  special_instructions: string | null;
+  required_tools_or_equipment: string | null;
+  permit_required: boolean | null;
+  customer_presence_required: boolean | null;
+  completed_at: string | null;
+  confirmed_at: string | null;
+  confirmed_by_admin_id: string | null;
+  confirmation_notes: string | null;
+}
+
 
 export const useInstallationsQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();
