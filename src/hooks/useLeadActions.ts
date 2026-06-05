@@ -20,6 +20,7 @@ export const useLeadActions = (
   const navigate = useNavigate();
   const { t } = useLanguage();
   
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isAddLeadModalOpen, setIsAddLeadModalOpen] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
@@ -130,6 +131,8 @@ export const useLeadActions = (
   };
 
   return {
+    isMobileMenuOpen,
+    setIsMobileMenuOpen,
     selectedIds,
     setSelectedIds,
     isAddLeadModalOpen,
