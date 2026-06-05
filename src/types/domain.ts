@@ -223,14 +223,13 @@ export interface Payment {
   id: string;
   proposal_id: string;
   amount: number;
-  currency: string;
+  currency: string | null;
   paid_at: string;
-  payment_method: string;
-  reference?: string | null;
-  notes?: string | null;
+  method: string;
+  note?: string | null;
   company_id: string;
   created_at: string;
-  updated_at: string;
+  status: string | null;
 }
 
 export interface Installation {
@@ -238,27 +237,28 @@ export interface Installation {
   company_id: string;
   project_id: string | null;
   client: string;
-  project: string;
-  status: string;
+  project: string | null;
+  status: string | null;
   scheduled_date: string | null;
   completed_at: string | null;
-  assigned_to_user_id: string | null;
+  assigned_installer_id: string | null;
   installer_company_id: string | null;
   notes: string | null;
   location: string | null;
+  installation_address: string | null;
   created_at: string;
-  updated_at: string;
+  updated_at: string | null;
 }
 
 export interface InstallerCompany {
   id: string;
-  company_id: string;
+  company_id: string | null;
   name: string;
-  contact_name: string | null;
+  contact: string | null;
   email: string | null;
   phone: string | null;
   address: string | null;
   notes: string | null;
+  active_status: string | null;
   created_at: string;
-  updated_at: string;
 }
