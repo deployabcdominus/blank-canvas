@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { InstallationsService, InstallationInsert, InstallationUpdate } from '@/services/installations.service';
+import { toast } from 'sonner';
 
 export interface Installation {
   id: string;
@@ -31,7 +32,6 @@ export interface Installation {
   confirmed_by_admin_id: string | null;
   confirmation_notes: string | null;
 }
-
 
 export const useInstallationsQuery = (companyId: string | null) => {
   const queryClient = useQueryClient();
