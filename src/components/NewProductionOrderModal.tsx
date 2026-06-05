@@ -223,7 +223,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const { companyId } = useUserRole();
-  const { proposals } = useProposals();
+  const { proposals } = useProposalsQuery(companyId);
   const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
   const serviceTypes = useServiceTypes();

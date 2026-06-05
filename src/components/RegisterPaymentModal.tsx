@@ -131,7 +131,7 @@ export const RegisterPaymentModal = ({ isOpen, onClose, proposal, companyId }: R
           {/* Method */}
           <div className="space-y-1.5">
             <Label>{m.methodLabel}</Label>
-            <Select value={method} onValueChange={v => setMethod(v as PaymentMethod)} disabled={!isApproved}>
+            <Select value={method} onValueChange={v => setMethod(v)} disabled={!isApproved}>
               <SelectTrigger className="bg-muted/30">
                 <SelectValue />
               </SelectTrigger>

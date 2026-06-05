@@ -104,7 +104,7 @@ export const EditProposalModal = ({ isOpen, onClose, proposal, onEditProposal }:
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t.proposals.addProposal /* Fallback to existing key */}</DialogTitle>
+          <DialogTitle>Editar Propuesta</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -137,8 +137,8 @@ export const EditProposalModal = ({ isOpen, onClose, proposal, onEditProposal }:
             <Textarea {...register("description")} className="min-h-[100px]" />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>{t.common.cancel}</Button>
-            <Button type="submit" disabled={submitting}>{submitting ? 'Guardando...' : t.common.save}</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>Cancelar</Button>
+            <Button type="submit" disabled={submitting}>{submitting ? 'Guardando...' : 'Guardar Cambios'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

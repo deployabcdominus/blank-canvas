@@ -223,7 +223,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
 export const NewWorkOrderModal: React.FC<NewWorkOrderModalProps> = ({ isOpen, onClose }) => {
   const { t, locale } = useLanguage();
   const isEn = locale === "en";
-  const { proposals } = useProposals();
+  const { proposals } = useProposalsQuery(companyId);
   const { user } = useAuth();
   const { companyId } = useUserRole();
   const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
