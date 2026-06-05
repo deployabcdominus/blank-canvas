@@ -15,6 +15,7 @@ import { Lead } from "@/types/domain";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface ConvertLeadModalProps {
   isOpen: boolean;
@@ -82,8 +83,8 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
           notes: lead.notes || null,
           logoUrl: lead.logoUrl || null,
         });
-        if (!newClient?.id) throw new Error(m.errorNoClientId);
-        clientId = newClient.id;
+        if (!newClient?.data?.id) throw new Error(m.errorNoClientId);
+        clientId = newClient.data.id;
       } else {
         if (!selectedClientId) throw new Error(m.selectClientRequired);
         clientId = selectedClientId;
@@ -101,14 +102,15 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
         folderFullPath: null,
         pilotTag: lead.pilot_tag || null,
       });
-      if (!project?.id) throw new Error(m.errorNoProjectId);
+      if (!project?.data?.id) throw new Error(m.errorNoProjectId);
+      const projectId = project.data.id;
 
       // Step 3: Create proposal linked to lead
       try {
         // Use company name (not contact name) as the proposal client identifier
         const proposalClientName = mode === 'new'
           ? newClientName.trim()
-          : (clients.find(c => c.id === selectedClientId)?.clientName || lead.company || lead.name);
+        : (clients.find(c => c.id === selectedClientId)?.clientName || lead.company || lead.name);
 
         await addProposal({
           client: proposalClientName,
@@ -139,7 +141,7 @@ export const ConvertLeadModal = ({ isOpen, onClose, lead }: ConvertLeadModalProp
       await updateLead(lead.id, {
         status: 'Convertido',
         clientId: clientId,
-        projectId: project.id,
+        projectId: projectId,
       } as any);
 
       toast({ title: m.successTitle, description: m.successDesc });
