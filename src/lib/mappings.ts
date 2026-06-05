@@ -1,8 +1,10 @@
 
-import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder } from '@/types/domain';
+import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client } from '@/types/domain';
 import { LeadRow } from '@/services/leads.service';
 import { ProposalRow } from '@/services/proposals.service';
 import { WorkOrderRow } from '@/services/work-orders.service';
+import { ClientRow } from '@/services/clients.service';
+
 
 export const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Ready for Production',
