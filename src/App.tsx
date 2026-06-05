@@ -13,7 +13,6 @@ import { PublicRoute } from "@/components/PublicRoute";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 import { lazy, Suspense } from "react";
-import { lazy, Suspense } from "react";
 import { NavigationProgressBar } from "@/components/NavigationProgressBar";
 
 const Index = lazy(() => import("./pages/Index"));
