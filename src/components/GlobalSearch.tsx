@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useDeferredValue } from "react";
 import { Search, Command, FileText, ClipboardList, MapPin, Users, Building2, UserCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalSearchQuery, type SearchResult } from "@/hooks/queries/useGlobalSearchQuery";
+
 import {
   CommandDialog,
   CommandEmpty,
@@ -18,7 +19,9 @@ export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const { data: results = [], isLoading } = useGlobalSearchQuery(query);
+  const deferredQuery = useDeferredValue(query);
+  const { data: results = [], isLoading } = useGlobalSearchQuery(deferredQuery);
+
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
