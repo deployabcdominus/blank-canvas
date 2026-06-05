@@ -286,7 +286,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         </Badge>
       </div>
       <div className="mb-2">
-        <VisualStatusTracker currentStatus={project.status} compact />
+        <VisualStatusTracker currentStatus={project.status as ProjectStatus} compact />
       </div>
       {project.installAddress && (
         <p className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
