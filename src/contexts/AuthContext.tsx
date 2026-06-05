@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState, useRef, ReactNod
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { clearCompanyCache } from '@/lib/resolve-company';
+
 
 interface AuthContextType {
   user: User | null;
@@ -165,15 +167,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async () => {
     try {
+      if (user) clearCompanyCache(user.id);
       await supabase.auth.signOut();
     } catch {
       // Ignore signOut errors (e.g. user already deleted)
     }
     localStorage.clear();
+    sessionStorage.clear();
     currentUserIdRef.current = null;
     setSession(null);
     setUser(null);
   };
+
 
   return (
     <AuthContext.Provider value={{
