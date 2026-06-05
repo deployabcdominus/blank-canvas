@@ -1,10 +1,13 @@
 
-import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client, Project } from '@/types/domain';
+import { Lead, Proposal, ProposalStatus, SentMethod, WorkOrder, Client, Project, Payment, Installation, InstallerCompany } from '@/types/domain';
 import { LeadRow } from '@/services/leads.service';
 import { ProposalRow } from '@/services/proposals.service';
 import { WorkOrderRow } from '@/services/work-orders.service';
 import { ClientRow } from '@/services/clients.service';
 import { ProjectRow } from '@/services/projects.service';
+import { PaymentRow } from '@/services/payments.service';
+import { InstallationRow } from '@/services/installations.service';
+import { InstallerCompanyRow } from '@/services/installer-companies.service';
 
 export const STATUS_MAP_FROM_DB: Record<string, string> = {
   'Aguardando Início': 'Ready for Production',
@@ -251,3 +254,47 @@ export const mapProjectRow = (row: any): Project => {
     clientName,
   };
 };
+
+export const mapPaymentRow = (row: PaymentRow): Payment => ({
+  id: row.id,
+  proposal_id: row.proposal_id,
+  amount: Number(row.amount),
+  currency: row.currency,
+  paid_at: row.paid_at,
+  payment_method: row.payment_method,
+  reference: row.reference,
+  notes: row.notes,
+  company_id: row.company_id,
+  created_at: row.created_at,
+  updated_at: row.updated_at,
+});
+
+export const mapInstallationRow = (row: InstallationRow): Installation => ({
+  id: row.id,
+  company_id: row.company_id,
+  project_id: row.project_id,
+  client: row.client,
+  project: row.project,
+  status: row.status,
+  scheduled_date: row.scheduled_date,
+  completed_at: row.completed_at,
+  assigned_to_user_id: row.assigned_to_user_id,
+  installer_company_id: row.installer_company_id,
+  notes: row.notes,
+  location: row.location,
+  created_at: row.created_at,
+  updated_at: row.updated_at,
+});
+
+export const mapInstallerCompanyRow = (row: InstallerCompanyRow): InstallerCompany => ({
+  id: row.id,
+  company_id: row.company_id,
+  name: row.name,
+  contact_name: row.contact_name,
+  email: row.email,
+  phone: row.phone,
+  address: row.address,
+  notes: row.notes,
+  created_at: row.created_at,
+  updated_at: row.updated_at,
+});
