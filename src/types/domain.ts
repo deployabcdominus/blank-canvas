@@ -248,6 +248,11 @@ export interface Installation {
   installationAddress: string | null;
   createdAt: string;
   updatedAt: string | null;
+  // Added for component compatibility
+  address?: string;
+  technician?: string;
+  scheduledTime?: string;
+  photos?: string[];
 }
 
 export interface InstallerCompany {
@@ -260,5 +265,7 @@ export interface InstallerCompany {
   address: string | null;
   notes: string | null;
   activeStatus: string | null;
-  created_at: string;
+  logoUrl?: string | null;
+  services?: string[];
+  createdAt: string;
 }
