@@ -2399,6 +2399,13 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_decrypted_integration: {
+        Args: { p_integration_id: string }
+        Returns: {
+          access_token: string
+          refresh_token: string
+        }[]
+      }
       get_invitation_by_token: {
         Args: { p_token: string }
         Returns: {
