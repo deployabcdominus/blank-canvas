@@ -6,9 +6,7 @@ export const useAuditLogsQuery = (companyId?: string | null, limit?: number) => 
     queryKey: ['audit-logs', companyId, limit],
     queryFn: async () => {
       if (limit) {
-        const { data, error } = await AuditLogsService.getRecent(limit);
-        if (error) throw error;
-        return data || [];
+        return await AuditLogsService.getRecent(limit);
       }
       
       if (!companyId) return [];
