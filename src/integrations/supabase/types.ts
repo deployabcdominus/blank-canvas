@@ -2414,6 +2414,24 @@ export type Database = {
       get_my_company_id: { Args: never; Returns: string }
       get_my_company_id_safe: { Args: never; Returns: string }
       get_platform_health: { Args: never; Returns: Json }
+      get_proposal_by_approval_token: {
+        Args: { _token: string }
+        Returns: {
+          approval_token: string
+          approved_at: string
+          client: string
+          company_brand_color: string
+          company_id: string
+          company_logo_url: string
+          company_name: string
+          description: string
+          id: string
+          mockup_url: string
+          project: string
+          status: string
+          value: number
+        }[]
+      }
       get_weekly_report: { Args: { p_company_id: string }; Returns: Json }
       has_role: {
         Args: {
