@@ -36,6 +36,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { QCSignaturePad } from "@/components/work-orders/QCSignaturePad";
 import { useStorageUrl } from "@/hooks/useStorageUrl";
+import { StorageImage } from "@/components/StorageImage";
 import { PilotTagSelector } from "@/components/pilot/PilotTagSelector";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -590,8 +591,9 @@ export default function WorkOrderDetail() {
                 {order.blueprintUrl ? (
                   <div className="relative group mb-4">
                     <div className="rounded-lg overflow-hidden" style={{ background: "rgba(0,0,0,0.3)" }}>
-                      <img
-                        src={order.blueprintUrl}
+                      <StorageImage
+                        bucket="work-order-blueprints"
+                        path={order.blueprintUrl}
                         alt="Mockup"
                         className="w-full object-contain cursor-pointer"
                         style={{ maxHeight: 400 }}
@@ -646,8 +648,9 @@ export default function WorkOrderDetail() {
                     <div className="grid grid-cols-3 gap-1.5 mb-2">
                       {(Array.isArray(order.mockup_urls) ? order.mockup_urls : []).map((url: string, i: number) => (
                         <div key={i} className="relative group/thumb">
-                          <img
-                            src={url}
+                          <StorageImage
+                            bucket="work-order-blueprints"
+                            path={url}
                             alt={`Mockup ${i + 1}`}
                             className="w-full h-16 object-cover rounded cursor-pointer border border-white/[0.08]"
                             onClick={() => setFullscreenImg({ url, index: (order.blueprintUrl ? i + 1 : i) })}
@@ -832,7 +835,7 @@ export default function WorkOrderDetail() {
                       </span>
                     </div>
                     <div className="bg-white rounded-lg p-2 inline-block">
-                      <img src={signatureUrl} alt="QC Signature" className="h-12 object-contain" />
+                      <StorageImage bucket="signatures" path={signatureUrl} alt="QC Signature" className="h-12 object-contain" />
                     </div>
                   </div>
                 ) : (
@@ -869,8 +872,9 @@ export default function WorkOrderDetail() {
                   <div className="grid grid-cols-3 gap-2">
                     {poiPhotos.map(photo => (
                       <div key={photo.id} className="relative group">
-                        <img
-                          src={photo.public_url || ""}
+                        <StorageImage
+                          bucket="poi-photos"
+                          path={photo.public_url}
                           alt="Installation"
                           className="w-full h-24 object-cover rounded-lg border border-white/[0.08]"
                         />
@@ -1217,8 +1221,9 @@ export default function WorkOrderDetail() {
                 <ChevronRight className="w-8 h-8 text-white" />
               </button>
             )}
-            <img
-              src={fullscreenImg.url}
+            <StorageImage
+              bucket="work-order-blueprints"
+              path={fullscreenImg.url}
               alt="Fullscreen mockup"
               className="max-w-[90vw] max-h-[90vh] object-contain"
               onClick={e => e.stopPropagation()}
