@@ -196,8 +196,7 @@ export default function MobileTechnicianView() {
       const path = `${companyId}/${selectedOrder.id}/${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from("installation-photos").upload(path, file, { upsert: true });
       if (error) throw error;
-      const { data: urlData } = supabase.storage.from("installation-photos").getPublicUrl(path);
-      const newPhotos = [...photos, urlData.publicUrl];
+      const newPhotos = [...photos, path];
       setPhotos(newPhotos);
       toast({ title: "📸 Foto subida" });
     } catch {
@@ -441,8 +440,9 @@ export default function MobileTechnicianView() {
                           transition={{ delay: i * 0.05 }}
                           className="aspect-square rounded-2xl overflow-hidden border border-white/[0.06]"
                         >
-                          <img
-                            src={url}
+                          <StorageImage
+                            bucket="installation-photos"
+                            path={url}
                             alt={`Evidencia ${i + 1}`}
                             loading="lazy"
                             className="w-full h-full object-cover"
