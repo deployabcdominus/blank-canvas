@@ -22,6 +22,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
 import { QCSignaturePad } from "./QCSignaturePad";
+import { StorageImage } from "@/components/StorageImage";
 
 /* ── Types ── */
 interface StaffEntry {
@@ -1166,7 +1167,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                     className="relative rounded-lg overflow-hidden aspect-square group"
                     style={{ background: "rgba(255,255,255,0.03)" }}
                   >
-                    <img src={photo.public_url || ""} alt="" className="w-full h-full object-cover" />
+                    <StorageImage bucket="poi-photos" path={photo.public_url} alt="" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <ExternalLink className="w-4 h-4 text-white" />
                     </div>
@@ -1191,7 +1192,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
             <button className="absolute top-4 right-4 text-white" onClick={() => setPoiLightbox(null)}>
               <X className="w-6 h-6" />
             </button>
-            <img src={poiLightbox} alt="" className="max-w-full max-h-full object-contain rounded-lg" />
+            <StorageImage bucket="poi-photos" path={poiLightbox} alt="" className="max-w-full max-h-full object-contain rounded-lg" />
           </div>
         )}
 
