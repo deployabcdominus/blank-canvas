@@ -500,10 +500,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
       const path = `${order.companyId || "unknown"}/${order.id}/blueprint.${ext}`;
       const { error } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
       if (error) throw error;
-      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
-      const url = urlData.publicUrl + "?t=" + Date.now();
-      setLocalBlueprintUrl(url);
-      await supabase.from("production_orders").update({ blueprint_url: url } as any).eq("id", order.id);
+      setLocalBlueprintUrl(path);
+      await supabase.from("production_orders").update({ blueprint_url: path } as any).eq("id", order.id);
       toast({ title: "Diseño subido", description: "La imagen fue cargada exitosamente." });
     } catch (e: any) {
       toast({ title: "Error al subir", description: e.message, variant: "destructive" });
@@ -738,8 +736,9 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               >
                 {localBlueprintUrl ? (
                   <>
-                    <img
-                      src={localBlueprintUrl}
+                    <StorageImage
+                      bucket="work-order-blueprints"
+                      path={localBlueprintUrl}
                       alt="Technical drawing"
                       style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
                       crossOrigin="anonymous"
