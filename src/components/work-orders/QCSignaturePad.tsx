@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useStorageUrl } from "@/hooks/useStorageUrl";
 
 interface QCSignaturePadProps {
   orderId: string;
@@ -29,6 +30,7 @@ export function QCSignaturePad({
   const [hasSig, setHasSig] = useState(false);
   const { user } = useAuth();
   const { fullName } = useUserProfile();
+  const { url: resolvedSignatureUrl } = useStorageUrl("signatures", existingSignatureUrl);
 
   useEffect(() => {
     setHasSig(!!existingSignatureUrl);
@@ -52,8 +54,8 @@ export function QCSignaturePad({
         .upload(path, blob, { upsert: true, contentType: "image/png" });
       if (uploadErr) throw uploadErr;
 
-      const { data: urlData } = supabase.storage.from("signatures").getPublicUrl(path);
-      const url = urlData.publicUrl + "?t=" + Date.now();
+      // We store the path in the DB instead of the full public URL for better security
+      const url = path;
       const signedAt = new Date().toISOString();
       const signerName = fullName || "QC Inspector";
 
@@ -123,7 +125,7 @@ export function QCSignaturePad({
           }}
         >
           <img
-            src={existingSignatureUrl}
+            src={resolvedSignatureUrl || existingSignatureUrl || ""}
             alt="QC Signature"
             style={{ maxHeight: 60, objectFit: "contain" }}
             crossOrigin="anonymous"

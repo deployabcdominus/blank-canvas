@@ -22,6 +22,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
 import { QCSignaturePad } from "./QCSignaturePad";
+import { StorageImage } from "@/components/StorageImage";
+import { resolveStoragePath } from "@/lib/storage";
 
 /* ── Types ── */
 interface StaffEntry {
@@ -438,6 +440,13 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     if (!order) return;
     setPrinting(true);
     try {
+      // Resolve secure URLs for PDF generation
+      const [resolvedBlueprint, resolvedSignature, resolvedLogo] = await Promise.all([
+        resolveStoragePath("work-order-blueprints", localBlueprintUrl || order.blueprintUrl),
+        resolveStoragePath("signatures", signatureUrl),
+        resolveStoragePath("company-logos", company?.logo_url)
+      ]);
+
       await generateProductionSheetPDF({
         woNumber,
         client: order.client,
@@ -453,11 +462,11 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         materialSpecs: materialSpecs as unknown as Record<string, string>,
         staff: staff as unknown as Record<string, any>,
         qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
-        blueprintUrl: localBlueprintUrl || order.blueprintUrl || null,
+        blueprintUrl: resolvedBlueprint,
         annotations: (Array.isArray((order as any).annotations) ? (order as any).annotations : []) as Array<{ text?: string }>,
         companyName: company?.name || "MY COMPANY",
-        companyLogoUrl: company?.logo_url || null,
-        qcSignatureUrl: signatureUrl || null,
+        companyLogoUrl: resolvedLogo,
+        qcSignatureUrl: resolvedSignature,
         // Phase 2 additions
         finalWidth: finalWidth || undefined,
         finalHeight: finalHeight || undefined,
@@ -499,10 +508,8 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
       const path = `${order.companyId || "unknown"}/${order.id}/blueprint.${ext}`;
       const { error } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
       if (error) throw error;
-      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
-      const url = urlData.publicUrl + "?t=" + Date.now();
-      setLocalBlueprintUrl(url);
-      await supabase.from("production_orders").update({ blueprint_url: url } as any).eq("id", order.id);
+      setLocalBlueprintUrl(path);
+      await supabase.from("production_orders").update({ blueprint_url: path } as any).eq("id", order.id);
       toast({ title: "Diseño subido", description: "La imagen fue cargada exitosamente." });
     } catch (e: any) {
       toast({ title: "Error al subir", description: e.message, variant: "destructive" });
@@ -737,8 +744,9 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               >
                 {localBlueprintUrl ? (
                   <>
-                    <img
-                      src={localBlueprintUrl}
+                    <StorageImage
+                      bucket="work-order-blueprints"
+                      path={localBlueprintUrl}
                       alt="Technical drawing"
                       style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
                       crossOrigin="anonymous"
@@ -1166,7 +1174,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                     className="relative rounded-lg overflow-hidden aspect-square group"
                     style={{ background: "rgba(255,255,255,0.03)" }}
                   >
-                    <img src={photo.public_url || ""} alt="" className="w-full h-full object-cover" />
+                    <StorageImage bucket="poi-photos" path={photo.public_url} alt="" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <ExternalLink className="w-4 h-4 text-white" />
                     </div>
@@ -1191,7 +1199,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
             <button className="absolute top-4 right-4 text-white" onClick={() => setPoiLightbox(null)}>
               <X className="w-6 h-6" />
             </button>
-            <img src={poiLightbox} alt="" className="max-w-full max-h-full object-contain rounded-lg" />
+            <StorageImage bucket="poi-photos" path={poiLightbox} alt="" className="max-w-full max-h-full object-contain rounded-lg" />
           </div>
         )}
 
