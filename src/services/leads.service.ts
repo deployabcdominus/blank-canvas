@@ -121,64 +121,14 @@ export const LeadsService = {
   },
 
   async restore(id: string) {
-    const result = await supabase
-      .from('leads')
-      .update({ deleted_at: null })
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (result.data) {
-      await logAudit({
-        action: 'editado',
-        entityType: 'lead',
-        entityId: result.data.id,
-        entityLabel: result.data.name,
-        details: { action: 'restaurado' }
-      });
-    }
-
-    return result;
+    return await LeadsRecycleService.restore(id);
   },
 
   async permanentDelete(id: string) {
-    // We fetch before deleting to have the label for the log
-    const { data: lead } = await supabase.from('leads').select('name').eq('id', id).single();
-
-    const result = await supabase
-      .from('leads')
-      .delete()
-      .eq('id', id);
-
-    if (lead) {
-      await logAudit({
-        action: 'eliminado',
-        entityType: 'lead',
-        entityId: id,
-        entityLabel: lead.name,
-        details: { type: 'permanente' }
-      });
-    }
-
-    return result;
+    return await LeadsRecycleService.permanentDelete(id);
   },
 
   async clearAll(companyId: string) {
-    const result = await supabase
-      .from('leads')
-      .update({ deleted_at: new Date().toISOString() })
-      .eq('company_id', companyId)
-      .is('deleted_at', null)
-      .select();
-
-    if (result.data) {
-      await logAudit({
-        action: 'eliminado',
-        entityType: 'lead',
-        details: { count: result.data.length, action: 'vaciar_papelera' }
-      });
-    }
-
-    return result;
+    return await LeadsRecycleService.clearBin(companyId);
   }
 };
