@@ -44,45 +44,37 @@ const ProposalApproval = () => {
     if (!proposalId) { setState("not_found"); return; }
 
     (async () => {
-      const { data, error } = await (supabase as any)
-        .from("proposals")
-        .select("id, client, project, value, description, status, approved_at, approval_token, company_id, mockup_url")
-        .eq("approval_token", proposalId)
-        .maybeSingle();
+      const { data, error } = await (supabase as any).rpc("get_proposal_by_approval_token", { _token: proposalId });
+      const row = Array.isArray(data) ? data[0] : data;
 
-      if (error || !data) { setState("not_found"); return; }
+      if (error || !row) { setState("not_found"); return; }
 
-      setProposal(data);
+      const proposalData: ProposalPublic = {
+        id: row.id,
+        client: row.client,
+        project: row.project,
+        value: row.value,
+        description: row.description,
+        status: row.status,
+        approved_at: row.approved_at,
+        approval_token: row.approval_token,
+        company_id: row.company_id,
+        mockup_url: row.mockup_url,
+      };
+      setProposal(proposalData);
 
-      if (data.approved_at || data.status === "Aprobada") {
+      if (proposalData.approved_at || proposalData.status === "Aprobada") {
         setState("already_approved");
       } else {
         setState("ready");
       }
 
-      // Fetch company
-      if (data.company_id) {
-        const { data: comp } = await (supabase as any)
-          .from("companies")
-          .select("name, logo_url, brand_color")
-          .eq("id", data.company_id)
-          .maybeSingle();
-        if (comp) setCompany(comp);
-
-        try {
-          await (supabase as any).from("audit_logs").insert({
-            company_id: data.company_id,
-            user_id: data.company_id,
-            user_name: "Cliente externo",
-            action: "visualizado",
-            entity_type: "propuesta",
-            entity_id: data.id,
-            entity_label: data.client,
-            details: { source: "public_link", first_view: true },
-          });
-        } catch {
-          // Non-critical
-        }
+      if (row.company_name) {
+        setCompany({
+          name: row.company_name,
+          logo_url: row.company_logo_url,
+          brand_color: row.company_brand_color,
+        });
       }
     })();
   }, [proposalId]);
