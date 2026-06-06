@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FeatureGuard } from "@/components/FeatureGuard";
 import { toast } from "@/hooks/use-toast";
+import { StorageImage } from "@/components/StorageImage";
 import {
   ClipboardList, FileText, Camera, Play, CheckCircle2, ArrowLeft,
   Ruler, ArrowUpDown, Box, Thermometer, Wind, Gauge, Server,
