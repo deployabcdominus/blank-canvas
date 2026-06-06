@@ -65,28 +65,31 @@ export default function AuditLog() {
     if (!user || !companyId || !isAdmin) return;
     setLoading(true);
     
-    // In a real multi-tenant scenario, we filter by companyId
-    // If date filters are present, we might need a more complex query in the service
-    const { data, error } = await AuditLogsService.getAll(companyId);
-    
-    if (error) {
-      if (import.meta.env.DEV) console.error('Audit logs error:', error);
-    }
-    
-    let processedData = (data || []) as AuditLogEntry[];
-    
-    // Apply client-side date filters since service getAll doesn't support them yet
-    if (dateFrom) {
-      processedData = processedData.filter(e => new Date(e.created_at) >= dateFrom);
-    }
-    if (dateTo) {
-      const end = new Date(dateTo);
-      end.setHours(23, 59, 59, 999);
-      processedData = processedData.filter(e => new Date(e.created_at) <= end);
-    }
+    try {
+      const { data, error } = await AuditLogsService.getAll(companyId);
+      
+      if (error) {
+        if (import.meta.env.DEV) console.error('Audit logs error:', error);
+      }
+      
+      let processedData = (data || []) as AuditLogEntry[];
+      
+      // Apply client-side date filters since service getAll doesn't support them yet
+      if (dateFrom) {
+        processedData = processedData.filter(e => new Date(e.created_at) >= dateFrom);
+      }
+      if (dateTo) {
+        const end = new Date(dateTo);
+        end.setHours(23, 59, 59, 999);
+        processedData = processedData.filter(e => new Date(e.created_at) <= end);
+      }
 
-    setEntries(processedData);
-    setLoading(false);
+      setEntries(processedData);
+    } catch (err) {
+      if (import.meta.env.DEV) console.error('Audit logs error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [user, companyId, isAdmin, dateFrom, dateTo]);
 
   useEffect(() => { fetchLogs(); }, [fetchLogs]);

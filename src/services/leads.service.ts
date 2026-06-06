@@ -2,6 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
 import { logAudit } from '@/lib/audit';
 import { NotificationsService } from './notifications.service';
+import { LeadsRecycleService } from './leads-recycle.service';
 
 export type LeadRow = Database['public']['Tables']['leads']['Row'];
 export type LeadInsert = Database['public']['Tables']['leads']['Insert'];
@@ -22,12 +23,7 @@ export const LeadsService = {
   },
 
   async getDeleted(companyId: string) {
-    return await supabase
-      .from('leads')
-      .select('*')
-      .eq('company_id', companyId)
-      .not('deleted_at', 'is', null)
-      .order('deleted_at', { ascending: false });
+    return await LeadsRecycleService.getDeleted(companyId);
   },
 
   async create(lead: LeadInsert) {
