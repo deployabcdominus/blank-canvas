@@ -23,6 +23,7 @@ import { useCompany } from "@/hooks/useCompany";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
 import { QCSignaturePad } from "./QCSignaturePad";
 import { StorageImage } from "@/components/StorageImage";
+import { resolveStoragePath } from "@/lib/storage";
 
 /* ── Types ── */
 interface StaffEntry {
@@ -439,6 +440,13 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
     if (!order) return;
     setPrinting(true);
     try {
+      // Resolve secure URLs for PDF generation
+      const [resolvedBlueprint, resolvedSignature, resolvedLogo] = await Promise.all([
+        resolveStoragePath("work-order-blueprints", localBlueprintUrl || order.blueprintUrl),
+        resolveStoragePath("signatures", signatureUrl),
+        resolveStoragePath("company-logos", company?.logo_url)
+      ]);
+
       await generateProductionSheetPDF({
         woNumber,
         client: order.client,
@@ -454,11 +462,11 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         materialSpecs: materialSpecs as unknown as Record<string, string>,
         staff: staff as unknown as Record<string, any>,
         qcChecklist: qcChecklist as unknown as Record<string, boolean | string | null>,
-        blueprintUrl: localBlueprintUrl || order.blueprintUrl || null,
+        blueprintUrl: resolvedBlueprint,
         annotations: (Array.isArray((order as any).annotations) ? (order as any).annotations : []) as Array<{ text?: string }>,
         companyName: company?.name || "MY COMPANY",
-        companyLogoUrl: company?.logo_url || null,
-        qcSignatureUrl: signatureUrl || null,
+        companyLogoUrl: resolvedLogo,
+        qcSignatureUrl: resolvedSignature,
         // Phase 2 additions
         finalWidth: finalWidth || undefined,
         finalHeight: finalHeight || undefined,
