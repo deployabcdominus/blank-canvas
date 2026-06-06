@@ -35,6 +35,7 @@ import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { QCSignaturePad } from "@/components/work-orders/QCSignaturePad";
+import { useStorageUrl } from "@/hooks/useStorageUrl";
 import { PilotTagSelector } from "@/components/pilot/PilotTagSelector";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -124,8 +125,11 @@ export default function WorkOrderDetail() {
   // QC state
   const [qcChecklist, setQcChecklist] = useState<Record<string, boolean>>({});
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+  const { url: resolvedSignatureUrl } = useStorageUrl("signatures", signatureUrl);
   const [qcSignerName, setQcSignerName] = useState<string | null>(null);
   const [qcSignedAt, setQcSignedAt] = useState<string | null>(null);
+
+  const { url: resolvedBlueprintUrl } = useStorageUrl("work-order-blueprints", order?.blueprintUrl);
 
   // POI photos
   const [poiPhotos, setPoiPhotos] = useState<Array<{ id: string; public_url: string | null; uploaded_by_name: string | null }>>([]);
