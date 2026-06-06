@@ -331,8 +331,8 @@ export default function WorkOrderDetail() {
       const path = `${companyId}/${order.id}/mockup-${Date.now()}.${ext}`;
       const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
       if (uploadErr) throw uploadErr;
-      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
-      await supabase.from("production_orders").update({ blueprint_url: urlData.publicUrl } as any).eq("id", order.id);
+      // Store the path instead of public URL for security
+      await supabase.from("production_orders").update({ blueprint_url: path } as any).eq("id", order.id);
       toast.success("Mockup uploaded");
       await refreshOrders();
     } catch (e: any) { toast.error(e.message || "Upload failed"); }
@@ -348,9 +348,9 @@ export default function WorkOrderDetail() {
       const path = `${companyId}/${order.id}/extra-${Date.now()}.${ext}`;
       const { error: uploadErr } = await supabase.storage.from("work-order-blueprints").upload(path, file, { upsert: true });
       if (uploadErr) throw uploadErr;
-      const { data: urlData } = supabase.storage.from("work-order-blueprints").getPublicUrl(path);
+      // Store the path instead of public URL for security
       const existing: string[] = Array.isArray(order.mockup_urls) ? order.mockup_urls : [];
-      const updated = [...existing, urlData.publicUrl];
+      const updated = [...existing, path];
       await supabase.from("production_orders").update({ mockup_urls: updated } as any).eq("id", order.id);
       toast.success("Additional mockup added");
       await refreshOrders();
