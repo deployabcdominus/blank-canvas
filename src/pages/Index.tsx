@@ -15,8 +15,12 @@ import {
   CheckCircle2, CircleDot, BadgeCheck, Camera, Monitor,
   Thermometer, Signpost, Wrench, ClipboardCheck, PenTool,
   WifiOff, ChevronDown, Twitter, Instagram, Linkedin,
-  ThumbsUp, ThumbsDown, MapPin, Users, Activity, BarChart3,
+  ThumbsUp, ThumbsDown, MapPin, Users, Activity, BarChart3, ClipboardCheck
 } from "lucide-react";
+import { 
+  ResponsiveContainer, LineChart, Line, BarChart, Bar, 
+  PieChart, Pie, Cell 
+} from "recharts";
 import { Button } from "@/components/ui/button";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
