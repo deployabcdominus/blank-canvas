@@ -195,27 +195,29 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Marquee Card */}
-            <div className="mt-8 overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-xl shadow-2xl">
-              <div className="mb-6 text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/20">
-                {t.landing.trusted}
-              </div>
-              
-              <div className="relative w-full overflow-hidden">
-                <div className="flex w-max items-center space-x-16 animate-marquee">
-                  {[...CLIENTS, ...CLIENTS, ...CLIENTS].map((client, i) => (
-                    <div key={i} className="flex items-center space-x-4 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all cursor-default group">
-                      <client.icon size={22} className="text-white group-hover:text-violet-500 transition-colors" />
-                      <span className="text-sm font-bold tracking-widest text-white uppercase">
-                        {client.name}
-                      </span>
-                    </div>
-                  ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Trust Bar Section - Moved outside Hero container */}
+      <div className="relative z-20 w-full bg-black border-t border-white/5 py-12 mt-12 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="mb-6 text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/20">
+            {t.landing.trusted}
+          </div>
+          
+          <div className="relative w-full overflow-hidden">
+            <div className="flex w-max items-center space-x-16 animate-marquee">
+              {[...CLIENTS, ...CLIENTS, ...CLIENTS].map((client, i) => (
+                <div key={i} className="flex items-center space-x-4 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all cursor-default group">
+                  <client.icon size={22} className="text-white group-hover:text-violet-500 transition-colors" />
+                  <span className="text-sm font-bold tracking-widest text-white uppercase">
+                    {client.name}
+                  </span>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
-
         </div>
       </div>
     </div>
