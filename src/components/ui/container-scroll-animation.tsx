@@ -72,9 +72,9 @@ export const Card = ({
   scale,
   children,
 }: {
-  rotate: MotionValue<number>;
-  scale: MotionValue<number>;
-  translate: MotionValue<number>;
+  rotate: MotionValue;
+  scale: MotionValue;
+  translate: MotionValue;
   children: React.ReactNode;
 }) => {
   return (
@@ -85,9 +85,9 @@ export const Card = ({
         boxShadow:
           "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
       }}
-      className="max-w-5xl -mt-12 mx-auto h-[30rem] md:h-[40rem] w-full border border-white/[0.08] p-0 bg-zinc-950 rounded-[30px] shadow-2xl overflow-hidden"
+      className="max-w-5xl -mt-12 mx-auto h-[30rem] md:h-[40rem] w-full border border-white/[0.08] p-0 bg-zinc-950 rounded-[30px] shadow-2xl"
     >
-      <div className="h-full w-full overflow-hidden rounded-[28px] bg-zinc-950">
+      <div className="h-full w-full overflow-hidden rounded-[30px] bg-zinc-950">
         {children}
       </div>
     </motion.div>
