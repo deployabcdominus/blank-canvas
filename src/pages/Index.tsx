@@ -139,6 +139,19 @@ const CountUpValue = ({ value }: { value: number }) => {
 /* ═══════════════════════════════════════════════════════ */
 const MacBookMockup = () => {
   const { t } = useLanguage();
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
   const m = t.landing.mockup;
   return (
     <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "100rem" }}>
