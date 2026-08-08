@@ -25,9 +25,9 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
       />
       
       <main 
-        className="flex-1 transition-all duration-300 p-4 sm:p-6 ml-0 md:ml-[72px] lg:ml-[260px] max-w-full overflow-x-hidden min-h-screen flex flex-col"
+        className="flex-1 transition-all duration-300 p-3 sm:p-6 ml-0 md:ml-[72px] lg:ml-[260px] w-full max-w-full overflow-x-hidden min-h-screen flex flex-col"
       >
-        <div className="md:hidden flex items-center gap-3 mb-3">
+        <div className="md:hidden flex items-center gap-3 mb-4 sticky top-0 z-30 bg-background/80 backdrop-blur-md py-2">
           <Button
             variant="ghost"
             size="icon"

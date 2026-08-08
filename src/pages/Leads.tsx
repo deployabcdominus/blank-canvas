@@ -83,15 +83,15 @@ const Leads = () => {
             </div>
           )}
 
-          <div className={`mb-6 ${isMobile ? 'text-left' : ''}`}>
-            <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold mb-1 tracking-tight`}>Leads</h1>
-            <p className="text-muted-foreground text-sm leading-relaxed">{t.leads.subtitle}</p>
+          <div className="mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 tracking-tight">Leads</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">{t.leads.subtitle}</p>
           </div>
 
           <LeadsKPIBar leads={leads} proposals={proposals} isMobile={isMobile} />
 
-          <div className={`flex items-center gap-4 mb-6 flex-col md:flex-row md:justify-between`}>
-            <div className={`flex items-center gap-3 w-full flex-col md:flex-row`}>
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
               <div className={`relative w-full md:w-72`}>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
