@@ -1,10 +1,11 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, ReactNode } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SignFlowLogo, LogoShowcase } from "@/components/SignFlowLogo";
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -497,86 +498,90 @@ const Index = () => {
         </header>
 
         {/* ═══════════ HERO ═══════════ */}
-        <section className="relative pt-36 pb-8 sm:pt-44 sm:pb-12 md:pt-52 md:pb-16 lg:pt-56 lg:pb-20 px-5">
-          <div className="relative max-w-7xl mx-auto">
-            <div className="text-center max-w-4xl mx-auto mb-20 lg:mb-24">
-              <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-                <TrustStars />
+        <section className="relative pt-20 px-5">
+          <ContainerScroll
+            titleComponent={
+              <div className="text-center max-w-4xl mx-auto mb-10">
+                <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+                  <TrustStars />
 
-                <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-7xl font-black leading-[0.95] tracking-tighter mb-10">
-                  <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
-                    {L.hero.titleLine1}
-                  </span>
-                  <br />
-                  <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-                    {L.hero.titleLine2}
-                  </span>
-                </h1>
+                  <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-7xl font-black leading-[0.95] tracking-tighter mb-10">
+                    <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                      {L.hero.titleLine1}
+                    </span>
+                    <br />
+                    <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                      {L.hero.titleLine2}
+                    </span>
+                  </h1>
 
-                <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
-                  {L.hero.subtitle}
-                </p>
+                  <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
+                    {L.hero.subtitle}
+                  </p>
 
-                <div className="flex flex-col items-center gap-6">
-                  <div className="flex flex-wrap items-center justify-center gap-4">
-                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                      <Button
-                        size="lg"
-                        onClick={() => scrollTo("pricing")}
-                        className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-12 h-16 text-lg font-bold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
-                      >
-                        <span className="relative z-10 flex items-center">
-                          {L.hero.ctaPrimary}
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                        <div
-                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                          style={{
-                            background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
-                            backgroundSize: "200% 100%",
-                            animation: "shimmer-sweep 1.8s ease-in-out infinite",
-                          }}
-                        />
-                      </Button>
-                    </motion.div>
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={() => scrollTo("industries")}
-                        className="rounded-full px-12 h-16 text-lg font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
-                      >
-                        {L.hero.ctaSecondary}
-                      </Button>
+                  <div className="flex flex-col items-center gap-6">
+                    <div className="flex flex-wrap items-center justify-center gap-4">
+                      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                        <Button
+                          size="lg"
+                          onClick={() => scrollTo("pricing")}
+                          className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-12 h-16 text-lg font-bold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
+                        >
+                          <span className="relative z-10 flex items-center">
+                            {L.hero.ctaPrimary}
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                          <div
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                            style={{
+                              background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
+                              backgroundSize: "200% 100%",
+                              animation: "shimmer-sweep 1.8s ease-in-out infinite",
+                            }}
+                          />
+                        </Button>
+                      </motion.div>
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => scrollTo("industries")}
+                          className="rounded-full px-12 h-16 text-lg font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
+                        >
+                          {L.hero.ctaSecondary}
+                        </Button>
+                      </motion.div>
+                    </div>
+                    
+                    {/* CRO: Reduced Risk & Microcopy */}
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.2 }}
+                      className="flex items-center gap-4 text-[11px] font-medium text-zinc-500 uppercase tracking-wider"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60" />
+                        {locale === 'es' ? 'Sin costos ocultos' : 'No hidden costs'}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                      <span className="flex items-center gap-1.5">
+                        <Zap className="w-3.5 h-3.5 text-amber-500/60" />
+                        {locale === 'es' ? 'Configuración en 3 min' : '3-min setup'}
+                      </span>
                     </motion.div>
                   </div>
-                  
-                  {/* CRO: Reduced Risk & Microcopy */}
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.2 }}
-                    className="flex items-center gap-4 text-[11px] font-medium text-zinc-500 uppercase tracking-wider"
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60" />
-                      {locale === 'es' ? 'Sin costos ocultos' : 'No hidden costs'}
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-zinc-800" />
-                    <span className="flex items-center gap-1.5">
-                      <Zap className="w-3.5 h-3.5 text-amber-500/60" />
-                      {locale === 'es' ? 'Configuración en 3 min' : '3-min setup'}
-                    </span>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </div>
-
+                </motion.div>
+              </div>
+            }
+          >
             <MacBookMockup />
+          </ContainerScroll>
 
+          <div className="relative max-w-7xl mx-auto -mt-20">
             {/* ── Trusted By ── */}
             <Reveal delay={0.2}>
-              <div className="mt-20 sm:mt-28">
+              <div className="mt-10 sm:mt-16">
                 <p className="text-center text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 mb-8">
                   {L.trusted}
                 </p>
