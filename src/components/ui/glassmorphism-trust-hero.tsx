@@ -28,8 +28,8 @@ const CLIENTS = [
 // --- SUB-COMPONENTS ---
 const StatItem = ({ value, label, showBorder = true }: { value: string; label: string; showBorder?: boolean }) => (
   <div className={`flex flex-col ${showBorder ? 'border-r border-white/10 pr-6 mr-6' : ''}`}>
-    <span className="text-xl font-black text-white tracking-tight">{value}</span>
-    <span className="text-[9px] text-white/40 uppercase font-black tracking-[0.2em] leading-none mt-2 whitespace-nowrap">{label}</span>
+    <span className="text-lg font-black text-white tracking-tight">{value}</span>
+    <span className="text-[8px] text-white/30 uppercase font-black tracking-[0.2em] leading-none mt-1.5 whitespace-nowrap">{label}</span>
   </div>
 );
 
