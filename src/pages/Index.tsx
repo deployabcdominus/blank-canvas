@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
-import brandLogoSrc from "@/assets/brand-logo.png";
+import { SignFlowLogo, LogoShowcase } from "@/components/SignFlowLogo";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -137,8 +137,8 @@ const MacBookMockup = () => {
             <div className="p-3 sm:p-4 flex gap-3 h-[calc(100%-36px)]">
               <div className="hidden sm:flex flex-col w-[120px] flex-shrink-0 bg-white/[0.015] rounded-lg border border-white/[0.04] p-2.5 gap-1.5">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-5 h-5 rounded-md bg-violet-500/20 flex items-center justify-center">
-                    <Zap className="w-3 h-3 text-violet-400" />
+                  <div className="w-5 h-5 flex items-center justify-center">
+                    <SignFlowLogo variant="technical" className="w-4 h-4 text-violet-400" />
                   </div>
                   <span className="text-[8px] font-bold text-zinc-300">SignFlow</span>
                 </div>

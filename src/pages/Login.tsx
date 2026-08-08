@@ -112,9 +112,7 @@ const Login = () => {
               <Lock className="w-7 h-7 text-primary" />
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
-            <p className="text-muted-foreground/80 whitespace-pre-wrap">
-              no era para actualizar la descripcion con la palabra continuemos, era para que continuemos ejecutando los ajustes en la homepage
-            </p>
+              quiero mejorar el logo del app, busco algo mas alineado a procesos de sign de taller, sin gradients, facil de interpretar y reproducir, muestrame opciones
           </motion.div>
 
           <motion.div
