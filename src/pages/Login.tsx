@@ -113,110 +113,146 @@ const Login = () => {
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
             <p className="text-muted-foreground/80 whitespace-pre-wrap">
-              Inicia sesión para continuar en SignFlow. Analise todo o projeto de forma completa antes de realizar qualquer alteração e execute uma refatoração profunda e estruturada em toda a base de código.
+              Inicia sesión para continuar en SignFlow. Analise completamente toda a aplicação antes de realizar qualquer alteração e execute uma melhoria profunda de UI/UX em todo o sistema.
 
-Seu objetivo é melhorar a qualidade interna do sistema sem alterar funcionalidades ou comportamento visível da aplicação.
-
-A refatoração deve tornar o código mais limpo, organizado, escalável, padronizado e fácil de manter.
+Seu objetivo é elevar o nível visual e de experiência do usuário para um padrão moderno, premium e altamente intuitivo, sem alterar funcionalidades existentes.
 
 ━━━━━━━━━━━━━━━━━━━
-ESCOPO DA REFATORAÇÃO
+OBJETIVO PRINCIPAL
 ━━━━━━━━━━━━━━━━━━━
 
-Realize uma revisão completa de:
-
-- Estrutura de pastas e organização do projeto
-- Componentes e sua reutilização
-- Hooks customizados
-- Lógica de estado (local e global)
-- Services e camadas de API
-- Integração com Supabase
-- Queries e manipulação de dados
-- Fluxos de autenticação
-- Rotas e estrutura de navegação
-- Tipagem (TypeScript se aplicável)
-- Lógica duplicada ou redundante
-- Funções grandes ou mal divididas
-- Acoplamento excessivo entre componentes
-- Código difícil de manter ou entender
-- Imports desorganizados
-- Regras de negócio misturadas com UI
-- Manipulação de efeitos colaterais
+Transformar a interface em uma experiência:
+- Mais clara
+- Mais intuitiva
+- Mais moderna
+- Mais consistente
+- Mais agradável de usar
+- Mais profissional visualmente
 
 ━━━━━━━━━━━━━━━━━━━
-OBJETIVOS PRINCIPAIS
+ANÁLISE OBRIGATÓRIA
 ━━━━━━━━━━━━━━━━━━━
 
-- Reduzir duplicação de código
-- Melhorar legibilidade e clareza
-- Melhorar separação de responsabilidades
-- Melhorar reutilização de componentes
-- Melhorar organização da arquitetura
-- Criar padrões consistentes no projeto
-- Facilitar manutenção futura
-- Reduzir complexidade desnecessária
-- Melhorar escalabilidade do sistema
-- Tornar o código mais previsível e limpo
+Antes de modificar qualquer coisa, analise:
+
+- Estrutura visual geral do sistema
+- Hierarquia de informação
+- Consistência de componentes
+- Layouts de páginas
+- Espaçamentos e alinhamentos
+- Tipografia e legibilidade
+- Cores e contraste
+- Botões e elementos interativos
+- Fluxos de navegação do usuário
+- Estados (loading, empty, error, success)
+- Responsividade mobile e desktop
+- Feedback visual de ações
+- Microinterações existentes
+- Usabilidade geral do sistema
+- Clareza dos formulários
+- Organização de conteúdo
+- Densidade visual (muito cheio vs muito vazio)
 
 ━━━━━━━━━━━━━━━━━━━
-DIRETRIZES DE REFACTORING
+MELHORIAS DE UI
+━━━━━━━━━━━━━━━━━━━
+
+Aprimorar toda a interface com foco em:
+
+VISUAL MODERNO:
+- Melhorar hierarquia visual
+- Padronizar espaçamentos (grid consistente)
+- Melhorar alinhamento de elementos
+- Criar consistência entre páginas
+- Melhorar composição visual geral
+- Ajustar proporções de elementos
+- Melhorar leitura e escaneabilidade
+
+TIPOGRAFIA:
+- Melhorar hierarquia de títulos
+- Ajustar tamanhos de fonte
+- Melhorar espaçamento entre linhas
+- Melhorar legibilidade geral
+- Padronizar estilos de texto
+
+CORES E CONTRASTE:
+- Melhorar contraste para acessibilidade
+- Padronizar paleta de cores
+- Corrigir cores inconsistentes
+- Melhorar estados (hover, active, disabled)
+
+COMPONENTES:
+- Padronizar botões (tamanhos, estilos, estados)
+- Melhorar cards e containers
+- Unificar estilos de inputs e formulários
+- Melhorar modais e dropdowns
+- Criar consistência entre componentes
+
+━━━━━━━━━━━━━━━━━━━
+MELHORIAS DE UX
+━━━━━━━━━━━━━━━━━━━
+
+FOCO NA EXPERIÊNCIA DO USUÁRIO:
+
+- Tornar navegação mais intuitiva
+- Reduzir fricção em fluxos importantes
+- Melhorar clareza das ações principais
+- Melhorar feedback ao usuário
+- Melhorar estados de carregamento
+- Melhorar mensagens de erro e sucesso
+- Simplificar interações complexas
+- Melhorar fluxo de formulários
+- Tornar ações mais previsíveis
+- Melhorar descoberta de funcionalidades
+
+━━━━━━━━━━━━━━━━━━━
+MICROINTERAÇÕES
+━━━━━━━━━━━━━━━━━━━
+
+- Adicionar/transicionar estados de hover suaves
+- Melhorar feedback visual de cliques
+- Melhorar transições entre estados
+- Melhorar animações leves e não intrusivas
+- Evitar animações pesadas ou exageradas
+- Garantir fluidez visual
+
+━━━━━━━━━━━━━━━━━━━
+RESPONSIVIDADE
+━━━━━━━━━━━━━━━━━━━
+
+- Melhorar layout mobile-first
+- Ajustar espaçamentos em telas pequenas
+- Melhorar usabilidade touch
+- Evitar elementos pequenos demais
+- Garantir boa leitura no mobile
+- Ajustar grids responsivos
+
+━━━━━━━━━━━━━━━━━━━
+PRINCÍPIOS IMPORTANTES
 ━━━━━━━━━━━━━━━━━━━
 
 - NÃO alterar funcionalidades existentes
-- NÃO mudar comportamento da interface
-- NÃO modificar design visual sem necessidade
-- NÃO quebrar fluxos já existentes
-
-Priorize sempre:
-
-- Separação de responsabilidades (UI / lógica / dados)
-- Componentização inteligente
-- Reutilização de código
-- Funções pequenas e bem definidas
-- Nomeação clara e consistente
-- Eliminação de código duplicado
-- Organização por domínio ou feature
-- Redução de complexidade por arquivo
-- Padronização de padrões de código
-
-━━━━━━━━━━━━━━━━━━━
-PADRÕES DE QUALIDADE
-━━━━━━━━━━━━━━━━━━━
-
-- Código limpo e legível
-- Arquitetura consistente em todo projeto
-- Componentes desacoplados
-- Hooks reutilizáveis e bem definidos
-- Serviços centralizados para API
-- Separação clara entre frontend e lógica de negócio
-- Estrutura previsível e escalável
-
-━━━━━━━━━━━━━━━━━━━
-PROCESSO OBRIGATÓRIO
-━━━━━━━━━━━━━━━━━━━
-
-1. Analise toda a base de código
-2. Identifique pontos de melhoria estrutural
-3. Liste problemas de organização e duplicação
-4. Priorize melhorias por impacto
-5. Execute refatorações de forma segura
-6. Garanta que nada do sistema quebre
-7. Valide consistência após mudanças
+- NÃO remover features
+- NÃO quebrar fluxos atuais
+- NÃO mudar identidade visual sem necessidade extrema
+- Priorizar consistência acima de mudanças radicais
+- Melhorar sem descaracterizar o sistema
+- Manter performance leve e fluida
 
 ━━━━━━━━━━━━━━━━━━━
 RESULTADO ESPERADO
 ━━━━━━━━━━━━━━━━━━━
 
-Ao final da refatoração, o projeto deve estar:
+Ao final, o sistema deve parecer:
 
-- Muito mais organizado
-- Fácil de entender e manter
-- Escalável para novas funcionalidades
-- Livre de duplicações desnecessárias
-- Com arquitetura mais profissional
-- Com padrões consistentes
-- Mais limpo e previsível
-- Sem alterar nenhuma funcionalidade existente
+- Mais profissional
+- Mais moderno
+- Mais polido visualmente
+- Mais fácil de usar
+- Mais intuitivo
+- Mais consistente
+- Mais agradável de navegar
+- Com UX claramente melhorada em todos os fluxos
             </p>
           </motion.div>
 
