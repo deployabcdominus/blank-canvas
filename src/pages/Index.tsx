@@ -158,7 +158,7 @@ const MacBookMockup = () => {
           }}
         >
             <div className="absolute inset-0">
-              <div className="h-full w-full grid grid-rows-[auto_1fr] md:gap-4 gap-2 p-2 md:p-4 overflow-hidden bg-zinc-950">
+              <div className="h-full w-full grid grid-rows-[auto_1fr] gap-2 p-2 md:p-4 overflow-hidden bg-zinc-950 min-h-0">
                 {/* Desktop Header Content (hidden on small mobile) */}
                 <div className="hidden md:grid grid-cols-[160px_1fr] gap-4 h-full min-h-0">
                   <div className="flex flex-col bg-white/[0.015] rounded-lg border border-white/[0.04] p-3 gap-2">
@@ -202,16 +202,17 @@ const MacBookMockup = () => {
                   </div>
                 </div>
 
-                {/* Mobile Header (simplified KPI cards) */}
-                <div className="md:hidden grid grid-cols-3 gap-2">
+                {/* Mobile Header (optimized 2x2 grid or single row) */}
+                <div className="md:hidden grid grid-cols-2 gap-2 h-auto">
                   {[
-                    { label: "Rev", value: "$184K", color: "text-violet-400" },
+                    { label: "Revenue", value: "$184K", color: "text-violet-400" },
                     { label: "Orders", value: 42, color: "text-emerald-400" },
+                    { label: "Specialists", value: 18, color: "text-blue-400" },
                     { label: "Alerts", value: 3, color: "text-orange-400" },
                   ].map((kpi) => (
-                    <div key={kpi.label} className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-2">
-                      <p className="text-[6px] text-zinc-600 uppercase font-medium truncate">{kpi.label}</p>
-                      <p className="text-xs font-bold text-white/85 mt-0.5">{kpi.value}</p>
+                    <div key={kpi.label} className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-2 flex flex-col justify-center">
+                      <p className="text-[6px] text-zinc-600 uppercase font-medium truncate tracking-tight">{kpi.label}</p>
+                      <p className={`text-xs font-bold ${kpi.color} mt-0.5`}>{kpi.value}</p>
                     </div>
                   ))}
                 </div>
@@ -219,42 +220,42 @@ const MacBookMockup = () => {
                 {/* Main Content Area */}
                 <div className="grid md:grid-cols-[1fr_240px] grid-cols-1 md:gap-4 gap-2 min-h-0 overflow-hidden">
                   {/* Left Column: Work Orders */}
-                  <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0 relative">
-                    <div className="absolute top-3 right-3 w-8 h-8 md:w-10 md:h-10">
+                  <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-2 md:p-3 flex flex-col h-full min-h-0 relative overflow-hidden">
+                    <div className="absolute top-2 right-2 w-6 h-6 md:w-10 md:h-10 opacity-60 md:opacity-100">
                        <ResponsiveContainer width="100%" height="100%">
                          <PieChart>
-                           <Pie data={[{v:50},{v:30},{v:20}]} dataKey="v" stroke="none" innerRadius={8} outerRadius={15}>
+                           <Pie data={[{v:50},{v:30},{v:20}]} dataKey="v" stroke="none" innerRadius={isMobile ? 6 : 8} outerRadius={isMobile ? 12 : 15}>
                               <Cell fill="#3b82f6" /><Cell fill="#10b981" /><Cell fill="#f97316" />
                            </Pie>
                          </PieChart>
                        </ResponsiveContainer>
                     </div>
-                    <span className="text-[7px] md:text-[8px] text-zinc-500 font-semibold uppercase mb-2">Work Orders</span>
-                    <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0 pr-1 custom-scrollbar">
+                    <span className="text-[6px] md:text-[8px] text-zinc-500 font-semibold uppercase mb-1 md:mb-2 tracking-wider">Work Orders</span>
+                    <div className="flex-1 overflow-y-auto space-y-1 md:space-y-1.5 min-h-0 pr-1 custom-scrollbar">
                        {[
                          { id: "#ORD-4201", client: "Delta Corp", status: "Production", color: "bg-blue-400" },
                          { id: "#ORD-4202", client: "Skyline Ltd", status: "Installation", color: "bg-emerald-400" },
                          { id: "#ORD-4203", client: "Urban Signs", status: "Review", color: "bg-orange-400" },
                          { id: "#ORD-4204", client: "Vega Realty", status: "Installation", color: "bg-emerald-400" },
                          { id: "#ORD-4205", client: "Coastal Group", status: "Production", color: "bg-blue-400" },
-                       ].map(order => (
-                         <div key={order.id} className="flex items-center gap-2 p-1 md:p-1.5 rounded bg-white/[0.02] border border-white/[0.03]">
+                       ].map((order, i) => (
+                         <div key={order.id} className={`flex items-center gap-1.5 md:gap-2 p-1 md:p-1.5 rounded bg-white/[0.02] border border-white/[0.03] ${isMobile && i >= 3 ? 'hidden' : ''}`}>
                            <div className={`w-1 h-2 md:h-3 rounded-full ${order.color}`} />
-                           <span className="text-[6px] md:text-[7px] font-bold text-zinc-300 truncate flex-1">{order.client}</span>
-                           <span className="text-[5px] md:text-[6px] text-zinc-500 uppercase">{order.status}</span>
+                           <span className="text-[5px] md:text-[7px] font-bold text-zinc-300 truncate flex-1">{order.client}</span>
+                           <span className="text-[5px] md:text-[6px] text-zinc-500 uppercase shrink-0">{order.status}</span>
                          </div>
                        ))}
                     </div>
-                    {/* Weekly chart (Desktop only or wider mobile) */}
-                    <div className="mt-2 md:mt-3 pt-2 md:pt-3 border-t border-white/[0.04] hidden xs:block">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[6px] md:text-[7px] text-zinc-500 font-bold uppercase">Weekly Trend</span>
-                        <span className="text-[6px] md:text-[7px] text-violet-400 font-bold">+14%</span>
+                    {/* Weekly chart (Always visible, stuck to bottom) */}
+                    <div className="mt-auto pt-1 md:pt-3 border-t border-white/[0.04]">
+                      <div className="flex items-center justify-between mb-0.5 md:mb-1">
+                        <span className="text-[5px] md:text-[7px] text-zinc-500 font-bold uppercase tracking-tight">Weekly Trend</span>
+                        <span className="text-[5px] md:text-[7px] text-violet-400 font-bold">+14%</span>
                       </div>
-                      <div className="h-6 md:h-10">
+                      <div className="h-4 md:h-10">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={[{v:40},{v:60},{v:45},{v:80},{v:55}]}>
-                            <Bar dataKey="v" fill="#8b5cf6" radius={[2, 2, 0, 0]} opacity={0.6} />
+                            <Bar dataKey="v" fill="#8b5cf6" radius={[1, 1, 0, 0]} opacity={0.6} />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
@@ -262,8 +263,8 @@ const MacBookMockup = () => {
                   </div>
                   
                   {/* Right Column: Specialists / Activity */}
-                  <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0 overflow-hidden">
-                    <span className="text-[7px] md:text-[8px] text-zinc-500 font-semibold uppercase mb-2 tracking-wider">Active Specialists</span>
+                  <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-2 md:p-3 flex flex-col h-full min-h-0 overflow-hidden relative">
+                    <span className="text-[6px] md:text-[8px] text-zinc-500 font-semibold uppercase mb-1 md:mb-2 tracking-wider">Active Specialists</span>
                     <div className="flex-1 overflow-y-auto space-y-1 pr-1 min-h-0 custom-scrollbar">
                       {[
                         { n: "C. López", s: "En Route", c: "bg-emerald-400" },
@@ -271,24 +272,24 @@ const MacBookMockup = () => {
                         { n: "R. Torres", s: "Alert", c: "bg-orange-400" },
                         { n: "A. Méndez", s: "Free", c: "bg-zinc-500" },
                       ].map((tech: any, i) => (
-                        <div key={i} className="flex items-center gap-2 px-1.5 py-1 rounded bg-white/[0.02] border border-white/[0.03]">
+                        <div key={i} className={`flex items-center gap-1.5 md:gap-2 px-1 md:px-1.5 py-1 rounded bg-white/[0.02] border border-white/[0.03] ${isMobile && i >= 3 ? 'hidden' : ''}`}>
                           <div className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${tech.c}`} />
-                          <span className="text-[6px] md:text-[7px] text-zinc-400 font-medium truncate flex-1">{tech.n}</span>
-                          <span className="text-[5px] md:text-[6px] text-zinc-600">{tech.s}</span>
+                          <span className="text-[5px] md:text-[7px] text-zinc-400 font-medium truncate flex-1">{tech.n}</span>
+                          <span className="text-[5px] md:text-[6px] text-zinc-600 shrink-0">{tech.s}</span>
                         </div>
                       ))}
                     </div>
-                    {/* Live Feed (Desktop/Large Mobile only) */}
-                    <div className="mt-2 md:mt-3 pt-2 md:pt-3 border-t border-white/[0.04] hidden sm:block">
-                      <span className="text-[6px] md:text-[7px] text-zinc-500 font-semibold uppercase mb-1 block">Live Feed</span>
-                      <div className="space-y-1">
+                    {/* Live Feed (Always visible, stuck to bottom) */}
+                    <div className="mt-auto pt-1 md:pt-3 border-t border-white/[0.04]">
+                      <span className="text-[5px] md:text-[7px] text-zinc-500 font-semibold uppercase mb-0.5 md:mb-1 block tracking-tight">Recent Activity</span>
+                      <div className="space-y-0.5 md:space-y-1">
                         <div className="flex items-center gap-1">
-                          <div className="w-1 h-1 rounded-full bg-emerald-400" />
-                          <span className="text-[5px] md:text-[6px] text-zinc-600 truncate">López @ Delta Corp</span>
+                          <div className="w-0.5 h-0.5 md:w-1 md:h-1 rounded-full bg-emerald-400" />
+                          <span className="text-[4px] md:text-[6px] text-zinc-600 truncate leading-none">López @ Delta Corp</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <div className="w-1 h-1 rounded-full bg-violet-400" />
-                          <span className="text-[5px] md:text-[6px] text-zinc-600 truncate">Torres Completed</span>
+                          <div className="w-0.5 h-0.5 md:w-1 md:h-1 rounded-full bg-violet-400" />
+                          <span className="text-[4px] md:text-[6px] text-zinc-600 truncate leading-none">Torres Completed</span>
                         </div>
                       </div>
                     </div>
