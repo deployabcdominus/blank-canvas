@@ -192,20 +192,38 @@ const MacBookMockup = () => {
                   <div className="col-span-2 rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider">{m.workOrders}</span>
-                      <span className="text-[7px] text-emerald-400/60 bg-emerald-500/[0.06] px-1.5 py-0.5 rounded font-bold">+34%</span>
+                      <div className="flex gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-violet-500/20 flex items-center justify-center">
+                          <TrendingUp className="w-1.5 h-1.5 text-violet-400" />
+                        </div>
+                        <span className="text-[7px] text-emerald-400/60 bg-emerald-500/[0.06] px-1.5 py-0.5 rounded font-bold">+34%</span>
+                      </div>
                     </div>
-                    <div className="flex-1 flex items-end gap-[3px]">
-                      {[28, 45, 35, 62, 50, 78, 60, 88, 70, 95, 82, 100].map((h, i) => (
+                    <div className="flex-1 flex flex-col gap-2 mt-1">
+                      {[
+                        { id: "#ORD-4201", client: "Delta Corp", value: "$4.2k", status: "Production", color: "bg-blue-400" },
+                        { id: "#ORD-4202", client: "Skyline Ltd", value: "$2.8k", status: "Installation", color: "bg-emerald-400" },
+                        { id: "#ORD-4203", client: "Urban Signs", value: "$1.5k", status: "Review", color: "bg-orange-400" },
+                      ].map((order, i) => (
                         <motion.div
-                          key={i}
-                          className="flex-1 rounded-sm"
-                          style={{
-                            background: `linear-gradient(to top, rgba(124,58,237,0.7), rgba(168,85,247,${0.08 + i * 0.025}))`,
-                          }}
-                          initial={{ height: 0 }}
-                          animate={{ height: `${h}%` }}
-                          transition={{ delay: 1.2 + i * 0.05, duration: 0.5, ease: "easeOut" }}
-                        />
+                          key={order.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 1.2 + i * 0.1 }}
+                          className="flex items-center gap-3 p-2 rounded-md bg-white/[0.02] border border-white/[0.04]"
+                        >
+                          <div className={`w-1 h-4 rounded-full ${order.color}`} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[7px] font-bold text-zinc-300 truncate">{order.client}</span>
+                              <span className="text-[7px] font-medium text-zinc-500">{order.id}</span>
+                            </div>
+                            <div className="flex items-center justify-between mt-0.5">
+                              <span className="text-[6px] text-zinc-500 uppercase tracking-tighter">{order.status}</span>
+                              <span className="text-[7px] font-bold text-white/90">{order.value}</span>
+                            </div>
+                          </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
@@ -217,6 +235,7 @@ const MacBookMockup = () => {
                         { name: "M. García", status: m.onSite, color: "bg-violet-400" },
                         { name: "R. Torres", status: "SLA ⚠", color: "bg-orange-400" },
                         { name: "A. Méndez", status: m.available, color: "bg-zinc-500" },
+                        { name: "J. White", status: m.onSite, color: "bg-violet-400" },
                       ].map((tech, i) => (
                         <motion.div
                           key={tech.name}
