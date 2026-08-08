@@ -111,7 +111,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           <motion.div
             initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
-            className="fixed left-0 top-0 w-80 h-full sidebar-premium z-50 p-6 flex flex-col backdrop-blur-3xl"
+            className="fixed left-0 top-0 w-[280px] sm:w-80 h-full sidebar-premium z-50 p-4 sm:p-6 flex flex-col backdrop-blur-3xl"
           >
             <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <BrandLogo size={32} showText variant="iconWithText" textClassName="text-lg" />

@@ -140,7 +140,7 @@ export const NotificationBell = () => {
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="w-[380px] p-0 border border-white/[0.06] bg-zinc-950/80 backdrop-blur-2xl shadow-[0_16px_64px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden"
+        className="w-[320px] sm:w-[380px] p-0 border border-white/[0.06] bg-zinc-950/80 backdrop-blur-2xl shadow-[0_16px_64px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden"
       >
         {/* Header */}
         <div className="px-4 pt-4 pb-3 border-b border-white/[0.06]">

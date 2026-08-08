@@ -52,8 +52,8 @@ export const Header = memo(({ onMenuToggle }: HeaderProps) => {
           )}
           {isDashboard && (
             <div className="hidden md:block">
-              <h1 className="font-bold text-2xl truncate">{t.dashboard.welcomeBack}, {fullName.split(' ')[0]}!</h1>
-              <p className="text-muted-foreground text-sm">{t.dashboard.projectsToday}</p>
+              <h1 className="font-bold text-xl lg:text-2xl truncate">{t.dashboard.welcomeBack}, {fullName.split(' ')[0]}!</h1>
+              <p className="text-muted-foreground text-xs lg:text-sm">{t.dashboard.projectsToday}</p>
             </div>
           )}
           <h1 className="md:hidden text-lg font-bold truncate">{FIXED_BRANDING.appName}</h1>
