@@ -150,31 +150,32 @@ const WorkOrders = () => {
                     <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
-              <Select value={filter.assigneeFilter} onValueChange={v => { filter.setAssigneeFilter(v); filter.setPage(1); }}>
-                <SelectTrigger className="w-40"><SelectValue placeholder="Assignee" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Assignees</SelectItem>
-                  {teamMembers.map(m => (
-                    <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="flex rounded-lg border border-border/50 overflow-hidden ml-auto">
-                <button
-                  onClick={() => setView("cards")}
-                  className={`p-2 transition-colors ${view === "cards" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
-                  aria-label="Grid view"
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setView("list")}
-                  className={`p-2 transition-colors ${view === "list" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
-                  aria-label="List view"
-                >
-                  <List className="w-4 h-4" />
-                </button>
+                </Select>
+                <Select value={filter.assigneeFilter} onValueChange={v => { filter.setAssigneeFilter(v); filter.setPage(1); }}>
+                  <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Assignee" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Assignees</SelectItem>
+                    {teamMembers.map(m => (
+                      <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="flex rounded-lg border border-border/50 overflow-hidden ml-auto">
+                  <button
+                    onClick={() => setView("cards")}
+                    className={`p-2 transition-colors ${view === "cards" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                    aria-label="Grid view"
+                  >
+                    <LayoutGrid className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setView("list")}
+                    className={`p-2 transition-colors ${view === "list" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                    aria-label="List view"
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
 
