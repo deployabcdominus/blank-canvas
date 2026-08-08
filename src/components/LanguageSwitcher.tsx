@@ -2,8 +2,8 @@ import { useLanguage, type Locale } from "@/i18n/LanguageContext";
 import { motion } from "framer-motion";
 
 const OPTIONS: { value: Locale; label: string; short: string }[] = [
-  { value: "es", label: "Español", short: "ES" },
   { value: "en", label: "English", short: "EN" },
+  { value: "es", label: "Español", short: "ES" },
 ];
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
@@ -16,7 +16,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
         className="absolute h-[calc(100%-8px)] rounded-full bg-primary/20 border border-primary/30"
         initial={false}
         animate={{
-          left: locale === "es" ? "4px" : "50%",
+          left: locale === "en" ? "4px" : "50%",
           width: "calc(50% - 4px)",
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}

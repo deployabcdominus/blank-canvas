@@ -17,6 +17,7 @@ export const en = {
         "The all-in-one platform to manage IT, HVAC, and Signage operations with absolute precision. Stop wasting time and start growing today.",
       ctaPrimary: "Get Started Now",
       ctaSecondary: "Watch Demo",
+      trust: "Rated 4.9/5 by 500+ Businesses",
     },
     trusted: "Join 500+ industry leaders worldwide",
     industries: {

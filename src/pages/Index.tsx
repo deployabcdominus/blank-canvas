@@ -95,7 +95,7 @@ const TrustStars = () => (
       ))}
     </div>
     <p className="text-[12px] font-medium text-zinc-500 tracking-wide uppercase">
-      Rated 4.9/5 by 500+ Businesses
+      {t.landing.hero.trust}
     </p>
   </div>
 );
