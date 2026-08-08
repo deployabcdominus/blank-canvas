@@ -76,8 +76,8 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className={`rounded-xl border bg-zinc-900/60 hover:border-primary/15 transition-all duration-300 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover relative ${
-        selected ? 'border-violet-500/30 ring-1 ring-violet-500/20' : 'border-white/[0.06]'
+      className={`rounded-xl border bg-zinc-900/60 transition-all duration-500 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover relative ${
+        selected ? 'border-violet-500/40 ring-2 ring-violet-500/20 bg-violet-500/[0.03]' : 'border-white/[0.06] hover:border-primary/30 hover:bg-zinc-900/80 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1.5'
       }`}
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}

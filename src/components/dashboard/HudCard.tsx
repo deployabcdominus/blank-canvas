@@ -100,7 +100,7 @@ export const HudCard = memo(({ label, desc, value, icon: Icon, isActive, onClick
         y: 0,
         ...(showEntrance ? { scale: [0.9, 1.05, 1] } : {}),
       }}
-      whileHover={{ y: -4, scale: 1.02 }}
+      whileHover={{ y: -6, scale: 1.03 }}
       whileTap={{ scale: 0.98 }}
       transition={{ delay: index * 0.08, duration: 0.5, type: "spring" }}
       onClick={onClick}
