@@ -32,13 +32,12 @@ const variants = {
 
 const defaultTransition = {
   duration: 0.4,
-  ease: [0.23, 1, 0.32, 1], // Quart ease out
+  ease: [0.23, 1, 0.32, 1] as [number, number, number, number],
 };
 
 export const PageTransition = ({ children, variant = "fade" }: PageTransitionProps) => {
   const location = useLocation();
   
-  // Choose variant based on route if needed, or stick to provided prop
   const activeVariant = variants[variant] || variants.fade;
 
   return (
