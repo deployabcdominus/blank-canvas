@@ -578,9 +578,10 @@ const Index = () => {
             <MacBookMockup />
           </ContainerScroll>
 
+          <div className="relative max-w-7xl mx-auto -mt-20">
             {/* ── Trusted By ── */}
             <Reveal delay={0.2}>
-              <div className="mt-20 sm:mt-28">
+              <div className="mt-10 sm:mt-16">
                 <p className="text-center text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 mb-8">
                   {L.trusted}
                 </p>
