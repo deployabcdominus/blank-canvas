@@ -113,7 +113,7 @@ const Login = () => {
               <SignFlowLogo variant="technical" className="w-7 h-7 text-primary" />
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
-              quiero mejorar el logo del app, busco algo mas alineado a procesos de sign de taller, sin gradients, facil de interpretar y reproducir, muestrame opciones
+              el ingles deberia ser nativo desde la primera visita, con posibilidad de cambiar a spanish mediante el swith de la navbar, ingles primero en toda la app
           </motion.div>
 
           <motion.div
