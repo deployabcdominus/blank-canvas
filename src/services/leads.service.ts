@@ -2,7 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
 import { logAudit } from '@/lib/audit';
 import { NotificationsService } from './notifications.service';
-import { LeadsRecycleService } from './leads-recycle.service';
+
 
 export type LeadRow = Database['public']['Tables']['leads']['Row'];
 export type LeadInsert = Database['public']['Tables']['leads']['Insert'];
@@ -23,7 +23,12 @@ export const LeadsService = {
   },
 
   async getDeleted(companyId: string) {
-    return await LeadsRecycleService.getDeleted(companyId);
+    return await supabase
+      .from('leads')
+      .select('*')
+      .eq('company_id', companyId)
+      .not('deleted_at', 'is', null)
+      .order('deleted_at', { ascending: false });
   },
 
   async create(lead: LeadInsert) {
@@ -121,14 +126,26 @@ export const LeadsService = {
   },
 
   async restore(id: string) {
-    return await LeadsRecycleService.restore(id);
+    return await supabase
+      .from('leads')
+      .update({ deleted_at: null })
+      .eq('id', id)
+      .select()
+      .single();
   },
 
   async permanentDelete(id: string) {
-    return await LeadsRecycleService.permanentDelete(id);
+    return await supabase
+      .from('leads')
+      .delete()
+      .eq('id', id);
   },
 
   async clearAll(companyId: string) {
-    return await LeadsRecycleService.clearBin(companyId);
+    return await supabase
+      .from('leads')
+      .delete()
+      .eq('company_id', companyId)
+      .not('deleted_at', 'is', null);
   }
 };
