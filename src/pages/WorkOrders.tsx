@@ -27,8 +27,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useWorkOrderFilters } from "@/hooks/useWorkOrderFilters";
-import { useWorkOrderActions } from "@/hooks/useWorkOrderActions";
+import { useWorkOrderFilters } from "@/hooks/filters/useWorkOrderFilters";
+import { useWorkOrderActions } from "@/hooks/actions/useWorkOrderActions";
 
 type ViewMode = "cards" | "list";
 

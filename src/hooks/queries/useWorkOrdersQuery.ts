@@ -53,7 +53,7 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
   });
 
   const clearWorkOrdersMutation = useMutation({
-    mutationFn: (companyId: string) => WorkOrdersService.deleteByCompany(companyId),
+    mutationFn: (companyId: string) => WorkOrdersService.clearAll(companyId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
       toast.success('Todas las órdenes de trabajo han sido eliminadas');

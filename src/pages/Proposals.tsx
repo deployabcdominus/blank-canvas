@@ -22,8 +22,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { usePlanLimits } from "@/hooks/usePlanLimits";
 import { PlanLimitBanner } from "@/components/PlanLimitBanner";
 import { FileText, Plus } from "lucide-react";
-import { useProposalFilters } from "@/hooks/useProposalFilters";
-import { useProposalActions } from "@/hooks/useProposalActions";
+import { useProposalFilters } from "@/hooks/filters/useProposalFilters";
+import { useProposalActions } from "@/hooks/actions/useProposalActions";
 
 const Proposals = () => {
   const { companyId, canEdit, canDelete } = useUserRole();

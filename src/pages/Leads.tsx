@@ -32,8 +32,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ListCardSkeleton } from "@/components/ui/skeleton-card";
-import { useLeadFilters } from "@/hooks/useLeadFilters";
-import { useLeadActions } from "@/hooks/useLeadActions";
+import { useLeadFilters } from "@/hooks/filters/useLeadFilters";
+import { useLeadActions } from "@/hooks/actions/useLeadActions";
 
 const Leads = () => {
   const navigate = useNavigate();

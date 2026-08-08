@@ -78,28 +78,3 @@ export const utilityItems: NavItem[] = [
 // ── All tenant groups (ordered) ──
 export const tenantGroups: NavGroup[] = [principalGroup, crmGroup, productionGroup, adminGroup];
 
-// ── Backward compat (keep old exports so nothing breaks) ──
-export const mainItems: NavItem[] = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: Contact, label: "Clientes", path: "/clients", roles: ['admin', 'sales', 'operations', 'member'] },
-  { icon: ClipboardList, label: "Work Orders", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
-  { icon: Users, label: "Leads", labelKey: "leads", path: "/leads", roles: ['admin', 'sales', 'member'] },
-  { icon: FileText, label: "Propuestas", path: "/proposals", roles: ['admin', 'sales', 'member'] },
-  { icon: DollarSign, label: "Pagos", path: "/payments", roles: ['admin', 'sales'] },
-];
-
-export const operationGroup: NavGroup = {
-  groupLabel: "Operación",
-  icon: ClipboardList,
-  items: [
-    { icon: ClipboardList, label: "Órdenes de Servicio", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
-    { icon: MapPin, label: "Ejecuciones", labelKey: "installation", path: "/installation", roles: ['admin', 'operations', 'viewer'] },
-  ],
-};
-
-export const adminItems: NavItem[] = [
-  { icon: Building, label: "Subcontratistas", labelKey: "installerCompanies", path: "/installer-companies", roles: ['admin', 'operations'] },
-  { icon: Activity, label: "Auditoría", path: "/audit-log", roles: ['admin'] },
-  { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
-  { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin'] },
-];
