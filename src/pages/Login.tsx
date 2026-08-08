@@ -113,146 +113,29 @@ const Login = () => {
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
             <p className="text-muted-foreground/80 whitespace-pre-wrap">
-              Inicia sesión para continuar en SignFlow. Analise completamente toda a aplicação antes de realizar qualquer alteração e execute uma melhoria profunda de UI/UX em todo o sistema.
+              ## Otimização da Página Inicial
 
-Seu objetivo é elevar o nível visual e de experiência do usuário para um padrão moderno, premium e altamente intuitivo, sem alterar funcionalidades existentes.
+**Funcionalidade:** Remover seções e textos desnecessários da página inicial para melhorar a experiência do usuário e o desempenho.
 
-━━━━━━━━━━━━━━━━━━━
-OBJETIVO PRINCIPAL
-━━━━━━━━━━━━━━━━━━━
+**Requisitos Técnicos:**
 
-Transformar a interface em uma experiência:
-- Mais clara
-- Mais intuitiva
-- Mais moderna
-- Mais consistente
-- Mais agradável de usar
-- Mais profissional visualmente
+*   Identificar seções e textos que não agregam valor ou que podem ser redundantes.
 
-━━━━━━━━━━━━━━━━━━━
-ANÁLISE OBRIGATÓRIA
-━━━━━━━━━━━━━━━━━━━
+*   Implementar a remoção de forma limpa, garantindo que não haja erros de renderização ou quebra de layout.
 
-Antes de modificar qualquer coisa, analise:
+*   Considerar o impacto da remoção no SEO e na usabilidade.
 
-- Estrutura visual geral do sistema
-- Hierarquia de informação
-- Consistência de componentes
-- Layouts de páginas
-- Espaçamentos e alinhamentos
-- Tipografia e legibilidade
-- Cores e contraste
-- Botões e elementos interativos
-- Fluxos de navegação do usuário
-- Estados (loading, empty, error, success)
-- Responsividade mobile e desktop
-- Feedback visual de ações
-- Microinterações existentes
-- Usabilidade geral do sistema
-- Clareza dos formulários
-- Organização de conteúdo
-- Densidade visual (muito cheio vs muito vazio)
+**Passos Necessários:**
 
-━━━━━━━━━━━━━━━━━━━
-MELHORIAS DE UI
-━━━━━━━━━━━━━━━━━━━
+1.  **Análise da Página Inicial:** Realizar uma auditoria completa da página inicial para identificar os elementos a serem removidos.
 
-Aprimorar toda a interface com foco em:
+2.  **Definição de Critérios:** Estabelecer critérios claros para determinar o que é "desnecessário" (ex: baixa taxa de cliques, informações obsoletas, duplicação de conteúdo).
 
-VISUAL MODERNO:
-- Melhorar hierarquia visual
-- Padronizar espaçamentos (grid consistente)
-- Melhorar alinhamento de elementos
-- Criar consistência entre páginas
-- Melhorar composição visual geral
-- Ajustar proporções de elementos
-- Melhorar leitura e escaneabilidade
+3.  **Implementação da Remoção:** Executar a remoção dos elementos identificados, seja através de código, configurações de CMS ou ferramentas de edição.
 
-TIPOGRAFIA:
-- Melhorar hierarquia de títulos
-- Ajustar tamanhos de fonte
-- Melhorar espaçamento entre linhas
-- Melhorar legibilidade geral
-- Padronizar estilos de texto
+4.  **Testes e Validação:** Testar a página inicial após as modificações para garantir que tudo esteja funcionando corretamente e que a experiência do usuário tenha sido aprimorada.
 
-CORES E CONTRASTE:
-- Melhorar contraste para acessibilidade
-- Padronizar paleta de cores
-- Corrigir cores inconsistentes
-- Melhorar estados (hover, active, disabled)
-
-COMPONENTES:
-- Padronizar botões (tamanhos, estilos, estados)
-- Melhorar cards e containers
-- Unificar estilos de inputs e formulários
-- Melhorar modais e dropdowns
-- Criar consistência entre componentes
-
-━━━━━━━━━━━━━━━━━━━
-MELHORIAS DE UX
-━━━━━━━━━━━━━━━━━━━
-
-FOCO NA EXPERIÊNCIA DO USUÁRIO:
-
-- Tornar navegação mais intuitiva
-- Reduzir fricção em fluxos importantes
-- Melhorar clareza das ações principais
-- Melhorar feedback ao usuário
-- Melhorar estados de carregamento
-- Melhorar mensagens de erro e sucesso
-- Simplificar interações complexas
-- Melhorar fluxo de formulários
-- Tornar ações mais previsíveis
-- Melhorar descoberta de funcionalidades
-
-━━━━━━━━━━━━━━━━━━━
-MICROINTERAÇÕES
-━━━━━━━━━━━━━━━━━━━
-
-- Adicionar/transicionar estados de hover suaves
-- Melhorar feedback visual de cliques
-- Melhorar transições entre estados
-- Melhorar animações leves e não intrusivas
-- Evitar animações pesadas ou exageradas
-- Garantir fluidez visual
-
-━━━━━━━━━━━━━━━━━━━
-RESPONSIVIDADE
-━━━━━━━━━━━━━━━━━━━
-
-- Melhorar layout mobile-first
-- Ajustar espaçamentos em telas pequenas
-- Melhorar usabilidade touch
-- Evitar elementos pequenos demais
-- Garantir boa leitura no mobile
-- Ajustar grids responsivos
-
-━━━━━━━━━━━━━━━━━━━
-PRINCÍPIOS IMPORTANTES
-━━━━━━━━━━━━━━━━━━━
-
-- NÃO alterar funcionalidades existentes
-- NÃO remover features
-- NÃO quebrar fluxos atuais
-- NÃO mudar identidade visual sem necessidade extrema
-- Priorizar consistência acima de mudanças radicais
-- Melhorar sem descaracterizar o sistema
-- Manter performance leve e fluida
-
-━━━━━━━━━━━━━━━━━━━
-RESULTADO ESPERADO
-━━━━━━━━━━━━━━━━━━━
-
-Ao final, o sistema deve parecer:
-
-- Mais profissional
-- Mais moderno
-- Mais polido visualmente
-- Mais fácil de usar
-- Mais intuitivo
-- Mais consistente
-- Mais agradável de navegar
-- Com UX claramente melhorada em todos os fluxos
+5.  **Monitoramento:** Monitorar o desempenho da página inicial após as alterações (ex: tempo de carregamento, taxa de conversão).
             </p>
           </motion.div>
 
