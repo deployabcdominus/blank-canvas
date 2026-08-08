@@ -1070,8 +1070,8 @@ export default function WorkOrderDetail() {
               </Dialog>
             </div>
 
-            {/* RIGHT COL – 40% (2/5) */}
-            <div className="lg:col-span-2 space-y-4">
+            {/* RIGHT COL – ~33% (4/12) */}
+            <div className="lg:col-span-4 space-y-4">
 
               {/* Project Details */}
               <SectionCard>
