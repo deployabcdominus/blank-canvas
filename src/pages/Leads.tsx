@@ -71,7 +71,7 @@ const Leads = () => {
         <MobileMenu isOpen={actions.isMobileMenuOpen} onClose={() => actions.setIsMobileMenuOpen(false)} />
 
         <main
-          className={`flex-1 transition-all duration-300 ${isMobile ? 'p-4' : 'p-6'} ${actions.selectedIds.size > 0 ? 'pb-24' : ''}`}
+          className={`flex-1 transition-all duration-300 ${isMobile ? 'p-4 pt-2' : 'p-6'} ${actions.selectedIds.size > 0 ? 'pb-24' : ''} max-w-full overflow-x-hidden`}
           style={{ marginLeft: `${sidebarWidth}px` }}
         >
           {isMobile && (
@@ -83,16 +83,16 @@ const Leads = () => {
             </div>
           )}
 
-          <div className={`mb-6 ${isMobile ? 'text-center' : ''}`}>
-            <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold mb-1`}>Leads</h1>
-            <p className="text-muted-foreground text-sm">{t.leads.subtitle}</p>
+          <div className={`mb-6 ${isMobile ? 'text-left' : ''}`}>
+            <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold mb-1 tracking-tight`}>Leads</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">{t.leads.subtitle}</p>
           </div>
 
           <LeadsKPIBar leads={leads} proposals={proposals} isMobile={isMobile} />
 
-          <div className={`flex items-center gap-4 mb-6 ${isMobile ? 'flex-col' : 'justify-between'}`}>
-            <div className={`flex items-center gap-3 ${isMobile ? 'w-full flex-col' : ''}`}>
-              <div className={`relative ${isMobile ? 'w-full' : 'w-72'}`}>
+          <div className={`flex items-center gap-4 mb-6 flex-col md:flex-row md:justify-between`}>
+            <div className={`flex items-center gap-3 w-full flex-col md:flex-row`}>
+              <div className={`relative w-full md:w-72`}>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder={t.leads.searchPlaceholder}
@@ -113,7 +113,7 @@ const Leads = () => {
               </div>
 
               <Select value={ownershipFilter} onValueChange={setOwnershipFilter}>
-                <SelectTrigger className={`h-10 ${isMobile ? 'w-full' : 'w-44'}`}>
+                <SelectTrigger className={`h-10 w-full md:w-44`}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -134,7 +134,7 @@ const Leads = () => {
               </Select>
             </div>
 
-            <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
+            <div className={`flex gap-2 w-full md:w-auto`}>
               {isAdmin && (
                 <Button
                   onClick={() => navigate('/leads/recycle-bin')}
@@ -150,7 +150,7 @@ const Leads = () => {
                 <Button
                   onClick={() => actions.setIsConfirmClearOpen(true)}
                   variant="outline"
-                  className={`min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
+                  className={`min-h-[44px] flex-1 md:flex-none`}
                 >
                   <Trash2 className="w-4 h-4 mr-2" /> {t.leads.clearButton}
                 </Button>
@@ -160,7 +160,7 @@ const Leads = () => {
                   onClick={() => actions.setIsAddLeadModalOpen(true)}
                   disabled={limits.leads.isAtLimit}
                   title={limits.leads.isAtLimit ? t.leads.limitReached : undefined}
-                  className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] ${isMobile ? 'flex-1' : ''}`}
+                  className={`btn-glass bg-mint text-mint-foreground hover:bg-mint-hover min-h-[44px] flex-1 md:flex-none`}
                 >
                   <Plus className="w-4 h-4 mr-2" /> {t.leads.addLead}
                 </Button>
@@ -171,11 +171,7 @@ const Leads = () => {
           <PlanLimitBanner entity="leads" />
           
           {isLoading ? (
-            <div className={`grid gap-5 ${
-              isMobile ? 'grid-cols-1' :
-              isTablet ? 'grid-cols-2' :
-              'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-            }`}>
+            <div className={`grid gap-5 grid-cols-1 xs:grid-cols-2 lg:grid-cols-3`}>
               {Array.from({ length: 6 }).map((_, i) => (
                 <ListCardSkeleton key={i} />
               ))}
@@ -198,11 +194,7 @@ const Leads = () => {
               )}
             </div>
           ) : (
-            <div className={`grid gap-5 ${
-              isMobile ? 'grid-cols-1' :
-              isTablet ? 'grid-cols-2' :
-              'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-            }`}>
+            <div className={`grid gap-5 grid-cols-1 xs:grid-cols-2 lg:grid-cols-3`}>
               {filteredLeads.map((lead, index) => (
                 <LeadCard
                   key={lead.id}

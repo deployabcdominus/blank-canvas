@@ -120,18 +120,18 @@ const Production = () => {
     <PageTransition>
       <ResponsiveLayout>
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Producción</h1>
-            <p className="text-muted-foreground text-sm">Seguimiento de manufactura y montaje</p>
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 tracking-tight">Producción</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">Seguimiento de manufactura y montaje</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             {orders.length > 0 && (
-              <Button onClick={() => setIsClearDialogOpen(true)} variant="outline" className="btn-glass">
+              <Button onClick={() => setIsClearDialogOpen(true)} variant="outline" className="btn-glass flex-1 sm:flex-none min-h-[44px]">
                 <Trash2 className="w-4 h-4 mr-2" /> Limpiar
               </Button>
             )}
-            <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover">
+            <Button onClick={() => setIsNewOrderModalOpen(true)} className="btn-glass bg-lavender text-lavender-foreground hover:bg-lavender-hover flex-1 sm:flex-none min-h-[44px]">
               <Wrench className="w-4 h-4 mr-2" /> Nueva Orden
             </Button>
           </div>
