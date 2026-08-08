@@ -87,19 +87,21 @@ export default function HeroSection() {
           {/* LEFT COLUMN */}
           <div className="flex flex-col space-y-8 text-center lg:text-left items-center lg:items-start animate-fade-in">
             {/* Badge */}
-            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md whitespace-nowrap">
               <div className="flex -space-x-1">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-5 h-5 rounded-full border border-black bg-zinc-800 flex items-center justify-center">
-                    <Star size={10} className="text-violet-400 fill-violet-400" />
+                  <div key={i} className="w-4 h-4 rounded-full border border-black bg-zinc-800 flex items-center justify-center">
+                    <Star size={8} className="text-violet-400 fill-violet-400" />
                   </div>
                 ))}
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-white/70">{L.badge}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">
+                {locale === 'es' ? 'EL HUB #1 PARA NEGOCIOS DE SERVICIOS' : 'THE #1 OPS HUB FOR SERVICE BUSINESSES'}
+              </span>
             </div>
 
             {/* Heading */}
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter text-white leading-[0.95] lg:leading-[0.9]">
+            <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white leading-[0.95] max-w-md md:max-w-lg">
               {L.titleLine1}<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
                 {L.titleLine2}
@@ -107,7 +109,7 @@ export default function HeroSection() {
             </h1>
 
             {/* Description */}
-            <p className="max-w-xl text-lg md:text-xl text-white/50 leading-relaxed font-medium">
+            <p className="max-w-md text-base md:text-lg text-white/50 leading-relaxed font-medium">
               {L.subtitle}
             </p>
 
@@ -115,17 +117,17 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto pt-2">
               <button 
                 onClick={() => navigate("/register")}
-                className="w-full sm:w-auto px-10 py-5 bg-white text-black font-bold rounded-2xl flex items-center justify-center hover:bg-zinc-200 transition-all group shadow-xl shadow-white/5"
+                className="w-full sm:w-auto px-8 py-4 bg-white text-black font-bold rounded-full flex items-center justify-center hover:bg-zinc-200 transition-all group whitespace-nowrap"
               >
                 {L.ctaPrimary}
-                <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </button>
               
               <button 
                 onClick={() => scrollTo("industries")}
-                className="w-full sm:w-auto px-10 py-5 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all backdrop-blur-md"
+                className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-full flex items-center justify-center hover:bg-white/10 transition-all backdrop-blur-md whitespace-nowrap"
               >
-                <Play size={18} className="mr-2 fill-white" />
+                <Play size={16} className="mr-2 fill-white" />
                 {L.ctaSecondary}
               </button>
             </div>
