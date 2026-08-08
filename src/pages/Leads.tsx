@@ -71,7 +71,7 @@ const Leads = () => {
         <MobileMenu isOpen={actions.isMobileMenuOpen} onClose={() => actions.setIsMobileMenuOpen(false)} />
 
         <main
-          className={`flex-1 transition-all duration-300 ${isMobile ? 'p-4' : 'p-6'} ${actions.selectedIds.size > 0 ? 'pb-24' : ''}`}
+          className={`flex-1 transition-all duration-300 ${isMobile ? 'p-4 pt-2' : 'p-6'} ${actions.selectedIds.size > 0 ? 'pb-24' : ''} max-w-full overflow-x-hidden`}
           style={{ marginLeft: `${sidebarWidth}px` }}
         >
           {isMobile && (
@@ -83,9 +83,9 @@ const Leads = () => {
             </div>
           )}
 
-          <div className={`mb-6 ${isMobile ? 'text-center' : ''}`}>
-            <h1 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold mb-1`}>Leads</h1>
-            <p className="text-muted-foreground text-sm">{t.leads.subtitle}</p>
+          <div className={`mb-6 ${isMobile ? 'text-left' : ''}`}>
+            <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold mb-1 tracking-tight`}>Leads</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">{t.leads.subtitle}</p>
           </div>
 
           <LeadsKPIBar leads={leads} proposals={proposals} isMobile={isMobile} />
