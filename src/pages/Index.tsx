@@ -13,7 +13,7 @@ import {
   ArrowRight, Check, LogIn, Zap, Target, FileText, Building,
   TrendingUp, Star, Sparkles, ChevronRight, Factory, Shield,
   CheckCircle2, CircleDot, BadgeCheck, Camera, Monitor,
-  Thermometer, Signpost, Wrench, ClipboardCheck, PenTool,
+  Thermometer, Signpost, Wrench, PenTool,
   WifiOff, ChevronDown, Twitter, Instagram, Linkedin,
   ThumbsUp, ThumbsDown, MapPin, Users, Activity, BarChart3, ClipboardCheck
 } from "lucide-react";
