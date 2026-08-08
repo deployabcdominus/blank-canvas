@@ -481,8 +481,6 @@ const Index = () => {
               <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
                 <TrustStars />
 
-                <TrustStars />
-
                 <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-7xl font-black leading-[0.95] tracking-tighter mb-10">
                   <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
                     {L.hero.titleLine1}
