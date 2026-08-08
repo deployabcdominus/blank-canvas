@@ -618,7 +618,7 @@ const Index = () => {
             <MacBookMockup />
           </ContainerScroll>
 
-          <div className="relative max-w-7xl mx-auto -mt-20">
+          <div className="relative max-w-7xl mx-auto -mt-20 mb-20 md:mb-32">
             {/* ── Trusted By ── */}
             <Reveal delay={0.2}>
               <div className="mt-10 sm:mt-16">
@@ -641,10 +641,8 @@ const Index = () => {
           </div>
         </section>
 
-        <div className="h-12 sm:h-20" />
-
         {/* ═══════════ INDUSTRIES GRID ═══════════ */}
-        <section id="industries" className="py-36 md:py-44 lg:py-52 px-5 relative">
+        <section id="industries" className="py-16 md:py-24 px-5 relative">
           <div className="max-w-6xl mx-auto">
             <Reveal>
               <div className="text-center mb-20">
@@ -699,7 +697,7 @@ const Index = () => {
         </section>
 
         {/* ═══════════ FEATURE SHOWCASE ═══════════ */}
-        <section id="features" className="py-36 md:py-44 lg:py-52 px-5 relative">
+        <section id="features" className="py-16 md:py-24 px-5 relative">
           <div className="absolute inset-0 bg-zinc-950/50 pointer-events-none" />
           <div className="max-w-5xl mx-auto relative">
             <Reveal>
@@ -745,7 +743,7 @@ const Index = () => {
         </section>
 
         {/* ═══════════ PRICING ═══════════ */}
-        <section id="pricing" className="py-36 md:py-44 lg:py-52 px-5 relative">
+        <section id="pricing" className="py-16 md:py-24 px-5 relative">
           <div className="max-w-5xl mx-auto relative">
             <Reveal>
               <div className="text-center mb-14">
@@ -881,7 +879,7 @@ const Index = () => {
         </section>
 
         {/* ═══════════ FAQ ═══════════ */}
-        <section id="faq" className="py-36 md:py-44 lg:py-52 px-5 relative">
+        <section id="faq" className="py-16 md:py-24 px-5 relative">
           <div className="max-w-3xl mx-auto relative">
             <Reveal>
               <div className="text-center mb-16">
@@ -915,7 +913,7 @@ const Index = () => {
         </section>
 
         {/* ═══════════ FINAL CTA ═══════════ */}
-        <section className="py-40 md:py-48 lg:py-56 px-5 relative overflow-hidden">
+        <section className="pt-16 md:pt-20 pb-16 md:pb-24 px-5 relative overflow-hidden">
           <Reveal>
             <div className="relative max-w-3xl mx-auto text-center rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-12 sm:p-16">
               <div
@@ -970,7 +968,7 @@ const Index = () => {
         </section>
 
         {/* ═══════════ FOOTER ═══════════ */}
-        <footer className="border-t border-white/[0.04] py-16 sm:py-20 px-5 relative" role="contentinfo">
+        <footer className="border-t border-white/[0.04] pt-16 md:pt-20 pb-16 sm:pb-20 px-5 relative" role="contentinfo">
           <div className="relative max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-14">
               <div className="md:col-span-1">
