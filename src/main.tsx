@@ -10,5 +10,10 @@ import './index.css'
 createRoot(document.getElementById("root")!).render(
   <GlobalErrorBoundary>
     <App />
+    {process.env.NODE_ENV === 'development' && (
+      <Suspense fallback={null}>
+        <FaviconGen />
+      </Suspense>
+    )}
   </GlobalErrorBoundary>
 );
