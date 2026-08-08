@@ -433,7 +433,7 @@ const Index = () => {
               {[
                 { label: L.nav.industries, id: "industries" },
                 { label: L.nav.pricing, id: "pricing" },
-                { label: L.nav.demo, id: "features" },
+                { label: L.nav.faq, id: "faq" },
               ].map((item) => (
                 <button key={item.id} onClick={() => scrollTo(item.id)} className="relative hover:text-zinc-200 transition-colors duration-300">
                   {item.label}
@@ -540,7 +540,7 @@ const Index = () => {
                   >
                     <span className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60" />
-                      {locale === 'es' ? 'Sin tarjeta de crédito' : 'No credit card required'}
+                      {locale === 'es' ? 'Sin costos ocultos' : 'No hidden costs'}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-zinc-800" />
                     <span className="flex items-center gap-1.5">
@@ -809,7 +809,7 @@ const Index = () => {
             <div className="mt-14 text-center">
               <p className="text-[12px] text-zinc-600 font-medium tracking-wide uppercase flex items-center justify-center gap-2">
                 <Shield className="w-3.5 h-3.5" />
-                Cancel anytime • 14-day money-back guarantee • Secure checkout
+                {locale === 'es' ? 'Cancela en cualquier momento • 14 días de garantía • Pago seguro' : 'Cancel anytime • 14-day money-back guarantee • Secure checkout'}
               </p>
             </div>
           </div>
@@ -911,9 +911,9 @@ const Index = () => {
               <div className="md:col-span-1">
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-8 h-8 overflow-hidden flex-shrink-0">
-                    <img src={brandLogoSrc} alt="Sign Flow" className="w-full h-full object-contain" />
+                    <img src={brandLogoSrc} alt="SignFlow" className="w-full h-full object-contain" />
                   </div>
-                  <span className="font-bold text-lg tracking-[-0.02em] text-zinc-300">Sign Flow</span>
+                  <span className="font-bold text-lg tracking-[-0.02em] text-zinc-300">SignFlow</span>
                 </div>
                 <p className="text-[13px] text-zinc-500 leading-relaxed max-w-[250px]">{L.footer.tagline}</p>
               </div>
@@ -933,7 +933,7 @@ const Index = () => {
               ))}
             </div>
             <div className="border-t border-white/[0.03] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-[12px] text-zinc-700">© {new Date().getFullYear()} Sign Flow. {L.footer.copyright}</p>
+              <p className="text-[12px] text-zinc-700">© {new Date().getFullYear()} SignFlow. {L.footer.copyright}</p>
               <div className="flex items-center gap-3">
                 {[Twitter, Instagram, Linkedin].map((Icon, i) => (
                   <a
