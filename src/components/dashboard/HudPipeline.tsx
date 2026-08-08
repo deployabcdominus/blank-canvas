@@ -113,7 +113,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
             const Icon = col.icon;
             const accentColor = `hsl(var(${col.accentVar}))`;
             return (
-              <motion.div key={col.key} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="flex-1 min-w-[240px] md:min-w-[280px] snap-start">
+              <motion.div key={col.key} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="flex-1 min-w-[260px] xs:min-w-[280px] md:min-w-[300px] snap-start">
                 <div
                   className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl border"
                   style={{
@@ -136,7 +136,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.04 }}
                         onClick={() => navigate(card.navigateTo)}
-                        className="dash-card p-2 md:p-3 cursor-pointer card-interactive group"
+                        className="dash-card p-3 md:p-3 cursor-pointer card-interactive group min-h-[80px]"
                       >
                         <div className="flex items-start gap-2">
                           <div className="mt-1.5 flex-shrink-0">

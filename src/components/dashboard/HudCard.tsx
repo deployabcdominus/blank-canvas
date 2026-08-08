@@ -131,9 +131,9 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: glowPulse ? 0.7 : 0.4 }}
-          className={`absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent ${
+          className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent ${
             glowPulse ? "via-violet-500" : "via-primary"
-          } to-transparent`}
+          } to-transparent z-20`}
         />
       )}
 
@@ -158,14 +158,14 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
         </div>
 
         {/* Row 2: Large number + trend delta */}
-        <div className="flex items-end justify-between gap-2">
+        <div className="flex items-end justify-between gap-2 flex-wrap sm:flex-nowrap">
           {noAccess ? (
-            <span className="font-bold text-3xl leading-none tracking-tight text-amber-400/60">—</span>
+            <span className="font-bold text-2xl md:text-3xl leading-none tracking-tight text-amber-400/60">—</span>
           ) : (
-            <AnimatedCounter value={value} isCurrency={isCurrency} className="font-bold text-3xl leading-none tracking-tight text-zinc-100" />
+            <AnimatedCounter value={value} isCurrency={isCurrency} className="font-bold text-2xl md:text-3xl leading-none tracking-tight text-zinc-100" />
           )}
           {!noAccess && delta !== undefined && (
-            <div className="mb-0.5">
+            <div className="mb-0.5 shrink-0">
               <TrendDelta delta={delta} />
             </div>
           )}

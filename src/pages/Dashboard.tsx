@@ -128,7 +128,7 @@ const Dashboard = () => {
 
 
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
           {stats.map((stat, index) => (
             <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} isCurrency={(stat as any).isCurrency} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} delta={stat.delta} sparkline={stat.sparkline} />
           ))}
