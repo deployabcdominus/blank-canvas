@@ -10,7 +10,7 @@ import './index.css'
 createRoot(document.getElementById("root")!).render(
   <GlobalErrorBoundary>
     <App />
-    {process.env.NODE_ENV === 'development' && (
+    {import.meta.env.DEV && (
       <Suspense fallback={null}>
         <FaviconGen />
       </Suspense>
