@@ -104,6 +104,32 @@ const TrustStars = () => {
   );
 };
 
+/* ─── CountUpValue component ─── */
+const CountUpValue = ({ value }: { value: number }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (inView) {
+      let start = 0;
+      const end = value;
+      const duration = 2000;
+      const stepTime = Math.abs(Math.floor(duration / end));
+      
+      const timer = setInterval(() => {
+        start += 1;
+        setCount(start);
+        if (start >= end) clearInterval(timer);
+      }, stepTime);
+
+      return () => clearInterval(timer);
+    }
+  }, [inView, value]);
+
+  return <span ref={ref}>{count}</span>;
+};
+
 /* ═══════════════════════════════════════════════════════ */
 /*     MACBOOK PRO MOCKUP (HERO)                           */
 /* ═══════════════════════════════════════════════════════ */
@@ -125,7 +151,7 @@ const MacBookMockup = () => {
             aspectRatio: "16/9",
           }}
         >
-          <div className="absolute inset-0 rounded-none overflow-hidden bg-zinc-950">
+          <div className="absolute inset-0 rounded-none overflow-hidden bg-zinc-950 h-full">
             <div className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900/90 border-b border-white/[0.04]">
               <div className="flex gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/60" />
@@ -140,7 +166,7 @@ const MacBookMockup = () => {
               <div className="hidden sm:flex flex-col w-[120px] flex-shrink-0 bg-white/[0.015] rounded-lg border border-white/[0.04] p-2.5 gap-1.5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-5 h-5 flex items-center justify-center">
-                    <SignFlowLogo variant="technical" className="w-4 h-4 text-violet-400" />
+                    <SignFlowLogo variant="technical" className="w-5 h-5 text-violet-500" />
                   </div>
                   <span className="text-[8px] font-bold text-zinc-300">SignFlow</span>
                 </div>
@@ -165,15 +191,15 @@ const MacBookMockup = () => {
               <div className="flex-1 flex flex-col gap-2.5 overflow-hidden">
                 <div className="grid grid-cols-4 gap-2">
                   {[
-                    { label: m.activeOrders, value: "42", trend: "+12%", color: "text-violet-400", badge: null },
-                    { label: m.fieldOperators, value: "18", trend: m.inService, color: "text-emerald-400", badge: null },
-                    { label: m.slaCritical, value: "3", trend: m.urgent, color: "text-orange-400", badge: "bg-orange-500/15 border-orange-500/20 text-orange-400" },
-                    { label: m.monthRevenue, value: "$184K", trend: "+23%", color: "text-cyan-400", badge: null },
+                    { label: m.activeOrders, value: 42, trend: "+12%", color: "text-violet-400", badge: null },
+                    { label: m.fieldOperators, value: 18, trend: m.inService, color: "text-emerald-400", badge: null },
+                    { label: m.slaCritical, value: 3, trend: m.urgent, color: "text-orange-400", badge: "bg-orange-500/15 border-orange-500/20 text-orange-400" },
+                    { label: m.monthRevenue, value: 184, trend: "+23%", color: "text-cyan-400", badge: null },
                   ].map((kpi, i) => (
                     <motion.div
                       key={kpi.label}
                       initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.9 + i * 0.08, duration: 0.4 }}
                       className={`rounded-lg border p-2.5 transition-colors ${
                         kpi.badge
@@ -182,7 +208,17 @@ const MacBookMockup = () => {
                       }`}
                     >
                       <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
-                      <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">{kpi.value}</p>
+                      <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                        >
+                          {typeof kpi.value === 'number' ? (
+                             <CountUpValue value={kpi.value} />
+                          ) : kpi.value}
+                          {kpi.label === m.monthRevenue ? 'K' : ''}
+                        </motion.span>
+                      </p>
                       <p className={`text-[7px] font-semibold mt-0.5 ${kpi.color} opacity-60`}>{kpi.trend}</p>
                     </motion.div>
                   ))}
@@ -195,10 +231,23 @@ const MacBookMockup = () => {
                         <div className="w-2.5 h-2.5 rounded-full bg-violet-500/20 flex items-center justify-center">
                           <TrendingUp className="w-1.5 h-1.5 text-violet-400" />
                         </div>
-                        <span className="text-[7px] text-emerald-400/60 bg-emerald-500/[0.06] px-1.5 py-0.5 rounded font-bold">+34%</span>
+                        <motion.span 
+                          animate={{ opacity: [0.6, 1, 0.6] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                          className="text-[7px] text-emerald-400/60 bg-emerald-500/[0.06] px-1.5 py-0.5 rounded font-bold"
+                        >
+                          +34%
+                        </motion.span>
                       </div>
                     </div>
-                    <div className="flex-1 flex flex-col gap-2 mt-1">
+                    <motion.div 
+                      initial="hidden"
+                      whileInView="visible"
+                      variants={{
+                        visible: { transition: { staggerChildren: 0.1 } }
+                      }}
+                      className="flex-1 flex flex-col gap-2 mt-1"
+                    >
                       {[
                         { id: "#ORD-4201", client: "Delta Corp", value: "$4.2k", status: "Production", color: "bg-blue-400" },
                         { id: "#ORD-4202", client: "Skyline Ltd", value: "$2.8k", status: "Installation", color: "bg-emerald-400" },
@@ -206,9 +255,10 @@ const MacBookMockup = () => {
                       ].map((order, i) => (
                         <motion.div
                           key={order.id}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 1.2 + i * 0.1 }}
+                          variants={{
+                            hidden: { opacity: 0, x: -10 },
+                            visible: { opacity: 1, x: 0 }
+                          }}
                           className="flex items-center gap-3 p-2 rounded-md bg-white/[0.02] border border-white/[0.04]"
                         >
                           <div className={`w-1 h-4 rounded-full ${order.color}`} />
@@ -224,11 +274,18 @@ const MacBookMockup = () => {
                           </div>
                         </motion.div>
                       ))}
-                    </div>
+                    </motion.div>
                   </div>
                   <div className="rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
                     <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">{m.activeSpecialists}</span>
-                    <div className="flex-1 flex flex-col gap-1.5 overflow-hidden">
+                    <motion.div 
+                      initial="hidden"
+                      whileInView="visible"
+                      variants={{
+                        visible: { transition: { staggerChildren: 0.08 } }
+                      }}
+                      className="flex-1 flex flex-col gap-1.5 overflow-hidden"
+                    >
                       {[
                         { name: "C. López", status: m.enRoute, color: "bg-emerald-400" },
                         { name: "M. García", status: m.onSite, color: "bg-violet-400" },
@@ -238,9 +295,10 @@ const MacBookMockup = () => {
                       ].map((tech, i) => (
                         <motion.div
                           key={tech.name}
-                          initial={{ opacity: 0, x: 6 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 1.5 + i * 0.08 }}
+                          variants={{
+                            hidden: { opacity: 0, x: 6 },
+                            visible: { opacity: 1, x: 0 }
+                          }}
                           className="flex items-center gap-2 px-2 py-1 rounded-md bg-white/[0.02] border border-white/[0.03]"
                         >
                           <div className={`w-1.5 h-1.5 rounded-full ${tech.color} flex-shrink-0`} />
@@ -248,7 +306,7 @@ const MacBookMockup = () => {
                           <span className="text-[6px] text-zinc-600 ml-auto flex-shrink-0">{tech.status}</span>
                         </motion.div>
                       ))}
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </div>
