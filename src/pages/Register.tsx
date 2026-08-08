@@ -19,7 +19,7 @@ const Register = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { signUp } = useAuth();
-  const { locale } = useLanguage();
+  const { t, locale } = useLanguage();
   const isEn = locale === "en";
   const [showPassword, setShowPassword] = useState(false);
 
@@ -107,12 +107,12 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      toast({ title: "Error", description: isEn ? "Passwords do not match." : "Las contraseñas no coinciden.", variant: "destructive" });
+      toast({ title: "Error", description: t.auth.register.passwordsMatchError, variant: "destructive" });
       return;
     }
 
     if (formData.password.length < 6) {
-      toast({ title: "Error", description: isEn ? "Password must be at least 6 characters." : "La contraseña debe tener al menos 6 caracteres.", variant: "destructive" });
+      toast({ title: "Error", description: t.auth.register.passwordLengthError, variant: "destructive" });
       return;
     }
 
@@ -121,7 +121,7 @@ const Register = () => {
     const { error } = await signUp(formData.email, formData.password, formData.fullName, formData.companyName);
 
     if (!error) {
-      toast({ title: isEn ? "Account created!" : "¡Cuenta creada con éxito!", description: isEn ? "Welcome to SignFlow." : "Bienvenido a SignFlow." });
+      toast({ title: t.auth.register.success, description: t.auth.register.successDesc });
       localStorage.removeItem("purchase_token");
       localStorage.removeItem("purchase_email");
 
@@ -185,22 +185,22 @@ const Register = () => {
                 <span className="font-bold text-xl tracking-tight">Sign Flow</span>
               </button>
               <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-muted-foreground hover:text-foreground border border-white/10 rounded-full px-6 transition-all">
-                {isEn ? "Log In" : "Iniciar Sesión"}
+                {t.auth.login.submit}
               </Button>
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
               <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-6 px-4 py-2 rounded-full border border-primary/20 bg-primary/5">
                 <Zap className="w-3.5 h-3.5 fill-current" />
-                {isEn ? "Choose your plan to get started" : "Elige tu plan para comenzar"}
+                {t.auth.register.plansTitle}
               </span>
               <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
-                {isEn ? "The perfect solution" : "La solución perfecta"}
+                {t.landing.pricing.titleLine1}
                 <br className="hidden sm:block" />
-                <span className="text-primary">{isEn ? " for your installation business" : " para tu negocio de instalaciones"}</span>
+                <span className="text-primary"> {t.landing.pricing.titleLine2}</span>
               </h1>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                {isEn ? "Select the plan that fits your needs and start scaling today." : "Selecciona el plan que mejor se adapte a tus necesidades y comienza a escalar hoy mismo."}
+                {t.landing.pricing.subtitle}
               </p>
             </motion.div>
 
@@ -223,7 +223,7 @@ const Register = () => {
                   {plan.recommended && (
                     <div className="absolute top-5 right-5 z-10">
                       <span className="bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-current" /> {isEn ? "Popular" : "Popular"}
+                        <Star className="w-3 h-3 fill-current" /> {t.auth.register.planPopular}
                       </span>
                     </div>
                   )}
@@ -233,7 +233,7 @@ const Register = () => {
                     
                     <div className="flex items-baseline gap-1.5 mb-8">
                       <span className="text-5xl font-extrabold tracking-tight">${plan.price}</span>
-                      <span className="text-sm text-muted-foreground font-medium">{isEn ? "/month" : "/mes"}</span>
+                      <span className="text-sm text-muted-foreground font-medium">{t.auth.register.month}</span>
                     </div>
 
                     <ul className="space-y-4 mb-10 flex-grow">
@@ -256,7 +256,7 @@ const Register = () => {
                           : "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-white/5"
                       }`}
                     >
-                      {loadingPlan === plan.key ? (isEn ? "Wait..." : "Espera...") : (isEn ? `Get ${plan.name}` : `Elegir ${plan.name}`)}
+                      {loadingPlan === plan.key ? t.auth.register.wait : t.auth.register.getPlan.replace('{plan}', plan.name)}
                       {loadingPlan !== plan.key && <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />}
                     </Button>
                   </div>
@@ -265,8 +265,8 @@ const Register = () => {
             </div>
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="text-center mt-12 text-muted-foreground">
-              {isEn ? "Already have an account?" : "¿Ya tienes una cuenta?"}{" "}
-              <button onClick={() => navigate("/login")} className="text-primary font-bold hover:underline underline-offset-4">{isEn ? "Log in" : "Inicia sesión"}</button>
+              {t.auth.register.alreadyHaveAccount}{" "}
+              <button onClick={() => navigate("/login")} className="text-primary font-bold hover:underline underline-offset-4">{t.auth.register.loginLink}</button>
             </motion.p>
           </div>
         </div>
@@ -289,8 +289,8 @@ const Register = () => {
             >
               <UserPlus className="w-8 h-8 text-primary" />
             </motion.div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">{isEn ? "Create your account" : "Crea tu cuenta"}</h1>
-            <p className="text-muted-foreground/80">{isEn ? "Join SignFlow and transform your business" : "Únete a SignFlow y transforma tu negocio"}</p>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">{t.auth.register.title}</h1>
+            <p className="text-muted-foreground/80">{t.auth.register.subtitle}</p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card p-8 border-white/10 shadow-2xl relative overflow-hidden">
@@ -299,14 +299,14 @@ const Register = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 gap-5">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Full name" : "Nombre completo"}</Label>
-                  <Input id="fullName" type="text" placeholder={isEn ? "Your name" : "Tu nombre"} value={formData.fullName}
+                  <Label htmlFor="fullName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{t.auth.register.fullNameLabel}</Label>
+                  <Input id="fullName" type="text" placeholder={t.auth.register.fullNamePlaceholder} value={formData.fullName}
                     onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))} required className="glass input-glow h-11" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="companyName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Company name" : "Empresa"}</Label>
+                  <Label htmlFor="companyName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{t.auth.register.companyNameLabel}</Label>
                   <div className="relative">
-                    <Input id="companyName" type="text" placeholder={isEn ? "Your business" : "Tu negocio"} value={formData.companyName}
+                    <Input id="companyName" type="text" placeholder={t.auth.register.companyNamePlaceholder} value={formData.companyName}
                       onChange={(e) => setFormData((prev) => ({ ...prev, companyName: e.target.value }))} required className="glass input-glow h-11 pl-10" />
                     <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   </div>
@@ -314,16 +314,16 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Email</Label>
-                <Input id="email" type="email" placeholder="email@ejemplo.com" value={formData.email}
+                <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{t.auth.register.emailLabel}</Label>
+                <Input id="email" type="email" placeholder={t.auth.register.emailPlaceholder} value={formData.email}
                   onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))} required className="glass input-glow h-11" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Password" : "Contraseña"}</Label>
+                  <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{t.auth.register.passwordLabel}</Label>
                   <div className="relative">
-                    <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••" value={formData.password}
+                    <Input id="password" type={showPassword ? "text" : "password"} placeholder={t.auth.register.passwordPlaceholder} value={formData.password}
                       onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))} required className="glass input-glow h-11 pr-10" />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -331,15 +331,15 @@ const Register = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{isEn ? "Confirm" : "Confirmar"}</Label>
-                  <Input id="confirmPassword" type={showPassword ? "text" : "password"} placeholder="••••••" value={formData.confirmPassword}
+                  <Label htmlFor="confirmPassword" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">{t.auth.register.confirmPasswordLabel}</Label>
+                  <Input id="confirmPassword" type={showPassword ? "text" : "password"} placeholder={t.auth.register.confirmPasswordPlaceholder} value={formData.confirmPassword}
                     onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))} required className="glass input-glow h-11" />
                 </div>
               </div>
 
               <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="pt-2">
                 <Button type="submit" className="w-full btn-violet h-12 shadow-lg shadow-primary/20" size="lg" disabled={isLoading}>
-                  {isLoading ? (isEn ? "Creating..." : "Creando...") : (isEn ? "Create account" : "Crear cuenta")}
+                  {isLoading ? t.auth.register.creating : t.auth.register.submit}
                 </Button>
               </motion.div>
             </form>
