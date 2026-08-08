@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2, LogIn, Lock } from "lucide-react";
+import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { getHomeRouteForUser } from "@/lib/role-redirect";
 import { hasCompany } from "@/lib/auth-helpers";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PageTransition } from "@/components/PageTransition";
+import { SignFlowLogo } from "@/components/SignFlowLogo";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -109,7 +110,7 @@ const Login = () => {
               transition={{ type: "spring", damping: 12 }}
               className="w-16 h-16 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5"
             >
-              <Lock className="w-7 h-7 text-primary" />
+              <SignFlowLogo variant="technical" className="w-7 h-7 text-primary" />
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
               quiero mejorar el logo del app, busco algo mas alineado a procesos de sign de taller, sin gradients, facil de interpretar y reproducir, muestrame opciones

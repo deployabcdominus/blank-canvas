@@ -423,8 +423,8 @@ const Index = () => {
         <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]" : "bg-transparent"}`}>
           <div className="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 py-3">
             <a href="/" className="flex items-center gap-1.5 py-2 min-h-[2.75rem]" aria-label="SignFlow - Home">
-              <div className="flex-shrink-0 w-[2.125rem] h-[2.125rem] sm:w-[2.5rem] sm:h-[2.5rem] md:w-[2.75rem] md:h-[2.75rem] overflow-hidden">
-                <img src={brandLogoSrc} alt="SignFlow" className="block w-full h-full object-contain scale-[1.15]" draggable={false} />
+              <div className="flex-shrink-0 w-[2.125rem] h-[2.125rem] sm:w-[2.5rem] sm:h-[2.5rem] md:w-[2.75rem] md:h-[2.75rem] flex items-center justify-center">
+                <SignFlowLogo variant="technical" className="w-[1.75rem] h-[1.75rem] sm:w-[2rem] sm:h-[2rem] md:w-[2.25rem] md:h-[2.25rem] text-violet-500" />
               </div>
               <span className="font-bold tracking-[-0.03em] text-[1.0625rem] sm:text-[1.1875rem] md:text-[1.3125rem] text-zinc-100">SignFlow</span>
             </a>
@@ -908,8 +908,8 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-14">
               <div className="md:col-span-1">
                 <div className="flex items-center gap-2 mb-5">
-                  <div className="w-8 h-8 overflow-hidden flex-shrink-0">
-                    <img src={brandLogoSrc} alt="SignFlow" className="w-full h-full object-contain" />
+                  <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <SignFlowLogo variant="technical" className="w-6 h-6 text-violet-500" />
                   </div>
                   <span className="font-bold text-lg tracking-[-0.02em] text-zinc-300">SignFlow</span>
                 </div>
