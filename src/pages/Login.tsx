@@ -113,29 +113,59 @@ const Login = () => {
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
             <p className="text-muted-foreground/80 whitespace-pre-wrap">
-              ## Otimização da Página Inicial
+# Análise e Proposta de UI/UX para Landing Page
 
-**Funcionalidade:** Remover seções e textos desnecessários da página inicial para melhorar a experiência do usuário e o desempenho.
+## Objetivo:
 
-**Requisitos Técnicos:**
+Analisar a landing page atual e apresentar um mockup visual com uma proposta aprimorada de UI/UX para a homepage.
 
-*   Identificar seções e textos que não agregam valor ou que podem ser redundantes.
+## Requisitos:
 
-*   Implementar a remoção de forma limpa, garantindo que não haja erros de renderização ou quebra de layout.
+1.  **Análise da Landing Page Atual:**
 
-*   Considerar o impacto da remoção no SEO e na usabilidade.
+    *   Avaliar a estrutura, navegação, conteúdo, apelo visual e usabilidade da landing page existente.
 
-**Passos Necessários:**
+    *   Identificar pontos fortes e fracos em termos de UI (User Interface) e UX (User Experience).
 
-1.  **Análise da Página Inicial:** Realizar uma auditoria completa da página inicial para identificar os elementos a serem removidos.
+2.  **Proposta de Mockup Visual:**
 
-2.  **Definição de Critérios:** Estabelecer critérios claros para determinar o que é "desnecessário" (ex: baixa taxa de cliques, informações obsoletas, duplicação de conteúdo).
+    *   Criar um mockup visual (design estático) que demonstre as melhorias propostas.
 
-3.  **Implementação da Remoção:** Executar a remoção dos elementos identificados, seja através de código, configurações de CMS ou ferramentas de edição.
+    *   O mockup deve cobrir os principais elementos da homepage, incluindo:
 
-4.  **Testes e Validação:** Testar a página inicial após as modificações para garantir que tudo esteja funcionando corretamente e que a experiência do usuário tenha sido aprimorada.
+        *   Header (logo, navegação, CTA principal)
 
-5.  **Monitoramento:** Monitorar o desempenho da página inicial após as alterações (ex: tempo de carregamento, taxa de conversão).
+        *   Hero Section (título, subtítulo, imagem/vídeo, CTA)
+
+        *   Seções de Features/Benefícios
+
+        *   Seção de Depoimentos/Prova Social
+
+        *   Seção de Preços (se aplicável)
+
+        *   Footer (links, informações de contato, redes sociais)
+
+    *   Focar em melhorias de:
+
+        *   Hierarquia visual
+
+        *   Clareza da mensagem
+
+        *   Chamadas para ação (CTAs)
+
+        *   Navegação intuitiva
+
+        *   Consistência visual
+
+        *   Acessibilidade (considerações básicas)
+
+        *   Experiência do usuário geral
+
+## Entregáveis:
+
+*   Um documento ou apresentação contendo o mockup visual da nova proposta de UI/UX para a homepage.
+
+*   Breves anotações explicando as principais mudanças e justificativas por trás das decisões de design.
             </p>
           </motion.div>
 
