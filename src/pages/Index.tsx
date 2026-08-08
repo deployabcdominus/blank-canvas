@@ -559,7 +559,7 @@ const Index = () => {
         </section>
 
         {/* ═══════════ INDUSTRIES GRID ═══════════ */}
-        <section id="industries" className="py-24 md:py-32 px-5 relative z-20 bg-black">
+        <section id="industries" className="py-24 md:py-32 px-5 relative z-20 bg-black border-t border-white/5">
           <div className="max-w-6xl mx-auto">
             <Reveal>
               <div className="text-center mb-20">
