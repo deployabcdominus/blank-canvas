@@ -180,4 +180,4 @@ export const HudPipeline = memo(({ leads, proposals, orders, installations, acti
       </div>
     </motion.div>
   );
-};
+});

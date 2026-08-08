@@ -195,4 +195,4 @@ export const HudCard = memo(({ label, desc, value, icon: Icon, isActive, onClick
       </div>
     </motion.button>
   );
-};
+});
