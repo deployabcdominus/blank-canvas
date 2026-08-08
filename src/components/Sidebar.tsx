@@ -1,5 +1,11 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo, useCallback } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { LeadsService } from "@/services/leads.service";
+import { ProposalsService } from "@/services/proposals.service";
+import { WorkOrdersService } from "@/services/work-orders.service";
+import { ClientsService } from "@/services/clients.service";
+import { mapLeadRow, mapProposalRow, mapWorkOrderRow, mapClientRow } from "@/lib/mappings";
 import type { IndustryLabels } from "@/hooks/useIndustryLabels";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -88,6 +94,7 @@ export const Sidebar = memo(() => {
           location={location}
           industryLabels={industryLabels}
           platformLabel={t.nav.platform}
+          companyId={companyId}
         />
       ) : (
         <SidebarTenantNav
@@ -98,6 +105,7 @@ export const Sidebar = memo(() => {
           industryLabels={industryLabels}
           isAdmin={isAdmin}
           adjustmentsLabel={t.nav.adjustments}
+          companyId={companyId}
         />
       )}
 
@@ -140,17 +148,63 @@ const canSee = (item: NavItem, role: string | null) => {
 
 /* ─── Nav Item ─── */
 
-const SidebarNavItem = memo(({ item, location, industryLabels }: {
+const SidebarNavItem = memo(({ item, location, industryLabels, companyId }: {
   item: NavItem;
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
+  companyId: string | null;
 }) => {
+  const queryClient = useQueryClient();
+
+  const handleMouseEnter = useCallback(() => {
+    if (!companyId) return;
+
+    // Smart prefetching based on route
+    if (item.path === "/leads") {
+      queryClient.prefetchQuery({
+        queryKey: ["leads", companyId],
+        queryFn: async () => {
+          const { data } = await LeadsService.getAll(companyId);
+          return (data || []).map(mapLeadRow);
+        },
+      });
+    } else if (item.path === "/proposals") {
+      queryClient.prefetchQuery({
+        queryKey: ["proposals", companyId],
+        queryFn: async () => {
+          const res = await ProposalsService.getAll(companyId);
+          const orderProposalIds = new Set<string>((res.orders || []).map(o => o.proposal_id).filter((id): id is string => !!id));
+          return {
+            proposals: (res.proposals || []).map(p => mapProposalRow(p, orderProposalIds)),
+            orders: res.orders || []
+          };
+        },
+      });
+    } else if (item.path === "/work-orders") {
+      queryClient.prefetchQuery({
+        queryKey: ["work-orders", companyId],
+        queryFn: async () => {
+          const { data } = await WorkOrdersService.getAll(companyId);
+          return (data || []).map(mapWorkOrderRow);
+        },
+      });
+    } else if (item.path === "/clients") {
+      queryClient.prefetchQuery({
+        queryKey: ["clients", companyId],
+        queryFn: async () => {
+          const { data } = await ClientsService.getAll(companyId);
+          return (data || []).map(mapClientRow);
+        },
+      });
+    }
+  }, [item.path, companyId, queryClient]);
 
   const active = isActivePath(location, item.path);
   const label = getLabel(item, industryLabels);
   return (
     <NavLink
       to={item.path}
+      onMouseEnter={handleMouseEnter}
       className={`group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl lg:rounded-lg p-2.5 lg:px-3 lg:py-2.5 ${
         active
           ? "bg-white/[0.04] border border-white/[0.1] text-white font-semibold shadow-lg shadow-black/20"
@@ -184,10 +238,11 @@ SidebarNavItem.displayName = "SidebarNavItem";
 
 /* ─── Collapsible Group ─── */
 
-const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role, industryLabels }: {
+const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role, industryLabels, companyId }: {
   group: NavGroup; isOpen: boolean; onToggle: () => void;
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels;
+  companyId: string | null;
 }) => {
 
   const visibleItems = group.items.filter(i => canSee(i, role));
@@ -218,7 +273,7 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
                   className="space-y-0.5 mt-1"
                 >
                   {visibleItems.map(item => (
-                    <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} />
+                    <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
                   ))}
                 </motion.div>
               )}
@@ -228,7 +283,7 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
       </div>
       <div className="lg:hidden space-y-1">
         {visibleItems.map(item => (
-          <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} />
+          <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
         ))}
       </div>
     </div>
@@ -240,11 +295,12 @@ SidebarCollapsibleGroup.displayName = "SidebarCollapsibleGroup";
 
 /* ─── Platform Nav ─── */
 
-function SidebarPlatformNav({ items, location, industryLabels, platformLabel }: {
+function SidebarPlatformNav({ items, location, industryLabels, platformLabel, companyId }: {
   items: NavItem[];
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
   platformLabel?: string;
+  companyId: string | null;
 }) {
   return (
     <nav className="flex-1 overflow-y-auto scrollbar-none space-y-1 min-h-0">
@@ -252,7 +308,7 @@ function SidebarPlatformNav({ items, location, industryLabels, platformLabel }: 
         {platformLabel || "Platform"}
       </p>
       {items.map(item => (
-        <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} />
+        <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
       ))}
     </nav>
   );
@@ -260,11 +316,12 @@ function SidebarPlatformNav({ items, location, industryLabels, platformLabel }: 
 
 /* ─── Tenant Nav ─── */
 
-function SidebarTenantNav({ groups, utilityItems: utils, location, role, industryLabels, isAdmin, adjustmentsLabel }: {
+function SidebarTenantNav({ groups, utilityItems: utils, location, role, industryLabels, isAdmin, adjustmentsLabel, companyId }: {
   groups: NavGroup[]; utilityItems: NavItem[];
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels; isAdmin: boolean;
   adjustmentsLabel?: string;
+  companyId: string | null;
 }) {
   const activeGroupIdx = groups.findIndex(g =>
     g.items.some(i => isActivePath(location, i.path))
@@ -289,7 +346,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
               {principalGroup.groupLabel}
             </p>
             {principalItems.map(item => (
-              <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} />
+              <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
             ))}
           </div>
         )}

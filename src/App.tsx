@@ -68,6 +68,8 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 5, // 5 minutes
       gcTime: 1000 * 60 * 30, // 30 minutes
       retry: 1,
+      // Aggressive caching for static-ish data
+      placeholderData: (previousData: any) => previousData,
     },
   },
 });

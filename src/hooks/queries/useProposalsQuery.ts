@@ -41,12 +41,29 @@ export const useProposalsQuery = (companyId: string | null) => {
   const updateProposalMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: ProposalUpdate }) => 
       ProposalsService.update(id, updates),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['proposals', companyId] });
-      toast.success('Propuesta actualizada correctamente');
+    onMutate: async ({ id, updates }) => {
+      await queryClient.cancelQueries({ queryKey: ['proposals', companyId] });
+      const previous = queryClient.getQueryData(['proposals', companyId]);
+      queryClient.setQueryData(['proposals', companyId], (old: any | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          proposals: old.proposals.map((p: any) => p.id === id ? { ...p, ...updates } : p)
+        };
+      });
+      return { previous };
     },
-    onError: (error: any) => {
+    onError: (error: any, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['proposals', companyId], context.previous);
+      }
       toast.error('Error al actualizar la propuesta: ' + error.message);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['proposals', companyId] });
+    },
+    onSuccess: () => {
+      toast.success('Propuesta actualizada correctamente');
     },
   });
 

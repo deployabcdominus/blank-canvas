@@ -21,8 +21,8 @@ const pageVariants = {
 };
 
 const pageTransition = {
-  duration: 0.4,
-  ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
+  duration: 0.3, // Slightly faster for snapier feel
+  ease: [0.22, 1, 0.36, 1] as [number, number, number, number], // Standard premium curve
 };
 
 export const PageTransition = ({ children }: PageTransitionProps) => {
