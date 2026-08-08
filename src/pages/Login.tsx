@@ -112,8 +112,8 @@ const Login = () => {
             >
               <SignFlowLogo variant="technical" className="w-7 h-7 text-primary" />
             </motion.div>
-            <h1 className="text-4xl font-black tracking-tighter mb-4 text-white">Bienvenido de vuelta</h1>
-            <p className="text-zinc-400 font-medium tracking-tight">Accede a tu cuenta para gestionar tus proyectos con precisión técnica</p>
+            <h1 className="text-4xl font-black tracking-tighter mb-4 text-white">Secure Command Access</h1>
+            <p className="text-zinc-400 font-medium tracking-tight">Enter your credentials to manage mission-critical operations with absolute authority.</p>
           </motion.div>
 
           <motion.div
@@ -126,9 +126,9 @@ const Login = () => {
             
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2.5">
-                <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Email Profesional</Label>
+                <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Corporate Identity</Label>
                 <Input
-                  id="email" type="email" placeholder="nombre@empresa.com"
+                  id="email" type="email" placeholder="identity@enterprise.com"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   required className="glass input-glow h-12 rounded-xl border-white/10 text-white placeholder:text-zinc-600"
@@ -136,7 +136,7 @@ const Login = () => {
               </div>
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Contraseña</Label>
+                  <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Security Key</Label>
                 </div>
                 <div className="relative">
                   <Input
@@ -166,7 +166,7 @@ const Login = () => {
                     className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md w-5 h-5"
                   />
                   <label htmlFor="remember" className="text-sm font-semibold leading-none cursor-pointer text-zinc-400 hover:text-white transition-colors">
-                    Mantener sesión
+                    Maintain Authorization
                   </label>
                 </div>
                 <button
@@ -174,7 +174,7 @@ const Login = () => {
                   onClick={handleForgotPassword}
                   className="text-sm font-bold text-primary hover:text-primary/80 transition-colors"
                 >
-                  ¿Problemas con el acceso?
+                  Authorization problems?
                 </button>
               </div>
 
@@ -188,7 +188,7 @@ const Login = () => {
                 ) : (
                   <>
                     <LogIn className="w-5 h-5 mr-2" />
-                    Iniciar Sesión
+                    Authorize Session
                   </>
                 )}
               </Button>
@@ -201,9 +201,9 @@ const Login = () => {
             className="text-center mt-8"
           >
             <p className="text-sm text-muted-foreground">
-              ¿No tienes una cuenta?{" "}
+              New to the command center?{" "}
               <button onClick={() => navigate('/register')} className="font-semibold text-primary hover:underline underline-offset-4">
-                Regístrate aquí
+                Initialize Account
               </button>
             </p>
           </motion.div>
