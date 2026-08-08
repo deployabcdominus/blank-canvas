@@ -54,15 +54,15 @@ export function GlobalSearch() {
   return (
     <>
       <Button
-        variant="outline"
-        className="relative h-11 w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-64 lg:w-96 glass-card border-white/10"
+        variant="ghost"
+        className="relative h-11 w-full justify-start text-sm text-zinc-400 hover:text-white sm:pr-12 md:w-64 lg:w-96 bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300 rounded-xl"
         onClick={() => setOpen(true)}
       >
-        <Search className="mr-2 h-4 w-4" />
-        <span className="hidden lg:inline-flex">Search anything...</span>
-        <span className="inline-flex lg:hidden">Search...</span>
-        <kbd className="pointer-events-none absolute right-3 top-3 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
+        <Search className="mr-2.5 h-4 w-4 text-primary" />
+        <span className="hidden lg:inline-flex font-medium">Search anything...</span>
+        <span className="inline-flex lg:hidden font-medium">Search...</span>
+        <kbd className="pointer-events-none absolute right-3 top-2.5 hidden h-6 select-none items-center gap-1 rounded-md border border-white/[0.1] bg-white/[0.05] px-2 font-mono text-[10px] font-bold text-zinc-300 opacity-100 sm:flex">
+          <span className="text-[10px]">⌘</span>K
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
