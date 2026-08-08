@@ -125,7 +125,7 @@ const MacBookMockup = () => {
             aspectRatio: "16/9",
           }}
         >
-          <div className="absolute inset-[6px] sm:inset-[10px] rounded-[8px] overflow-hidden bg-zinc-950">
+          <div className="absolute inset-0 rounded-none overflow-hidden bg-zinc-950">
             <div className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900/90 border-b border-white/[0.04]">
               <div className="flex gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/60" />
