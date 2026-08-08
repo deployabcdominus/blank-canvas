@@ -576,9 +576,9 @@ export default function WorkOrderDetail() {
           <div className="border-t mb-6" style={{ borderColor: "rgba(255,255,255,0.05)" }} />
 
           {/* ═══ 2-COLUMN LAYOUT ═══ */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            {/* LEFT COL – 60% (3/5) */}
-            <div className="lg:col-span-3 space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* LEFT COL – ~66% (8/12) */}
+            <div className="lg:col-span-8 space-y-4">
 
               {/* ═══ DESIGN WORKSPACE ═══ */}
               <SectionCard>
