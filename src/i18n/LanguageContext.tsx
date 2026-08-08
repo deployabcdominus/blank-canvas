@@ -30,11 +30,11 @@ export function useT() {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
 
-  // Default to browser language or 'en'
+  // Default to 'en' unless explicitly stored
   const [locale, setLocaleState] = useState<Locale>(() => {
     const stored = localStorage.getItem("sf_lang") as Locale | null;
     if (stored === "en" || stored === "es") return stored;
-    return "es";
+    return "en";
   });
 
   // Load preference from profile on login
