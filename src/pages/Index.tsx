@@ -120,10 +120,8 @@ const MacBookMockup = () => {
         className="relative"
       >
         <div
-          className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] border border-white/[0.08] bg-zinc-900/80 overflow-hidden"
+          className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] bg-zinc-950 overflow-hidden"
           style={{
-            boxShadow:
-              "0 0.25rem 0.5rem rgba(0,0,0,0.4), 0 1.25rem 3.125rem rgba(0,0,0,0.6), 0 3.75rem 8.75rem -1.25rem rgba(0,0,0,0.8), 0 0 6.25rem -1.875rem rgba(124,58,237,0.12), inset 0 0.0625rem 0 rgba(255,255,255,0.05)",
             aspectRatio: "16/9",
           }}
         >
