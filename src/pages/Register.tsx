@@ -347,8 +347,8 @@ const Register = () => {
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }} className="text-center mt-8">
             <p className="text-sm text-muted-foreground">
-              {isEn ? "Already have an account?" : "¿Ya tienes una cuenta?"}{" "}
-              <button onClick={() => navigate("/login")} className="font-semibold text-primary hover:underline underline-offset-4">{isEn ? "Log in" : "Inicia sesión"}</button>
+              {t.auth.register.alreadyHaveAccount}{" "}
+              <button onClick={() => navigate("/login")} className="font-semibold text-primary hover:underline underline-offset-4">{t.auth.register.loginLink}</button>
             </p>
           </motion.div>
         </div>
