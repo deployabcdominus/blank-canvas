@@ -44,7 +44,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative w-full min-h-[85vh] lg:min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-black pt-28 pb-10">
+    <div className="relative w-full min-h-[85vh] lg:min-h-[100vh] flex flex-col items-center justify-center overflow-visible bg-black pt-32 pb-24 z-10">
       <style>{`
         @keyframes fadeSlideIn {
           from { opacity: 0; transform: translateY(20px); }
