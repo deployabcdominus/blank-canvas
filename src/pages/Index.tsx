@@ -296,7 +296,6 @@ const MacBookMockup = () => {
                 </div>
               </div>
             </div>
-          </div>
           <div className="absolute top-[1px] left-1/2 -translate-x-1/2 w-2 h-2 md:w-3 md:h-3 rounded-full bg-zinc-800 border border-zinc-700/30 z-10" />
         </div>
         <div className="relative">
