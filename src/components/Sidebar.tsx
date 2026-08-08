@@ -13,6 +13,7 @@ import { useAvatarUrl } from "@/hooks/useAvatarUrl";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIndustryLabels } from "@/hooks/useIndustryLabels";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCompany } from "@/hooks/useCompany";
 import { FIXED_BRANDING } from "@/contexts/SettingsContext";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -41,6 +42,8 @@ export const Sidebar = memo(() => {
   const { fullName, email, initials } = useUserProfile();
   const industryLabels = useIndustryLabels();
   const { t } = useLanguage();
+  const { company } = useCompany();
+  const companyId = company?.id || null;
 
   const localizedGroups = useMemo(() => {
     let groups = tenantGroups.map((g, i) => ({
@@ -360,6 +363,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
             location={location}
             role={role}
             industryLabels={industryLabels}
+            companyId={companyId}
           />
         ))}
       </nav>
@@ -370,7 +374,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
             {adjustmentsLabel || "Settings"}
           </p>
           {visibleUtils.map(item => (
-            <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} />
+            <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
           ))}
         </div>
       )}
