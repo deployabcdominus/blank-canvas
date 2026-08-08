@@ -114,7 +114,7 @@ export default function Reports() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <MetricSmall label="Total Leads" value={leads.length} icon={Users} color="text-violet-400" />
           <MetricSmall label="Active Proposals" value={proposals.filter(p => (p.status as string) === 'Enviada externamente').length} icon={FileText} color="text-blue-400" />
           <MetricSmall label="Completed Jobs" value={orders.filter(o => o.closing_status === 'Closed').length} icon={CheckCircle2} color="text-emerald-400" />

@@ -122,7 +122,7 @@ const Login = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="glass-card p-8 md:p-10 border-white/10 shadow-2xl relative overflow-hidden rounded-[32px]"
+            className="glass-card p-6 sm:p-8 md:p-10 border-white/10 shadow-2xl relative overflow-hidden rounded-[24px] sm:rounded-[32px]"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             
@@ -158,26 +158,27 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-
-              <div className="flex items-center justify-between py-2">
-                <div className="flex items-center space-x-2.5">
-                  <Checkbox 
-                    id="remember" 
-                    checked={rememberMe} 
-                    onCheckedChange={(checked) => setRememberMe(!!checked)}
-                    className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md w-5 h-5"
-                  />
-                  <label htmlFor="remember" className="text-sm font-semibold leading-none cursor-pointer text-zinc-400 hover:text-white transition-colors">
-                    {t.auth.login.rememberMe}
-                  </label>
+              <div className="flex flex-col gap-4 py-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2.5">
+                    <Checkbox 
+                      id="remember" 
+                      checked={rememberMe} 
+                      onCheckedChange={(checked) => setRememberMe(!!checked)}
+                      className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md w-5 h-5"
+                    />
+                    <label htmlFor="remember" className="text-sm font-semibold leading-none cursor-pointer text-zinc-400 hover:text-white transition-colors">
+                      {t.auth.login.rememberMe}
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="text-sm font-bold text-primary hover:text-primary/80 transition-colors"
+                  >
+                    {t.auth.login.forgotPassword}
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleForgotPassword}
-                  className="text-sm font-bold text-primary hover:text-primary/80 transition-colors"
-                >
-                  {t.auth.login.forgotPassword}
-                </button>
               </div>
 
               <Button

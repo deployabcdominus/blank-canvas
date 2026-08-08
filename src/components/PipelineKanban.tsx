@@ -143,8 +143,8 @@ export const PipelineKanban = ({ leads, proposals, orders, installations, active
           </span>
         )}
       </div>
-      <div className={`${isMobile ? 'overflow-x-auto -mx-4 px-4 pb-4' : ''}`}>
-        <div className={`flex gap-4 ${isMobile ? 'min-w-[800px]' : ''}`}>
+      <div className="overflow-x-auto -mx-4 px-4 pb-4 scrollbar-none">
+        <div className="flex gap-3 md:gap-4 min-w-max pb-2">
           {columnsToShow.map((col) => {
             const colCards = cards.filter(c => c.column === col.key);
             return (

@@ -293,7 +293,7 @@ const Register = () => {
             <p className="text-muted-foreground/80">{t.auth.register.subtitle}</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card p-8 border-white/10 shadow-2xl relative overflow-hidden">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card p-6 sm:p-8 border-white/10 shadow-2xl relative overflow-hidden rounded-[24px] sm:rounded-[32px]">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             
             <form onSubmit={handleSubmit} className="space-y-5">
