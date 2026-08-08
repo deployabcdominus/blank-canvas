@@ -172,7 +172,7 @@ const MacBookMockup = () => {
           }}
         >
             <div className="absolute inset-0">
-              <div className="h-full w-full grid grid-rows-[auto_1fr] gap-2 p-2 md:p-4 overflow-hidden bg-zinc-950 min-h-0 border-2 border-red-500">
+              <div className="h-full w-full grid grid-rows-[auto_1fr] gap-2 p-2 md:p-4 overflow-hidden bg-zinc-950 min-h-0">
                 {/* Desktop Header Content (hidden on small mobile) */}
                 <div className="hidden md:grid grid-cols-[160px_1fr] gap-4 h-full min-h-0">
                   <div className="flex flex-col bg-white/[0.015] rounded-lg border border-white/[0.04] p-3 gap-2">
