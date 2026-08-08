@@ -226,7 +226,7 @@ const MacBookMockup = () => {
                 </div>
                 
                 {/* Main Content Area */}
-                <div className="grid md:grid-cols-[1fr_240px] grid-cols-1 md:gap-4 gap-2 min-h-0 overflow-hidden">
+                <div className="grid md:grid-cols-[1fr_240px] grid-cols-1 md:gap-4 gap-2 min-h-0 h-full overflow-hidden">
                   {/* Left Column: Work Orders */}
                   <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-2 md:p-3 flex flex-col h-full min-h-0 relative overflow-hidden">
                     <div className="absolute top-2 right-2 w-6 h-6 md:w-10 md:h-10 opacity-60 md:opacity-100">
