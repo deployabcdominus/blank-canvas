@@ -102,10 +102,15 @@ const Dashboard = () => {
         <GracePeriodBanner />
         
 
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-4 md:mb-6 flex items-end justify-between">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.5 }} 
+          className="mb-6 md:mb-8 flex items-end justify-between px-1"
+        >
           <div>
-            <h1 className="font-bold text-xl md:text-2xl text-foreground">{t.dashboard.controlCenter}</h1>
-            <p className="text-muted-foreground text-[10px] md:text-sm">
+            <h1 className="font-bold text-2xl md:text-4xl tracking-tight text-white mb-1">{t.dashboard.controlCenter}</h1>
+            <p className="text-zinc-400 text-xs md:text-base font-medium">
               {showFinancials ? t.dashboard.executiveView : t.dashboard.operativeView}
             </p>
           </div>
