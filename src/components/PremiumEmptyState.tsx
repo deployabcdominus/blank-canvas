@@ -22,7 +22,7 @@ export const PremiumEmptyState = ({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
-      className="flex flex-col items-center justify-center py-20 px-8"
+      className="flex flex-col items-center justify-center py-24 px-8 border border-white/[0.03] rounded-[32px] bg-white/[0.01]"
     >
       {/* Minimal line illustration */}
       <div className="relative w-32 h-32 mb-8">
@@ -53,8 +53,8 @@ export const PremiumEmptyState = ({
         <div className="absolute inset-0 rounded-full bg-primary/[0.03] blur-2xl scale-150" />
       </div>
 
-      <h3 className="text-lg font-semibold text-foreground mb-2 tracking-tight">{title}</h3>
-      <p className="text-sm text-zinc-500 text-center max-w-sm mb-6 leading-relaxed">{description}</p>
+      <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{title}</h3>
+      <p className="text-sm text-zinc-400 text-center max-w-sm mb-8 leading-relaxed font-medium">{description}</p>
 
       {onAction && (
         <Button onClick={onAction} className="btn-spring">

@@ -112,82 +112,86 @@ const Login = () => {
             >
               <SignFlowLogo variant="technical" className="w-7 h-7 text-primary" />
             </motion.div>
-            <h1 className="text-3xl font-bold tracking-tight mb-4">Bienvenido de vuelta</h1>
-            <p className="text-muted-foreground">Accede a tu cuenta para gestionar tus proyectos</p>
+            <h1 className="text-4xl font-black tracking-tighter mb-4 text-white">Bienvenido de vuelta</h1>
+            <p className="text-zinc-400 font-medium tracking-tight">Accede a tu cuenta para gestionar tus proyectos con precisión técnica</p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="glass-card p-8 border-white/10 shadow-2xl relative overflow-hidden"
+            className="glass-card p-8 md:p-10 border-white/10 shadow-2xl relative overflow-hidden rounded-[32px]"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             
             <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Email</Label>
+              <div className="space-y-2.5">
+                <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Email Profesional</Label>
                 <Input
-                  id="email" type="email" placeholder="Ingresa tu email"
+                  id="email" type="email" placeholder="nombre@empresa.com"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  required className="glass input-glow h-11"
+                  required className="glass input-glow h-12 rounded-xl border-white/10 text-white placeholder:text-zinc-600"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Contraseña</Label>
+                  <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Contraseña</Label>
                 </div>
                 <div className="relative">
                   <Input
                     id="password" 
                     type={showPassword ? "text" : "password"} 
-                    placeholder="Ingresa tu contraseña"
+                    placeholder="••••••••"
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                    required className="glass input-glow h-11 pr-10"
+                    required className="glass input-glow h-12 rounded-xl border-white/10 text-white placeholder:text-zinc-600 pr-12"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-primary transition-colors h-8 w-8 flex items-center justify-center"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={18} strokeWidth={2} /> : <Eye size={18} strokeWidth={2} />}
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between py-1">
-                <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-between py-2">
+                <div className="flex items-center space-x-2.5">
                   <Checkbox 
                     id="remember" 
                     checked={rememberMe} 
                     onCheckedChange={(checked) => setRememberMe(!!checked)}
-                    className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md w-5 h-5"
                   />
-                  <label htmlFor="remember" className="text-sm font-medium leading-none cursor-pointer text-muted-foreground/80 hover:text-foreground transition-colors">
-                    Recuérdame
+                  <label htmlFor="remember" className="text-sm font-semibold leading-none cursor-pointer text-zinc-400 hover:text-white transition-colors">
+                    Mantener sesión
                   </label>
                 </div>
                 <button
                   type="button"
                   onClick={handleForgotPassword}
-                  className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  className="text-sm font-bold text-primary hover:text-primary/80 transition-colors"
                 >
-                  ¿Olvidaste tu contraseña?
+                  ¿Problemas con el acceso?
                 </button>
               </div>
 
-              <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                <Button
-                  type="submit"
-                  className="w-full btn-violet h-12 shadow-lg shadow-primary/20"
-                  size="lg" disabled={isLoading}
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  {isLoading ? "Ingresando..." : "Ingresar"}
-                </Button>
-              </motion.div>
+              <Button
+                type="submit"
+                className="w-full h-14 shadow-xl shadow-primary/20 text-base font-black uppercase tracking-widest"
+                size="lg" disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <LogIn className="w-5 h-5 mr-2" />
+                    Iniciar Sesión
+                  </>
+                )}
+              </Button>
             </form>
           </motion.div>
 

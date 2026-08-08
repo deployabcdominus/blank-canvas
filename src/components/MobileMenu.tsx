@@ -68,18 +68,18 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         <NavLink
           to={item.path}
           onClick={onClose}
-          className={`relative flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-lg transition-colors ${
+          className={`relative flex items-center gap-3 px-4 py-3 min-h-[48px] rounded-xl transition-all duration-300 ${
             active
-              ? "text-foreground font-semibold bg-primary/[0.06]"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+              ? "text-white font-bold bg-white/[0.05] border border-white/10 shadow-lg shadow-black/20"
+              : "text-zinc-400 hover:text-white hover:bg-white/[0.03]"
           }`}
           aria-current={active ? "page" : undefined}
         >
           {active && (
-            <div className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-full bg-primary" />
+            <div className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-r-full bg-primary shadow-[0_0_10px_rgba(139,92,246,0.5)]" />
           )}
-          <item.icon className="w-4 h-4" aria-hidden="true" />
-          <span className="text-[13px]">{label}</span>
+          <item.icon className={`w-4 h-4 ${active ? "text-primary" : ""}`} aria-hidden="true" />
+          <span className="text-[14px]">{label}</span>
         </NavLink>
       </motion.div>
     );
@@ -111,7 +111,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           <motion.div
             initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
-            className="fixed left-0 top-0 w-80 h-full sidebar-premium z-50 p-5 flex flex-col"
+            className="fixed left-0 top-0 w-80 h-full sidebar-premium z-50 p-6 flex flex-col backdrop-blur-3xl"
           >
             <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <BrandLogo size={32} showText variant="iconWithText" textClassName="text-lg" />

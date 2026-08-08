@@ -64,8 +64,8 @@ export const Sidebar = memo(() => {
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 h-screen z-40 hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/80 lg:bg-zinc-950/40 backdrop-blur-xl w-[72px] lg:w-[260px] px-2 lg:px-4 py-4 lg:py-5 overflow-y-auto overflow-x-hidden scrollbar-none shadow-2xl"
-      style={{ letterSpacing: "-0.01em" }}
+      className="fixed left-0 top-0 h-screen z-40 hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/80 lg:bg-zinc-950/60 backdrop-blur-3xl w-[72px] lg:w-[260px] px-2 lg:px-4 py-4 lg:py-6 overflow-y-auto overflow-x-hidden scrollbar-none shadow-2xl"
+      style={{ letterSpacing: "-0.015em" }}
       role="navigation"
       aria-label="Menu lateral principal"
     >
@@ -151,10 +151,10 @@ const SidebarNavItem = memo(({ item, location, industryLabels }: {
   return (
     <NavLink
       to={item.path}
-      className={`group relative flex items-center transition-all duration-200 justify-center lg:justify-start rounded-xl lg:rounded-lg p-2.5 lg:px-3 lg:py-2 ${
+      className={`group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl lg:rounded-lg p-2.5 lg:px-3 lg:py-2.5 ${
         active
-          ? "bg-white/[0.03] border border-white/[0.08] text-white font-medium"
-          : "border border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.02]"
+          ? "bg-white/[0.04] border border-white/[0.1] text-white font-semibold shadow-lg shadow-black/20"
+          : "border border-transparent text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.03] hover:translate-x-0.5"
       }`}
       title={label}
       aria-current={active ? "page" : undefined}
@@ -162,7 +162,7 @@ const SidebarNavItem = memo(({ item, location, industryLabels }: {
       {active && (
         <motion.div
           layoutId="sidebar-active-pill"
-          className="absolute left-1 top-[22%] bottom-[22%] w-[2.5px] rounded-full bg-primary"
+          className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-r-full bg-primary shadow-[0_0_10px_rgba(139,92,246,0.5)]"
           transition={{ type: "spring", stiffness: 400, damping: 28 }}
         />
       )}

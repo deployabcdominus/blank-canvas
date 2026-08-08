@@ -24,17 +24,21 @@ const PLACEHOLDER_SPARKLINE = [2, 4, 1, 6, 3, 5, 2];
 const Sparkline = ({ data }: { data: number[] }) => {
   const max = Math.max(...data, 1);
   return (
-    <div className="flex items-end gap-0.5 h-4 mt-2">
+    <div className="flex items-end gap-1 h-5 mt-3 px-0.5">
       {data.map((v, i) => {
         const isToday = i === data.length - 1;
         const heightPct = Math.max(0.15, v / max);
         return (
-          <div
+          <motion.div
             key={i}
-            className="rounded-sm flex-1"
+            initial={{ height: 0 }}
+            animate={{ height: `${Math.round(heightPct * 20)}px` }}
+            transition={{ delay: i * 0.05, duration: 0.5 }}
+            className="rounded-full flex-1"
             style={{
-              height: `${Math.round(heightPct * 16)}px`,
-              background: `rgba(139,92,246,${isToday ? 1.0 : 0.35})`,
+              background: isToday 
+                ? "linear-gradient(to top, hsl(var(--primary)), hsl(var(--primary) / 0.6))" 
+                : "rgba(255,255,255,0.08)",
             }}
           />
         );
@@ -96,23 +100,25 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
         y: 0,
         ...(showEntrance ? { scale: [0.9, 1.05, 1] } : {}),
       }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ delay: index * 0.08, duration: 0.5, type: "spring" }}
       onClick={onClick}
       className={`
         stat-card relative overflow-hidden text-left group
-        rounded-xl border transition-all duration-300 shimmer-hover
-        backdrop-blur-2xl p-3 md:p-4
+        rounded-2xl border transition-all duration-300 shimmer-hover
+        backdrop-blur-3xl p-4 md:p-5
         ${glowPulse
-          ? "border-violet-500/50 shadow-[0_0_20px_rgba(139,92,246,0.25)]"
+          ? "border-primary/50 shadow-[0_0_30px_rgba(139,92,246,0.3)]"
           : isActive
-            ? "border-primary/25 bg-primary/5"
-            : "border-white/[0.06] bg-white/[0.03] hover:border-primary/30 hover:bg-primary/5"
+            ? "border-primary/40 bg-primary/10 shadow-lg shadow-black/40"
+            : "border-white/[0.08] bg-white/[0.03] hover:border-primary/30 hover:bg-white/[0.05]"
         }
-        ${isActive || glowPulse ? "border-l-primary/60" : "border-l-primary/40"}
-        border-l-2
+        ${isActive || glowPulse ? "border-l-primary" : "border-l-white/10"}
+        border-l-[3px]
       `}
       style={{
-        transition: "border-color 0.5s ease, box-shadow 1s ease, background 0.3s ease",
+        transition: "border-color 0.4s ease, box-shadow 0.6s ease, background 0.3s ease",
       }}
 
     >
@@ -162,7 +168,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
           {noAccess ? (
             <span className="font-bold text-2xl md:text-3xl leading-none tracking-tight text-amber-400/60">—</span>
           ) : (
-            <AnimatedCounter value={value} isCurrency={isCurrency} className="font-bold text-2xl md:text-3xl leading-none tracking-tight text-zinc-100" />
+            <AnimatedCounter value={value} isCurrency={isCurrency} className="font-bold text-3xl md:text-4xl leading-none tracking-tighter text-white" />
           )}
           {!noAccess && delta !== undefined && (
             <div className="mb-0.5 shrink-0">
@@ -172,7 +178,7 @@ export const HudCard = ({ label, desc, value, icon: Icon, isActive, onClick, ind
         </div>
 
         {/* Row 3: Label */}
-        <p className="text-sm font-medium mt-2 text-zinc-100">{label}</p>
+        <p className="text-xs font-semibold mt-3 text-zinc-300 uppercase tracking-wider">{label}</p>
 
         {/* Row 4: Sparkline */}
         {!noAccess && <Sparkline data={bars} />}

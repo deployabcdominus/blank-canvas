@@ -170,17 +170,17 @@ const KanbanColumnView = ({ column, cards, onCardClick, isMobile }: KanbanColumn
   const Icon = column.icon;
   return (
     <div className="flex-1 min-w-[200px]">
-      <div className={`flex items-center gap-2 mb-3 px-3 py-2 rounded-lg border-l-4 ${column.borderAccent} ${column.bgClass}`}>
+      <div className={`flex items-center gap-2 mb-3 px-4 py-2.5 rounded-2xl border-l-4 border shadow-sm shadow-black/20 ${column.borderAccent} ${column.bgClass}`}>
         <Icon className={`w-4 h-4 ${column.iconClass}`} />
-        <span className="font-semibold text-sm text-foreground">{column.label}</span>
-        <span className={`ml-auto text-xs font-bold ${column.iconClass}`}>{cards.length}</span>
+        <span className="font-bold text-xs uppercase tracking-widest text-foreground/80">{column.label}</span>
+        <span className={`ml-auto text-xs font-black px-2 py-0.5 rounded-full bg-black/5 ${column.iconClass}`}>{cards.length}</span>
       </div>
       <div className="space-y-2 min-h-[120px]">
         {cards.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground/50 text-xs">{t.pipelineKanban.noProjects}</div>
         ) : (
           cards.map((card, idx) => (
-            <motion.div key={card.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05, duration: 0.3 }} onClick={() => onCardClick(card)} className="glass-card p-3 rounded-xl cursor-pointer hover:scale-[1.02] hover:shadow-lg transition-all duration-200 group">
+            <motion.div key={card.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05, duration: 0.3 }} onClick={() => onCardClick(card)} className="dash-card p-4 rounded-2xl cursor-pointer hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 group border-white/5">
               <div className="flex items-start gap-2.5">
                 <Avatar className="w-8 h-8 flex-shrink-0 mt-0.5">
                   {card.logoUrl ? <AvatarImage src={card.logoUrl} alt={card.company} /> : null}

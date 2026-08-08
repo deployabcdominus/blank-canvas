@@ -115,15 +115,16 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
             return (
               <motion.div key={col.key} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="flex-1 min-w-[260px] xs:min-w-[280px] md:min-w-[300px] snap-start">
                 <div
-                  className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl border"
+                  className="flex items-center gap-2 mb-3 px-4 py-2.5 rounded-2xl border"
                   style={{
-                    background: `hsl(var(${col.accentVar}) / 0.08)`,
-                    borderColor: `hsl(var(${col.accentVar}) / 0.20)`,
+                    background: `hsl(var(${col.accentVar}) / 0.1)`,
+                    borderColor: `hsl(var(${col.accentVar}) / 0.25)`,
+                    boxShadow: `inset 0 0 10px hsl(var(${col.accentVar}) / 0.05)`,
                   }}
                 >
-                  <Icon className="w-3.5 h-3.5" style={{ color: accentColor }} />
-                  <span className="font-semibold text-xs text-foreground/70">{col.label}</span>
-                  <span className="ml-auto text-xs font-bold" style={{ color: accentColor }}>{colCards.length}</span>
+                  <Icon className="w-4 h-4" style={{ color: accentColor }} />
+                  <span className="font-bold text-xs uppercase tracking-widest text-white/90">{col.label}</span>
+                  <span className="ml-auto text-xs font-black px-2 py-0.5 rounded-full bg-white/5" style={{ color: accentColor }}>{colCards.length}</span>
                 </div>
                 <div className="space-y-2 min-h-[100px]">
                   {colCards.length === 0 ? (
@@ -136,7 +137,7 @@ export const HudPipeline = ({ leads, proposals, orders, installations, activeFil
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.04 }}
                         onClick={() => navigate(card.navigateTo)}
-                        className="dash-card p-3 md:p-3 cursor-pointer card-interactive group min-h-[80px]"
+                        className="dash-card p-4 md:p-4 cursor-pointer card-interactive group min-h-[90px] rounded-2xl"
                       >
                         <div className="flex items-start gap-2">
                           <div className="mt-1.5 flex-shrink-0">

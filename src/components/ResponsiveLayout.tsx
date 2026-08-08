@@ -48,19 +48,25 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
           Saltar al contenido principal
         </a>
 
-        <div id="main-content">
+        <div id="main-content" className="flex-1 flex flex-col">
           {(title || subtitle) && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="mb-6"
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="mb-8"
             >
-              <div className="flex items-center gap-3 mb-1">
-                {Icon && <Icon className="w-7 h-7 text-primary" />}
-                {title && <h1 className="text-2xl font-bold">{title}</h1>}
+              <div className="flex items-center gap-4 mb-1.5">
+                {Icon && (
+                  <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+                )}
+                <div>
+                  {title && <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">{title}</h1>}
+                  {subtitle && <p className="text-zinc-400 text-sm md:text-base mt-0.5">{subtitle}</p>}
+                </div>
               </div>
-              {subtitle && <p className="text-muted-foreground text-sm">{subtitle}</p>}
             </motion.div>
           )}
           {children}
