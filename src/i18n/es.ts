@@ -6,7 +6,7 @@ export const es: TranslationKeys = {
     nav: {
       industries: "Industrias",
       pricing: "Precios",
-      demo: "Demo",
+      faq: "Preguntas",
       login: "Login",
       getStarted: "Empezar",
       goToDashboard: "Ir al Dashboard",

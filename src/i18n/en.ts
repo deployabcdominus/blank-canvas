@@ -4,7 +4,7 @@ export const en = {
     nav: {
       industries: "Industries",
       pricing: "Pricing",
-      demo: "Demo",
+      faq: "FAQ",
       login: "Login",
       getStarted: "Get Started",
       goToDashboard: "Go to Dashboard",
