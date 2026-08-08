@@ -140,7 +140,7 @@ const MacBookMockup = () => {
               <div className="hidden sm:flex flex-col w-[120px] flex-shrink-0 bg-white/[0.015] rounded-lg border border-white/[0.04] p-2.5 gap-1.5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-5 h-5 flex items-center justify-center">
-                    <SignFlowLogo variant="technical" className="w-4 h-4 text-violet-400" />
+                    <SignFlowLogo variant="technical" className="w-5 h-5 text-violet-500" />
                   </div>
                   <span className="text-[8px] font-bold text-zinc-300">SignFlow</span>
                 </div>
@@ -165,15 +165,15 @@ const MacBookMockup = () => {
               <div className="flex-1 flex flex-col gap-2.5 overflow-hidden">
                 <div className="grid grid-cols-4 gap-2">
                   {[
-                    { label: m.activeOrders, value: "42", trend: "+12%", color: "text-violet-400", badge: null },
-                    { label: m.fieldOperators, value: "18", trend: m.inService, color: "text-emerald-400", badge: null },
-                    { label: m.slaCritical, value: "3", trend: m.urgent, color: "text-orange-400", badge: "bg-orange-500/15 border-orange-500/20 text-orange-400" },
-                    { label: m.monthRevenue, value: "$184K", trend: "+23%", color: "text-cyan-400", badge: null },
+                    { label: m.activeOrders, value: 42, trend: "+12%", color: "text-violet-400", badge: null },
+                    { label: m.fieldOperators, value: 18, trend: m.inService, color: "text-emerald-400", badge: null },
+                    { label: m.slaCritical, value: 3, trend: m.urgent, color: "text-orange-400", badge: "bg-orange-500/15 border-orange-500/20 text-orange-400" },
+                    { label: m.monthRevenue, value: 184, trend: "+23%", color: "text-cyan-400", badge: null },
                   ].map((kpi, i) => (
                     <motion.div
                       key={kpi.label}
                       initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.9 + i * 0.08, duration: 0.4 }}
                       className={`rounded-lg border p-2.5 transition-colors ${
                         kpi.badge
@@ -182,7 +182,17 @@ const MacBookMockup = () => {
                       }`}
                     >
                       <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
-                      <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">{kpi.value}</p>
+                      <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                        >
+                          {typeof kpi.value === 'number' ? (
+                             <CountUpValue value={kpi.value} />
+                          ) : kpi.value}
+                          {kpi.label === m.monthRevenue ? 'K' : ''}
+                        </motion.span>
+                      </p>
                       <p className={`text-[7px] font-semibold mt-0.5 ${kpi.color} opacity-60`}>{kpi.trend}</p>
                     </motion.div>
                   ))}
