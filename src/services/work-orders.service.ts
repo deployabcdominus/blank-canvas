@@ -6,7 +6,13 @@ export type WorkOrderRow = Database['public']['Tables']['production_orders']['Ro
 export type WorkOrderInsert = Database['public']['Tables']['production_orders']['Insert'];
 export type WorkOrderUpdate = Database['public']['Tables']['production_orders']['Update'];
 
+/**
+ * Service for managing production orders.
+ */
 export const WorkOrdersService = {
+  /**
+   * Fetches all production orders for a company.
+   */
   async getAll(companyId: string, page = 0, pageSize = 500) {
     const from = page * pageSize;
     const to = from + pageSize - 1;
@@ -19,6 +25,20 @@ export const WorkOrdersService = {
       .range(from, to);
   },
 
+  /**
+   * Fetches a single production order by ID.
+   */
+  async getById(id: string) {
+    return await supabase
+      .from('production_orders')
+      .select('*')
+      .eq('id', id)
+      .single();
+  },
+
+  /**
+   * Creates a new production order.
+   */
   async create(order: WorkOrderInsert) {
     const result = await supabase
       .from('production_orders')
@@ -31,7 +51,7 @@ export const WorkOrdersService = {
         action: 'creado',
         entityType: 'orden_produccion',
         entityId: result.data.id,
-        entityLabel: `OT #${result.data.wo_number || result.data.id.slice(0, 8)}`,
+        entityLabel: `${result.data.client} - ${result.data.project}`,
         details: { status: result.data.status }
       });
     }
@@ -39,6 +59,9 @@ export const WorkOrdersService = {
     return result;
   },
 
+  /**
+   * Updates an existing production order.
+   */
   async update(id: string, updates: WorkOrderUpdate) {
     const result = await supabase
       .from('production_orders')
@@ -52,7 +75,7 @@ export const WorkOrdersService = {
         action: 'editado',
         entityType: 'orden_produccion',
         entityId: result.data.id,
-        entityLabel: `OT #${result.data.wo_number || result.data.id.slice(0, 8)}`,
+        entityLabel: `${result.data.client} - ${result.data.project}`,
         details: updates
       });
     }
@@ -60,8 +83,15 @@ export const WorkOrdersService = {
     return result;
   },
 
+  /**
+   * Deletes a production order (hard delete).
+   */
   async delete(id: string) {
-    const { data: order } = await supabase.from('production_orders').select('wo_number').eq('id', id).single();
+    const { data: order } = await supabase
+      .from('production_orders')
+      .select('client, project')
+      .eq('id', id)
+      .single();
 
     const result = await supabase
       .from('production_orders')
@@ -73,14 +103,17 @@ export const WorkOrdersService = {
         action: 'eliminado',
         entityType: 'orden_produccion',
         entityId: id,
-        entityLabel: `OT #${order.wo_number || id.slice(0, 8)}`
+        entityLabel: `${order.client} - ${order.project}`
       });
     }
 
     return result;
   },
 
-  async deleteByCompany(companyId: string) {
+  /**
+   * Clears all production orders for a company.
+   */
+  async clearAll(companyId: string) {
     return await supabase
       .from('production_orders')
       .delete()
