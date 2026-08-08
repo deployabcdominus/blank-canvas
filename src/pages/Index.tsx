@@ -155,7 +155,7 @@ const MacBookMockup = () => {
             aspectRatio: "16/9",
           }}
         >
-            <div className="h-full w-full grid grid-rows-[auto_1fr] gap-4 p-4 overflow-hidden">
+            <div className="h-full w-full grid grid-rows-[auto_1fr] gap-4 p-4 overflow-hidden bg-zinc-950">
               {/* Top row: Sidebar + KPI cards */}
               <div className="grid grid-cols-[160px_1fr] gap-4 h-full min-h-0">
                 <div className="flex flex-col bg-white/[0.015] rounded-lg border border-white/[0.04] p-3 gap-2">
@@ -164,18 +164,19 @@ const MacBookMockup = () => {
                     <span className="text-[10px] font-bold text-zinc-300">SignFlow</span>
                   </div>
                   {["Dashboard", "Orders", "Specialists", "Accounts"].map((item) => (
-                    <div key={item} className="flex items-center gap-2 px-2 py-1.5 rounded-md text-[8px] font-medium text-zinc-600 hover:bg-white/[0.05]">
-                       <span className="w-2 h-2 rounded-full bg-zinc-800" />
+                    <div key={item} className="flex items-center gap-2 px-2 py-1.5 rounded-md text-[8px] font-medium text-zinc-600 hover:bg-white/[0.05] cursor-default">
+                       <span className="w-1.5 h-1.5 rounded-full bg-zinc-800" />
                        {item}
                     </div>
                   ))}
                 </div>
                 
                 <div className="grid grid-cols-4 gap-3 min-h-0">
-                  {/* KPI Cards */}
-                  <div className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-3">
-                    <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">Monthly Revenue</p>
-                    <p className="text-xl font-bold text-white/85">184K</p>
+                  <div className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-3 flex flex-col justify-between">
+                    <div>
+                      <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">Monthly Revenue</p>
+                      <p className="text-xl font-bold text-white/85">$184K</p>
+                    </div>
                     <div className="h-8 mt-1">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={[{v:10},{v:15},{v:12},{v:20},{v:18},{v:25},{v:30}]}>
@@ -184,7 +185,6 @@ const MacBookMockup = () => {
                       </ResponsiveContainer>
                     </div>
                   </div>
-                  {/* ... other 3 cards ... */}
                   {[
                     { label: "Active Orders", value: 42, color: "text-violet-400" },
                     { label: "Operators", value: 18, color: "text-emerald-400" },
@@ -202,30 +202,77 @@ const MacBookMockup = () => {
               {/* Bottom row: Work Orders + Specialists */}
               <div className="grid grid-cols-[1fr_240px] gap-4 min-h-0">
                 <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0 relative">
-                  <div className="absolute top-3 right-3 w-12 h-12">
-                     <ResponsiveContainer>
+                  <div className="absolute top-3 right-3 w-10 h-10">
+                     <ResponsiveContainer width="100%" height="100%">
                        <PieChart>
-                         <Pie data={[{v:50},{v:30},{v:20}]} dataKey="v" stroke="none" fill="#8884d8">
+                         <Pie data={[{v:50},{v:30},{v:20}]} dataKey="v" stroke="none" innerRadius={12} outerRadius={20}>
                             <Cell fill="#3b82f6" /><Cell fill="#10b981" /><Cell fill="#f97316" />
                          </Pie>
                        </PieChart>
                      </ResponsiveContainer>
                   </div>
                   <span className="text-[8px] text-zinc-500 font-semibold uppercase mb-2">Work Orders</span>
-                  <div className="flex-1 overflow-y-auto space-y-1">
-                     {[1,2,3,4,5].map(i => <div key={i} className="h-6 bg-white/[0.02] rounded-md border border-white/[0.02]" />)}
+                  <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0 pr-1">
+                     {[
+                       { id: "#ORD-4201", client: "Delta Corp", status: "Production", color: "bg-blue-400" },
+                       { id: "#ORD-4202", client: "Skyline Ltd", status: "Installation", color: "bg-emerald-400" },
+                       { id: "#ORD-4203", client: "Urban Signs", status: "Review", color: "bg-orange-400" },
+                       { id: "#ORD-4204", client: "Vega Realty", status: "Installation", color: "bg-emerald-400" },
+                       { id: "#ORD-4205", client: "Coastal Group", status: "Production", color: "bg-blue-400" },
+                     ].map(order => (
+                       <div key={order.id} className="flex items-center gap-2 p-1.5 rounded bg-white/[0.02] border border-white/[0.03]">
+                         <div className={`w-1 h-3 rounded-full ${order.color}`} />
+                         <span className="text-[7px] font-bold text-zinc-300 truncate flex-1">{order.client}</span>
+                         <span className="text-[6px] text-zinc-500 uppercase">{order.status}</span>
+                       </div>
+                     ))}
                   </div>
-                  <div className="mt-2 grid grid-cols-5 gap-1 h-12 items-end">
-                    {[10,20,15,25,30].map((v, i) => <div key={i} className="bg-violet-500/30 rounded-t-sm" style={{ height: `${v}%` }} />)}
+                  <div className="mt-3 pt-3 border-t border-white/[0.04]">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[7px] text-zinc-500 font-bold uppercase">Weekly Production</span>
+                      <span className="text-[7px] text-violet-400 font-bold">Trend</span>
+                    </div>
+                    <div className="h-10">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={[{v:40},{v:60},{v:45},{v:80},{v:55}]}>
+                          <Bar dataKey="v" fill="#8b5cf6" radius={[2, 2, 0, 0]} opacity={0.6} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 </div>
                 
                 <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0">
-                  <span className="text-[8px] text-zinc-500 font-semibold uppercase mb-2">Specialists</span>
-                  <div className="flex-1 overflow-y-auto space-y-1">
-                    {[1,2,3,4,5,6].map(i => <div key={i} className="h-6 bg-white/[0.02] rounded-md border border-white/[0.02]" />)}
+                  <span className="text-[8px] text-zinc-500 font-semibold uppercase mb-2 tracking-wider">Active Specialists</span>
+                  <div className="flex-1 overflow-y-auto space-y-1 pr-1 min-h-0">
+                    {[
+                      { n: "C. López", s: "En Route", c: "bg-emerald-400" },
+                      { n: "M. García", s: "On Site", c: "bg-violet-400" },
+                      { n: "R. Torres", s: "SLA ⚠", c: "bg-orange-400" },
+                      { n: "A. Méndez", s: "Available", c: "bg-zinc-500" },
+                      { n: "J. White", s: "On Site", c: "bg-violet-400" },
+                      { n: "S. Reed", s: "En Route", c: "bg-emerald-400" },
+                    ].map((tech, i) => (
+                      <div key={i} className="flex items-center gap-2 px-2 py-1 rounded bg-white/[0.02] border border-white/[0.03]">
+                        <div className={`w-1.5 h-1.5 rounded-full ${tech.c}`} />
+                        <span className="text-[7px] text-zinc-400 font-medium truncate flex-1">{tech.n}</span>
+                        <span className="text-[6px] text-zinc-600">{tech.s}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="mt-2 text-[6px] text-zinc-600">Recent activity...</div>
+                  <div className="mt-3 pt-3 border-t border-white/[0.04]">
+                    <span className="text-[7px] text-zinc-500 font-semibold uppercase mb-1.5 block">Live Feed</span>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1 h-1 rounded-full bg-emerald-400" />
+                        <span className="text-[6px] text-zinc-600 truncate">C. López checked in Delta Corp</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1 h-1 rounded-full bg-violet-400" />
+                        <span className="text-[6px] text-zinc-600 truncate">R. Torres completed installation</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
