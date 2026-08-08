@@ -113,118 +113,110 @@ const Login = () => {
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
             <p className="text-muted-foreground/80 whitespace-pre-wrap">
-              Inicia sesión para continuar en SignFlow. Analise completamente todo o projeto e identifique TODOS os bugs, erros, falhas, comportamentos inesperados e possíveis problemas existentes na aplicação.
+              Inicia sesión para continuar en SignFlow. Analise todo o projeto de forma completa antes de realizar qualquer alteração e execute uma refatoração profunda e estruturada em toda a base de código.
 
-Seu objetivo é realizar uma auditoria técnica profunda no sistema inteiro, corrigindo problemas de lógica, frontend, backend, integração, renderização, estado, banco de dados, responsividade e performance.
+Seu objetivo é melhorar a qualidade interna do sistema sem alterar funcionalidades ou comportamento visível da aplicação.
 
-Antes de modificar qualquer coisa:
-- Analise toda a estrutura do projeto
-- Analise rotas
-- Analise componentes
-- Analise hooks
-- Analise estados globais
-- Analise integrações
-- Analise Supabase
-- Analise APIs
-- Analise banco de dados
-- Analise autenticação
-- Analise permissões
-- Analise carregamentos
-- Analise console errors
-- Analise warnings
-- Analise logs
-- Analise comportamento da interface
-- Analise responsividade
-- Analise possíveis falhas silenciosas
-- Analise segurança básica
-- Analise fluxos completos do sistema
+A refatoração deve tornar o código mais limpo, organizado, escalável, padronizado e fácil de manter.
 
-Identifique e corrija:
-- Bugs visuais
-- Bugs de navegação
-- Erros de console
-- Warnings
-- Loops infinitos
-- Problemas de renderização
-- Re-renderizações desnecessárias
-- Falhas de autenticação
-- Problemas de sessão
-- Problemas de permissões
-- Problemas de loading
-- Problemas de estado
-- Problemas de sincronização
-- Problemas de responsividade
-- Problemas de formulários
-- Problemas de validação
-- Problemas em chamadas API
-- Problemas em queries Supabase
-- Problemas de realtime
-- Problemas de cache
-- Problemas de tipagem
-- Problemas de imports
-- Problemas de dependências
-- Problemas de performance
-- Problemas de UX
-- Problemas mobile
-- Problemas de acessibilidade
-- Memory leaks
-- Requests duplicados
-- Condições de corrida
-- Falhas silenciosas
-- Tratamento incorreto de erros
-- Quebras em edge cases
+━━━━━━━━━━━━━━━━━━━
+ESCOPO DA REFATORAÇÃO
+━━━━━━━━━━━━━━━━━━━
 
-Verifique especialmente:
-- Fluxos de login/logout
-- Persistência de sessão
-- Proteção de rotas
-- Navegação entre páginas
-- CRUDs completos
-- Uploads
-- Modais
-- Estados assíncronos
-- Atualizaciones em tempo real
-- Compatibilidade mobile
-- Responsividade geral
-- Componentes reutilizáveis
-- Integrações externas
-- Webhooks
-- Fluxos críticos do sistema
+Realize uma revisão completa de:
 
-Durante a análise:
-1. Liste os problemas encontrados
-2. Explique a causa de cada problema
-3. Explique o impacto no sistema
-4. Corrija utilizando boas práticas modernas
-5. Garanta que a correção não quebre funcionalidades existentes
+- Estrutura de pastas e organização do projeto
+- Componentes e sua reutilização
+- Hooks customizados
+- Lógica de estado (local e global)
+- Services e camadas de API
+- Integração com Supabase
+- Queries e manipulação de dados
+- Fluxos de autenticação
+- Rotas e estrutura de navegação
+- Tipagem (TypeScript se aplicável)
+- Lógica duplicada ou redundante
+- Funções grandes ou mal divididas
+- Acoplamento excessivo entre componentes
+- Código difícil de manter ou entender
+- Imports desorganizados
+- Regras de negócio misturadas com UI
+- Manipulação de efeitos colaterais
 
-Regras importantes:
-- NÃO remover funcionalidades sem necessidade
-- NÃO alterar design sem motivo
-- NÃO criar soluções temporárias ou gambiarra
-- Sempre aplicar soluções profissionais
-- Priorizar estabilidade, segurança e confiabilidade
-- Garantir código limpo e sustentável
-- Melhorar tratamento de erros em toda aplicação
-- Validar edge cases importantes
-- Garantir compatibilidade mobile e desktop
+━━━━━━━━━━━━━━━━━━━
+OBJETIVOS PRINCIPAIS
+━━━━━━━━━━━━━━━━━━━
 
-Após finalizar:
-- Faça uma nova varredura completa
-- Verifique se ainda existem erros
-- Verifique possíveis regressões
-- Garanta estabilidade geral do sistema
+- Reduzir duplicação de código
+- Melhorar legibilidade e clareza
+- Melhorar separação de responsabilidades
+- Melhorar reutilização de componentes
+- Melhorar organização da arquitetura
+- Criar padrões consistentes no projeto
+- Facilitar manutenção futura
+- Reduzir complexidade desnecessária
+- Melhorar escalabilidade do sistema
+- Tornar o código mais previsível e limpo
 
-O resultado final deve deixar a aplicação:
-- Estável
-- Confiável
-- Sem erros visíveis
-- Sem warnings desnecessários
-- Sem bugs críticos
-- Fluida
-- Responsiva
-- Profissional
-- Pronta para produção
+━━━━━━━━━━━━━━━━━━━
+DIRETRIZES DE REFACTORING
+━━━━━━━━━━━━━━━━━━━
+
+- NÃO alterar funcionalidades existentes
+- NÃO mudar comportamento da interface
+- NÃO modificar design visual sem necessidade
+- NÃO quebrar fluxos já existentes
+
+Priorize sempre:
+
+- Separação de responsabilidades (UI / lógica / dados)
+- Componentização inteligente
+- Reutilização de código
+- Funções pequenas e bem definidas
+- Nomeação clara e consistente
+- Eliminação de código duplicado
+- Organização por domínio ou feature
+- Redução de complexidade por arquivo
+- Padronização de padrões de código
+
+━━━━━━━━━━━━━━━━━━━
+PADRÕES DE QUALIDADE
+━━━━━━━━━━━━━━━━━━━
+
+- Código limpo e legível
+- Arquitetura consistente em todo projeto
+- Componentes desacoplados
+- Hooks reutilizáveis e bem definidos
+- Serviços centralizados para API
+- Separação clara entre frontend e lógica de negócio
+- Estrutura previsível e escalável
+
+━━━━━━━━━━━━━━━━━━━
+PROCESSO OBRIGATÓRIO
+━━━━━━━━━━━━━━━━━━━
+
+1. Analise toda a base de código
+2. Identifique pontos de melhoria estrutural
+3. Liste problemas de organização e duplicação
+4. Priorize melhorias por impacto
+5. Execute refatorações de forma segura
+6. Garanta que nada do sistema quebre
+7. Valide consistência após mudanças
+
+━━━━━━━━━━━━━━━━━━━
+RESULTADO ESPERADO
+━━━━━━━━━━━━━━━━━━━
+
+Ao final da refatoração, o projeto deve estar:
+
+- Muito mais organizado
+- Fácil de entender e manter
+- Escalável para novas funcionalidades
+- Livre de duplicações desnecessárias
+- Com arquitetura mais profissional
+- Com padrões consistentes
+- Mais limpo e previsível
+- Sem alterar nenhuma funcionalidade existente
             </p>
           </motion.div>
 
