@@ -12,16 +12,16 @@ export const es: TranslationKeys = {
       goToDashboard: "Ir al Dashboard",
     },
     hero: {
-      badge: "El Hub #1 para Negocios de Servicios",
-      titleLine1: "Automatiza tu operación.",
-      titleLine2: "Escala tus resultados.",
+      badge: "Premium SaaS Operations Hub",
+      titleLine1: "Domina tu Taller.",
+      titleLine2: "Maximiza el Crecimiento.",
       subtitle:
-        "La plataforma todo-en-uno para gestionar IT, HVAC y Señalética con precisión absoluta. Deja de perder tiempo y empieza a crecer hoy.",
-      ctaPrimary: "Empezar Ahora",
-      ctaSecondary: "Ver Demo",
-      trust: "Calificado 4.9/5 por más de 500 Empresas",
+        "La plataforma operativa de élite diseñada para equipos de servicios de alto rendimiento. Clarifica flujos, elimina fricciones y transforma cada proyecto en un centro de beneficios predecible con precisión premium.",
+      ctaPrimary: "Desplegar Ahora",
+      ctaSecondary: "Explorar Sistemas",
+      trust: "Confiado por más de 500 Líderes de Alto Rendimiento",
     },
-    trusted: "Únete a más de 500 líderes de industria",
+    trusted: "Únete a más de 500 Líderes de Industria Escalando con Precisión",
     industries: {
       badge: "Industrias",
       titleLine1: "Tu industria, tu lenguaje,",
@@ -177,8 +177,8 @@ export const es: TranslationKeys = {
       available: "Libre",
     },
     seo: {
-      title: "SignFlow | Gestión de Operaciones de Alto Rendimiento",
-      description: "La plataforma #1 para automatizar servicios, IT y mantenimiento. Escala tu negocio con precisión absoluta.",
+      title: "SignFlow | Hub de Operaciones de Élite y Gestión de Precisión",
+      description: "Domina tus operaciones con la plataforma #1 para equipos de servicios de alto rendimiento. Escala con precisión absoluta y autoridad premium.",
     }
   },
 

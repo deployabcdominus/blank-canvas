@@ -10,16 +10,16 @@ export const en = {
       goToDashboard: "Go to Dashboard",
     },
     hero: {
-      badge: "The #1 Operations Hub for Service Businesses",
-      titleLine1: "Automate your operations.",
-      titleLine2: "Scale your results.",
+      badge: "Premium SaaS Operations Hub",
+      titleLine1: "Command Your Shop.",
+      titleLine2: "Maximize Growth.",
       subtitle:
-        "The all-in-one platform to manage IT, HVAC, and Signage operations with absolute precision. Stop wasting time and start growing today.",
-      ctaPrimary: "Get Started Now",
-      ctaSecondary: "Watch Demo",
-      trust: "Rated 4.9/5 by 500+ Businesses",
+        "The elite operations platform designed for high-performance service teams. Clarify workflows, eliminate friction, and transform every project into a predictable profit center with premium precision.",
+      ctaPrimary: "Deploy Now",
+      ctaSecondary: "Explore Systems",
+      trust: "Trusted by 500+ High-Performance Leaders",
     },
-    trusted: "Join 500+ industry leaders worldwide",
+    trusted: "Join 500+ Industry Leaders Scaling with Precision",
     industries: {
       badge: "Industries",
       titleLine1: "Your industry, your language,",
@@ -175,8 +175,8 @@ export const en = {
       available: "Available",
     },
     seo: {
-      title: "SignFlow | High-Performance Operations Management",
-      description: "The #1 platform to automate services, IT and maintenance operations. Scale your business with absolute precision.",
+      title: "SignFlow | Elite SaaS Operations Hub & Precision Management",
+      description: "Command your operations with the #1 platform for high-performance service teams. Scale with absolute precision and premium authority.",
     }
   },
 
