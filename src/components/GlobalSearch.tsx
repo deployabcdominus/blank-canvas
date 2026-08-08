@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useDeferredValue } from "react";
+import { useState, useRef, useEffect, useDeferredValue, memo } from "react";
 import { Search, Command, FileText, ClipboardList, MapPin, Users, Building2, UserCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalSearchQuery, type SearchResult } from "@/hooks/queries/useGlobalSearchQuery";
@@ -15,7 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export function GlobalSearch() {
+export const GlobalSearch = memo(() => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -103,4 +103,4 @@ export function GlobalSearch() {
       </CommandDialog>
     </>
   );
-}
+});
