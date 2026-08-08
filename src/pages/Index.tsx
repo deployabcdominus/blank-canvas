@@ -91,7 +91,7 @@ const TrustStars = () => (
   <div className="flex flex-col items-center gap-3 mb-10">
     <div className="flex items-center gap-1">
       {[...Array(5)].map((_, i) => (
-        <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+        <Star key={i} className="w-5 h-5 fill-violet-500 text-violet-500" />
       ))}
     </div>
     <p className="text-[12px] font-medium text-zinc-500 tracking-wide uppercase">
@@ -108,7 +108,7 @@ const MacBookMockup = () => {
   const m = t.landing.mockup;
   return (
     <div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "100rem" }}>
-      <div className="absolute -inset-[10vw] sm:-inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(124,58,237,0.12),transparent_60%)] pointer-events-none" />
+      <div className="absolute -inset-[10vw] sm:-inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(168,85,247,0.15),transparent_60%)] pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 70, rotateX: 12 }}
         animate={{ opacity: 1, y: 0, rotateX: 4 }}
@@ -243,7 +243,7 @@ const MacBookMockup = () => {
       <div
         className="w-[85%] mx-auto h-20 mt-2 opacity-20"
         style={{
-          background: "linear-gradient(to bottom, rgba(124,58,237,0.08), transparent 80%)",
+          background: "linear-gradient(to bottom, rgba(168,85,247,0.12), transparent 80%)",
           filter: "blur(12px)",
           transform: "scaleY(-0.5)",
         }}
@@ -501,7 +501,7 @@ const Index = () => {
                       <Button
                         size="lg"
                         onClick={() => scrollTo("pricing")}
-                        className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
+                        className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-12 h-16 text-lg font-bold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]"
                       >
                         <span className="relative z-10 flex items-center">
                           {L.hero.ctaPrimary}
@@ -522,7 +522,7 @@ const Index = () => {
                         variant="outline"
                         size="lg"
                         onClick={() => scrollTo("industries")}
-                        className="rounded-full px-10 h-14 text-base font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
+                        className="rounded-full px-12 h-16 text-lg font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300"
                       >
                         {L.hero.ctaSecondary}
                       </Button>
