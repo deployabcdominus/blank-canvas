@@ -19,6 +19,7 @@ export const es: TranslationKeys = {
         "La plataforma todo-en-uno para gestionar IT, HVAC y Señalética con precisión absoluta. Deja de perder tiempo y empieza a crecer hoy.",
       ctaPrimary: "Empezar Ahora",
       ctaSecondary: "Ver Demo",
+      trust: "Calificado 4.9/5 por más de 500 Empresas",
     },
     trusted: "Únete a más de 500 líderes de industria",
     industries: {

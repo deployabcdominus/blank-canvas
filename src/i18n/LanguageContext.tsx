@@ -32,8 +32,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Default to 'en' unless explicitly stored
   const [locale, setLocaleState] = useState<Locale>(() => {
-    const stored = localStorage.getItem("sf_lang") as Locale | null;
-    if (stored === "en" || stored === "es") return stored;
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("sf_lang") as Locale | null;
+      if (stored === "en" || stored === "es") return stored;
+    }
     return "en";
   });
 
