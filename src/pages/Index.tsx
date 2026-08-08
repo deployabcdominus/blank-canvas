@@ -252,6 +252,8 @@ const MacBookMockup = () => {
                         { id: "#ORD-4201", client: "Delta Corp", value: "$4.2k", status: "Production", color: "bg-blue-400" },
                         { id: "#ORD-4202", client: "Skyline Ltd", value: "$2.8k", status: "Installation", color: "bg-emerald-400" },
                         { id: "#ORD-4203", client: "Urban Signs", value: "$1.5k", status: "Review", color: "bg-orange-400" },
+                        { id: "#ORD-4204", client: "Vega Realty", value: "$3.1k", status: "Installation", color: "bg-emerald-400" },
+                        { id: "#ORD-4205", client: "Coastal Group", value: "$5.7k", status: "Production", color: "bg-blue-400" },
                       ].map((order, i) => (
                         <motion.div
                           key={order.id}
@@ -275,6 +277,20 @@ const MacBookMockup = () => {
                         </motion.div>
                       ))}
                     </motion.div>
+                    <div className="mt-auto pt-4 border-t border-white/[0.04]">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[7px] text-zinc-500 font-bold uppercase">Weekly Production</span>
+                        <span className="text-[7px] text-violet-400 font-bold">68%</span>
+                      </div>
+                      <div className="h-1 w-full bg-white/[0.05] rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          whileInView={{ width: "68%" }}
+                          transition={{ duration: 1.5, ease: "easeOut" }}
+                          className="h-full bg-violet-500"
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div className="rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
                     <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">{m.activeSpecialists}</span>
@@ -307,6 +323,36 @@ const MacBookMockup = () => {
                         </motion.div>
                       ))}
                     </motion.div>
+                    <div className="mt-auto pt-4">
+                      <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2 block">Recent Activity</span>
+                      <motion.div 
+                        initial="hidden"
+                        whileInView="visible"
+                        variants={{
+                          visible: { transition: { staggerChildren: 0.1 } }
+                        }}
+                        className="flex flex-col gap-1.5"
+                      >
+                        {[
+                          { text: "C. López checked in — Delta Corp", time: "9:42 AM", color: "bg-emerald-400" },
+                          { text: "R. Torres completed installation", time: "8:15 AM", color: "bg-violet-400" },
+                          { text: "M. García arrived on site", time: "7:30 AM", color: "bg-orange-400" },
+                        ].map((activity, i) => (
+                          <motion.div
+                            key={i}
+                            variants={{
+                              hidden: { opacity: 0, x: 6 },
+                              visible: { opacity: 1, x: 0 }
+                            }}
+                            className="flex items-center gap-2"
+                          >
+                            <div className={`w-1 h-1 rounded-full ${activity.color} flex-shrink-0`} />
+                            <span className="text-[6px] text-zinc-500 truncate flex-1">{activity.text}</span>
+                            <span className="text-[5px] text-zinc-600 flex-shrink-0">{activity.time}</span>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </div>
                   </div>
                 </div>
               </div>
