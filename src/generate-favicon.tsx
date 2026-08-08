@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
 import { Layers } from 'lucide-react';
 
 const FaviconGenerator = () => {
@@ -51,6 +50,4 @@ const FaviconGenerator = () => {
   );
 };
 
-const root = document.createElement('div');
-document.body.appendChild(root);
-ReactDOM.createRoot(root).render(<FaviconGenerator />);
+export default FaviconGenerator;
