@@ -153,6 +153,8 @@ const MacBookMockup = () => {
           className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] bg-zinc-950 overflow-hidden"
           style={{
             aspectRatio: "16/9",
+            height: "auto",
+            minHeight: "220px"
           }}
         >
             <div className="absolute inset-0">
