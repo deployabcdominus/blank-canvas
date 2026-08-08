@@ -158,8 +158,6 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-
-              </div>
               <div className="flex flex-col gap-4 py-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2.5">
