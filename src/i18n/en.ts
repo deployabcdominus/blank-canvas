@@ -175,8 +175,8 @@ export const en = {
       available: "Available",
     },
     seo: {
-      title: "SignFlow | High-Performance Operations Management",
-      description: "The #1 platform to automate services, IT and maintenance operations. Scale your business with absolute precision.",
+      title: "SignFlow | Elite SaaS Operations Hub & Precision Management",
+      description: "Command your operations with the #1 platform for high-performance service teams. Scale with absolute precision and premium authority.",
     }
   },
 

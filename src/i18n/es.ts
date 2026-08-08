@@ -177,8 +177,8 @@ export const es: TranslationKeys = {
       available: "Libre",
     },
     seo: {
-      title: "SignFlow | Gestión de Operaciones de Alto Rendimiento",
-      description: "La plataforma #1 para automatizar servicios, IT y mantenimiento. Escala tu negocio con precisión absoluta.",
+      title: "SignFlow | Hub de Operaciones de Élite y Gestión de Precisión",
+      description: "Domina tus operaciones con la plataforma #1 para equipos de servicios de alto rendimiento. Escala con precisión absoluta y autoridad premium.",
     }
   },
 
