@@ -31,12 +31,25 @@ export const useInstallationsQuery = (companyId: string | null) => {
   const updateInstallationMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: InstallationUpdate }) => 
       InstallationsService.update(id, updates),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['installations', companyId] });
-      toast.success('Ejecución actualizada correctamente');
+    onMutate: async ({ id, updates }) => {
+      await queryClient.cancelQueries({ queryKey: ['installations', companyId] });
+      const previous = queryClient.getQueryData(['installations', companyId]);
+      queryClient.setQueryData(['installations', companyId], (old: any[] | undefined) => 
+        old?.map(item => item.id === id ? { ...item, ...updates } : item)
+      );
+      return { previous };
     },
-    onError: (error: any) => {
+    onError: (error: any, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['installations', companyId], context.previous);
+      }
       toast.error('Error al actualizar la ejecución: ' + error.message);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['installations', companyId] });
+    },
+    onSuccess: () => {
+      toast.success('Ejecución actualizada correctamente');
     },
   });
 

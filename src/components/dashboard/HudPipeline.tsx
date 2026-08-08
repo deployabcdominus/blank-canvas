@@ -50,7 +50,7 @@ function getHealth(d: number): "green" | "yellow" | "red" {
 
 const healthColor = { green: "hsl(var(--color-success))", yellow: "hsl(var(--color-warning))", red: "hsl(var(--color-danger))" };
 
-export const HudPipeline = ({ leads, proposals, orders, installations, activeFilter }: HudPipelineProps) => {
+export const HudPipeline = memo(({ leads, proposals, orders, installations, activeFilter }: HudPipelineProps) => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const tc = t.hudPipeline;

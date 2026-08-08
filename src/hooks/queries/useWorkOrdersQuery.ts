@@ -32,12 +32,25 @@ export const useWorkOrdersQuery = (companyId: string | null) => {
   const updateWorkOrderMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: WorkOrderUpdate }) => 
       WorkOrdersService.update(id, updates),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
-      toast.success('Orden de trabajo actualizada');
+    onMutate: async ({ id, updates }) => {
+      await queryClient.cancelQueries({ queryKey: ['work-orders', companyId] });
+      const previous = queryClient.getQueryData(['work-orders', companyId]);
+      queryClient.setQueryData(['work-orders', companyId], (old: any[] | undefined) => 
+        old?.map(item => item.id === id ? { ...item, ...updates } : item)
+      );
+      return { previous };
     },
-    onError: (error: Error) => {
+    onError: (error: Error, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['work-orders', companyId], context.previous);
+      }
       toast.error('Error al actualizar la orden: ' + error.message);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['work-orders', companyId] });
+    },
+    onSuccess: () => {
+      toast.success('Orden de trabajo actualizada');
     },
   });
 
