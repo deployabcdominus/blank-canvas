@@ -40,10 +40,10 @@ const Access = () => {
           className="w-full max-w-md"
         >
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-6 glass-card rounded-full flex items-center justify-center">
-              <ShieldCheck className="w-8 h-8 text-primary" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-6 glass-card rounded-full flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold mb-3">Acceso a SignFlow</h1>
+            <h1 className="text-xl sm:text-2xl font-bold mb-3">Acceso a SignFlow</h1>
             <p className="text-muted-foreground text-sm leading-relaxed">
               Únete a cientos de negocios en Miami que gestionan sus operaciones con SignFlow
             </p>

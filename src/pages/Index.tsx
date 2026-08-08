@@ -163,14 +163,15 @@ const MacBookMockup = () => {
         transition={{ duration: 1.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
         className="relative"
       >
-        <div
-          className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] bg-zinc-950 overflow-hidden"
-          style={{
-            aspectRatio: "16/9",
-            height: "auto",
-            minHeight: "220px"
-          }}
-        >
+          <div
+            className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] bg-zinc-950 overflow-hidden border border-white/10"
+            style={{
+              aspectRatio: "16/9",
+              width: "100%",
+              height: "auto",
+              minHeight: isMobile ? "200px" : "320px"
+            }}
+          >
             <div className="absolute inset-0">
               <div className="h-full w-full grid grid-rows-[auto_1fr] gap-2 p-2 md:p-4 overflow-hidden bg-zinc-950 min-h-0">
                 {/* Desktop Header Content (hidden on small mobile) */}
