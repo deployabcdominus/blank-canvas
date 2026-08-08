@@ -484,15 +484,15 @@ const Index = () => {
 
         {/* ═══════════ HEADER ═══════════ */}
         <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]" : "bg-transparent"}`}>
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
             <a href="/" className="flex items-center gap-1.5 py-2 min-h-[2.75rem]" aria-label="SignFlow - Home">
-              <div className="flex-shrink-0 w-[2.125rem] h-[2.125rem] sm:w-[2.5rem] sm:h-[2.5rem] md:w-[2.75rem] md:h-[2.75rem] flex items-center justify-center">
-                <SignFlowLogo variant="technical" className="w-[1.75rem] h-[1.75rem] sm:w-[2rem] sm:h-[2rem] md:w-[2.25rem] md:h-[2.25rem] text-violet-500" />
+              <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+                <SignFlowLogo variant="technical" className="w-7 h-7 sm:w-8 sm:h-8 text-violet-500" />
               </div>
-              <span className="font-bold tracking-[-0.03em] text-[1.0625rem] sm:text-[1.1875rem] md:text-[1.3125rem] text-zinc-100">SignFlow</span>
+              <span className="font-bold tracking-tight text-lg sm:text-xl text-zinc-100 hidden xs:inline-block">SignFlow</span>
             </a>
 
-            <nav className="hidden md:flex items-center gap-10 text-[13px] font-medium text-zinc-500">
+            <nav className="hidden md:flex items-center gap-8 text-[13px] font-medium text-zinc-500">
               {[
                 { label: L.nav.industries, id: "industries" },
                 { label: L.nav.pricing, id: "pricing" },
@@ -504,15 +504,16 @@ const Index = () => {
               ))}
             </nav>
 
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <LanguageSwitcher className="scale-90 sm:scale-100 origin-right" />
               {user ? (
                 <Button
                   size="sm"
                   onClick={() => navigate("/dashboard")}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_4px_24px_rgba(139,92,246,0.4)]"
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-4 sm:px-5 text-[12px] sm:text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 h-9 sm:h-10"
                 >
-                  {L.nav.goToDashboard}
+                  <span className="hidden xs:inline">{L.nav.goToDashboard}</span>
+                  <ArrowRight className="w-3.5 h-3.5 xs:ml-2" />
                 </Button>
               ) : (
                 <>
@@ -520,14 +521,14 @@ const Index = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => navigate("/login")}
-                    className="text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px] border border-white/[0.06] rounded-full px-5"
+                    className="hidden sm:flex text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px] border border-white/[0.06] rounded-full px-5 h-10"
                   >
                     {L.nav.login}
                   </Button>
                   <Button
                     size="sm"
                     onClick={() => scrollTo("pricing")}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_4px_24px_rgba(139,92,246,0.4)]"
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-4 sm:px-5 text-[12px] sm:text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 h-9 sm:h-10"
                   >
                     {L.nav.getStarted}
                   </Button>
