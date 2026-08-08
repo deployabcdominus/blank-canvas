@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SignFlowLogo, LogoShowcase } from "@/components/SignFlowLogo";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import GlassHero from "@/components/ui/glassmorphism-trust-hero";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
