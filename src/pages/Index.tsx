@@ -151,209 +151,77 @@ const MacBookMockup = () => {
             aspectRatio: "16/9",
           }}
         >
-          <div className="absolute inset-0 rounded-none overflow-hidden bg-zinc-950 h-full">
-            <div className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900/90 border-b border-white/[0.04]">
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/60" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]/60" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]/60" />
-              </div>
-              <div className="ml-3 flex-1 h-5 rounded-md bg-white/[0.03] max-w-[200px] flex items-center px-3">
-                <span className="text-[8px] text-zinc-600 font-medium">app.signflow.io/dashboard</span>
-              </div>
-            </div>
-            <div className="p-3 sm:p-4 flex gap-3 h-[calc(100%-36px)]">
-              <div className="hidden sm:flex flex-col w-[120px] flex-shrink-0 bg-white/[0.015] rounded-lg border border-white/[0.04] p-2.5 gap-1.5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-5 h-5 flex items-center justify-center">
+            <div className="h-full w-full grid grid-rows-[auto_1fr] gap-4 p-4 overflow-hidden">
+              {/* Top row: Sidebar + KPI cards */}
+              <div className="grid grid-cols-[160px_1fr] gap-4 h-full min-h-0">
+                <div className="flex flex-col bg-white/[0.015] rounded-lg border border-white/[0.04] p-3 gap-2">
+                  <div className="flex items-center gap-2 mb-2">
                     <SignFlowLogo variant="technical" className="w-5 h-5 text-violet-500" />
+                    <span className="text-[10px] font-bold text-zinc-300">SignFlow</span>
                   </div>
-                  <span className="text-[8px] font-bold text-zinc-300">SignFlow</span>
-                </div>
-                {["Dashboard", "Orders", "Specialists", "Accounts", "Map"].map((item, i) => (
-                  <div
-                    key={item}
-                    className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-[7px] font-medium ${
-                      i === 0
-                        ? "bg-violet-500/10 text-violet-300 border border-violet-500/15"
-                        : "text-zinc-600"
-                    }`}
-                  >
-                    {[BarChart3, ClipboardCheck, Users, Building, MapPin][i] &&
-                      (() => {
-                        const Icon = [BarChart3, ClipboardCheck, Users, Building, MapPin][i];
-                        return <Icon className="w-2.5 h-2.5 flex-shrink-0" />;
-                      })()}
-                    {item}
-                  </div>
-                ))}
-              </div>
-              <div className="flex-1 flex flex-col gap-2.5 overflow-hidden">
-                <div className="grid grid-cols-4 gap-2">
-                  {[
-                    { label: m.activeOrders, value: 42, trend: "+12%", color: "text-violet-400", badge: null },
-                    { label: m.fieldOperators, value: 18, trend: m.inService, color: "text-emerald-400", badge: null },
-                    { label: m.slaCritical, value: 3, trend: m.urgent, color: "text-orange-400", badge: "bg-orange-500/15 border-orange-500/20 text-orange-400" },
-                    { label: m.monthRevenue, value: 184, trend: "+23%", color: "text-cyan-400", badge: null },
-                  ].map((kpi, i) => (
-                    <motion.div
-                      key={kpi.label}
-                      initial={{ opacity: 0, y: 12 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.9 + i * 0.08, duration: 0.4 }}
-                      className={`rounded-lg border p-2.5 transition-colors ${
-                        kpi.badge
-                          ? `${kpi.badge}`
-                          : "border-white/[0.04] bg-white/[0.015] hover:border-violet-500/12"
-                      }`}
-                    >
-                      <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
-                      <p className="text-base sm:text-lg font-bold text-white/85 mt-0.5 leading-none">
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          whileInView={{ opacity: 1 }}
-                        >
-                          {typeof kpi.value === 'number' ? (
-                             <CountUpValue value={kpi.value} />
-                          ) : kpi.value}
-                          {kpi.label === m.monthRevenue ? 'K' : ''}
-                        </motion.span>
-                      </p>
-                      <p className={`text-[7px] font-semibold mt-0.5 ${kpi.color} opacity-60`}>{kpi.trend}</p>
-                    </motion.div>
+                  {["Dashboard", "Orders", "Specialists", "Accounts"].map((item) => (
+                    <div key={item} className="flex items-center gap-2 px-2 py-1.5 rounded-md text-[8px] font-medium text-zinc-600 hover:bg-white/[0.05]">
+                       <span className="w-2 h-2 rounded-full bg-zinc-800" />
+                       {item}
+                    </div>
                   ))}
                 </div>
-                <div className="flex-1 grid grid-cols-3 gap-2 min-h-0">
-                  <div className="col-span-2 rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider">{m.workOrders}</span>
-                      <div className="flex gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-violet-500/20 flex items-center justify-center">
-                          <TrendingUp className="w-1.5 h-1.5 text-violet-400" />
-                        </div>
-                        <motion.span 
-                          animate={{ opacity: [0.6, 1, 0.6] }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                          className="text-[7px] text-emerald-400/60 bg-emerald-500/[0.06] px-1.5 py-0.5 rounded font-bold"
-                        >
-                          +34%
-                        </motion.span>
-                      </div>
-                    </div>
-                    <motion.div 
-                      initial="hidden"
-                      whileInView="visible"
-                      variants={{
-                        visible: { transition: { staggerChildren: 0.1 } }
-                      }}
-                      className="flex-1 flex flex-col gap-2 mt-1"
-                    >
-                      {[
-                        { id: "#ORD-4201", client: "Delta Corp", value: "$4.2k", status: "Production", color: "bg-blue-400" },
-                        { id: "#ORD-4202", client: "Skyline Ltd", value: "$2.8k", status: "Installation", color: "bg-emerald-400" },
-                        { id: "#ORD-4203", client: "Urban Signs", value: "$1.5k", status: "Review", color: "bg-orange-400" },
-                        { id: "#ORD-4204", client: "Vega Realty", value: "$3.1k", status: "Installation", color: "bg-emerald-400" },
-                        { id: "#ORD-4205", client: "Coastal Group", value: "$5.7k", status: "Production", color: "bg-blue-400" },
-                      ].map((order, i) => (
-                        <motion.div
-                          key={order.id}
-                          variants={{
-                            hidden: { opacity: 0, x: -10 },
-                            visible: { opacity: 1, x: 0 }
-                          }}
-                          className="flex items-center gap-3 p-2 rounded-md bg-white/[0.02] border border-white/[0.04]"
-                        >
-                          <div className={`w-1 h-4 rounded-full ${order.color}`} />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[7px] font-bold text-zinc-300 truncate">{order.client}</span>
-                              <span className="text-[7px] font-medium text-zinc-500">{order.id}</span>
-                            </div>
-                            <div className="flex items-center justify-between mt-0.5">
-                              <span className="text-[6px] text-zinc-500 uppercase tracking-tighter">{order.status}</span>
-                              <span className="text-[7px] font-bold text-white/90">{order.value}</span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                    <div className="mt-auto pt-4 border-t border-white/[0.04]">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[7px] text-zinc-500 font-bold uppercase">Weekly Production</span>
-                        <span className="text-[7px] text-violet-400 font-bold">68%</span>
-                      </div>
-                      <div className="h-1 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: "68%" }}
-                          transition={{ duration: 1.5, ease: "easeOut" }}
-                          className="h-full bg-violet-500"
-                        />
-                      </div>
+                
+                <div className="grid grid-cols-4 gap-3 min-h-0">
+                  {/* KPI Cards */}
+                  <div className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-3">
+                    <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">Monthly Revenue</p>
+                    <p className="text-xl font-bold text-white/85">184K</p>
+                    <div className="h-8 mt-1">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={[{v:10},{v:15},{v:12},{v:20},{v:18},{v:25},{v:30}]}>
+                          <Line type="monotone" dataKey="v" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                        </LineChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-white/[0.04] bg-white/[0.01] p-3 flex flex-col">
-                    <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2">{m.activeSpecialists}</span>
-                    <motion.div 
-                      initial="hidden"
-                      whileInView="visible"
-                      variants={{
-                        visible: { transition: { staggerChildren: 0.08 } }
-                      }}
-                      className="flex-1 flex flex-col gap-1.5 overflow-hidden"
-                    >
-                      {[
-                        { name: "C. López", status: m.enRoute, color: "bg-emerald-400" },
-                        { name: "M. García", status: m.onSite, color: "bg-violet-400" },
-                        { name: "R. Torres", status: "SLA ⚠", color: "bg-orange-400" },
-                        { name: "A. Méndez", status: m.available, color: "bg-zinc-500" },
-                        { name: "J. White", status: m.onSite, color: "bg-violet-400" },
-                      ].map((tech, i) => (
-                        <motion.div
-                          key={tech.name}
-                          variants={{
-                            hidden: { opacity: 0, x: 6 },
-                            visible: { opacity: 1, x: 0 }
-                          }}
-                          className="flex items-center gap-2 px-2 py-1 rounded-md bg-white/[0.02] border border-white/[0.03]"
-                        >
-                          <div className={`w-1.5 h-1.5 rounded-full ${tech.color} flex-shrink-0`} />
-                          <span className="text-[7px] text-zinc-400 font-medium truncate">{tech.name}</span>
-                          <span className="text-[6px] text-zinc-600 ml-auto flex-shrink-0">{tech.status}</span>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                    <div className="mt-auto pt-4">
-                      <span className="text-[8px] text-zinc-500 font-semibold uppercase tracking-wider mb-2 block">Recent Activity</span>
-                      <motion.div 
-                        initial="hidden"
-                        whileInView="visible"
-                        variants={{
-                          visible: { transition: { staggerChildren: 0.1 } }
-                        }}
-                        className="flex flex-col gap-1.5"
-                      >
-                        {[
-                          { text: "C. López checked in — Delta Corp", time: "9:42 AM", color: "bg-emerald-400" },
-                          { text: "R. Torres completed installation", time: "8:15 AM", color: "bg-violet-400" },
-                          { text: "M. García arrived on site", time: "7:30 AM", color: "bg-orange-400" },
-                        ].map((activity, i) => (
-                          <motion.div
-                            key={i}
-                            variants={{
-                              hidden: { opacity: 0, x: 6 },
-                              visible: { opacity: 1, x: 0 }
-                            }}
-                            className="flex items-center gap-2"
-                          >
-                            <div className={`w-1 h-1 rounded-full ${activity.color} flex-shrink-0`} />
-                            <span className="text-[6px] text-zinc-500 truncate flex-1">{activity.text}</span>
-                            <span className="text-[5px] text-zinc-600 flex-shrink-0">{activity.time}</span>
-                          </motion.div>
-                        ))}
-                      </motion.div>
+                  {/* ... other 3 cards ... */}
+                  {[
+                    { label: "Active Orders", value: 42, color: "text-violet-400" },
+                    { label: "Operators", value: 18, color: "text-emerald-400" },
+                    { label: "Critical SLA", value: 3, color: "text-orange-400" },
+                  ].map((kpi) => (
+                    <div key={kpi.label} className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-3">
+                      <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
+                      <p className="text-xl font-bold text-white/85 mt-1">{kpi.value}</p>
+                      <p className={`text-[7px] font-semibold mt-1 ${kpi.color}`}>+12%</p>
                     </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Bottom row: Work Orders + Specialists */}
+              <div className="grid grid-cols-[1fr_240px] gap-4 min-h-0">
+                <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0 relative">
+                  <div className="absolute top-3 right-3 w-12 h-12">
+                     <ResponsiveContainer>
+                       <PieChart>
+                         <Pie data={[{v:50},{v:30},{v:20}]} dataKey="v" stroke="none" fill="#8884d8">
+                            <Cell fill="#3b82f6" /><Cell fill="#10b981" /><Cell fill="#f97316" />
+                         </Pie>
+                       </PieChart>
+                     </ResponsiveContainer>
                   </div>
+                  <span className="text-[8px] text-zinc-500 font-semibold uppercase mb-2">Work Orders</span>
+                  <div className="flex-1 overflow-y-auto space-y-1">
+                     {[1,2,3,4,5].map(i => <div key={i} className="h-6 bg-white/[0.02] rounded-md border border-white/[0.02]" />)}
+                  </div>
+                  <div className="mt-2 grid grid-cols-5 gap-1 h-12 items-end">
+                    {[10,20,15,25,30].map((v, i) => <div key={i} className="bg-violet-500/30 rounded-t-sm" style={{ height: `${v}%` }} />)}
+                  </div>
+                </div>
+                
+                <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0">
+                  <span className="text-[8px] text-zinc-500 font-semibold uppercase mb-2">Specialists</span>
+                  <div className="flex-1 overflow-y-auto space-y-1">
+                    {[1,2,3,4,5,6].map(i => <div key={i} className="h-6 bg-white/[0.02] rounded-md border border-white/[0.02]" />)}
+                  </div>
+                  <div className="mt-2 text-[6px] text-zinc-600">Recent activity...</div>
                 </div>
               </div>
             </div>
