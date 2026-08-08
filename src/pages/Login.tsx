@@ -14,11 +14,13 @@ import { hasCompany } from "@/lib/auth-helpers";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PageTransition } from "@/components/PageTransition";
 import { SignFlowLogo } from "@/components/SignFlowLogo";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { signIn } = useAuth();
+  const { t, locale } = useLanguage();
   const { toast } = useToast();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -42,8 +44,8 @@ const Login = () => {
 
     if (!error) {
       toast({
-        title: "¡Bienvenido de vuelta!",
-        description: "Inicio de sesión exitoso.",
+        title: t.auth.login.welcomeBack,
+        description: t.auth.login.success,
       });
 
       // If there's an invite token in the URL, pass it to the invite validation page
@@ -71,23 +73,23 @@ const Login = () => {
   const handleForgotPassword = async () => {
     if (!formData.email.trim()) {
       toast({
-        title: "Ingresa tu email",
-        description: "Escribe tu email en el campo de arriba y luego haz clic en '¿Olvidaste tu contraseña?'",
+        title: t.auth.login.emailLabel,
+        description: t.auth.login.forgotPasswordPrompt,
         variant: "destructive",
       });
       return;
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
-      redirectTo: `${window.location.origin}/settings?tab=perfil`,
+      redirectTo: `${window.location.origin}/settings?tab=perfil&lang=${locale}`,
     });
 
     if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast({ title: t.auth.login.error, description: error.message, variant: "destructive" });
     } else {
       toast({
-        title: "Email enviado",
-        description: "Revisa tu correo para restablecer tu contraseña.",
+        title: t.auth.login.emailSent,
+        description: t.auth.login.emailSentDesc,
       });
     }
   };
@@ -112,8 +114,8 @@ const Login = () => {
             >
               <SignFlowLogo variant="technical" className="w-7 h-7 text-primary" />
             </motion.div>
-            <h1 className="text-4xl font-black tracking-tighter mb-4 text-white">Secure Command Access</h1>
-            <p className="text-zinc-400 font-medium tracking-tight">Enter your credentials to manage mission-critical operations with absolute authority.</p>
+            <h1 className="text-4xl font-black tracking-tighter mb-4 text-white">{t.auth.login.title}</h1>
+            <p className="text-zinc-400 font-medium tracking-tight">{t.auth.login.subtitle}</p>
           </motion.div>
 
           <motion.div
@@ -126,9 +128,9 @@ const Login = () => {
             
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2.5">
-                <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Corporate Identity</Label>
+                <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">{t.auth.login.emailLabel}</Label>
                 <Input
-                  id="email" type="email" placeholder="identity@enterprise.com"
+                  id="email" type="email" placeholder={t.auth.login.emailPlaceholder}
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   required className="glass input-glow h-12 rounded-xl border-white/10 text-white placeholder:text-zinc-600"
@@ -136,13 +138,13 @@ const Login = () => {
               </div>
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">Security Key</Label>
+                  <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500">{t.auth.login.passwordLabel}</Label>
                 </div>
                 <div className="relative">
                   <Input
                     id="password" 
                     type={showPassword ? "text" : "password"} 
-                    placeholder="••••••••"
+                    placeholder={t.auth.login.passwordPlaceholder}
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                     required className="glass input-glow h-12 rounded-xl border-white/10 text-white placeholder:text-zinc-600 pr-12"
@@ -166,7 +168,7 @@ const Login = () => {
                     className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md w-5 h-5"
                   />
                   <label htmlFor="remember" className="text-sm font-semibold leading-none cursor-pointer text-zinc-400 hover:text-white transition-colors">
-                    Maintain Authorization
+                    {t.auth.login.rememberMe}
                   </label>
                 </div>
                 <button
@@ -174,7 +176,7 @@ const Login = () => {
                   onClick={handleForgotPassword}
                   className="text-sm font-bold text-primary hover:text-primary/80 transition-colors"
                 >
-                  Authorization problems?
+                  {t.auth.login.forgotPassword}
                 </button>
               </div>
 
@@ -188,7 +190,7 @@ const Login = () => {
                 ) : (
                   <>
                     <LogIn className="w-5 h-5 mr-2" />
-                    Authorize Session
+                    {t.auth.login.submit}
                   </>
                 )}
               </Button>
@@ -201,9 +203,9 @@ const Login = () => {
             className="text-center mt-8"
           >
             <p className="text-sm text-muted-foreground">
-              New to the command center?{" "}
+              {t.auth.login.noAccount}{" "}
               <button onClick={() => navigate('/register')} className="font-semibold text-primary hover:underline underline-offset-4">
-                Initialize Account
+                {t.auth.login.registerLink}
               </button>
             </p>
           </motion.div>
