@@ -113,59 +113,7 @@ const Login = () => {
             </motion.div>
             <h1 className="text-3xl font-bold tracking-tight mb-2">Bienvenido de vuelta</h1>
             <p className="text-muted-foreground/80 whitespace-pre-wrap">
-# Análise e Proposta de UI/UX para Landing Page
-
-## Objetivo:
-
-Analisar a landing page atual e apresentar um mockup visual com uma proposta aprimorada de UI/UX para a homepage.
-
-## Requisitos:
-
-1.  **Análise da Landing Page Atual:**
-
-    *   Avaliar a estrutura, navegação, conteúdo, apelo visual e usabilidade da landing page existente.
-
-    *   Identificar pontos fortes e fracos em termos de UI (User Interface) e UX (User Experience).
-
-2.  **Proposta de Mockup Visual:**
-
-    *   Criar um mockup visual (design estático) que demonstre as melhorias propostas.
-
-    *   O mockup deve cobrir os principais elementos da homepage, incluindo:
-
-        *   Header (logo, navegação, CTA principal)
-
-        *   Hero Section (título, subtítulo, imagem/vídeo, CTA)
-
-        *   Seções de Features/Benefícios
-
-        *   Seção de Depoimentos/Prova Social
-
-        *   Seção de Preços (se aplicável)
-
-        *   Footer (links, informações de contato, redes sociais)
-
-    *   Focar em melhorias de:
-
-        *   Hierarquia visual
-
-        *   Clareza da mensagem
-
-        *   Chamadas para ação (CTAs)
-
-        *   Navegação intuitiva
-
-        *   Consistência visual
-
-        *   Acessibilidade (considerações básicas)
-
-        *   Experiência do usuário geral
-
-## Entregáveis:
-
-*   Um documento ou apresentação contendo o mockup visual da nova proposta de UI/UX para a homepage.
-
-*   Breves anotações explicando as principais mudanças e justificativas por trás das decisões de design.
+              continuemos
             </p>
           </motion.div>
 
