@@ -141,11 +141,8 @@ export default function HeroSection() {
 
               <div className="relative z-10 flex flex-col space-y-12">
                 <div className="flex items-center justify-between">
-                  <div className="relative">
-                    <div className="absolute -inset-4 rounded-full bg-violet-500/10 blur-xl animate-pulse" />
-                    <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-violet-600/80 to-fuchsia-600/80 shadow-lg shadow-violet-600/20 border border-white/10 backdrop-blur-md">
-                      <Target className="text-white/90" size={26} />
-                    </div>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-white/10 border border-white/10">
+                    <Target className="text-white/80" size={24} />
                   </div>
 
                   <div className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[8px] font-black tracking-[0.3em] text-violet-400/80 uppercase backdrop-blur-md">
@@ -166,10 +163,10 @@ export default function HeroSection() {
                 <div className="space-y-4">
                   <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.3em]">
                     <span className="text-white/40">{locale === 'es' ? 'Satisfacción Cliente' : 'Client Satisfaction'}</span>
-                    <span className="text-violet-400/80">99.9%</span>
+                    <span className="text-white/80">96.8%</span>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5 p-[1px]">
-                    <div className="h-full w-[99.9%] rounded-full bg-gradient-to-r from-violet-600/80 via-fuchsia-500/80 to-violet-600/80 bg-[length:200%_100%] animate-shimmer" />
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                    <div className="h-full w-[96.8%] rounded-full bg-white/20" />
                   </div>
                 </div>
 
