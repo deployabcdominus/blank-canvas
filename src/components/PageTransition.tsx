@@ -1,39 +1,54 @@
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 
 interface PageTransitionProps {
   children: ReactNode;
+  variant?: "fade" | "slide" | "zoom" | "parallax";
 }
 
-const pageVariants = {
-  initial: {
-    opacity: 0,
-    y: 10,
+const variants = {
+  fade: {
+    initial: { opacity: 0 },
+    in: { opacity: 1 },
+    out: { opacity: 0 },
   },
-  in: {
-    opacity: 1,
-    y: 0,
+  slide: {
+    initial: { opacity: 0, x: 20 },
+    in: { opacity: 1, x: 0 },
+    out: { opacity: 0, x: -20 },
   },
-  out: {
-    opacity: 0,
-    y: -10,
+  zoom: {
+    initial: { opacity: 0, scale: 0.95 },
+    in: { opacity: 1, scale: 1 },
+    out: { opacity: 0, scale: 1.05 },
   },
+  parallax: {
+    initial: { opacity: 0, y: 20, scale: 0.98 },
+    in: { opacity: 1, y: 0, scale: 1 },
+    out: { opacity: 0, y: -20, scale: 1.02 },
+  }
 };
 
-const pageTransition = {
-  duration: 0.3, // Slightly faster for snapier feel
-  ease: [0.22, 1, 0.36, 1] as [number, number, number, number], // Standard premium curve
+const defaultTransition = {
+  duration: 0.4,
+  ease: [0.23, 1, 0.32, 1] as [number, number, number, number],
 };
 
-export const PageTransition = ({ children }: PageTransitionProps) => {
+export const PageTransition = ({ children, variant = "fade" }: PageTransitionProps) => {
+  const location = useLocation();
+  
+  const activeVariant = variants[variant] || variants.fade;
+
   return (
     <motion.div
+      key={location.pathname}
       initial="initial"
       animate="in"
       exit="out"
-      variants={pageVariants}
-      transition={pageTransition}
-      className="min-h-screen"
+      variants={activeVariant}
+      transition={defaultTransition}
+      className="min-h-screen will-change-transform transform-gpu"
     >
       {children}
     </motion.div>

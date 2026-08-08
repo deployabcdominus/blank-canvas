@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { LanguageProvider } from "@/i18n/LanguageContext";
@@ -68,11 +68,66 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 5, // 5 minutes
       gcTime: 1000 * 60 * 30, // 30 minutes
       retry: 1,
-      // Aggressive caching for static-ish data
       placeholderData: (previousData: any) => previousData,
     },
   },
 });
+
+const AppContent = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <Suspense fallback={<PageLoader />}>
+        <Routes location={location} key={location.pathname}>
+          {/* Landing & Public Routes */}
+          <Route path="/" element={<Index />} />
+          <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/setup" element={<PostPaymentSetup />} />
+          <Route path="/access" element={<Access />} />
+          <Route path="/invite" element={<Invite />} />
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
+          
+          <Route path="/p/:proposalId" element={<ProposalApproval />} />
+          <Route path="/poi/:orderId" element={<POIPage />} />
+          <Route path="/print/:orderId" element={<PrintPage />} />
+
+          <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
+          <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+          <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/clients/:id" element={<ClientDetail />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/leads" element={<Leads />} />
+            <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
+            <Route path="/proposals" element={<Proposals />} />
+            <Route path="/work-orders" element={<WorkOrders />} />
+            <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/installation" element={<Installation />} />
+            <Route path="/map-hub" element={<MapHub />} />
+            <Route path="/installer-companies" element={<InstallerCompanies />} />
+            <Route path="/team-management" element={<TenantTeamManagement />} />
+            <Route path="/production" element={<Production />} />
+            <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
+            <Route path="/tecnico" element={<MobileTechnicianView />} />
+            <Route path="/audit-log" element={<AuditLog />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/pilot" element={<PilotDashboard />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </AnimatePresence>
+  );
+};
 
 const App = () => {
   return (
@@ -86,59 +141,7 @@ const App = () => {
                 <Sonner />
                 <BrowserRouter>
                   <NavigationProgressBar />
-                  <AnimatePresence mode="wait">
-                    <Suspense fallback={<PageLoader />}>
-                      <Routes>
-                        {/* Landing & Public Routes */}
-                        <Route path="/" element={<Index />} />
-                        <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
-                        <Route path="/success" element={<Success />} />
-                        <Route path="/setup" element={<PostPaymentSetup />} />
-                        <Route path="/access" element={<Access />} />
-                        <Route path="/invite" element={<Invite />} />
-                        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
-                        
-                        {/* Specialized/External Public Routes */}
-                        <Route path="/p/:proposalId" element={<ProposalApproval />} />
-                        <Route path="/poi/:orderId" element={<POIPage />} />
-                        <Route path="/print/:orderId" element={<PrintPage />} />
-
-                        {/* Superadmin Routes */}
-                        <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
-                        <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-
-                        {/* Tenant Routes */}
-                        <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
-                          <Route path="/dashboard" element={<Dashboard />} />
-                          <Route path="/clients" element={<Clients />} />
-                          <Route path="/clients/:id" element={<ClientDetail />} />
-                          <Route path="/projects" element={<Projects />} />
-                          <Route path="/leads" element={<Leads />} />
-                          <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
-                          <Route path="/proposals" element={<Proposals />} />
-                          <Route path="/work-orders" element={<WorkOrders />} />
-                          <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
-                          <Route path="/payments" element={<Payments />} />
-                          <Route path="/installation" element={<Installation />} />
-                          <Route path="/map-hub" element={<MapHub />} />
-                          <Route path="/installer-companies" element={<InstallerCompanies />} />
-                          <Route path="/team-management" element={<TenantTeamManagement />} />
-                          <Route path="/production" element={<Production />} />
-                          <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
-                          <Route path="/tecnico" element={<MobileTechnicianView />} />
-                          <Route path="/audit-log" element={<AuditLog />} />
-                          <Route path="/settings" element={<Settings />} />
-                          <Route path="/reports" element={<Reports />} />
-                          <Route path="/pilot" element={<PilotDashboard />} />
-                        </Route>
-
-                        {/* Fallback */}
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Suspense>
-                  </AnimatePresence>
+                  <AppContent />
                 </BrowserRouter>
               </SettingsProvider>
             </LanguageProvider>
