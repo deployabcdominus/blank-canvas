@@ -155,7 +155,8 @@ const MacBookMockup = () => {
             aspectRatio: "16/9",
           }}
         >
-            <div className="h-full w-full grid grid-rows-[auto_1fr] gap-4 p-4 overflow-hidden bg-zinc-950">
+            <div className="absolute inset-0">
+              <div className="h-full w-full grid grid-rows-[auto_1fr] gap-4 p-4 overflow-hidden bg-zinc-950">
               {/* Top row: Sidebar + KPI cards */}
               <div className="grid grid-cols-[160px_1fr] gap-4 h-full min-h-0">
                 <div className="flex flex-col bg-white/[0.015] rounded-lg border border-white/[0.04] p-3 gap-2">
