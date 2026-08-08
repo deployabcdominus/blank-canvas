@@ -187,7 +187,7 @@ export const AddLeadModal = ({ isOpen, onClose, onAddLead }: AddLeadModalProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] sm:max-w-[600px] max-h-[95vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{t.addLeadModal.title}</DialogTitle>
         </DialogHeader>
