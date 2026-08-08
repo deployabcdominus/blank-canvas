@@ -270,8 +270,7 @@ const MacBookMockup = () => {
                         { n: "M. García", s: "On Site", c: "bg-violet-400" },
                         { n: "R. Torres", s: "Alert", c: "bg-orange-400" },
                         { n: "A. Méndez", s: "Free", c: "bg-zinc-500" },
-                        tech => null, // Placeholder to ensure logic remains similar
-                      ].filter(t => typeof t !== 'function').map((tech: any, i) => (
+                      ].map((tech: any, i) => (
                         <div key={i} className="flex items-center gap-2 px-1.5 py-1 rounded bg-white/[0.02] border border-white/[0.03]">
                           <div className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${tech.c}`} />
                           <span className="text-[6px] md:text-[7px] text-zinc-400 font-medium truncate flex-1">{tech.n}</span>
@@ -297,7 +296,6 @@ const MacBookMockup = () => {
                 </div>
               </div>
             </div>
-          </div>
           <div className="absolute top-[1px] left-1/2 -translate-x-1/2 w-2 h-2 md:w-3 md:h-3 rounded-full bg-zinc-800 border border-zinc-700/30 z-10" />
         </div>
         <div className="relative">
