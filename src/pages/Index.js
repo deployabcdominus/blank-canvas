@@ -1,0 +1,785 @@
+import { useRef, useEffect, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { PageTransition } from "@/components/PageTransition";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { SignFlowLogo } from "@/components/SignFlowLogo";
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import { STRIPE_TIERS } from "@/lib/stripe-tiers";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { ArrowRight, Check, Zap, Building, Star, ChevronRight, Shield, CheckCircle2, Monitor, Thermometer, Signpost, Wrench, PenTool, WifiOff, Twitter, Instagram, Linkedin, ClipboardCheck } from "lucide-react";
+import { ResponsiveContainer, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
+import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/ui/accordion";
+import { toast } from "@/hooks/use-toast";
+/* ─── Shimmer overlay for premium hover ─── */
+const ShimmerOverlay = () => (<div className="absolute inset-0 -z-0 overflow-hidden rounded-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+    <div className="absolute inset-0" style={{
+        background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 55%, transparent 60%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer-sweep 2s ease-in-out infinite",
+    }}/>
+  </div>);
+/* ─── Scroll-reveal wrapper ─── */
+const Reveal = ({ children, className = "", delay = 0, }) => {
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true, margin: "-60px" });
+    return (<motion.div ref={ref} initial={{ opacity: 0, y: 44 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] }} className={className}>
+      {children}
+    </motion.div>);
+};
+/* ─── Animated price ─── */
+const AnimatedPrice = ({ value }) => (<AnimatePresence mode="wait">
+    <motion.span key={value} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }} className="text-5xl font-extrabold inline-block tracking-tight">
+      ${value}
+    </motion.span>
+  </AnimatePresence>);
+/* ─── Section Badge (Violet) ─── */
+const SectionBadge = ({ icon: Icon, label }) => (<span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-purple-400/70 mb-6 px-3.5 py-1.5 rounded-full border border-purple-500/15 bg-purple-500/[0.06]">
+    <Icon className="w-3.5 h-3.5"/>
+    {label}
+  </span>);
+/* ─── Trust Stars ─── */
+const TrustStars = () => {
+    const { t } = useLanguage();
+    return (<div className="flex flex-col items-center gap-3 mb-10">
+      <div className="flex items-center gap-1">
+        {[...Array(5)].map((_, i) => (<Star key={i} className="w-5 h-5 fill-violet-500 text-violet-500"/>))}
+      </div>
+      <p className="text-[12px] font-medium text-zinc-500 tracking-wide uppercase">
+        {t.landing.hero.trust}
+      </p>
+    </div>);
+};
+/* ─── CountUpValue component ─── */
+const CountUpValue = ({ value }) => {
+    const [count, setCount] = useState(0);
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true });
+    useEffect(() => {
+        if (inView) {
+            let start = 0;
+            const end = value;
+            const duration = 2000;
+            const stepTime = Math.abs(Math.floor(duration / end));
+            const timer = setInterval(() => {
+                start += 1;
+                setCount(start);
+                if (start >= end)
+                    clearInterval(timer);
+            }, stepTime);
+            return () => clearInterval(timer);
+        }
+    }, [inView, value]);
+    return <span ref={ref}>{count}</span>;
+};
+/* ═══════════════════════════════════════════════════════ */
+/*     MACBOOK PRO MOCKUP (HERO)                           */
+/* ═══════════════════════════════════════════════════════ */
+const MacBookMockup = () => {
+    const { t } = useLanguage();
+    const m = t.landing.mockup;
+    return (<div className="relative w-full max-w-5xl mx-auto" style={{ perspective: "100rem" }}>
+      <div className="absolute -inset-[10vw] sm:-inset-40 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(168,85,247,0.15),transparent_60%)] pointer-events-none"/>
+      <motion.div initial={{ opacity: 0, y: 70, rotateX: 12 }} animate={{ opacity: 1, y: 0, rotateX: 4 }} transition={{ duration: 1.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} className="relative">
+        <div className="relative rounded-t-[1.5rem] sm:rounded-t-[2rem] bg-zinc-950 overflow-hidden" style={{
+            aspectRatio: "16/9",
+            height: "auto",
+            minHeight: "220px"
+        }}>
+            <div className="absolute inset-0">
+              <div className="h-full w-full grid grid-rows-[auto_1fr] md:gap-4 gap-2 p-2 md:p-4 overflow-hidden bg-zinc-950">
+                {/* Desktop Header Content (hidden on small mobile) */}
+                <div className="hidden md:grid grid-cols-[160px_1fr] gap-4 h-full min-h-0">
+                  <div className="flex flex-col bg-white/[0.015] rounded-lg border border-white/[0.04] p-3 gap-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <SignFlowLogo variant="technical" className="w-5 h-5 text-violet-500"/>
+                      <span className="text-[10px] font-bold text-zinc-300">SignFlow</span>
+                    </div>
+                    {["Dashboard", "Orders", "Specialists", "Accounts"].map((item) => (<div key={item} className="flex items-center gap-2 px-2 py-1.5 rounded-md text-[8px] font-medium text-zinc-600 hover:bg-white/[0.05] cursor-default">
+                         <span className="w-1.5 h-1.5 rounded-full bg-zinc-800"/>
+                         {item}
+                      </div>))}
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-3 min-h-0">
+                    <div className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-3 flex flex-col justify-between">
+                      <div>
+                        <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">Monthly Revenue</p>
+                        <p className="text-xl font-bold text-white/85">$184K</p>
+                      </div>
+                      <div className="h-8 mt-1">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={[{ v: 10 }, { v: 15 }, { v: 12 }, { v: 20 }, { v: 18 }, { v: 25 }, { v: 30 }]}>
+                            <Line type="monotone" dataKey="v" stroke="#8b5cf6" strokeWidth={2} dot={false}/>
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                    {[
+            { label: "Active Orders", value: 42, color: "text-violet-400" },
+            { label: "Operators", value: 18, color: "text-emerald-400" },
+            { label: "Critical SLA", value: 3, color: "text-orange-400" },
+        ].map((kpi) => (<div key={kpi.label} className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-3">
+                        <p className="text-[7px] text-zinc-600 uppercase tracking-wider font-medium">{kpi.label}</p>
+                        <p className="text-xl font-bold text-white/85 mt-1">{kpi.value}</p>
+                        <p className={`text-[7px] font-semibold mt-1 ${kpi.color}`}>+12%</p>
+                      </div>))}
+                  </div>
+                </div>
+
+                {/* Mobile Header (simplified KPI cards) */}
+                <div className="md:hidden grid grid-cols-3 gap-2">
+                  {[
+            { label: "Rev", value: "$184K", color: "text-violet-400" },
+            { label: "Orders", value: 42, color: "text-emerald-400" },
+            { label: "Alerts", value: 3, color: "text-orange-400" },
+        ].map((kpi) => (<div key={kpi.label} className="rounded-lg border border-white/[0.04] bg-white/[0.015] p-2">
+                      <p className="text-[6px] text-zinc-600 uppercase font-medium truncate">{kpi.label}</p>
+                      <p className="text-xs font-bold text-white/85 mt-0.5">{kpi.value}</p>
+                    </div>))}
+                </div>
+                
+                {/* Main Content Area */}
+                <div className="grid md:grid-cols-[1fr_240px] grid-cols-1 md:gap-4 gap-2 min-h-0 overflow-hidden">
+                  {/* Left Column: Work Orders */}
+                  <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0 relative">
+                    <div className="absolute top-3 right-3 w-8 h-8 md:w-10 md:h-10">
+                       <ResponsiveContainer width="100%" height="100%">
+                         <PieChart>
+                           <Pie data={[{ v: 50 }, { v: 30 }, { v: 20 }]} dataKey="v" stroke="none" innerRadius={8} outerRadius={15}>
+                              <Cell fill="#3b82f6"/><Cell fill="#10b981"/><Cell fill="#f97316"/>
+                           </Pie>
+                         </PieChart>
+                       </ResponsiveContainer>
+                    </div>
+                    <span className="text-[7px] md:text-[8px] text-zinc-500 font-semibold uppercase mb-2">Work Orders</span>
+                    <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0 pr-1 custom-scrollbar">
+                       {[
+            { id: "#ORD-4201", client: "Delta Corp", status: "Production", color: "bg-blue-400" },
+            { id: "#ORD-4202", client: "Skyline Ltd", status: "Installation", color: "bg-emerald-400" },
+            { id: "#ORD-4203", client: "Urban Signs", status: "Review", color: "bg-orange-400" },
+            { id: "#ORD-4204", client: "Vega Realty", status: "Installation", color: "bg-emerald-400" },
+            { id: "#ORD-4205", client: "Coastal Group", status: "Production", color: "bg-blue-400" },
+        ].map(order => (<div key={order.id} className="flex items-center gap-2 p-1 md:p-1.5 rounded bg-white/[0.02] border border-white/[0.03]">
+                           <div className={`w-1 h-2 md:h-3 rounded-full ${order.color}`}/>
+                           <span className="text-[6px] md:text-[7px] font-bold text-zinc-300 truncate flex-1">{order.client}</span>
+                           <span className="text-[5px] md:text-[6px] text-zinc-500 uppercase">{order.status}</span>
+                         </div>))}
+                    </div>
+                    {/* Weekly chart (Desktop only or wider mobile) */}
+                    <div className="mt-2 md:mt-3 pt-2 md:pt-3 border-t border-white/[0.04] hidden xs:block">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[6px] md:text-[7px] text-zinc-500 font-bold uppercase">Weekly Trend</span>
+                        <span className="text-[6px] md:text-[7px] text-violet-400 font-bold">+14%</span>
+                      </div>
+                      <div className="h-6 md:h-10">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={[{ v: 40 }, { v: 60 }, { v: 45 }, { v: 80 }, { v: 55 }]}>
+                            <Bar dataKey="v" fill="#8b5cf6" radius={[2, 2, 0, 0]} opacity={0.6}/>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Right Column: Specialists / Activity */}
+                  <div className="bg-white/[0.01] rounded-lg border border-white/[0.04] p-3 flex flex-col min-h-0 overflow-hidden">
+                    <span className="text-[7px] md:text-[8px] text-zinc-500 font-semibold uppercase mb-2 tracking-wider">Active Specialists</span>
+                    <div className="flex-1 overflow-y-auto space-y-1 pr-1 min-h-0 custom-scrollbar">
+                      {[
+            { n: "C. López", s: "En Route", c: "bg-emerald-400" },
+            { n: "M. García", s: "On Site", c: "bg-violet-400" },
+            { n: "R. Torres", s: "Alert", c: "bg-orange-400" },
+            { n: "A. Méndez", s: "Free", c: "bg-zinc-500" },
+        ].map((tech, i) => (<div key={i} className="flex items-center gap-2 px-1.5 py-1 rounded bg-white/[0.02] border border-white/[0.03]">
+                          <div className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${tech.c}`}/>
+                          <span className="text-[6px] md:text-[7px] text-zinc-400 font-medium truncate flex-1">{tech.n}</span>
+                          <span className="text-[5px] md:text-[6px] text-zinc-600">{tech.s}</span>
+                        </div>))}
+                    </div>
+                    {/* Live Feed (Desktop/Large Mobile only) */}
+                    <div className="mt-2 md:mt-3 pt-2 md:pt-3 border-t border-white/[0.04] hidden sm:block">
+                      <span className="text-[6px] md:text-[7px] text-zinc-500 font-semibold uppercase mb-1 block">Live Feed</span>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1">
+                          <div className="w-1 h-1 rounded-full bg-emerald-400"/>
+                          <span className="text-[5px] md:text-[6px] text-zinc-600 truncate">López @ Delta Corp</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-1 h-1 rounded-full bg-violet-400"/>
+                          <span className="text-[5px] md:text-[6px] text-zinc-600 truncate">Torres Completed</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute top-[1px] left-1/2 -translate-x-1/2 w-2 h-2 md:w-3 md:h-3 rounded-full bg-zinc-800 border border-zinc-700/30 z-10"/>
+        </></div>
+        ,
+            <div className="relative">
+          <div className="w-[103%] -ml-[1.5%] h-[10px] bg-gradient-to-b from-zinc-700/40 to-zinc-800/60 rounded-b-[4px]"/>
+          <div className="w-[70%] mx-auto h-[4px] bg-zinc-700/20 rounded-b-xl"/>
+        </div>);
+};
+motion.div >
+    <div className="w-[85%] mx-auto h-20 mt-2 opacity-20" style={{
+            background: "linear-gradient(to bottom, rgba(168,85,247,0.12), transparent 80%)",
+            filter: "blur(12px)",
+            transform: "scaleY(-0.5)",
+        }}/>;
+div >
+;
+;
+;
+/* ═══════════════════════════════════════════════════════ */
+/*     TRUSTED BY LOGOS                                    */
+/* ═══════════════════════════════════════════════════════ */
+const trustedLogos = [
+    { name: "TechServ IT", icon: Monitor },
+    { name: "AirControl HVAC", icon: Thermometer },
+    { name: "VisualSign Co.", icon: Signpost },
+    { name: "BuildPro", icon: Building },
+    { name: "MaintainX", icon: Wrench },
+];
+/* ─── Floating Mobile CTA ─── */
+const FloatingCTA = ({ onClick, show, label }) => (<AnimatePresence>
+    {show && (<motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className="fixed bottom-6 left-6 right-6 z-[60] md:hidden">
+        <Button onClick={onClick} className="w-full h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold shadow-[0_8px_30px_rgba(139,92,246,0.4)] border border-white/10">
+          {label}
+          <ArrowRight className="w-4 h-4 ml-2"/>
+        </Button>
+      </motion.div>)}
+  </AnimatePresence>);
+/* ═══════════════════════════════════════════════════════ */
+/*                       MAIN PAGE                        */
+/* ═══════════════════════════════════════════════════════ */
+const Index = () => {
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    const { t, locale } = useLanguage();
+    const L = t.landing;
+    const [scrolled, setScrolled] = useState(false);
+    const [isAnnual, setIsAnnual] = useState(false);
+    const [loadingPlan, setLoadingPlan] = useState(null);
+    const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+    useEffect(() => {
+        const onScroll = () => {
+            setScrolled(window.scrollY > 20);
+            setShowFloatingCTA(window.scrollY > 600); // Show after hero
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+    const handleCheckout = async (tierKey) => {
+        setLoadingPlan(tierKey);
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                navigate(`/register?plan=${tierKey}`);
+                return;
+            }
+            const { data, error } = await supabase.functions.invoke("create-checkout", {
+                body: { priceId: STRIPE_TIERS[tierKey].price_id },
+            });
+            if (error)
+                throw error;
+            if (data?.url)
+                window.open(data.url, "_blank");
+        }
+        catch (e) {
+            toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
+        finally {
+            setLoadingPlan(null);
+        }
+    };
+    const scrollTo = (id) => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    };
+    /* ── Industries data (i18n) ── */
+    const industries = [
+        {
+            icon: Monitor,
+            title: L.industries.it.title,
+            desc: L.industries.it.desc,
+            example: L.industries.it.example,
+            accent: "from-blue-500/20 to-cyan-500/10",
+            borderHover: "hover:border-violet-500/25",
+            iconColor: "text-blue-400/60 group-hover:text-blue-400",
+        },
+        {
+            icon: Thermometer,
+            title: L.industries.hvac.title,
+            desc: L.industries.hvac.desc,
+            example: L.industries.hvac.example,
+            accent: "from-orange-500/20 to-red-500/10",
+            borderHover: "hover:border-violet-500/25",
+            iconColor: "text-orange-400/60 group-hover:text-orange-400",
+        },
+        {
+            icon: Signpost,
+            title: L.industries.signage.title,
+            desc: L.industries.signage.desc,
+            example: L.industries.signage.example,
+            accent: "from-purple-500/20 to-pink-500/10",
+            borderHover: "hover:border-violet-500/25",
+            iconColor: "text-purple-400/60 group-hover:text-purple-400",
+        },
+        {
+            icon: Wrench,
+            title: L.industries.maintenance.title,
+            desc: L.industries.maintenance.desc,
+            example: L.industries.maintenance.example,
+            accent: "from-emerald-500/20 to-teal-500/10",
+            borderHover: "hover:border-violet-500/25",
+            iconColor: "text-emerald-400/60 group-hover:text-emerald-400",
+        },
+    ];
+    /* ── Crown features (i18n) ── */
+    const crownFeatures = [
+        { icon: ClipboardCheck, title: L.features.techSheet.title, desc: L.features.techSheet.desc, badge: null },
+        { icon: PenTool, title: L.features.signature.title, desc: L.features.signature.desc, badge: "Pro" },
+        { icon: WifiOff, title: L.features.offline.title, desc: L.features.offline.desc, badge: "Elite" },
+    ];
+    /* ── Plans (i18n) ── */
+    const plans = [
+        { key: "start", name: "Start", priceMonthly: 29, priceAnnual: 23, features: L.pricing.start.features, recommended: false },
+        { key: "pro", name: "Pro", priceMonthly: 79, priceAnnual: 63, features: L.pricing.pro.features, recommended: true },
+        { key: "elite", name: "Elite", priceMonthly: 149, priceAnnual: 119, features: L.pricing.elite.features, recommended: false },
+    ];
+    /* ── Footer columns ── */
+    const footerCols = [
+        { title: L.footer.product, links: L.footer.productLinks },
+        { title: L.footer.company, links: L.footer.companyLinks },
+        { title: L.footer.legal, links: L.footer.legalLinks },
+    ];
+    return (<PageTransition>
+      <div className="noise-bg min-h-screen bg-zinc-950 text-zinc-200 overflow-x-hidden scroll-smooth selection:bg-purple-500/20 selection:text-white">
+        <style>{`
+          @keyframes shimmer-sweep {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+          @keyframes neon-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.3), 0 0 40px rgba(139,92,246,0.15), 0 0 80px rgba(139,92,246,0.05); }
+            50% { box-shadow: 0 0 30px rgba(139,92,246,0.5), 0 0 60px rgba(139,92,246,0.25), 0 0 100px rgba(139,92,246,0.08); }
+          }
+          @keyframes violet-glow-card {
+            0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03); }
+            50% { box-shadow: 0 0 30px rgba(139,92,246,0.12), 0 0 60px rgba(139,92,246,0.06); }
+          }
+        `}</style>
+
+        {/* ── Background layers ── */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+          <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "4rem 4rem" }}/>
+          <div className="absolute -top-[25%] -left-[15%] w-[60vw] h-[60vw] max-w-[1000px] max-h-[1000px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #7c3aed, transparent 55%)", filter: "blur(11.25rem)" }}/>
+          <div className="absolute -bottom-[25%] -right-[15%] w-[55vw] h-[55vw] max-w-[900px] max-h-[900px] opacity-[0.18]" style={{ background: "radial-gradient(ellipse at center, #d946ef, transparent 55%)", filter: "blur(11.25rem)" }}/>
+          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[45vw] h-[30vw] max-w-[700px] max-h-[500px] opacity-[0.06]" style={{ background: "radial-gradient(ellipse at center, #f97316, transparent 55%)", filter: "blur(11.25rem)" }}/>
+        </div>
+
+        {/* ═══════════ HEADER ═══════════ */}
+        <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]" : "bg-transparent"}`}>
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 py-3">
+            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[2.75rem]" aria-label="SignFlow - Home">
+              <div className="flex-shrink-0 w-[2.125rem] h-[2.125rem] sm:w-[2.5rem] sm:h-[2.5rem] md:w-[2.75rem] md:h-[2.75rem] flex items-center justify-center">
+                <SignFlowLogo variant="technical" className="w-[1.75rem] h-[1.75rem] sm:w-[2rem] sm:h-[2rem] md:w-[2.25rem] md:h-[2.25rem] text-violet-500"/>
+              </div>
+              <span className="font-bold tracking-[-0.03em] text-[1.0625rem] sm:text-[1.1875rem] md:text-[1.3125rem] text-zinc-100">SignFlow</span>
+            </a>
+
+            <nav className="hidden md:flex items-center gap-10 text-[13px] font-medium text-zinc-500">
+              {[
+            { label: L.nav.industries, id: "industries" },
+            { label: L.nav.pricing, id: "pricing" },
+            { label: L.nav.faq, id: "faq" },
+        ].map((item) => (<button key={item.id} onClick={() => scrollTo(item.id)} className="relative hover:text-zinc-200 transition-colors duration-300">
+                  {item.label}
+                </button>))}
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              {user ? (<Button size="sm" onClick={() => navigate("/dashboard")} className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_4px_24px_rgba(139,92,246,0.4)]">
+                  {L.nav.goToDashboard}
+                </Button>) : (<>
+                  <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px] border border-white/[0.06] rounded-full px-5">
+                    {L.nav.login}
+                  </Button>
+                  <Button size="sm" onClick={() => scrollTo("pricing")} className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-5 text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_4px_24px_rgba(139,92,246,0.4)]">
+                    {L.nav.getStarted}
+                  </Button>
+                </>)}
+            </div>
+          </div>
+        </header>
+
+        {/* ═══════════ HERO ═══════════ */}
+        <section className="relative pt-20 px-5">
+          <ContainerScroll titleComponent={<div className="text-center max-w-4xl mx-auto mb-10">
+                <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+                  <TrustStars />
+
+                  <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-7xl font-black leading-[0.95] tracking-tighter mb-10">
+                    <span className="bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+                      {L.hero.titleLine1}
+                    </span>
+                    <br />
+                    <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                      {L.hero.titleLine2}
+                    </span>
+                  </h1>
+
+                  <p className="text-[15px] sm:text-lg md:text-xl font-normal text-zinc-400 leading-[1.75] max-w-2xl mx-auto mb-14">
+                    {L.hero.subtitle}
+                  </p>
+
+                  <div className="flex flex-col items-center gap-6">
+                    <div className="flex flex-wrap items-center justify-center gap-4">
+                      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                        <Button size="lg" onClick={() => scrollTo("pricing")} className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 rounded-full px-12 h-16 text-lg font-bold transition-all duration-300 group shadow-[0_4px_30px_rgba(139,92,246,0.35)] hover:shadow-[0_6px_50px_rgba(139,92,246,0.6)]">
+                          <span className="relative z-10 flex items-center">
+                            {L.hero.ctaPrimary}
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
+                          </span>
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+                background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
+                backgroundSize: "200% 100%",
+                animation: "shimmer-sweep 1.8s ease-in-out infinite",
+            }}/>
+                        </Button>
+                      </motion.div>
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                        <Button variant="outline" size="lg" onClick={() => scrollTo("industries")} className="rounded-full px-12 h-16 text-lg font-medium border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:border-purple-500/15 bg-transparent transition-all duration-300">
+                          {L.hero.ctaSecondary}
+                        </Button>
+                      </motion.div>
+                    </div>
+                    
+                    {/* CRO: Reduced Risk & Microcopy */}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="flex items-center gap-4 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60"/>
+                        {locale === 'es' ? 'Sin costos ocultos' : 'No hidden costs'}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-zinc-800"/>
+                      <span className="flex items-center gap-1.5">
+                        <Zap className="w-3.5 h-3.5 text-amber-500/60"/>
+                        {locale === 'es' ? 'Configuración en 3 min' : '3-min setup'}
+                      </span>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>}>
+            <MacBookMockup />
+          </ContainerScroll>
+
+          <div className="relative max-w-7xl mx-auto -mt-20">
+            {/* ── Trusted By ── */}
+            <Reveal delay={0.2}>
+              <div className="mt-10 sm:mt-16">
+                <p className="text-center text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 mb-8">
+                  {L.trusted}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-40">
+                  {trustedLogos.map((logo) => {
+            const Icon = logo.icon;
+            return (<div key={logo.name} className="flex items-center gap-2 text-zinc-500">
+                        <Icon className="w-4 h-4"/>
+                        <span className="text-[13px] font-semibold tracking-tight">{logo.name}</span>
+                      </div>);
+        })}
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        <div className="h-12 sm:h-20"/>
+
+        {/* ═══════════ INDUSTRIES GRID ═══════════ */}
+        <section id="industries" className="py-36 md:py-44 lg:py-52 px-5 relative">
+          <div className="max-w-6xl mx-auto">
+            <Reveal>
+              <div className="text-center mb-20">
+                <SectionBadge icon={Building} label={L.industries.badge}/>
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] lg:text-5xl">
+                  <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">
+                    {L.industries.titleLine1}
+                  </span>
+                  <br className="hidden sm:block"/>
+                  <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">
+                    {L.industries.titleLine2}
+                  </span>
+                </h2>
+                <p className="mt-7 text-zinc-400 max-w-lg mx-auto text-[15px]">{L.industries.subtitle}</p>
+              </div>
+            </Reveal>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {industries.map((ind, i) => {
+            const Icon = ind.icon;
+            return (<Reveal key={ind.title} delay={i * 0.1}>
+                    <motion.div whileHover={{ y: -6 }} className={`group relative flex flex-col p-8 rounded-3xl border border-white/[0.08] ${ind.borderHover} bg-white/[0.03] backdrop-blur-2xl transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden`}>
+                      <ShimmerOverlay />
+                      <div className={`absolute inset-0 bg-gradient-to-br ${ind.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`}/>
+                      <div className="relative z-10">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-white/[0.08] bg-white/[0.03] group-hover:bg-white/[0.06] transition-all duration-500">
+                          <Icon className={`w-5 h-5 transition-all duration-500 ${ind.iconColor}`}/>
+                        </div>
+                        <h3 className="text-lg font-bold text-white mb-2 tracking-[-0.01em]">{ind.title}</h3>
+                        <p className="text-[13px] text-zinc-400 leading-relaxed mb-5">{ind.desc}</p>
+                        <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 + i * 0.1 }} className="flex items-center gap-2 text-[11px] text-purple-400/70 bg-purple-500/[0.06] border border-purple-500/12 px-3 py-2 rounded-lg">
+                          <ArrowRight className="w-3 h-3"/>
+                          {ind.example}
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  </Reveal>);
+        })}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ FEATURE SHOWCASE ═══════════ */}
+        <section id="features" className="py-36 md:py-44 lg:py-52 px-5 relative">
+          <div className="absolute inset-0 bg-zinc-950/50 pointer-events-none"/>
+          <div className="max-w-5xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-20">
+                <SectionBadge icon={Zap} label={L.features.badge}/>
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] lg:text-5xl">
+                  <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">{L.features.title}</span>
+                </h2>
+                <p className="mt-7 text-zinc-400 max-w-lg mx-auto text-[15px]">{L.features.subtitle}</p>
+              </div>
+            </Reveal>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+              {crownFeatures.map((f, i) => {
+            const Icon = f.icon;
+            return (<Reveal key={f.title} delay={i * 0.12}>
+                    <motion.div whileHover={{ y: -6, borderColor: "rgba(139,92,246,0.25)" }} className="group relative flex flex-col p-8 sm:p-9 rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl transition-all duration-500 h-full hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]">
+                      <ShimmerOverlay />
+                      <div className="relative z-10 flex flex-col h-full">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center border border-purple-500/[0.12] bg-purple-500/[0.05] group-hover:border-purple-500/25 group-hover:bg-purple-500/[0.08] transition-all duration-500">
+                            <Icon className="w-5 h-5 text-purple-400/50 group-hover:text-purple-400/80 transition-all duration-500"/>
+                          </div>
+                          {f.badge && (<span className="text-[9px] font-bold uppercase tracking-wider text-purple-400/70 bg-purple-500/[0.08] border border-purple-500/20 px-2.5 py-1 rounded-full">
+                              {f.badge}
+                            </span>)}
+                        </div>
+                        <h3 className="text-[17px] font-bold text-white mb-3 tracking-[-0.01em]">{f.title}</h3>
+                        <p className="text-[13px] text-zinc-400 leading-[1.8] flex-1">{f.desc}</p>
+                      </div>
+                    </motion.div>
+                  </Reveal>);
+        })}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ PRICING ═══════════ */}
+        <section id="pricing" className="py-36 md:py-44 lg:py-52 px-5 relative">
+          <div className="max-w-5xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-14">
+                <SectionBadge icon={Zap} label={L.pricing.badge}/>
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] lg:text-5xl">
+                  <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">{L.pricing.titleLine1}</span>
+                  <br className="hidden sm:block"/>
+                  <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">{L.pricing.titleLine2}</span>
+                </h2>
+                <p className="mt-7 text-zinc-400 text-[15px]">{L.pricing.subtitle}</p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <div className="flex items-center justify-center gap-4 mb-20">
+                <span className={`text-sm font-medium transition-colors duration-300 ${!isAnnual ? "text-zinc-200" : "text-zinc-500"}`}>{L.pricing.monthly}</span>
+                <button onClick={() => setIsAnnual(!isAnnual)} className={`relative w-14 h-[30px] rounded-full transition-all duration-400 ${isAnnual ? "bg-gradient-to-r from-violet-500 to-purple-600 shadow-[0_0_12px_rgba(139,92,246,0.2)]" : "bg-zinc-800"}`} aria-label="Toggle annual billing">
+                  <motion.div className="absolute top-[3px] w-6 h-6 rounded-full bg-white shadow-lg" animate={{ left: isAnnual ? "calc(100% - 27px)" : "3px" }} transition={{ type: "spring", stiffness: 500, damping: 30 }}/>
+                </button>
+                <span className={`text-sm font-medium transition-colors duration-300 ${isAnnual ? "text-zinc-200" : "text-zinc-500"}`}>{L.pricing.annual}</span>
+                <AnimatePresence>
+                  {isAnnual && (<motion.span initial={{ opacity: 0, scale: 0.8, x: -8 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.8, x: -8 }} className="text-xs font-bold text-emerald-400/70 bg-emerald-500/[0.06] border border-emerald-500/12 px-3 py-1 rounded-full">
+                      {L.pricing.save20}
+                    </motion.span>)}
+                </AnimatePresence>
+              </div>
+            </Reveal>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 items-start">
+              {plans.map((plan, i) => {
+            const price = isAnnual ? plan.priceAnnual : plan.priceMonthly;
+            return (<Reveal key={plan.key} delay={i * 0.1}>
+                    <motion.div whileHover={{ y: -6 }} className={`group relative flex flex-col rounded-3xl transition-all duration-500 ${plan.recommended
+                    ? "border-2 border-purple-500/30 bg-white/[0.04] backdrop-blur-2xl md:scale-[1.04]"
+                    : "border border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl opacity-80 hover:opacity-100"}`} style={plan.recommended ? { animation: "violet-glow-card 4s ease-in-out infinite" } : {}}>
+                      <ShimmerOverlay />
+                      {plan.recommended && (<div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+                          <span className="bg-gradient-to-b from-violet-500 to-purple-600 text-white text-[10px] font-bold px-5 py-1.5 rounded-full shadow-[0_2px_16px_rgba(139,92,246,0.3)] flex items-center gap-1.5">
+                            <Star className="w-3 h-3 fill-current"/>
+                            {L.pricing.mostPopular}
+                          </span>
+                        </div>)}
+                      <div className="relative z-10 p-8 sm:p-9">
+                        <h3 className="text-xl font-bold mb-1 tracking-[-0.01em] text-white">{plan.name}</h3>
+                        {plan.recommended && <p className="text-[11px] text-purple-400/50 font-medium mb-4">{L.pricing.chosenBy}</p>}
+                        {!plan.recommended && <div className="mb-4"/>}
+                        <div className="flex items-baseline gap-1.5 mb-1">
+                          <AnimatedPrice value={price}/>
+                          <span className="text-sm text-zinc-600 font-medium">{L.pricing.perMonth}</span>
+                        </div>
+                        {isAnnual && (<motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="text-[11px] text-zinc-600 mb-7">
+                            {L.pricing.billedAnnually} · <span className="line-through text-zinc-700">${plan.priceMonthly}{L.pricing.perMonth}</span>
+                          </motion.p>)}
+                        {!isAnnual && <div className="mb-7"/>}
+                        <ul className="space-y-4 mb-10">
+                          {plan.features.map((f, fi) => (<motion.li key={f} className="flex items-start gap-3 text-[13px] text-zinc-400" initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 + fi * 0.04 }}>
+                              <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.recommended ? "text-purple-400/60" : "text-zinc-600"}`}/>
+                              {f}
+                            </motion.li>))}
+                        </ul>
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                          <Button onClick={() => handleCheckout(plan.key)} disabled={loadingPlan === plan.key} className={`relative overflow-hidden w-full rounded-xl h-12 font-semibold text-[14px] transition-all duration-500 group/btn ${plan.recommended
+                    ? "bg-violet-600 text-white hover:bg-violet-700 shadow-[0_2px_16px_rgba(139,92,246,0.2)] hover:shadow-[0_4px_24px_rgba(139,92,246,0.3)]"
+                    : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/[0.06] hover:border-purple-500/15"}`}>
+                            <span className="relative z-10 flex items-center justify-center">
+                              {loadingPlan === plan.key ? L.pricing.processing : `${L.pricing.choose} ${plan.name}`}
+                              {loadingPlan !== plan.key && <ChevronRight className="w-4 h-4 ml-1"/>}
+                            </span>
+                            <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" style={{
+                    background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)",
+                    backgroundSize: "200% 100%",
+                    animation: "shimmer-sweep 1.8s ease-in-out infinite",
+                }}/>
+                          </Button>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  </Reveal>);
+        })}
+            </div>
+            <div className="mt-14 text-center">
+              <p className="text-[12px] text-zinc-600 font-medium tracking-wide uppercase flex items-center justify-center gap-2">
+                <Shield className="w-3.5 h-3.5"/>
+                {locale === 'es' ? 'Cancela en cualquier momento • 14 días de garantía • Pago seguro' : 'Cancel anytime • 14-day money-back guarantee • Secure checkout'}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ FAQ ═══════════ */}
+        <section id="faq" className="py-36 md:py-44 lg:py-52 px-5 relative">
+          <div className="max-w-3xl mx-auto relative">
+            <Reveal>
+              <div className="text-center mb-16">
+                <SectionBadge icon={Shield} label={L.faq.badge}/>
+                <h2 className="text-[1.75rem] sm:text-[2.25rem] font-extrabold tracking-[-0.035em] leading-[1.08] lg:text-5xl">
+                  <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">{L.faq.title}</span>
+                </h2>
+                <p className="mt-7 text-zinc-400 text-[15px]">{L.faq.subtitle}</p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <Accordion type="single" collapsible className="space-y-3">
+                {L.faq.items.map((item, i) => (<AccordionItem key={i} value={`faq-${i}`} className="rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl px-6 py-1 data-[state=open]:border-purple-500/15 transition-colors duration-300">
+                    <AccordionTrigger className="text-[15px] font-semibold text-zinc-200 hover:text-white hover:no-underline py-5 [&[data-state=open]>svg]:rotate-180">
+                      {item.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-[14px] text-zinc-400 leading-[1.8] pb-5">
+                      {item.a}
+                    </AccordionContent>
+                  </AccordionItem>))}
+              </Accordion>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ═══════════ FINAL CTA ═══════════ */}
+        <section className="py-40 md:py-48 lg:py-56 px-5 relative overflow-hidden">
+          <Reveal>
+            <div className="relative max-w-3xl mx-auto text-center rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-12 sm:p-16">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[250px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(139,92,246,0.06), transparent 60%)", filter: "blur(60px)" }}/>
+              <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ type: "spring", stiffness: 200, damping: 20 }} className="w-14 h-14 rounded-2xl bg-purple-500/[0.08] border border-purple-500/15 flex items-center justify-center mx-auto mb-10 relative z-10">
+                <Zap className="w-7 h-7 text-purple-400/60"/>
+              </motion.div>
+
+              <h2 className="relative z-10 text-[1.75rem] sm:text-[2.25rem] lg:text-[3rem] font-extrabold leading-[1.1] tracking-[-0.035em] mb-7">
+                <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">{L.cta.titleLine1}</span>
+                <br className="hidden sm:block"/>
+                <span className="bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">{L.cta.titleLine2}</span>
+                <br className="hidden sm:block"/>
+                <span className="bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">{L.cta.titleLine3}</span>
+              </h2>
+              <p className="relative z-10 text-base sm:text-lg text-zinc-400 mb-14 max-w-xl mx-auto leading-relaxed">{L.cta.subtitle}</p>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="inline-block relative z-10">
+                <Button size="lg" onClick={() => scrollTo("pricing")} className="relative overflow-hidden bg-violet-600 text-white hover:bg-violet-700 rounded-full px-10 h-14 text-base font-semibold transition-all duration-300 group" style={{ animation: "neon-pulse 3s ease-in-out infinite" }}>
+                  <span className="relative z-10 flex items-center">
+                    {L.cta.button}
+                    <ArrowRight className="w-5 h-5 ml-2"/>
+                  </span>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+            background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer-sweep 1.8s ease-in-out infinite",
+        }}/>
+                </Button>
+              </motion.div>
+              <p className="relative z-10 mt-7 text-[12px] text-zinc-600 flex items-center justify-center gap-2">
+                <Shield className="w-3.5 h-3.5"/>
+                {L.cta.note}
+              </p>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* ═══════════ FOOTER ═══════════ */}
+        <footer className="border-t border-white/[0.04] py-16 sm:py-20 px-5 relative" role="contentinfo">
+          <div className="relative max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-14">
+              <div className="md:col-span-1">
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <SignFlowLogo variant="technical" className="w-6 h-6 text-violet-500"/>
+                  </div>
+                  <span className="font-bold text-lg tracking-[-0.02em] text-zinc-300">SignFlow</span>
+                </div>
+                <p className="text-[13px] text-zinc-500 leading-relaxed max-w-[250px]">{L.footer.tagline}</p>
+              </div>
+              {footerCols.map((col) => (<div key={col.title}>
+                  <h4 className="text-[12px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-5">{col.title}</h4>
+                  <ul className="space-y-3">
+                    {col.links.map((item) => (<li key={item}>
+                        <a href="#" className="text-[13px] text-zinc-600 hover:text-purple-400/60 transition-colors duration-300">
+                          {item}
+                        </a>
+                      </li>))}
+                  </ul>
+                </div>))}
+            </div>
+            <div className="border-t border-white/[0.03] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-[12px] text-zinc-700">© {new Date().getFullYear()} SignFlow. {L.footer.copyright}</p>
+              <div className="flex items-center gap-3">
+                {[Twitter, Instagram, Linkedin].map((Icon, i) => (<a key={i} href="#" className="w-9 h-9 rounded-full border border-white/[0.05] flex items-center justify-center text-zinc-600 hover:text-purple-400/60 hover:border-purple-500/15 transition-all duration-300">
+                    <Icon className="w-4 h-4"/>
+                  </a>))}
+              </div>
+            </div>
+          </div>
+        </footer>
+
+        <FloatingCTA show={showFloatingCTA} onClick={() => scrollTo("pricing")} label={L.hero.ctaPrimary}/>
+      </div>
+    </PageTransition>);
+};
+export default Index;
