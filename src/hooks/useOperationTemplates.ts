@@ -77,6 +77,38 @@ const DEFAULT_TEMPLATES_IT: Omit<OperationTemplate, "id" | "company_id" | "creat
   },
 ];
 
+const DEFAULT_TEMPLATES_HVAC: Omit<OperationTemplate, "id" | "company_id" | "created_at">[] = [
+  {
+    product_type: "ac_installation",
+    name: "AC Installation",
+    description: "Standard Split/Central AC unit installation",
+    steps: [
+      { name: "Site Inspection", department: "technical", sort_order: 0 },
+      { name: "Bracket Mounting", department: "technical", sort_order: 1 },
+      { name: "Copper Piping", department: "technical", sort_order: 2 },
+      { name: "Electrical Connection", department: "electrical", sort_order: 3 },
+      { name: "Vacuum & Charging", department: "technical", sort_order: 4 },
+      { name: "Testing & Handover", department: "qa", sort_order: 5 },
+    ],
+  },
+];
+
+const DEFAULT_TEMPLATES_MAINTENANCE: Omit<OperationTemplate, "id" | "company_id" | "created_at">[] = [
+  {
+    product_type: "general_reconstruction",
+    name: "General Reconstruction",
+    description: "Multi-stage renovation project",
+    steps: [
+      { name: "Demolition", department: "technical", sort_order: 0 },
+      { name: "Structural Work", department: "technical", sort_order: 1 },
+      { name: "Plumbing/Electrical", department: "electrical", sort_order: 2 },
+      { name: "Drywall & Sanding", department: "graphics", sort_order: 3 },
+      { name: "Painting & Finishing", department: "graphics", sort_order: 4 },
+      { name: "Final Cleaning", department: "qa", sort_order: 5 },
+    ],
+  },
+];
+
 export function useOperationTemplates() {
   const { companyId } = useUserRole();
   const [templates, setTemplates] = useState<OperationTemplate[]>([]);
@@ -101,6 +133,10 @@ export function useOperationTemplates() {
     let templatesToSeed = DEFAULT_TEMPLATES_SIGNAGE;
     if (industry === "Servicios IT y Software") {
       templatesToSeed = DEFAULT_TEMPLATES_IT;
+    } else if (industry === "Climatización y HVAC") {
+      templatesToSeed = DEFAULT_TEMPLATES_HVAC;
+    } else if (industry === "Mantenimiento y Reformas") {
+      templatesToSeed = DEFAULT_TEMPLATES_MAINTENANCE;
     }
     
     for (const t of templatesToSeed) {
