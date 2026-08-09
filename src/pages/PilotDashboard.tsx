@@ -58,8 +58,9 @@ export default function PilotDashboard() {
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 max-w-md">
+        <TabsList className="grid w-full grid-cols-4 max-w-lg">
           <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
+          <TabsTrigger value="marketing">{t.landing.pilot.marketing}</TabsTrigger>
           <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
           <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
@@ -95,6 +96,7 @@ export default function PilotDashboard() {
                       <li>{t.landing.pilot.metricOrdersPrinted}</li>
                       <li>{t.landing.pilot.metricPhotosUploaded}</li>
                       <li>{t.landing.pilot.metricPaymentsRecorded}</li>
+                      <li>{t.landing.pilot.metricReferralActive}</li>
                     </ul>
                   </div>
                 </CardContent>
