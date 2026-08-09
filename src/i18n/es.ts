@@ -1588,7 +1588,6 @@ export const es: TranslationKeys = {
     },
   },
 } as const;
-} as const;
 
 
 
