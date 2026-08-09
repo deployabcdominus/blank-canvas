@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -106,14 +106,16 @@ const Login = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
-            <motion.div 
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", damping: 12 }}
-              className="w-16 h-16 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5"
-            >
-              <SignFlowLogo variant="technical" className="w-7 h-7 text-primary" />
-            </motion.div>
+            <Link to="/">
+              <motion.div 
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", damping: 12 }}
+                className="w-20 h-20 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5 cursor-pointer hover:opacity-80 transition-opacity"
+              >
+                <SignFlowLogo variant="technical" className="w-10 h-10 text-primary" />
+              </motion.div>
+            </Link>
             <h1 className="text-4xl font-black tracking-tighter mb-4 text-white">{t.auth.login.title}</h1>
             <p className="text-zinc-400 font-medium tracking-tight">{t.auth.login.subtitle}</p>
           </motion.div>

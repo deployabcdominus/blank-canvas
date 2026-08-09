@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -281,14 +281,16 @@ const Register = () => {
         
         <div className="w-full max-w-md relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-10">
-            <motion.div 
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", damping: 12 }}
-              className="w-16 h-16 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5"
-            >
-              <UserPlus className="w-8 h-8 text-primary" />
-            </motion.div>
+            <Link to="/">
+              <motion.div 
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", damping: 12 }}
+                className="w-20 h-20 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5 cursor-pointer hover:opacity-80 transition-opacity"
+              >
+                <UserPlus className="w-10 h-10 text-primary" />
+              </motion.div>
+            </Link>
             <h1 className="text-3xl font-bold tracking-tight mb-2">{t.auth.register.title}</h1>
             <p className="text-muted-foreground/80">{t.auth.register.subtitle}</p>
           </motion.div>
