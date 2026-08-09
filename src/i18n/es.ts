@@ -1586,6 +1586,16 @@ export const es: TranslationKeys = {
         saving: "Guardando...",
       },
     },
+    reports: {
+      title: "Reportes Estratégicos de Desempeño",
+      subtitle: "Análisis ejecutivo de métricas de negocio y crecimiento",
+      metricLeads: "Leads Totales",
+      metricProposals: "Propuestas Activas",
+      metricCompleted: "Trabajos Finalizados",
+      metricConversion: "Tasa de Conversión",
+      salesValue: "Valor de Propuestas Aprobadas",
+      productionStatus: "Trabajos de Producción por Estado",
+    },
   },
 } as const;
 
