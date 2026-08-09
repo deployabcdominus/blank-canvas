@@ -167,7 +167,12 @@ export const InstallationPhotos: React.FC<InstallationPhotosProps> = ({ installa
         <div className="mt-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {photos.map((url, i) => (
             <div key={i} className="relative group">
-              <img src={url} alt={t.installationPhotos.photoAlt} className="w-full h-24 object-cover rounded-lg border border-border" />
+              <StorageImage
+                src={url}
+                alt={t.installationPhotos.photoAlt}
+                className="w-full h-24 object-cover rounded-lg border border-border"
+                bucket="installation-photos"
+              />
               {!isReadOnly && (
                 <button onClick={() => removePhoto(url)} className="absolute -top-2 -right-2 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <X className="w-3 h-3" />
