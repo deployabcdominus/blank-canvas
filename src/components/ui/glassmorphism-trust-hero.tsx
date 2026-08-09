@@ -12,7 +12,8 @@ import {
   Command,
   Ghost,
   Gem,
-  Cpu
+  Cpu,
+  LogIn
 } from "lucide-react";
 
 // --- MOCK BRANDS ---
@@ -124,11 +125,11 @@ export default function HeroSection() {
               </button>
               
               <button 
-                onClick={() => scrollTo("industries")}
-                className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-full flex items-center justify-center hover:bg-white/10 transition-all backdrop-blur-md whitespace-nowrap"
+                onClick={() => navigate("/login")}
+                className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/20 text-white font-bold rounded-full flex items-center justify-center hover:bg-white/10 hover:border-white/40 transition-all backdrop-blur-md whitespace-nowrap group"
               >
-                <Play size={16} className="mr-2 fill-white" />
-                {L.ctaSecondary}
+                <LogIn size={16} className="mr-2 text-white/70 group-hover:text-white transition-colors" />
+                {locale === 'es' ? 'Acceder' : 'Sign In'}
               </button>
             </div>
           </div>
