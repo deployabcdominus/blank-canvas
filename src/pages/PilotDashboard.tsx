@@ -102,6 +102,31 @@ export default function PilotDashboard() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card className="border-violet-500/20 bg-violet-500/5">
+                <CardHeader>
+                  <CardTitle className="text-lg">{(t as any).landing.pilot.remainingStagesTitle}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-2 text-sm">
+                      <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center">10</Badge>
+                      {(t as any).landing.pilot.stage10}
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center">11</Badge>
+                      {(t as any).landing.pilot.stage11}
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center">12</Badge>
+                      {(t as any).landing.pilot.stage12}
+                    </li>
+                    <li className="pt-2 border-t border-violet-500/10 text-xs text-muted-foreground italic">
+                      {(t as any).landing.pilot.stageCompletion}
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </TabsContent>
