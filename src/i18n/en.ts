@@ -161,6 +161,7 @@ export const en = {
       legalLinks: ["Terms of Service", "Privacy Policy", "Cookies", "Support"],
       copyright: "All rights reserved.",
     },
+    nextPhase: "Continue to the next stage",
     mockup: {
       activeOrders: "Active orders",
       fieldOperators: "Field operators",
