@@ -537,7 +537,7 @@ const Index = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => navigate("/login")}
-                    className="hidden sm:flex text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.03] text-[13px] border border-white/[0.06] rounded-full px-5 h-10"
+                    className="hidden sm:flex text-zinc-300 hover:text-white border border-white/20 hover:border-white/40 hover:bg-white/5 transition-colors rounded-full px-5 h-10 font-medium text-[13px]"
                   >
                     {L.nav.login}
                   </Button>
