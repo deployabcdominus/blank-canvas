@@ -168,7 +168,7 @@ export const InstallationPhotos: React.FC<InstallationPhotosProps> = ({ installa
           {photos.map((url, i) => (
             <div key={i} className="relative group">
               <StorageImage
-                src={url}
+                path={url}
                 alt={t.installationPhotos.photoAlt}
                 className="w-full h-24 object-cover rounded-lg border border-border"
                 bucket="installation-photos"
