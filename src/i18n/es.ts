@@ -163,7 +163,6 @@ export const es: TranslationKeys = {
       legalLinks: ["Términos de Servicio", "Política de Privacidad", "Cookies", "Soporte"],
       copyright: "Todos los derechos reservados.",
     },
-    nextPhase: "Continuemos con la siguiente etapa",
     mockup: {
       activeOrders: "Órdenes activas",
       fieldOperators: "Técnicos en campo",
