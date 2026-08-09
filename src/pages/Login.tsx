@@ -97,7 +97,9 @@ const Login = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-foreground relative flex flex-col">
+      <Navbar />
+      <div className="flex-1 flex items-center justify-center px-6 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
         
         <div className="w-full max-w-md relative z-10">
