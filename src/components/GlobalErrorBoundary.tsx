@@ -23,6 +23,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Global Error Boundary caught:", error, errorInfo);
+    Sentry.captureException(error, { extra: errorInfo as any });
   }
 
   handleReload = () => {
