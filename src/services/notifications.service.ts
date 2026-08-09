@@ -2,15 +2,16 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface CreateNotificationParams {
   userId: string;
-  type: "success" | "info" | "warning" | "alert" | "payment" | "order" | "proposal";
+  type: "success" | "info" | "warning" | "alert" | "payment" | "order" | "proposal" | "lead_assigned" | "proposal_approved";
   title: string;
   message: string;
   link?: string;
+  companyId?: string;
 }
 
 export const NotificationsService = {
   /** Create a notification for a user */
-  async create({ userId, type, title, message, link }: CreateNotificationParams) {
+  async create({ userId, type, title, message, link, companyId }: CreateNotificationParams) {
     const { error } = await (supabase as any)
       .from("notifications")
       .insert({
@@ -19,6 +20,7 @@ export const NotificationsService = {
         title,
         message,
         link: link || null,
+        company_id: companyId || null,
         is_read: false,
       });
 
