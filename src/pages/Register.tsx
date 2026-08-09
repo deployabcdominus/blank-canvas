@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { UserPlus, Loader2, Check, ChevronRight, Star, ArrowRight, Zap, Eye, EyeOff, Building2 } from "lucide-react";
+import { UserPlus, Loader2, Check, ChevronRight, Star, ArrowRight, Zap, Eye, EyeOff, Building2, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { hasCompany } from "@/lib/auth-helpers";
 import { supabase } from "@/integrations/supabase/client";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { SignFlowLogo } from "@/components/SignFlowLogo";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -181,17 +182,34 @@ const Register = () => {
           </div>
 
           <div className="max-w-6xl mx-auto relative z-10">
-            <div className="flex items-center justify-between mb-16">
-              <button onClick={() => navigate("/")} className="flex items-center gap-2.5 group" aria-label="Sign Flow">
+            {/* Global Navbar */}
+            <header className="flex items-center justify-between mb-16 py-6 border-b border-white/5">
+              <Link to="/" className="flex items-center gap-2.5 group" aria-label="Sign Flow">
                 <div className="w-10 h-10 p-2 glass-card border-primary/20 flex items-center justify-center transition-all group-hover:border-primary/40 rounded-xl">
                   <SignFlowLogo variant="technical" className="w-full h-full text-primary" />
                 </div>
-                <span className="font-bold text-xl tracking-tight">Sign Flow</span>
-              </button>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-white hover:text-white hover:bg-white/10 border border-white/20 rounded-full px-6 transition-all font-bold shadow-sm shadow-black/20">
-                {t.auth.login.submit}
-              </Button>
-            </div>
+                <span className="font-bold text-xl tracking-tight text-white">Sign Flow</span>
+              </Link>
+              
+              <div className="flex items-center gap-6">
+                <nav className="hidden md:flex items-center gap-8">
+                  <Link to="/#features" className="text-sm font-bold text-zinc-400 hover:text-white transition-colors">{t.landing.nav.industries}</Link>
+                  <Link to="/#pricing" className="text-sm font-bold text-zinc-400 hover:text-white transition-colors">{t.landing.nav.pricing}</Link>
+                  <Link to="/#faq" className="text-sm font-bold text-zinc-400 hover:text-white transition-colors">{t.landing.nav.faq}</Link>
+                </nav>
+                <div className="h-4 w-px bg-white/10 hidden md:block" />
+                <LanguageSwitcher />
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => navigate("/login")} 
+                  className="text-white hover:text-white hover:bg-white/10 border border-white/20 rounded-full px-6 transition-all font-bold shadow-sm shadow-black/20"
+                >
+                  <LogIn className="w-4 h-4 mr-2 text-zinc-400" />
+                  {t.auth.login.submit}
+                </Button>
+              </div>
+            </header>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
               <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-6 px-4 py-2 rounded-full border border-primary/20 bg-primary/5">
