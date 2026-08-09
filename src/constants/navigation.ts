@@ -37,7 +37,6 @@ export const principalGroup: NavGroup = {
   icon: LayoutDashboard,
   items: [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-    { icon: Activity, label: "Pilot", path: "/pilot", roles: ['admin'] },
   ],
 };
 
