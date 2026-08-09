@@ -454,6 +454,10 @@ export const es: TranslationKeys = {
     medium: "Media",
     low: "Baja",
     limitReached: "Límite alcanzado — upgrade tu plan",
+    installationPhotos: "Fotos de Instalación",
+    generatePoiLink: "Generar Link POI",
+    noPhotosYet: "Sin fotos aún. Comparte el link POI con el instalador.",
+    installationDocumented: "✓ Instalación Documentada",
   },
 
   /* ── Settings / Configuration Hub ── */

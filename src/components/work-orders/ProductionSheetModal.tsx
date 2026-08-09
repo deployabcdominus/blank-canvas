@@ -20,6 +20,7 @@ import { type WorkOrder } from "@/types/domain";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
 import { QCSignaturePad } from "./QCSignaturePad";
 import { StorageImage } from "@/components/StorageImage";
@@ -130,6 +131,7 @@ const defaultMaterialSpecs: MaterialSpecs = {
 
 export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }: ProductionSheetModalProps) {
   const { companyId } = useUserRole();
+  const { t } = useLanguage();
   const { updateWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
   const { company } = useCompany();
@@ -1135,7 +1137,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Image className="w-4 h-4" style={{ color: "#8b5cf6" }} />
-              Installation Photos
+              {t.workOrders.installationPhotos || "Installation Photos"}
             </h3>
             <Button
               variant="outline"
@@ -1146,18 +1148,18 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               style={{ borderColor: "rgba(139,92,246,0.4)", color: "#8b5cf6" }}
             >
               {generatingPoi ? <Loader2 className="w-3 h-3 animate-spin" /> : <QrCode className="w-3 h-3" />}
-              Generate POI Link
+              {t.workOrders.generatePoiLink || "Generate POI Link"}
             </Button>
           </div>
 
           {poiPhotos.length === 0 && !(order as any)?.poi_token_used ? (
-            <p className="text-xs text-muted-foreground">No photos yet. Share the POI link with the installer.</p>
+            <p className="text-xs text-muted-foreground">{t.workOrders.noPhotosYet || "No photos yet. Share the POI link with the installer."}</p>
           ) : (
             <>
               {(order as any)?.poi_token_used && (
                 <div className="flex items-center gap-2 mb-3">
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: "rgba(16,185,129,0.15)", color: "#10b981" }}>
-                    ✓ Installation Documented
+                    {t.workOrders.installationDocumented || "✓ Installation Documented"}
                   </span>
                   {(order as any)?.poi_completed_at && (
                     <span className="text-[10px] text-muted-foreground">
@@ -1206,7 +1208,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
         {/* ── Footer Actions (outside paper) ── */}
         <div data-print-hide className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-md">
           <Button variant="outline" size="sm" onClick={onClose} className="text-xs border-white/[0.1] text-muted-foreground h-8">
-            <X className="w-3.5 h-3.5 mr-1.5" /> Close
+            <X className="w-3.5 h-3.5 mr-1.5" /> {t.common.close}
           </Button>
           <div className="flex gap-2">
             <Button
@@ -1216,7 +1218,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               className="text-xs h-8 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
-              Save Changes
+              {t.common.save}
             </Button>
             <Button
               size="sm"
@@ -1238,7 +1240,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
               className="text-xs h-8 hover:opacity-90"
             >
               {printing ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1.5" />}
-              Download PDF
+              {t.common.download}
             </Button>
           </div>
         </div>

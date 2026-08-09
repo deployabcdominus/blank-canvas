@@ -452,6 +452,10 @@ export const en = {
     medium: "Medium",
     low: "Low",
     limitReached: "Limit reached — upgrade your plan",
+    installationPhotos: "Installation Photos",
+    generatePoiLink: "Generate POI Link",
+    noPhotosYet: "No photos yet. Share the POI link with the installer.",
+    installationDocumented: "✓ Installation Documented",
   },
 
   /* ── Settings / Configuration Hub ── */
