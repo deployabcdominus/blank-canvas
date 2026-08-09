@@ -1582,6 +1582,7 @@ export const en = {
         finish: "Finish Order",
         saving: "Saving...",
       },
+      nextPhase: "next phase",
     },
   },
 };
