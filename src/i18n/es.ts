@@ -549,6 +549,10 @@ export const es: TranslationKeys = {
       restoreConfirmDesc: "Esta acción restaurará la configuración de apariencia a los valores predeterminados. Los datos de negocio no se verán afectados.",
       restore: "Restaurar",
     },
+    domains: {
+      title: "Dominios y Correo",
+      subtitle: "Gestione su identidad de marca y envío de correos profesionales.",
+    },
     catalogs: {
       title: "Catálogos del sistema",
       subtitle: "Personaliza los valores que aparecen en los formularios de toda la app. Los cambios aplican inmediatamente para todo tu equipo.",
