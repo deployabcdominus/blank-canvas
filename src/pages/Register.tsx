@@ -21,13 +21,15 @@ const Register = () => {
   const { signUp } = useAuth();
   const { t, locale } = useLanguage();
   const isEn = locale === "en";
+  const [isAnnual, setIsAnnual] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const plans = [
     {
       key: "start" as const,
       name: "Start",
-      price: 29,
+      priceMonthly: 29,
+      priceAnnual: 24,
       features: isEn
         ? ["Up to 50 active leads", "1 admin user", "Basic pipeline", "Email support"]
         : ["Hasta 50 leads activos", "1 usuario administrador", "Pipeline básico", "Soporte por email"],
@@ -36,7 +38,8 @@ const Register = () => {
     {
       key: "pro" as const,
       name: "Pro",
-      price: 79,
+      priceMonthly: 79,
+      priceAnnual: 64,
       features: isEn
         ? ["Unlimited leads", "Up to 5 users", "Digital signature", "Roles & permissions", "Priority support"]
         : ["Leads ilimitados", "Hasta 5 usuarios", "Firma digital", "Roles y permisos", "Soporte prioritario"],
@@ -45,7 +48,8 @@ const Register = () => {
     {
       key: "elite" as const,
       name: "Elite",
-      price: 149,
+      priceMonthly: 149,
+      priceAnnual: 119,
       features: isEn
         ? ["Everything in Pro", "Unlimited users", "Advanced technical sheet", "Offline mode", "24/7 support"]
         : ["Todo lo de Pro", "Usuarios ilimitados", "Ficha técnica avanzada", "Modo offline", "Soporte 24/7"],
@@ -204,6 +208,34 @@ const Register = () => {
               </p>
             </motion.div>
 
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <span className={`text-sm font-medium transition-colors duration-300 ${!isAnnual ? "text-white" : "text-zinc-500"}`}>{t.landing.pricing.monthly}</span>
+              <button
+                onClick={() => setIsAnnual(!isAnnual)}
+                className={`relative w-14 h-[30px] rounded-full transition-all duration-400 ${isAnnual ? "bg-gradient-to-r from-violet-500 to-purple-600 shadow-[0_0_12px_rgba(139,92,246,0.2)]" : "bg-zinc-800"}`}
+                aria-label="Toggle annual billing"
+              >
+                <motion.div
+                  className="absolute top-[3px] w-6 h-6 rounded-full bg-white shadow-lg"
+                  animate={{ left: isAnnual ? "calc(100% - 27px)" : "3px" }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              </button>
+              <span className={`text-sm font-medium transition-colors duration-300 ${isAnnual ? "text-white" : "text-zinc-500"}`}>{t.landing.pricing.annual}</span>
+              <AnimatePresence>
+                {isAnnual && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8, x: -8 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, x: -8 }}
+                    className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider"
+                  >
+                    {t.landing.pricing.save20}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch max-w-5xl mx-auto">
               {plans.map((plan, i) => (
                 <motion.div
@@ -231,9 +263,35 @@ const Register = () => {
                   <div className="p-8 sm:p-10 flex flex-col h-full">
                     <h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
                     
-                    <div className="flex items-baseline gap-1.5 mb-8">
-                      <span className="text-5xl font-extrabold tracking-tight">${plan.price}</span>
+                    <div className="flex items-baseline gap-1.5 mb-1">
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={isAnnual ? plan.priceAnnual : plan.priceMonthly}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                          className="text-5xl font-extrabold tracking-tight"
+                        >
+                          ${isAnnual ? plan.priceAnnual : plan.priceMonthly}
+                        </motion.span>
+                      </AnimatePresence>
                       <span className="text-sm text-muted-foreground font-medium">{t.auth.register.month}</span>
+                    </div>
+
+                    <div className="h-6 mb-6">
+                      <AnimatePresence>
+                        {isAnnual && (
+                          <motion.p
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="text-[11px] text-zinc-500"
+                          >
+                            {t.landing.pricing.billedAnnually} · <span className="line-through text-zinc-600">${plan.priceMonthly}{t.landing.pricing.perMonth}</span>
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                     <ul className="space-y-4 mb-10 flex-grow">
