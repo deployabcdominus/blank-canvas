@@ -37,7 +37,6 @@ export const principalGroup: NavGroup = {
   icon: LayoutDashboard,
   items: [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-    { icon: Activity, label: "Pilot", path: "/pilot", roles: ['admin'] },
   ],
 };
 
@@ -68,6 +67,7 @@ export const adminGroup: NavGroup = {
     { icon: BarChart3, label: "Reportes", path: "/reports", roles: ['admin'] },
     { icon: Activity, label: "Auditoría", path: "/audit-log", roles: ['admin'] },
     { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
+    { icon: Activity, label: "Pilot", path: "/pilot", roles: ['admin'] },
   ],
 };
 
