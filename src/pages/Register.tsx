@@ -352,24 +352,50 @@ const Register = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden py-12">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-        
-        <div className="w-full max-w-md relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-10">
-            <Link to="/">
-              <motion.div 
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", damping: 12 }}
-                className="w-20 h-20 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5 cursor-pointer hover:opacity-80 transition-opacity"
-              >
-                <SignFlowLogo variant="technical" className="w-10 h-10 text-primary" />
-              </motion.div>
+      <div className="min-h-screen bg-background text-foreground px-5 overflow-x-hidden relative flex flex-col">
+        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+          <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_60%)]" />
+        </div>
+
+        <div className="max-w-6xl mx-auto w-full relative z-10 flex flex-col">
+          {/* Top Navbar */}
+          <header className="flex items-center justify-between py-6 border-b border-white/5 mb-8">
+            <Link to="/" className="flex items-center gap-2.5 group" aria-label="Sign Flow">
+              <div className="w-10 h-10 p-2 glass-card border-primary/20 flex items-center justify-center transition-all group-hover:border-primary/40 rounded-xl">
+                <SignFlowLogo variant="technical" className="w-full h-full text-primary" />
+              </div>
+              <span className="font-bold text-xl tracking-tight text-white">Sign Flow</span>
             </Link>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">{t.auth.register.title}</h1>
-            <p className="text-muted-foreground/80">{t.auth.register.subtitle}</p>
-          </motion.div>
+            
+            <div className="flex items-center gap-4">
+              <LanguageSwitcher />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate("/login")} 
+                className="hidden sm:flex text-white hover:text-white hover:bg-white/10 border border-white/20 rounded-full px-6 transition-all font-bold"
+              >
+                {t.auth.login.submit}
+              </Button>
+            </div>
+          </header>
+
+          <div className="flex-1 flex items-center justify-center py-12">
+            <div className="w-full max-w-md relative">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-10">
+                <Link to="/">
+                  <motion.div 
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", damping: 12 }}
+                    className="w-20 h-20 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5 cursor-pointer hover:opacity-80 transition-opacity"
+                  >
+                    <SignFlowLogo variant="technical" className="w-10 h-10 text-primary" />
+                  </motion.div>
+                </Link>
+                <h1 className="text-3xl font-bold tracking-tight mb-2">{t.auth.register.title}</h1>
+                <p className="text-muted-foreground/80">{t.auth.register.subtitle}</p>
+              </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="glass-card p-6 sm:p-8 border-white/10 shadow-2xl relative overflow-hidden rounded-[24px] sm:rounded-[32px]">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
