@@ -62,7 +62,7 @@ const Success = () => {
           )}
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.6 }} className="glass-card p-6 mb-8">
-            <h3 className="font-semibold mb-3">{t.technician.nextPhase}?</h3>
+            <h3 className="font-semibold mb-3">¿Qué sigue?</h3>
             <ul className="text-left space-y-2 text-muted-foreground">
               <li>• Abre el link de acceso</li>
               <li>• Crea tu cuenta (serás el administrador)</li>
