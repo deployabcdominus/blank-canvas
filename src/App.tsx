@@ -121,6 +121,7 @@ const AppContent = () => {
             <Route path="/settings" element={<Settings />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/pilot" element={<PilotDashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
