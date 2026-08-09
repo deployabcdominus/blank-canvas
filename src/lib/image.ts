@@ -9,9 +9,9 @@ export const loadImage = (file: File): Promise<HTMLImageElement> => {
 
 export const compressImage = async (
   file: File, 
-  maxWidth: number = 1920, 
-  maxHeight: number = 1080, 
-  quality: number = 0.8
+  maxWidth: number = 1600, 
+  maxHeight: number = 1600, 
+  quality: number = 0.75
 ): Promise<File> => {
   return new Promise(async (resolve, reject) => {
     try {
