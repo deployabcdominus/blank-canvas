@@ -54,12 +54,12 @@ export default function Reports() {
 
   return (
     <PageTransition>
-      <ResponsiveLayout title="Operational Reports" subtitle="Analyze your business performance">
+      <ResponsiveLayout title={t.reports.title} subtitle={t.reports.subtitle}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="glass-card border-white/10">
             <CardHeader className="flex flex-row items-center gap-3">
               <TrendingUp className="w-5 h-5 text-violet-400" />
-              <CardTitle className="text-base font-bold">Approved Proposals Value</CardTitle>
+              <CardTitle className="text-base font-bold">{t.reports.salesValue}</CardTitle>
             </CardHeader>
             <CardContent className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -79,7 +79,7 @@ export default function Reports() {
           <Card className="glass-card border-white/10">
             <CardHeader className="flex flex-row items-center gap-3">
               <BarChart3 className="w-5 h-5 text-amber-400" />
-              <CardTitle className="text-base font-bold">Production Jobs by Status</CardTitle>
+              <CardTitle className="text-base font-bold">{t.reports.productionStatus}</CardTitle>
             </CardHeader>
             <CardContent className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -116,10 +116,10 @@ export default function Reports() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <MetricSmall label="Total Leads" value={leads.length} icon={Users} color="text-violet-400" />
-          <MetricSmall label="Active Proposals" value={proposals.filter(p => (p.status as string) === 'Enviada externamente').length} icon={FileText} color="text-blue-400" />
-          <MetricSmall label="Completed Jobs" value={orders.filter(o => o.closing_status === 'Closed').length} icon={CheckCircle2} color="text-emerald-400" />
-          <MetricSmall label="Conversion Rate" value={`${leads.length ? Math.round((proposals.filter(p => p.status === 'Aprobada').length / leads.length) * 100) : 0}%`} icon={TrendingUp} color="text-pink-400" />
+          <MetricSmall label={t.reports.metricLeads} value={leads.length} icon={Users} color="text-violet-400" />
+          <MetricSmall label={t.reports.metricProposals} value={proposals.filter(p => (p.status as string) === 'Enviada externamente').length} icon={FileText} color="text-blue-400" />
+          <MetricSmall label={t.reports.metricCompleted} value={orders.filter(o => o.closing_status === 'Closed').length} icon={CheckCircle2} color="text-emerald-400" />
+          <MetricSmall label={t.reports.metricConversion} value={`${leads.length ? Math.round((proposals.filter(p => p.status === 'Aprobada').length / leads.length) * 100) : 0}%`} icon={TrendingUp} color="text-pink-400" />
         </div>
         
         <div className="mt-8 flex justify-end">

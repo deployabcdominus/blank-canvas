@@ -1584,6 +1584,16 @@ export const en = {
         saving: "Saving...",
       },
     },
+    reports: {
+      title: "Strategic Performance Reports",
+      subtitle: "Executive analysis of business metrics and growth",
+      metricLeads: "Total Leads",
+      metricProposals: "Active Proposals",
+      metricCompleted: "Completed Jobs",
+      metricConversion: "Conversion Rate",
+      salesValue: "Approved Proposals Value",
+      productionStatus: "Production Jobs by Status",
+    },
   },
 };
 
