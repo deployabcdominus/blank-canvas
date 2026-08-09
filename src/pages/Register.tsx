@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { hasCompany } from "@/lib/auth-helpers";
 import { supabase } from "@/integrations/supabase/client";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
-import brandLogoSrc from "@/assets/brand-logo.png";
+import { SignFlowLogo } from "@/components/SignFlowLogo";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const Register = () => {
@@ -179,12 +179,12 @@ const Register = () => {
           <div className="max-w-6xl mx-auto relative z-10">
             <div className="flex items-center justify-between mb-16">
               <button onClick={() => navigate("/")} className="flex items-center gap-2.5 group" aria-label="Sign Flow">
-                <div className="w-10 h-10 p-2 glass-card border-primary/20 flex items-center justify-center transition-all group-hover:border-primary/40">
-                  <img src={brandLogoSrc} alt="Sign Flow" className="w-full h-full object-contain" />
+                <div className="w-10 h-10 p-2 glass-card border-primary/20 flex items-center justify-center transition-all group-hover:border-primary/40 rounded-xl">
+                  <SignFlowLogo variant="technical" className="w-full h-full text-primary" />
                 </div>
                 <span className="font-bold text-xl tracking-tight">Sign Flow</span>
               </button>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-muted-foreground hover:text-foreground border border-white/10 rounded-full px-6 transition-all">
+              <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-white hover:text-white hover:bg-white/10 border border-white/20 rounded-full px-6 transition-all font-bold shadow-sm shadow-black/20">
                 {t.auth.login.submit}
               </Button>
             </div>
@@ -266,7 +266,7 @@ const Register = () => {
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="text-center mt-12 text-muted-foreground">
               {t.auth.register.alreadyHaveAccount}{" "}
-              <button onClick={() => navigate("/login")} className="text-primary font-bold hover:underline underline-offset-4">{t.auth.register.loginLink}</button>
+              <button onClick={() => navigate("/login")} className="text-primary font-bold hover:underline underline-offset-4 decoration-2">{t.auth.register.loginLink}</button>
             </motion.p>
           </div>
         </div>
@@ -288,7 +288,7 @@ const Register = () => {
                 transition={{ type: "spring", damping: 12 }}
                 className="w-20 h-20 mx-auto mb-6 glass-card rounded-2xl flex items-center justify-center border-primary/20 shadow-lg shadow-primary/5 cursor-pointer hover:opacity-80 transition-opacity"
               >
-                <UserPlus className="w-10 h-10 text-primary" />
+                <SignFlowLogo variant="technical" className="w-10 h-10 text-primary" />
               </motion.div>
             </Link>
             <h1 className="text-3xl font-bold tracking-tight mb-2">{t.auth.register.title}</h1>
@@ -350,7 +350,7 @@ const Register = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }} className="text-center mt-8">
             <p className="text-sm text-muted-foreground">
               {t.auth.register.alreadyHaveAccount}{" "}
-              <button onClick={() => navigate("/login")} className="font-semibold text-primary hover:underline underline-offset-4">{t.auth.register.loginLink}</button>
+              <button onClick={() => navigate("/login")} className="font-bold text-primary hover:underline underline-offset-4 decoration-2">{t.auth.register.loginLink}</button>
             </p>
           </motion.div>
         </div>
