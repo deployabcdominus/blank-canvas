@@ -323,6 +323,7 @@ export default function PilotDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
 
         <TabsContent value="feedback">
           <Card className="max-w-2xl mx-auto">
