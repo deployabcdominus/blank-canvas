@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Camera, Upload, X, Image as ImageIcon, Trash2, Loader2 } from 'lucide-react';
+import { StorageImage } from '@/components/StorageImage';
 import { toast } from '@/components/ui/use-toast';
 import { compressImage } from '@/lib/image';
 import { supabase } from '@/integrations/supabase/client';
