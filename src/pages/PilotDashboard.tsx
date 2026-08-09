@@ -58,10 +58,11 @@ export default function PilotDashboard() {
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5 max-w-2xl">
+        <TabsList className="grid w-full grid-cols-6 max-w-3xl">
           <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
           <TabsTrigger value="marketing">{t.landing.pilot.marketing}</TabsTrigger>
           <TabsTrigger value="intelligence">{(t as any).landing.pilot.intelligence}</TabsTrigger>
+          <TabsTrigger value="integrations">{(t as any).landing.pilot.integrations}</TabsTrigger>
           <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
           <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
@@ -218,6 +219,57 @@ export default function PilotDashboard() {
             <CardContent>
               <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl">
                 <p className="text-muted-foreground italic">Cost tracking and automated margin suggestions will populate as you complete work orders.</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="integrations" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="glass-card border-violet-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.apiManagement}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Ready</div>
+                <p className="text-xs text-muted-foreground mt-1">{(t as any).landing.pilot.apiKeyStatus}: Active</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-blue-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.webhooks}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground mt-1">{(t as any).landing.pilot.activeEndpoints}</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-emerald-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.connectedApps}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground mt-1">Active integrations</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card className="glass-card border-white/5">
+            <CardHeader>
+              <CardTitle>Phase 10: API & Ecosystem</CardTitle>
+              <CardDescription>
+                {(t as any).landing.pilot.phase10Desc}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {['QuickBooks', 'Stripe', 'Zapier', 'Slack'].map(app => (
+                  <div key={app} className="flex flex-col items-center justify-center p-4 border border-white/10 rounded-xl bg-white/5 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
+                    <span className="text-xs font-semibold">{app}</span>
+                    <span className="text-[10px] text-muted-foreground mt-1">Available soon</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
