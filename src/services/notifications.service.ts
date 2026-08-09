@@ -1,54 +1,60 @@
-import { supabase } from '@/integrations/supabase/client';
-import { logAudit } from '@/lib/audit';
+import { supabase } from "@/integrations/supabase/client";
 
-export type NotificationType = 'lead_assigned' | 'proposal_approved' | 'work_order_ready' | 'system_alert';
-
-interface CreateNotificationParams {
+export interface CreateNotificationParams {
   userId: string;
-  companyId: string;
+  type: "success" | "info" | "warning" | "alert" | "payment" | "order" | "proposal";
   title: string;
   message: string;
-  type: NotificationType;
   link?: string;
 }
 
-export const NotificationsService = {
-  async create({ userId, companyId, title, message, type, link }: CreateNotificationParams) {
-    try {
-      const { data, error } = await supabase
-        .from('notifications')
-        .insert({
-          user_id: userId,
-          company_id: companyId,
-          title,
-          message,
-          type,
-          link: link || null,
-          is_read: false
-        })
-        .select()
-        .single();
+export const notificationsService = {
+  /** Create a notification for a user */
+  async create({ userId, type, title, message, link }: CreateNotificationParams) {
+    const { error } = await (supabase as any)
+      .from("notifications")
+      .insert({
+        user_id: userId,
+        type,
+        title,
+        message,
+        link: link || null,
+        is_read: false,
+      });
 
-      if (error) throw error;
-      return data;
-    } catch (err) {
-      console.error('Error creating notification:', err);
-      return null;
+    if (error) {
+      console.error("Error creating notification:", error);
+      return { success: false, error };
     }
+    return { success: true };
   },
 
+  /** Mark a specific notification as read */
   async markAsRead(id: string) {
-    return await supabase
-      .from('notifications')
+    const { error } = await (supabase as any)
+      .from("notifications")
       .update({ is_read: true })
-      .eq('id', id);
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error marking notification as read:", error);
+      return { success: false, error };
+    }
+    return { success: true };
   },
 
+  /** Mark all notifications for a user as read */
   async markAllAsRead(userId: string) {
-    return await supabase
-      .from('notifications')
+    const { error } = await (supabase as any)
+      .from("notifications")
       .update({ is_read: true })
-      .eq('user_id', userId)
-      .eq('is_read', false);
+      .eq("user_id", userId)
+      .eq("is_read", false);
+
+    if (error) {
+      console.error("Error marking all notifications as read:", error);
+      return { success: false, error };
+    }
+    return { success: true };
   }
 };
