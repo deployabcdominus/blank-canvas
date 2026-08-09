@@ -288,7 +288,7 @@ export const en = {
     payments: "Payments",
     teamManagement: "Team Management",
     settings: "Configuration Hub",
-    auditLog: "Audit Log",
+    auditLog: "Audit Logs",
     principal: "Main",
     adjustments: "Settings",
     platform: "Platform",

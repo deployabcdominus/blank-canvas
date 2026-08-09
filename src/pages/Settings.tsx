@@ -177,6 +177,12 @@ export default function Settings() {
               {t.settings.tabs.subscription}
             </TabsTrigger>
           )}
+          {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="audit">
+              <Shield className="w-4 h-4 mr-2" />
+              {t.nav.auditLog}
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="perfil">
@@ -847,6 +853,48 @@ export default function Settings() {
               )}
               <PricingSection />
             </div>
+          </TabsContent>
+        )}
+        {isAdmin && !isSuperadmin && (
+          <TabsContent value="audit">
+            <Card className="glass border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Shield className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle>{t.nav.auditLog}</CardTitle>
+                    <CardDescription>
+                      {isEn 
+                        ? "Chronological record of all critical system activities and data modifications." 
+                        : "Registro cronológico de todas las actividades críticas y modificaciones de datos en el sistema."}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                  <div className="p-4 rounded-full bg-primary/5">
+                    <List className="w-8 h-8 text-primary/40" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">
+                      {isEn ? "Audit Log Viewer" : "Visor de Auditoría"}
+                    </p>
+                    <p className="text-xs text-muted-foreground max-w-[300px]">
+                      {isEn 
+                        ? "The system is currently recording all activities. The visual interface for real-time log analysis is being synchronized." 
+                        : "El sistema está registrando todas las actividades. La interfaz visual para el análisis de logs en tiempo real se está sincronizando."}
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" className="gap-2" disabled>
+                    <ExternalLink className="w-4 h-4" />
+                    {isEn ? "Export Complete History (CSV)" : "Exportar Historial Completo (CSV)"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         )}
       </Tabs>
