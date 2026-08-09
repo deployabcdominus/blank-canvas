@@ -190,7 +190,7 @@ export const en = {
     },
     pilot: {
       title: "Pilot Readiness Dashboard",
-      subtitle: "tell me what would be the next stage to perform",
+      subtitle: "let's do Phase 8: Growth and Marketing Automation",
       checklist: "Checklist",
       feedback: "Feedback",
       history: "All Issues",
