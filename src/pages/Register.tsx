@@ -14,6 +14,7 @@ import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { SignFlowLogo } from "@/components/SignFlowLogo";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Navbar } from "@/components/Navbar";
 
 const Register = () => {
   const navigate = useNavigate();
