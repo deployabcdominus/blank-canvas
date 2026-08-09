@@ -8,7 +8,7 @@ export interface CreateNotificationParams {
   link?: string;
 }
 
-export const notificationsService = {
+export const NotificationsService = {
   /** Create a notification for a user */
   async create({ userId, type, title, message, link }: CreateNotificationParams) {
     const { error } = await (supabase as any)
