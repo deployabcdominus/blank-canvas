@@ -58,11 +58,12 @@ export default function PilotDashboard() {
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6 max-w-3xl">
+        <TabsList className="grid w-full grid-cols-7 max-w-4xl">
           <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
           <TabsTrigger value="marketing">{t.landing.pilot.marketing}</TabsTrigger>
           <TabsTrigger value="intelligence">{(t as any).landing.pilot.intelligence}</TabsTrigger>
           <TabsTrigger value="integrations">{(t as any).landing.pilot.integrations}</TabsTrigger>
+          <TabsTrigger value="portal">{(t as any).landing.pilot.portal}</TabsTrigger>
           <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
           <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
@@ -270,6 +271,55 @@ export default function PilotDashboard() {
                     <span className="text-[10px] text-muted-foreground mt-1">Available soon</span>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="portal" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="glass-card border-violet-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.portalStatus}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{(t as any).landing.pilot.active}</div>
+                <p className="text-xs text-muted-foreground mt-1">{(t as any).landing.pilot.subdomain}: client.signflow.app</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-blue-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.clientUsers}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground mt-1">{(t as any).landing.pilot.invitesPending}</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-emerald-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.collaboration}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Enabled</div>
+                <p className="text-xs text-muted-foreground mt-1">Real-time sync active</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card className="glass-card border-white/5">
+            <CardHeader>
+              <CardTitle>Phase 11: White-Label Client Portal</CardTitle>
+              <CardDescription>
+                {(t as any).landing.pilot.phase11Desc}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl bg-white/5">
+                <div className="text-center space-y-2">
+                  <p className="text-muted-foreground font-medium">Portal Customization Preview</p>
+                  <p className="text-xs text-muted-foreground/60 italic">Upload your branding in Company Settings to preview your white-label portal.</p>
+                </div>
               </div>
             </CardContent>
           </Card>
