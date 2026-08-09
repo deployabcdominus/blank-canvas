@@ -34,9 +34,9 @@ export const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
         </Link>
         
         <div className="hidden md:flex items-center gap-8">
-          <a href="/#industries" className="text-sm font-bold text-zinc-400 hover:text-white transition-colors">{t.landing.nav.industries}</a>
-          <a href="/#pricing" className="text-sm font-bold text-zinc-400 hover:text-white transition-colors">{t.landing.nav.pricing}</a>
-          <a href="/#faq" className="text-sm font-bold text-zinc-400 hover:text-white transition-colors">{t.landing.nav.faq}</a>
+          <a href="/#industries" className="text-[13px] font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-all hover:scale-105 active:scale-95">{t.landing.nav.industries}</a>
+          <a href="/#pricing" className="text-[13px] font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-all hover:scale-105 active:scale-95">{t.landing.nav.pricing}</a>
+          <a href="/#faq" className="text-[13px] font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-all hover:scale-105 active:scale-95">{t.landing.nav.faq}</a>
         </div>
 
         <div className="flex items-center gap-4">
