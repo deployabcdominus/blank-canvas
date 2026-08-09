@@ -475,6 +475,7 @@ export const es: TranslationKeys = {
       billing: "Facturación",
       configuration: "Configuración",
       subscription: "Suscripción",
+      domains: "Dominios Propios",
     },
     profileName: "Nombre Completo",
     resetPassword: "Restablecer Contraseña",

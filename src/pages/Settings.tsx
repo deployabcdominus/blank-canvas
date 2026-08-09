@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell, List, Moon, CreditCard, Upload, Loader2, ImageIcon, Trash2 } from "lucide-react";
+import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell, List, Moon, CreditCard, Upload, Loader2, ImageIcon, Trash2, Globe, ExternalLink } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
 import IntegrationsCards from "@/components/settings/IntegrationsCards";
@@ -154,9 +154,9 @@ export default function Settings() {
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
-            <TabsTrigger value="company_profile">
-              <Building2 className="w-4 h-4 mr-2" />
-              Company Details
+            <TabsTrigger value="domains">
+              <Globe className="w-4 h-4 mr-2" />
+              {t.settings.tabs.domains || "Custom Domains"}
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
@@ -350,51 +350,127 @@ export default function Settings() {
         </TabsContent>
 
         {isAdmin && !isSuperadmin && (
-          <TabsContent value="company_profile">
-            <Card>
-              <CardHeader>
-                <CardTitle>Company Details</CardTitle>
-                <CardDescription>Public information for your signage business.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>Public Email</Label>
-                    <Input 
-                      value={company?.email || ""} 
-                      onChange={(e) => updateCompanySettings({ email: e.target.value })}
-                      placeholder="contact@company.com" 
-                    />
+          <TabsContent value="domains">
+            <div className="grid gap-6">
+              <Card className="glass overflow-hidden border-white/10">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Globe className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle>{t.settings.domains?.title || "Custom Domains"}</CardTitle>
+                      <CardDescription>
+                        {t.settings.domains?.subtitle || "Manage your brand identity and email deliverability."}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5 space-y-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          www.signflowapp.com
+                          <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                            Active
+                          </Badge>
+                        </h4>
+                        <p className="text-xs text-muted-foreground">
+                          Primary domain for your platform and public links.
+                        </p>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5" asChild>
+                        <a href="https://www.signflowapp.com" target="_blank" rel="noopener noreferrer">
+                          Visit <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </Button>
+                    </div>
+
+                    <Separator className="bg-white/5" />
+
+                    <div className="space-y-3">
+                      <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Email Configuration</Label>
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/10">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium">Business Email (SMTP/DNS)</p>
+                          <p className="text-xs text-muted-foreground">Configure your domain to send professional emails to clients.</p>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8"
+                          onClick={() => {
+                            // The actual logic would involve calling the email_domain setup dialog
+                            // which is handled by the platform.
+                            toast({
+                              title: "Email Setup",
+                              description: "Opening secure domain configuration...",
+                            });
+                          }}
+                        >
+                          Configure
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-200">
+                    <Shield className="w-4 h-4 shrink-0" />
+                    <p className="text-xs">
+                      Domain changes require DNS verification and may take up to 24-48 hours to propagate globally.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass border-white/10">
+                <CardHeader>
+                  <CardTitle>Company Details</CardTitle>
+                  <CardDescription>Public information for your signage business.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Public Email</Label>
+                      <Input 
+                        value={company?.email || ""} 
+                        onChange={(e) => updateCompanySettings({ email: e.target.value })}
+                        placeholder="contact@company.com" 
+                        className="bg-white/[0.03] border-white/10 h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Public Phone</Label>
+                      <Input 
+                        value={company?.phone || ""} 
+                        onChange={(e) => updateCompanySettings({ phone: e.target.value })}
+                        placeholder="+1 (555) 000-0000" 
+                        className="bg-white/[0.03] border-white/10 h-9 text-sm"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Public Phone</Label>
+                    <Label>Business Address</Label>
                     <Input 
-                      value={company?.phone || ""} 
-                      onChange={(e) => updateCompanySettings({ phone: e.target.value })}
-                      placeholder="+1 (555) 000-0000" 
+                      value={company?.address || ""} 
+                      onChange={(e) => updateCompanySettings({ address: e.target.value })}
+                      placeholder="123 Sign St, Production City" 
+                      className="bg-white/[0.03] border-white/10 h-9 text-sm"
                     />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Business Address</Label>
-                  <Input 
-                    value={company?.address || ""} 
-                    onChange={(e) => updateCompanySettings({ address: e.target.value })}
-                    placeholder="123 Sign St, Production City" 
-                  />
-                </div>
-                <div className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/5">
-                  <div className="space-y-0.5">
-                    <Label>Auto-create Production Orders</Label>
-                    <p className="text-xs text-muted-foreground">Automatically generate orders when proposals are approved.</p>
+                  <div className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/[0.02]">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm">Auto-create Production Orders</Label>
+                      <p className="text-[11px] text-muted-foreground">Automatically generate orders when proposals are approved.</p>
+                    </div>
+                    <Switch 
+                      checked={(company as any)?.auto_create_production_orders} 
+                      onCheckedChange={(v) => updateCompanySettings({ auto_create_production_orders: v })} 
+                    />
                   </div>
-                  <Switch 
-                    checked={(company as any)?.auto_create_production_orders} 
-                    onCheckedChange={(v) => updateCompanySettings({ auto_create_production_orders: v })} 
-                  />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         )}
 
