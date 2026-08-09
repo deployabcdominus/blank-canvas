@@ -120,7 +120,7 @@
   }
 
   body {
-    @apply text-foreground;
+    @apply text-foreground overflow-x-hidden w-full;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     letter-spacing: -0.015em;
@@ -129,6 +129,7 @@
     background: hsl(240 6% 6%);
     cursor: default;
     text-rendering: optimizeLegibility;
+    touch-action: manipulation;
   }
 
   ::selection {

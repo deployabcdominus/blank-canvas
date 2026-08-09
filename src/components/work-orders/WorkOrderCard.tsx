@@ -69,7 +69,7 @@ export function WorkOrderCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
       onClick={() => navigate(`/work-orders/${order.id}`)}
-      className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col w-full"
+      className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col w-full active:scale-[0.98]"
       style={{
         background: "rgba(255,255,255,0.03)",
         border: "1px solid rgba(139,92,246,0.2)",
@@ -161,7 +161,7 @@ export function WorkOrderCard({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-9 sm:w-9 shrink-0 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>

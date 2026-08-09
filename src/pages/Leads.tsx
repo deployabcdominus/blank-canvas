@@ -66,13 +66,13 @@ const Leads = () => {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen bg-background text-foreground overflow-x-hidden w-full">
         <Sidebar />
         <MobileMenu isOpen={actions.isMobileMenuOpen} onClose={() => actions.setIsMobileMenuOpen(false)} />
 
         <main
-          className={`flex-1 transition-all duration-300 ${isMobile ? 'p-4 pt-2' : 'p-6'} ${actions.selectedIds.size > 0 ? 'pb-24' : ''} max-w-full overflow-x-hidden`}
-          style={{ marginLeft: `${sidebarWidth}px` }}
+          className={`flex-1 transition-all duration-300 w-full max-w-full overflow-x-hidden ${isMobile ? 'p-4 pt-4' : 'p-6'} ${actions.selectedIds.size > 0 ? 'pb-28' : ''}`}
+          style={{ marginLeft: isMobile ? '0px' : `${sidebarWidth}px` }}
         >
           {isMobile && (
             <div className="flex items-center gap-3 mb-4">
@@ -171,7 +171,7 @@ const Leads = () => {
           <PlanLimitBanner entity="leads" />
           
           {isLoading ? (
-            <div className={`grid gap-5 grid-cols-1 xs:grid-cols-2 lg:grid-cols-3`}>
+            <div className={`grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`}>
               {Array.from({ length: 6 }).map((_, i) => (
                 <ListCardSkeleton key={i} />
               ))}
@@ -194,7 +194,7 @@ const Leads = () => {
               )}
             </div>
           ) : (
-            <div className={`grid gap-5 grid-cols-1 xs:grid-cols-2 lg:grid-cols-3`}>
+            <div className={`grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`}>
               {filteredLeads.map((lead, index) => (
                 <LeadCard
                   key={lead.id}
