@@ -177,6 +177,18 @@ export const en = {
     seo: {
       title: "SignFlow | Elite SaaS Operations Hub & Precision Management",
       description: "Command your operations with the #1 platform for high-performance service teams. Scale with absolute precision and premium authority.",
+    },
+    reports: {
+      title: "Executive Reports",
+      subtitle: "Performance analysis and strategic metrics",
+      metrics: {
+        leads: "Leads",
+        proposals: "Proposals",
+        completedJobs: "Completed Jobs",
+        conversion: "Conversion Rate",
+        salesValue: "Sales Value",
+        productionStatus: "Production Status",
+      }
     }
   },
   /* ── Auth (Login / Register / Reset) ── */
