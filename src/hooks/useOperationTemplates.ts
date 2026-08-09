@@ -20,44 +20,59 @@ export interface OperationTemplate {
   created_at: string;
 }
 
-const DEFAULT_TEMPLATES: Omit<OperationTemplate, "id" | "company_id" | "created_at">[] = [
+const DEFAULT_TEMPLATES_SIGNAGE: Omit<OperationTemplate, "id" | "company_id" | "created_at">[] = [
   {
     product_type: "channel_letters",
     name: "Channel Letters",
-    description: "Letras de canal iluminadas",
+    description: "Illuminated signage letters",
     steps: [
-      { name: "Corte CNC", department: "cnc", description: "Corte de caras y retornos en router CNC", sort_order: 0 },
-      { name: "Doblado", department: "cnc", description: "Doblado de retornos de aluminio", sort_order: 1 },
-      { name: "Soldadura", department: "cnc", description: "Soldadura de retornos a caras", sort_order: 2 },
-      { name: "Pintura", department: "graphics", description: "Pintura y acabado de superficies", sort_order: 3 },
-      { name: "Instalación LED", department: "electrical", description: "Montaje de módulos LED y cableado", tip: "Verificar polaridad antes de sellar", sort_order: 4 },
-      { name: "Cableado Eléctrico", department: "electrical", description: "Conexión de fuente y prueba de iluminación", sort_order: 5 },
-      { name: "Control de Calidad", department: "qa", description: "Inspección final y prueba de funcionamiento", sort_order: 6 },
+      { name: "CNC Cutting", department: "cnc", description: "Face and return cutting on CNC router", sort_order: 0 },
+      { name: "Bending", department: "cnc", description: "Aluminum return bending", sort_order: 1 },
+      { name: "Welding", department: "cnc", description: "Return-to-face welding", sort_order: 2 },
+      { name: "Painting", department: "graphics", description: "Surface painting and finishing", sort_order: 3 },
+      { name: "LED Installation", department: "electrical", description: "LED module mounting and wiring", tip: "Verify polarity before sealing", sort_order: 4 },
+      { name: "Electrical Wiring", department: "electrical", description: "Source connection and lighting test", sort_order: 5 },
+      { name: "Quality Control", department: "qa", description: "Final inspection and operational test", sort_order: 6 },
     ],
   },
   {
     product_type: "monument_sign",
     name: "Monument Sign",
-    description: "Letrero tipo monumento",
+    description: "Standalone monument-style sign",
     steps: [
-      { name: "Diseño Estructural", department: "cnc", sort_order: 0 },
-      { name: "Corte de Materiales", department: "cnc", sort_order: 1 },
-      { name: "Soldadura Estructural", department: "cnc", sort_order: 2 },
-      { name: "Gráficos / Vinil", department: "graphics", description: "Aplicación de vinil o impresión", sort_order: 3 },
-      { name: "Eléctrico", department: "electrical", sort_order: 4 },
-      { name: "Control de Calidad", department: "qa", sort_order: 5 },
+      { name: "Structural Design", department: "cnc", sort_order: 0 },
+      { name: "Material Cutting", department: "cnc", sort_order: 1 },
+      { name: "Structural Welding", department: "cnc", sort_order: 2 },
+      { name: "Graphics / Vinyl", department: "graphics", description: "Vinyl application or printing", sort_order: 3 },
+      { name: "Electrical", department: "electrical", sort_order: 4 },
+      { name: "Quality Control", department: "qa", sort_order: 5 },
     ],
   },
   {
     product_type: "vinyl_banner",
     name: "Vinyl / Banner",
-    description: "Impresión y corte de vinil o banners",
+    description: "Vinyl or banner printing and cutting",
     steps: [
-      { name: "Diseño / RIP", department: "graphics", sort_order: 0 },
-      { name: "Impresión", department: "graphics", sort_order: 1 },
-      { name: "Laminado", department: "graphics", sort_order: 2 },
-      { name: "Corte / Acabado", department: "graphics", sort_order: 3 },
-      { name: "Control de Calidad", department: "qa", sort_order: 4 },
+      { name: "Design / RIP", department: "graphics", sort_order: 0 },
+      { name: "Printing", department: "graphics", sort_order: 1 },
+      { name: "Laminating", department: "graphics", sort_order: 2 },
+      { name: "Cutting / Finishing", department: "graphics", sort_order: 3 },
+      { name: "Quality Control", department: "qa", sort_order: 4 },
+    ],
+  },
+];
+
+const DEFAULT_TEMPLATES_IT: Omit<OperationTemplate, "id" | "company_id" | "created_at">[] = [
+  {
+    product_type: "infrastructure_deployment",
+    name: "Infrastructure Deployment",
+    description: "Full network or hardware installation",
+    steps: [
+      { name: "Site Survey", department: "technical", sort_order: 0 },
+      { name: "Hardware Procurement", department: "logistics", sort_order: 1 },
+      { name: "Configuration", department: "it", sort_order: 2 },
+      { name: "Installation", department: "it", sort_order: 3 },
+      { name: "UAT / Testing", department: "qa", sort_order: 4 },
     ],
   },
 ];
@@ -80,9 +95,15 @@ export function useOperationTemplates() {
 
   useEffect(() => { fetchTemplates(); }, [fetchTemplates]);
 
-  const seedDefaults = async () => {
+  const seedDefaults = async (industry?: string) => {
     if (!companyId) return;
-    for (const t of DEFAULT_TEMPLATES) {
+    
+    let templatesToSeed = DEFAULT_TEMPLATES_SIGNAGE;
+    if (industry === "Servicios IT y Software") {
+      templatesToSeed = DEFAULT_TEMPLATES_IT;
+    }
+    
+    for (const t of templatesToSeed) {
       await supabase.from("operation_templates" as any).insert({
         company_id: companyId,
         product_type: t.product_type,

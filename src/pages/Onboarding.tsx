@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { INDUSTRIES, DEFAULT_SERVICES_BY_INDUSTRY, getIndustryLabels } from "@/lib/industry_config";
+import { useOperationTemplates } from "@/hooks/useOperationTemplates";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -83,6 +84,7 @@ const stepVariants = {
 const Onboarding = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { seedDefaults } = useOperationTemplates();
   const { locale } = useLanguage();
   const isEn = locale === "en";
   const [currentStep, setCurrentStep] = useState(1);
@@ -296,6 +298,9 @@ const Onboarding = () => {
         .from("user_settings")
         .update({ brand_logo: logoUrl, brand_color: formData.brandColor })
         .eq("user_id", user.id);
+
+      // Seed industry-specific templates
+      await seedDefaults(formData.industry);
 
       setShowSuccess(true);
     } catch (error: any) {
