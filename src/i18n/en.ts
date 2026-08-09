@@ -1576,13 +1576,26 @@ export const en = {
       techSheet: "Technical Sheet",
       photos: "Evidence",
       myTask: "My Task",
+    technician: {
+      title: "My Work Orders",
+      subtitle: "Orders assigned to you",
+      sync: "Sync",
+      noOrders: "No assigned orders",
+      currentStatus: "Current status",
+      delivery: "Delivery",
+      progress: "Progress",
+      notes: "Notes",
+      techSheet: "Technical Sheet",
+      photos: "Evidence",
+      myTask: "My Task",
       details: "Details",
       actions: {
         start: "Start Order",
         finish: "Finish Order",
         saving: "Saving...",
       },
-    nextPhase: "next phase",
+      nextPhase: "next phase",
+    },
   },
 };
 

@@ -1584,7 +1584,8 @@ export const es: TranslationKeys = {
         finish: "Finalizar Orden",
         saving: "Guardando...",
       },
-    nextPhase: "siguiente fase",
+      nextPhase: "siguiente fase",
+    },
   },
 } as const;
 
