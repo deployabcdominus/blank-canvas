@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Users, FileText, ClipboardList, MapPin,
   Building, UserCog, Settings, Contact, FolderKanban,
-  DollarSign, Globe, ServerCog, Activity, BarChart3
+  DollarSign, Globe, ServerCog, Activity, BarChart3, Package
 } from "lucide-react";
 import type { AppRole } from "@/hooks/useUserRole";
 import type { LucideIcon } from "lucide-react";
@@ -56,6 +56,7 @@ export const productionGroup: NavGroup = {
   items: [
     { icon: ClipboardList, label: "Work Orders", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
     { icon: Building, label: "Partners", labelKey: "installerCompanies", path: "/installer-companies", roles: ['admin', 'operations'] },
+    { icon: Package, label: "Inventario", path: "/inventory", roles: ["admin", "operations"] },
   ],
 };
 
