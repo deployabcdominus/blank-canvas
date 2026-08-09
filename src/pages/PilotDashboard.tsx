@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {isEn ? "Pilot Readiness Dashboard" : "Panel de Preparación para Piloto"}
         </h1>
         <p className="text-muted-foreground">
-          {isEn ? "Validate features and capture feedback during the initial pilot phase." : "Valida funciones y captura comentarios durante la fase piloto inicial."}
+          {isEn ? "Load the security issues from the scan results and fix the selected issues." : "Cargue los problemas de seguridad de los resultados del escaneo y solucione los problemas seleccionados."}
         </p>
       </div>
 
