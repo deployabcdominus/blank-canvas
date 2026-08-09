@@ -475,6 +475,7 @@ export const es: TranslationKeys = {
       billing: "Facturación",
       configuration: "Configuración",
       subscription: "Suscripción",
+      domains: "Dominios Propios",
     },
     profileName: "Nombre Completo",
     resetPassword: "Restablecer Contraseña",
@@ -547,6 +548,10 @@ export const es: TranslationKeys = {
       restoreConfirmTitle: "¿Restaurar configuración predeterminada?",
       restoreConfirmDesc: "Esta acción restaurará la configuración de apariencia a los valores predeterminados. Los datos de negocio no se verán afectados.",
       restore: "Restaurar",
+    },
+    domains: {
+      title: "Dominios y Correo",
+      subtitle: "Gestione su identidad de marca y envío de correos profesionales.",
     },
     catalogs: {
       title: "Catálogos del sistema",

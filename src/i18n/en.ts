@@ -473,6 +473,7 @@ export const en = {
       billing: "Billing",
       configuration: "Configuration",
       subscription: "Subscription",
+      domains: "Custom Domains",
     },
     profileName: "Full Name",
     resetPassword: "Reset Password",
@@ -545,6 +546,10 @@ export const en = {
       restoreConfirmTitle: "Restore default configuration?",
       restoreConfirmDesc: "This action will restore the appearance configuration to default values. Business data will not be affected.",
       restore: "Restore",
+    },
+    domains: {
+      title: "Custom Domains & Email",
+      subtitle: "Manage your brand identity and professional email sending.",
     },
     catalogs: {
       title: "System Catalogs",
