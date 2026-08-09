@@ -192,7 +192,7 @@ export const es: TranslationKeys = {
     },
     pilot: {
       title: "Panel de Preparación para Piloto",
-      subtitle: "hagamos la Fase 8: Automatización de Crecimiento y Marketing",
+      subtitle: "cual es la siguiente Fase",
       checklist: "Lista",
       feedback: "Comentarios",
       history: "Todos los Problemas",
