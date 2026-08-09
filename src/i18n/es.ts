@@ -183,14 +183,12 @@ export const es: TranslationKeys = {
     reports: {
       title: "Reportes Ejecutivos",
       subtitle: "Análisis de rendimiento y métricas estratégicas",
-      metrics: {
-        leads: "Leads",
-        proposals: "Propuestas",
-        completedJobs: "Trabajos Completados",
-        conversion: "Tasa de Conversión",
-        salesValue: "Valor de Ventas",
-        productionStatus: "Estado de Producción",
-      }
+      salesValue: "Valor de Ventas",
+      productionStatus: "Estado de Producción",
+      metricLeads: "Leads",
+      metricProposals: "Propuestas",
+      metricCompleted: "Trabajos Completados",
+      metricConversion: "Tasa de Conversión",
     }
   },
   /* ── Auth (Login / Register / Reset) ── */

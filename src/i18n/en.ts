@@ -181,14 +181,12 @@ export const en = {
     reports: {
       title: "Executive Reports",
       subtitle: "Performance analysis and strategic metrics",
-      metrics: {
-        leads: "Leads",
-        proposals: "Proposals",
-        completedJobs: "Completed Jobs",
-        conversion: "Conversion Rate",
-        salesValue: "Sales Value",
-        productionStatus: "Production Status",
-      }
+      salesValue: "Sales Value",
+      productionStatus: "Production Status",
+      metricLeads: "Leads",
+      metricProposals: "Proposals",
+      metricCompleted: "Completed Jobs",
+      metricConversion: "Conversion Rate",
     }
   },
   /* ── Auth (Login / Register / Reset) ── */
