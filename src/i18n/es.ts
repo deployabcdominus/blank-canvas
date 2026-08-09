@@ -290,6 +290,7 @@ export const es: TranslationKeys = {
     payments: "Pagos",
     teamManagement: "Gestión de equipo",
     settings: "Configuración",
+    inventory: "Inventario",
     auditLog: "Registros de Auditoría",
     principal: "Principal",
     adjustments: "Ajustes",
