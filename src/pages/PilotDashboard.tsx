@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 
 export default function PilotDashboard() {
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
   const { user } = useAuth();
   const isEn = locale === "en";
   const [feedback, setFeedback] = useState<any[]>([]);
@@ -50,18 +50,18 @@ export default function PilotDashboard() {
     <div className="container mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">
-          {isEn ? "Pilot Readiness Dashboard" : "Panel de Preparación para Piloto"}
+          {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          {isEn ? "Validate features and capture feedback during the initial pilot phase." : "Valida funciones y captura comentarios durante la fase piloto inicial."}
+          {t.landing.pilot.subtitle}
         </p>
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 max-w-md">
-          <TabsTrigger value="checklist">{isEn ? "Checklist" : "Lista"}</TabsTrigger>
-          <TabsTrigger value="feedback">{isEn ? "Feedback" : "Comentarios"}</TabsTrigger>
-          <TabsTrigger value="history">{isEn ? "All Issues" : "Todos los Problemas"}</TabsTrigger>
+          <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
+          <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
+          <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="checklist" className="space-y-4">
@@ -69,9 +69,9 @@ export default function PilotDashboard() {
             <div className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>{isEn ? "Operations Checklist" : "Lista de Operaciones"}</CardTitle>
+                  <CardTitle>{t.landing.pilot.operationsChecklist}</CardTitle>
                   <CardDescription>
-                    {isEn ? "Track core workflows to ensure they are ready for real usage." : "Rastrea los flujos de trabajo principales para asegurar que estén listos para uso real."}
+                    {t.landing.pilot.operationsChecklistDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -82,21 +82,19 @@ export default function PilotDashboard() {
             <div className="space-y-4">
               <Card className="sticky top-20">
                 <CardHeader>
-                  <CardTitle>{isEn ? "About the Pilot" : "Acerca del Piloto"}</CardTitle>
+                  <CardTitle>{t.landing.pilot.aboutPilot}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm">
                   <p>
-                    {isEn 
-                      ? "The goal of this pilot is to process 5-10 real jobs from start to finish. This will validate the entire workflow from lead intake to final project closing."
-                      : "El objetivo de este piloto es procesar de 5 a 10 trabajos reales de principio a fin. Esto validará todo el flujo de trabajo, desde la entrada de prospectos hasta el cierre final del proyecto."}
+                    {t.landing.pilot.aboutPilotDesc}
                   </p>
                   <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-                    <h4 className="font-bold mb-2">{isEn ? "Success Metrics" : "Métricas de Éxito"}</h4>
+                    <h4 className="font-bold mb-2">{t.landing.pilot.successMetrics}</h4>
                     <ul className="list-disc pl-5 space-y-1">
-                      <li>{isEn ? "Zero critical blocking bugs" : "Cero errores críticos de bloqueo"}</li>
-                      <li>{isEn ? "All production orders printed correctly" : "Todas las órdenes de producción impresas correctamente"}</li>
-                      <li>{isEn ? "Installation photos uploaded successfully" : "Fotos de instalación subidas con éxito"}</li>
-                      <li>{isEn ? "Payments recorded accurately" : "Pagos registrados con precisión"}</li>
+                      <li>{t.landing.pilot.metricZeroBugs}</li>
+                      <li>{t.landing.pilot.metricOrdersPrinted}</li>
+                      <li>{t.landing.pilot.metricPhotosUploaded}</li>
+                      <li>{t.landing.pilot.metricPaymentsRecorded}</li>
                     </ul>
                   </div>
                 </CardContent>
@@ -108,9 +106,9 @@ export default function PilotDashboard() {
         <TabsContent value="feedback">
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle>{isEn ? "Submit Pilot Feedback" : "Enviar Comentarios del Piloto"}</CardTitle>
+              <CardTitle>{t.landing.pilot.submitFeedback}</CardTitle>
               <CardDescription>
-                {isEn ? "Found a bug or have a suggestion? Tell us here." : "¿Encontraste un error o tienes una sugerencia? Cuéntanos aquí."}
+                {t.landing.pilot.submitFeedbackDesc}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -122,13 +120,13 @@ export default function PilotDashboard() {
         <TabsContent value="history" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{isEn ? "Pilot Issue History" : "Historial de Problemas del Piloto"}</CardTitle>
+              <CardTitle>{t.landing.pilot.issueHistory}</CardTitle>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[600px] pr-4">
                 <div className="space-y-4">
                   {feedback.length === 0 ? (
-                    <p className="text-center text-muted-foreground py-8">{isEn ? "No feedback submitted yet." : "Aún no se han enviado comentarios."}</p>
+                    <p className="text-center text-muted-foreground py-8">{t.landing.pilot.noFeedback}</p>
                   ) : (
                     feedback.map((item) => (
                       <div key={item.id} className="p-4 border rounded-lg bg-card hover:shadow-sm transition-shadow">
@@ -145,12 +143,12 @@ export default function PilotDashboard() {
                         <p className="text-sm font-medium mt-2">{item.description}</p>
                         {item.suggested_improvement && (
                           <div className="mt-2 p-2 bg-muted/50 rounded text-xs">
-                            <span className="font-bold">{isEn ? "Suggestion: " : "Sugerencia: "}</span>
+                            <span className="font-bold">{t.landing.pilot.suggestion}</span>
                             {item.suggested_improvement}
                           </div>
                         )}
                         <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
-                          <span>{isEn ? "Reported by: " : "Reportado por: "}{item.profiles?.display_name || "Unknown"}</span>
+                          <span>{t.landing.pilot.reportedBy}{item.profiles?.display_name || "Unknown"}</span>
                           <Badge variant={item.status === "Resolved" ? "default" : "outline"} className="text-[10px] h-4">
                             {item.status}
                           </Badge>
