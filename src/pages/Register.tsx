@@ -429,6 +429,7 @@ const Register = () => {
               <button onClick={() => navigate("/login")} className="font-bold text-primary hover:underline underline-offset-4 decoration-2">{t.auth.register.loginLink}</button>
             </p>
           </motion.div>
+          </div>
         </div>
       </div>
     </PageTransition>
