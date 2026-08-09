@@ -8,6 +8,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .animate-shimmer-fast {
+    animation: shimmer-fast 2s linear infinite;
+  }
+}
+
+@keyframes shimmer-fast {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+
 @layer base {
   :root {
     /* ── Core: Zinc-950 base + Violet Premium ── */

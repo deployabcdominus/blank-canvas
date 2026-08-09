@@ -43,9 +43,9 @@ export const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
           <LanguageSwitcher />
           <Button 
             onClick={() => navigate("/login")} 
-            className="group relative overflow-hidden rounded-full px-6 font-bold transition-all bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:scale-105 active:scale-95 shadow-[0_0_20px_-5px_rgba(168,85,247,0.5)]"
+            className="group relative overflow-hidden rounded-full px-8 h-11 font-black uppercase tracking-widest transition-all bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 bg-[length:200%_auto] animate-shimmer-fast hover:scale-105 active:scale-95 shadow-[0_0_25px_-5px_rgba(168,85,247,0.6)] border border-white/20"
           >
-            <LogIn className="w-4 h-4 mr-2" />
+            <LogIn className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
             {t.landing.nav.login}
           </Button>
         </div>
