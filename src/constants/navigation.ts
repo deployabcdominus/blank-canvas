@@ -9,7 +9,7 @@ import type { LucideIcon } from "lucide-react";
 export interface NavItem {
   icon: LucideIcon;
   label: string;
-  labelKey?: "projects" | "leads" | "workOrders" | "installation" | "installerCompanies";
+  labelKey?: "projects" | "leads" | "workOrders" | "installation" | "installerCompanies" | "inventory";
   path: string;
   roles?: AppRole[];
 }
