@@ -332,27 +332,7 @@ const Register = () => {
         </div>
 
         <div className="max-w-6xl mx-auto w-full relative z-10 flex flex-col">
-          {/* Top Navbar */}
-          <header className="flex items-center justify-between py-6 border-b border-white/5 mb-8">
-            <Link to="/" className="flex items-center gap-2.5 group" aria-label="Sign Flow">
-              <div className="w-10 h-10 p-2 glass-card border-primary/20 flex items-center justify-center transition-all group-hover:border-primary/40 rounded-xl">
-                <SignFlowLogo variant="technical" className="w-full h-full text-primary" />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-white">Sign Flow</span>
-            </Link>
-            
-            <div className="flex items-center gap-4">
-              <LanguageSwitcher />
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigate("/login")} 
-                className="hidden sm:flex text-white hover:text-white hover:bg-white/10 border border-white/20 rounded-full px-6 transition-all font-bold"
-              >
-                {t.auth.login.submit}
-              </Button>
-            </div>
-          </header>
+          <Navbar />
 
           <div className="flex-1 flex items-center justify-center py-12">
             <div className="w-full max-w-md relative">
