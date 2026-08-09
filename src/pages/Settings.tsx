@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell, List, Moon, CreditCard, Upload, Loader2, ImageIcon, Trash2, Globe, ExternalLink } from "lucide-react";
+import { RotateCcw, Save, Settings as SettingsIcon, User, Mail, Building2, Calendar, FolderOpen, Shield, KeyRound, Plug, CheckCircle2, Bell, List, Moon, CreditCard, Upload, Loader2, ImageIcon, Trash2, Globe, ExternalLink, Zap } from "lucide-react";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { ServiceTypesSettings } from "@/components/settings/ServiceTypesSettings";
 import IntegrationsCards from "@/components/settings/IntegrationsCards";
@@ -169,6 +169,12 @@ export default function Settings() {
             <TabsTrigger value="integraciones">
               <Plug className="w-4 h-4 mr-2" />
               {t.settings.tabs.integrations}
+            </TabsTrigger>
+          )}
+          {isAdmin && !isSuperadmin && (
+            <TabsTrigger value="notifications">
+              <Bell className="w-4 h-4 mr-2" />
+              {t.settings.tabs.notifications}
             </TabsTrigger>
           )}
           {isAdmin && !isSuperadmin && (
@@ -852,6 +858,124 @@ export default function Settings() {
                 </Card>
               )}
               <PricingSection />
+            </div>
+          </TabsContent>
+        )}
+        {isAdmin && !isSuperadmin && (
+          <TabsContent value="notifications">
+            <div className="grid gap-6">
+              <Card className="glass border-white/10 overflow-hidden">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-orange-500/10">
+                      <Zap className="w-5 h-5 text-orange-400" />
+                    </div>
+                    <div>
+                      <CardTitle>{t.settings.push.title}</CardTitle>
+                      <CardDescription>{t.settings.push.subtitle}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">{t.settings.push.enable}</Label>
+                        <p className="text-xs text-muted-foreground">
+                          {isEn ? "Receive instant alerts on your desktop or mobile device." : "Reciba alertas instantáneas en su escritorio o dispositivo móvil."}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={async () => {
+                          if (!("Notification" in window)) {
+                            toast({ title: "Error", description: t.settings.push.unsupported, variant: "destructive" });
+                            return;
+                          }
+                          const permission = await Notification.requestPermission();
+                          if (permission === "granted") {
+                            toast({ title: t.settings.push.enabled, description: isEn ? "You will now receive real-time alerts." : "Ahora recibirá alertas en tiempo real." });
+                            // Trigger a test notification immediately
+                            new Notification(t.settings.push.title, {
+                              body: t.settings.push.testDesc,
+                              icon: "/favicon.ico"
+                            });
+                          } else if (permission === "denied") {
+                            toast({ title: "Error", description: t.settings.push.browserDenied, variant: "destructive" });
+                          }
+                        }}
+                      >
+                        {t.settings.push.enable}
+                      </Button>
+                    </div>
+
+                    <Separator className="bg-white/5" />
+
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">{t.settings.push.test}</Label>
+                        <p className="text-xs text-muted-foreground">
+                          {isEn ? "Verify that your system is correctly configured." : "Verifique que su sistema esté correctamente configurado."}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 text-xs"
+                        onClick={() => {
+                          if (Notification.permission === "granted") {
+                            new Notification("SignFlow Hub", {
+                              body: t.settings.push.testDesc,
+                              icon: "/favicon.ico"
+                            });
+                            toast({ title: "Success", description: t.settings.push.testDesc });
+                          } else {
+                            toast({ title: "Action Required", description: t.settings.push.enable, variant: "destructive" });
+                          }
+                        }}
+                      >
+                        {t.settings.push.test}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 border border-primary/10 text-primary-foreground/80">
+                    <Shield className="w-4 h-4 shrink-0" />
+                    <p className="text-xs">
+                      {isEn 
+                        ? "Push notifications use secure browser channels and do not require external plugins." 
+                        : "Las notificaciones push utilizan canales seguros del navegador y no requieren complementos externos."}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass border-white/10">
+                <CardHeader>
+                  <CardTitle>{isEn ? "Notification Channels" : "Canales de Notificación"}</CardTitle>
+                  <CardDescription>
+                    {isEn ? "Configure where you want to receive each type of alert." : "Configure dónde desea recibir cada tipo de alerta."}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {[
+                    { key: 'proposals', label: t.nav.proposals },
+                    { key: 'orders', label: t.nav.workOrders },
+                    { key: 'payments', label: t.nav.payments },
+                  ].map((channel) => (
+                    <div key={channel.key} className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/[0.02]">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm">{channel.label}</Label>
+                        <p className="text-[11px] text-muted-foreground">
+                          {isEn ? `Real-time updates for ${channel.label.toLowerCase()}.` : `Actualizaciones en tiempo real para ${channel.label.toLowerCase()}.`}
+                        </p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         )}
