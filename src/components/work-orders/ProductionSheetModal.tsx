@@ -20,6 +20,7 @@ import { type WorkOrder } from "@/types/domain";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useCompany } from "@/hooks/useCompany";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { generateProductionSheetPDF } from "@/lib/generate-production-sheet-pdf";
 import { QCSignaturePad } from "./QCSignaturePad";
 import { StorageImage } from "@/components/StorageImage";
@@ -130,6 +131,7 @@ const defaultMaterialSpecs: MaterialSpecs = {
 
 export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }: ProductionSheetModalProps) {
   const { companyId } = useUserRole();
+  const { t } = useLanguage();
   const { updateWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const updateOrder = (id: string, updates: any) => updateWorkOrderMutation.mutateAsync({ id, updates });
   const { company } = useCompany();
