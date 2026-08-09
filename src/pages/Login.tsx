@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PageTransition } from "@/components/PageTransition";
 import { SignFlowLogo } from "@/components/SignFlowLogo";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { Navbar } from "@/components/Navbar";
 
 const Login = () => {
   const navigate = useNavigate();
