@@ -106,7 +106,7 @@ export const HudPipeline = memo(({ leads, proposals, orders, installations, acti
         {activeFilter && <span className="text-[10px] md:text-xs text-muted-foreground">{tc.filtering}: {COLS.find(c => c.key === activeFilter)?.label}</span>}
       </div>
 
-      <div className="flex gap-2 md:gap-3 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory">
+      <div className="flex gap-2 md:gap-3 overflow-x-auto pb-6 pt-2 scrollbar-none snap-x snap-mandatory -mx-1 px-1 touch-pan-x">
         <AnimatePresence mode="popLayout">
           {visibleCols.map(col => {
             const colCards = cards.filter(c => c.column === col.key);
@@ -137,7 +137,7 @@ export const HudPipeline = memo(({ leads, proposals, orders, installations, acti
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.04 }}
                         onClick={() => navigate(card.navigateTo)}
-                        className="dash-card p-4 md:p-4 cursor-pointer card-interactive group min-h-[90px] rounded-2xl"
+                        className="dash-card p-4 md:p-4 cursor-pointer card-interactive group min-h-[90px] rounded-2xl active:scale-[0.98] md:active:scale-[1.02]"
                       >
                         <div className="flex items-start gap-2">
                           <div className="mt-1.5 flex-shrink-0">

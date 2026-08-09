@@ -523,20 +523,20 @@ export default function WorkOrderDetail() {
                 {raw.product_type || raw.project_name || order.project || "—"}
               </p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
               {/* Status dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button 
                     disabled={isClosed}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 ${currentStatus.bg} ${currentStatus.text} disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 ${currentStatus.bg} ${currentStatus.text} disabled:opacity-50 disabled:cursor-not-allowed h-9`}
                   >
                     {currentStatus.label}
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {STATUS_OPTIONS.map(s => (
-                    <DropdownMenuItem key={s.value} onClick={() => handleStatusChange(s.value)}>
+                    <DropdownMenuItem key={s.value} onClick={() => handleStatusChange(s.value)} className="min-h-[44px] sm:min-h-[auto]">
                       {s.label}
                     </DropdownMenuItem>
                   ))}
@@ -549,27 +549,29 @@ export default function WorkOrderDetail() {
                   size="sm" 
                   onClick={enterEdit} 
                   disabled={isClosed}
-                  className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10 disabled:opacity-50"
+                  className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10 disabled:opacity-50 h-9 flex-1 sm:flex-none"
                 >
                   <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit
                 </Button>
               ) : (
-                <>
-                  <Button size="sm" onClick={saveEdit} disabled={editSaving} className="bg-violet-600 hover:bg-violet-700 text-white">
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <Button size="sm" onClick={saveEdit} disabled={editSaving} className="bg-violet-600 hover:bg-violet-700 text-white h-9 flex-1">
                     {editSaving ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
                     Save
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => setEditMode(false)}>
+                  <Button variant="outline" size="sm" onClick={() => setEditMode(false)} className="h-9 flex-1">
                     <X className="w-3.5 h-3.5 mr-1.5" /> Cancel
                   </Button>
-                </>
+                </div>
               )}
-              <Button variant="outline" size="sm" onClick={() => window.open(`/print/${order.id}`, '_blank')} className="text-muted-foreground">
-                <Printer className="w-3.5 h-3.5 mr-1.5" /> Print / PDF
-              </Button>
-              <Button variant="outline" size="sm" onClick={generatePOI} className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10">
-                <QrCode className="w-3.5 h-3.5 mr-1.5" /> POI Link
-              </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button variant="outline" size="sm" onClick={() => window.open(`/print/${order.id}`, '_blank')} className="text-muted-foreground h-9 flex-1 sm:flex-none">
+                  <Printer className="w-3.5 h-3.5 mr-1.5" /> Print
+                </Button>
+                <Button variant="outline" size="sm" onClick={generatePOI} className="border-violet-500/30 text-violet-400 hover:bg-violet-500/10 h-9 flex-1 sm:flex-none">
+                  <QrCode className="w-3.5 h-3.5 mr-1.5" /> POI
+                </Button>
+              </div>
             </div>
           </div>
 

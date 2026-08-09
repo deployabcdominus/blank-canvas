@@ -107,7 +107,7 @@ export const HudCard = memo(({ label, desc, value, icon: Icon, isActive, onClick
       className={`
         stat-card relative overflow-hidden text-left group
         rounded-2xl border transition-all duration-300 shimmer-hover
-        backdrop-blur-3xl p-4 md:p-5
+        backdrop-blur-3xl p-4 md:p-5 w-full active:scale-[0.98] md:active:scale-[1.01]
         ${glowPulse
           ? "border-primary/50 shadow-[0_0_30px_rgba(139,92,246,0.3)]"
           : isActive
