@@ -2,6 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
 import { logAudit } from '@/lib/audit';
 import { NotificationsService } from './notifications.service';
+import { logEvent } from '@/lib/monitoring';
 
 export type ProposalRow = Database['public']['Tables']['proposals']['Row'];
 export type ProposalInsert = Database['public']['Tables']['proposals']['Insert'];
@@ -82,8 +83,13 @@ export const ProposalsService = {
         details: updates
       });
 
-      // Automated Notification for Approval
+      // Automated Notification and Event Logging for Approval
       if (isApproved && result.data.company_id) {
+        await logEvent('sales', 'Proposal Approved', `Proposal for ${result.data.client} was approved`, '💰', {
+          value: result.data.value?.toString() || '0',
+          leadId: result.data.lead_id || 'unknown'
+        });
+
         // Find admins to notify them
         const { data: admins } = await (supabase
           .from('user_roles') as any)
