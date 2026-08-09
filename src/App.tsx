@@ -51,6 +51,7 @@ const POIPage = lazy(() => import("./pages/POIPage"));
 const PrintPage = lazy(() => import("./pages/PrintPage"));
 
 const PilotDashboard = lazy(() => import("./pages/PilotDashboard"));
+const Inventory = lazy(() => import("./pages/Inventory"));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
