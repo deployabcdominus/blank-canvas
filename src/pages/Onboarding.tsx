@@ -353,7 +353,7 @@ const Onboarding = () => {
           <div className="w-full max-w-xl">
             <div className="absolute top-6 left-1/2 -translate-x-1/2">
               <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 animate-pulse">
-                continuemos con la siguiente fase del Plan estrategico
+                Onboarding Dinámico 2.0
               </Badge>
             </div>
             {/* Celebration header */}

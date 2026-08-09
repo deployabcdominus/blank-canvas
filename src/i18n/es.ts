@@ -179,6 +179,16 @@ export const es: TranslationKeys = {
     seo: {
       title: "SignFlow | Hub de Operaciones de Élite y Gestión de Precisión",
       description: "Domina tus operaciones con la plataforma #1 para equipos de servicios de alto rendimiento. Escala con precisión absoluta y autoridad premium.",
+    },
+    reports: {
+      title: "Reportes Ejecutivos",
+      subtitle: "Análisis de rendimiento y métricas estratégicas",
+      salesValue: "Valor de Ventas",
+      productionStatus: "Estado de Producción",
+      metricLeads: "Leads",
+      metricProposals: "Propuestas",
+      metricCompleted: "Trabajos Completados",
+      metricConversion: "Tasa de Conversión",
     }
   },
   /* ── Auth (Login / Register / Reset) ── */
