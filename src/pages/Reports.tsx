@@ -8,7 +8,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { FileText, TrendingUp, Users, CheckCircle2, BarChart3 } from "lucide-react";
+import { FileText, TrendingUp, Users, CheckCircle2, BarChart3, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Reports() {
   const { isAdmin: isUserAdmin, companyId } = useUserRole();
@@ -119,6 +120,31 @@ export default function Reports() {
           <MetricSmall label="Active Proposals" value={proposals.filter(p => (p.status as string) === 'Enviada externamente').length} icon={FileText} color="text-blue-400" />
           <MetricSmall label="Completed Jobs" value={orders.filter(o => o.closing_status === 'Closed').length} icon={CheckCircle2} color="text-emerald-400" />
           <MetricSmall label="Conversion Rate" value={`${leads.length ? Math.round((proposals.filter(p => p.status === 'Aprobada').length / leads.length) * 100) : 0}%`} icon={TrendingUp} color="text-pink-400" />
+        </div>
+        
+        <div className="mt-8 flex justify-end">
+          <Button 
+            onClick={() => {
+              const csvContent = "data:text/csv;charset=utf-8," 
+                + "Metric,Value\n"
+                + `Total Leads,${leads.length}\n`
+                + `Active Proposals,${proposals.filter(p => (p.status as string) === 'Enviada externamente').length}\n`
+                + `Completed Jobs,${orders.filter(o => o.closing_status === 'Closed').length}\n`
+                + `Conversion Rate,${leads.length ? Math.round((proposals.filter(p => p.status === 'Aprobada').length / leads.length) * 100) : 0}%\n`;
+              
+              const encodedUri = encodeURI(csvContent);
+              const link = document.createElement("a");
+              link.setAttribute("href", encodedUri);
+              link.setAttribute("download", `operational_report_${new Date().toISOString().split('T')[0]}.csv`);
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }}
+            className="btn-glass bg-soft-blue text-soft-blue-foreground hover:bg-soft-blue-hover"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            {t.common.export} CSV
+          </Button>
         </div>
       </ResponsiveLayout>
     </PageTransition>
