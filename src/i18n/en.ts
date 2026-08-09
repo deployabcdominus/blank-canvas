@@ -190,7 +190,7 @@ export const en = {
     },
     pilot: {
       title: "Pilot Readiness Dashboard",
-      subtitle: "Show me the next stage of the strategic plan with a summary and success criteria within the pilot panel.",
+      subtitle: "Implement the next stage of the strategic plan in the pilot panel with a summary and success criteria visible to the user.",
       checklist: "Checklist",
       feedback: "Feedback",
       history: "All Issues",
