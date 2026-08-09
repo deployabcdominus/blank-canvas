@@ -58,8 +58,9 @@ export default function PilotDashboard() {
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 max-w-md">
+        <TabsList className="grid w-full grid-cols-4 max-w-lg">
           <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
+          <TabsTrigger value="marketing">{t.landing.pilot.marketing}</TabsTrigger>
           <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
           <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
@@ -95,12 +96,59 @@ export default function PilotDashboard() {
                       <li>{t.landing.pilot.metricOrdersPrinted}</li>
                       <li>{t.landing.pilot.metricPhotosUploaded}</li>
                       <li>{t.landing.pilot.metricPaymentsRecorded}</li>
+                      <li>{t.landing.pilot.metricReferralActive}</li>
                     </ul>
                   </div>
                 </CardContent>
               </Card>
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="marketing" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="glass-card border-violet-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{t.landing.pilot.campaigns}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground mt-1">Ready to launch</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-blue-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{t.landing.pilot.referrals}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Inactive</div>
+                <p className="text-xs text-muted-foreground mt-1">Configure in settings</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-emerald-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{t.landing.pilot.growthStats}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0%</div>
+                <p className="text-xs text-muted-foreground mt-1">Conversion lift</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card className="glass-card border-white/5">
+            <CardHeader>
+              <CardTitle>Phase 8: Growth Engine</CardTitle>
+              <CardDescription>
+                Marketing automation infrastructure is now provisioned. Connect your delivery providers to start automated campaigns.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl">
+                <p className="text-muted-foreground italic">Campaign designer and referral link generator coming in the next update.</p>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="feedback">
