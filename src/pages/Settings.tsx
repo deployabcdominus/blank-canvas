@@ -978,8 +978,7 @@ export default function Settings() {
               </Card>
             </div>
           </TabsContent>
-        )}
-
+        {isAdmin && !isSuperadmin && (
           <TabsContent value="audit">
             <Card className="glass border-white/10">
               <CardHeader>
