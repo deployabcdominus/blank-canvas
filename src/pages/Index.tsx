@@ -7,6 +7,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { SignFlowLogo, LogoShowcase } from "@/components/SignFlowLogo";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import GlassHero from "@/components/ui/glassmorphism-trust-hero";
+import { Navbar } from "@/components/Navbar";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -498,61 +499,7 @@ const Index = () => {
           <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[45vw] h-[30vw] max-w-[700px] max-h-[500px] opacity-[0.06]" style={{ background: "radial-gradient(ellipse at center, #f97316, transparent 55%)", filter: "blur(11.25rem)" }} />
         </div>
 
-        {/* ═══════════ HEADER ═══════════ */}
-        <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-zinc-950/30 backdrop-blur-2xl border-b border-white/[0.05]" : "bg-transparent"}`}>
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
-            <a href="/" className="flex items-center gap-1.5 py-2 min-h-[2.75rem]" aria-label="SignFlow - Home">
-              <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-                <SignFlowLogo variant="technical" className="w-7 h-7 sm:w-8 sm:h-8 text-violet-500" />
-              </div>
-              <span className="font-bold tracking-tight text-lg sm:text-xl text-zinc-100 hidden xs:inline-block">SignFlow</span>
-            </a>
-
-            <nav className="hidden md:flex items-center gap-8 text-[13px] font-medium text-zinc-500">
-              {[
-                { label: L.nav.industries, id: "industries" },
-                { label: L.nav.pricing, id: "pricing" },
-                { label: L.nav.faq, id: "faq" },
-              ].map((item) => (
-                <button key={item.id} onClick={() => scrollTo(item.id)} className="relative hover:text-zinc-200 transition-colors duration-300">
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-
-            <div className="flex items-center gap-2 sm:gap-3">
-              <LanguageSwitcher className="scale-90 sm:scale-100 origin-right" />
-              {user ? (
-                <Button
-                  size="sm"
-                  onClick={() => navigate("/dashboard")}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-4 sm:px-5 text-[12px] sm:text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 h-9 sm:h-10"
-                >
-                  <span className="hidden xs:inline">{L.nav.goToDashboard}</span>
-                  <ArrowRight className="w-3.5 h-3.5 xs:ml-2" />
-                </Button>
-              ) : (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate("/login")}
-                    className="hidden sm:flex text-zinc-300 hover:text-white border border-white/20 hover:border-white/40 hover:bg-white/5 transition-colors rounded-full px-5 h-10 font-medium text-[13px]"
-                  >
-                    {L.nav.login}
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => scrollTo("pricing")}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-full px-4 sm:px-5 text-[12px] sm:text-[13px] font-semibold shadow-[0_2px_16px_rgba(139,92,246,0.3)] transition-all duration-300 h-9 sm:h-10"
-                  >
-                    {L.nav.getStarted}
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </header>
+        <Navbar transparent />
 
         {/* ═══════════ HERO ═══════════ */}
         <section className="relative overflow-visible">
