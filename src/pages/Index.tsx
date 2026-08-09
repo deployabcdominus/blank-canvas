@@ -932,7 +932,10 @@ const Index = () => {
 
         <FloatingCTA 
           show={showFloatingCTA} 
-          onClick={() => scrollTo("pricing")} 
+          onClick={() => {
+            const pricing = document.getElementById("pricing");
+            if (pricing) pricing.scrollIntoView({ behavior: "smooth", block: "start" });
+          }} 
           label={L.hero.ctaPrimary} 
         />
       </div>
