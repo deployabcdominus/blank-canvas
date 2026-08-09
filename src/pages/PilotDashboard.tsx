@@ -58,9 +58,10 @@ export default function PilotDashboard() {
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 max-w-lg">
+        <TabsList className="grid w-full grid-cols-5 max-w-2xl">
           <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
           <TabsTrigger value="marketing">{t.landing.pilot.marketing}</TabsTrigger>
+          <TabsTrigger value="intelligence">{(t as any).landing.pilot.intelligence}</TabsTrigger>
           <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
           <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
@@ -146,6 +147,52 @@ export default function PilotDashboard() {
             <CardContent>
               <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl">
                 <p className="text-muted-foreground italic">Campaign designer and referral link generator coming in the next update.</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="intelligence" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="glass-card border-violet-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.profitability}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">A+</div>
+                <p className="text-xs text-muted-foreground mt-1">Target margin: 35%</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-blue-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.predictivePricing}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Enabled</div>
+                <p className="text-xs text-muted-foreground mt-1">Based on 0 projects</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-emerald-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.efficiencyScore}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">1.0</div>
+                <p className="text-xs text-muted-foreground mt-1">Base performance</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card className="glass-card border-white/5">
+            <CardHeader>
+              <CardTitle>Phase 9: Predictive Intelligence</CardTitle>
+              <CardDescription>
+                {(t as any).landing.pilot.phase9Desc}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl">
+                <p className="text-muted-foreground italic">Cost tracking and automated margin suggestions will populate as you complete work orders.</p>
               </div>
             </CardContent>
           </Card>
