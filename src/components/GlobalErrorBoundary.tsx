@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import * as Sentry from "@sentry/react";
 
 interface Props {
   children: ReactNode;
