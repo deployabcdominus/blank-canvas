@@ -5,9 +5,11 @@ import { PageTransition } from "@/components/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckCircle, Copy, Check, ArrowRight, Link } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Success = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const userName = localStorage.getItem("userName") || "usuario";
   const accessToken = localStorage.getItem("purchase_access_token");
   const [copied, setCopied] = useState(false);
