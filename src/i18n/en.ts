@@ -566,6 +566,17 @@ export const en = {
       users: "Active users",
       proposals: "Proposals",
     },
+    push: {
+      title: "Push Notifications",
+      subtitle: "Stay updated with real-time alerts even when you are away.",
+      enable: "Enable Push Notifications",
+      enabled: "Push Notifications Enabled",
+      status: "Status",
+      browserDenied: "Browser blocked notifications. Reset permissions in your browser settings.",
+      unsupported: "Push notifications are not supported in this browser.",
+      test: "Send Test Notification",
+      testDesc: "Verification ping sent successfully."
+    },
     subscription: {
       sectionTitle: "Your Subscription",
       currentPlan: "Current plan:",

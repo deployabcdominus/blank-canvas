@@ -568,6 +568,17 @@ export const es: TranslationKeys = {
       users: "Usuarios activos",
       proposals: "Propuestas",
     },
+    push: {
+      title: "Notificaciones Push",
+      subtitle: "Manténgase al día con alertas en tiempo real incluso cuando no esté en la app.",
+      enable: "Activar Notificaciones Push",
+      enabled: "Notificaciones Push Activadas",
+      status: "Estado",
+      browserDenied: "El navegador bloqueó las notificaciones. Restablezca los permisos en la configuración de su navegador.",
+      unsupported: "Las notificaciones push no son compatibles con este navegador.",
+      test: "Enviar Notificación de Prueba",
+      testDesc: "Ping de verificación enviado correctamente."
+    },
     subscription: {
       sectionTitle: "Tu Suscripción",
       currentPlan: "Plan actual:",
