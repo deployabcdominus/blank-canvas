@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 
 export default function PilotDashboard() {
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
   const { user } = useAuth();
   const isEn = locale === "en";
   const [feedback, setFeedback] = useState<any[]>([]);
