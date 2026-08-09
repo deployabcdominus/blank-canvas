@@ -192,7 +192,7 @@ export const es: TranslationKeys = {
     },
     pilot: {
       title: "Panel de Preparación para Piloto",
-      subtitle: "Cargue los problemas de seguridad de los resultados del escaneo y solucione los problemas seleccionados.",
+      subtitle: "cual seria la proxima etapa segun nuestro plan:",
       checklist: "Lista",
       feedback: "Comentarios",
       history: "Todos los Problemas",
