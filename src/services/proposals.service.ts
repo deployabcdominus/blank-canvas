@@ -83,8 +83,13 @@ export const ProposalsService = {
         details: updates
       });
 
-      // Automated Notification for Approval
+      // Automated Notification and Event Logging for Approval
       if (isApproved && result.data.company_id) {
+        await logEvent('sales', 'Proposal Approved', `Proposal for ${result.data.client} was approved`, '💰', {
+          value: result.data.value?.toString() || '0',
+          clientId: result.data.client_id || 'unknown'
+        });
+
         // Find admins to notify them
         const { data: admins } = await (supabase
           .from('user_roles') as any)
