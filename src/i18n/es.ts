@@ -192,7 +192,7 @@ export const es: TranslationKeys = {
     },
     pilot: {
       title: "Panel de Preparación para Piloto",
-      subtitle: "Implementar en el panel piloto la próxima etapa del plan estratégico con un resumen y criterios de éxito visibles para el usuario.",
+      subtitle: "dime cual seria la proxima etapa a realizar",
       checklist: "Lista",
       feedback: "Comentarios",
       history: "Todos los Problemas",
