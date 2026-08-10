@@ -47,7 +47,7 @@ export function WorkOrdersTableView({ orders, profileMap = {}, onOpen, onEdit, o
           </TableHeader>
           <TableBody>
             {orders.map(order => {
-              const statusKey = order.poi_token_used ? "installed" : order.status;
+              const statusKey = order.poi_token_used ? "installed" : (order.status || "Pendiente");
               const status = STATUS_CONFIG[statusKey] || STATUS_CONFIG["Pendiente"];
               const woLabel = order.wo_number || order.id.slice(0, 8).toUpperCase();
               const assignee = order.assignedToUserId ? profileMap[order.assignedToUserId] || "—" : "—";
