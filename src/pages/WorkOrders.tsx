@@ -32,13 +32,13 @@ import { useWorkOrderActions } from "@/hooks/actions/useWorkOrderActions";
 
 type ViewMode = "cards" | "list";
 
-const STATUS_OPTIONS = [
-  { value: "all", label: "All Statuses" },
-  { value: "Pendiente", label: "Pending" },
-  { value: "En Progreso", label: "In Production" },
-  { value: "Control de Calidad", label: "QC" },
-  { value: "Completada", label: "Ready" },
-  { value: "installed", label: "Installed" },
+const getStatusOptions = (t: any) => [
+  { value: "all", label: t.workOrders.allStatuses || "All Statuses" },
+  { value: "Pendiente", label: t.workOrders.statusLabels.pending },
+  { value: "En Progreso", label: t.workOrders.statusLabels.inProduction },
+  { value: "Control de Calidad", label: t.workOrders.statusLabels.qc },
+  { value: "Completada", label: t.workOrders.statusLabels.ready },
+  { value: "installed", label: t.workOrders.statusLabels.installed },
 ];
 
 const WorkOrders = () => {
@@ -54,6 +54,7 @@ const WorkOrders = () => {
 
   const limits = usePlanLimits();
   const { t } = useLanguage();
+  const STATUS_OPTIONS = useMemo(() => getStatusOptions(t), [t]);
   const [view, setView] = useState<ViewMode>("cards");
 
   const [profileMap, setProfileMap] = useState<Record<string, string>>({});
@@ -91,13 +92,13 @@ const WorkOrders = () => {
       <ResponsiveLayout>
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold mb-1">Work Orders</h1>
-            <p className="text-muted-foreground text-sm">Production floor management</p>
+            <h1 className="text-2xl font-bold mb-1">{t.workOrders.title}</h1>
+            <p className="text-muted-foreground text-sm">{t.workOrders.subtitle || "Production floor management"}</p>
           </div>
           <div className="flex gap-2">
             {orders.length > 0 && isAdmin && (
               <Button onClick={() => actions.setIsClearDialogOpen(true)} variant="outline">
-                <Trash2 className="w-4 h-4 mr-2" /> Clear all
+                <Trash2 className="w-4 h-4 mr-2" /> {t.workOrders.clearAll || "Clear all"}
               </Button>
             )}
             {canEdit && (
@@ -106,7 +107,7 @@ const WorkOrders = () => {
                 disabled={limits.work_orders.isAtLimit}
                 title={limits.work_orders.isAtLimit ? t.workOrders.limitReached : undefined}
               >
-                <Plus className="w-4 h-4 mr-2" /> New Order
+                <Plus className="w-4 h-4 mr-2" /> {t.workOrders.addOrder}
               </Button>
             )}
           </div>
@@ -117,11 +118,11 @@ const WorkOrders = () => {
         {orders.length === 0 && !isLoading ? (
           <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,92,246,0.15)" }}>
             <Package className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">No work orders yet</h3>
-            <p className="text-muted-foreground mb-4">Create your first production order</p>
+            <h3 className="text-lg font-semibold mb-2">{t.workOrders.noOrdersYet || "No work orders yet"}</h3>
+            <p className="text-muted-foreground mb-4">{t.workOrders.createFirstOrder || "Create your first production order"}</p>
             {canEdit && (
               <Button onClick={() => actions.setIsNewOrderModalOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" /> New Order
+                <Plus className="w-4 h-4 mr-2" /> {t.workOrders.addOrder}
               </Button>
             )}
           </div>
@@ -131,7 +132,7 @@ const WorkOrders = () => {
               <div className="relative flex-1 min-w-0">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by client or project..."
+                  placeholder={t.workOrders.searchPlaceholder || "Search by client or project..."}
                   value={filter.search}
                   onChange={e => { filter.setSearch(e.target.value); filter.setPage(1); }}
                   className="pl-9 pr-8"
@@ -152,9 +153,9 @@ const WorkOrders = () => {
                 </SelectContent>
                 </Select>
                 <Select value={filter.assigneeFilter} onValueChange={v => { filter.setAssigneeFilter(v); filter.setPage(1); }}>
-                  <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Assignee" /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder={t.workOrders.assignee || "Assignee"} /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Assignees</SelectItem>
+                    <SelectItem value="all">{t.workOrders.allAssignees || "All Assignees"}</SelectItem>
                     {teamMembers.map(m => (
                       <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
                     ))}
@@ -236,13 +237,13 @@ const WorkOrders = () => {
         <AlertDialog open={actions.isClearDialogOpen} onOpenChange={actions.setIsClearDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Clear all work orders?</AlertDialogTitle>
-              <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+              <AlertDialogTitle>{t.workOrders.clearDialogTitle || "Clear all work orders?"}</AlertDialogTitle>
+              <AlertDialogDescription>{t.workOrders.clearDialogDesc || "This action cannot be undone."}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{t.common.cancel}</AlertDialogCancel>
               <AlertDialogAction onClick={actions.handleClearOrders} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Clear all
+                {t.workOrders.clearAll || "Clear all"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -251,12 +252,12 @@ const WorkOrders = () => {
         <AlertDialog open={!!actions.completeConfirmId} onOpenChange={(open) => { if (!open) actions.setCompleteConfirmId(null); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Mark this order as completed?</AlertDialogTitle>
-              <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+              <AlertDialogTitle>{t.workOrders.markCompleteDialogTitle || "Mark this order as completed?"}</AlertDialogTitle>
+              <AlertDialogDescription>{t.workOrders.markCompleteDialogDesc || "This action cannot be undone."}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={actions.confirmMarkCompleted}>Confirm</AlertDialogAction>
+              <AlertDialogCancel>{t.common.cancel}</AlertDialogCancel>
+              <AlertDialogAction onClick={actions.confirmMarkCompleted}>{t.common.confirm}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -264,13 +265,13 @@ const WorkOrders = () => {
         <AlertDialog open={!!actions.deleteConfirmId} onOpenChange={(open) => { if (!open) actions.setDeleteConfirmId(null); }}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete this work order?</AlertDialogTitle>
-              <AlertDialogDescription>This action is permanent.</AlertDialogDescription>
+              <AlertDialogTitle>{t.workOrders.deleteDialogTitle || "Delete this work order?"}</AlertDialogTitle>
+              <AlertDialogDescription>{t.workOrders.deleteDialogDesc || "This action is permanent."}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{t.common.cancel}</AlertDialogCancel>
               <AlertDialogAction onClick={actions.confirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Delete
+                {t.common.delete}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
