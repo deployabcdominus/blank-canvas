@@ -53,9 +53,9 @@ export const LeadsKPIBar = ({ leads, proposals, isMobile }: LeadsKPIBarProps) =>
       {kpis.map((kpi) => (
         <div
           key={kpi.label}
-          className="glass-card p-4 flex items-center gap-3 hover:glow-blue transition-all duration-300"
+          className="rounded-[2rem] p-4 flex items-center gap-3 border border-zinc-200 shadow-sm bg-white hover:shadow-xl hover:shadow-zinc-200/50 transition-all duration-300"
         >
-          <div className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center flex-shrink-0 border border-zinc-100">
             {kpi.icon}
           </div>
           <div>
