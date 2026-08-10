@@ -447,30 +447,33 @@ function SidebarUserFooter({ avatarUrl, fullName, email, initials, isSuperadmin,
   profileLabel?: string; settingsLabel?: string; logoutLabel?: string;
 }) {
   return (
-    <div className="flex-shrink-0 mt-3 pt-3 border-t border-white/[0.04] space-y-1.5">
-      <div className="flex items-center justify-between lg:justify-start lg:gap-3 lg:px-1">
+    <div className="flex-shrink-0 pt-4 border-t border-white/[0.04]">
+      <div className="flex items-center justify-between lg:justify-start lg:gap-3 lg:px-2 mb-4">
         <NotificationBell />
         <LanguageSwitcher className="h-9" />
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="flex items-center rounded-xl transition-all duration-200 hover:bg-white/[0.03] w-full justify-center lg:justify-start lg:gap-3 lg:px-2.5 lg:py-2.5 p-2"
+            className="flex items-center rounded-2xl transition-all duration-200 hover:bg-white/[0.03] w-full justify-center lg:justify-start lg:gap-3 lg:px-2.5 lg:py-2.5 p-2"
             title="Mi Perfil"
             aria-label="Menú del usuario"
           >
-            <Avatar className="w-9 h-9 flex-shrink-0 ring-2 ring-primary/25 ring-offset-1 ring-offset-zinc-950">
-              {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar className="w-10 h-10 flex-shrink-0 ring-2 ring-primary/25 ring-offset-2 ring-offset-zinc-950">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
+                <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-zinc-950 rounded-full" />
+            </div>
             <div className="hidden lg:block text-left min-w-0 flex-1">
-              <span className="font-medium text-[13px] block leading-tight truncate text-white">
-                {fullName.split(" ")[0]}
+              <span className="font-bold text-[14px] block leading-tight truncate text-white">
+                {fullName}
               </span>
-              <span className="text-[11px] text-zinc-500 leading-tight truncate block">
-                {isSuperadmin ? "Superadmin" : email}
+              <span className="text-[11px] text-zinc-500 leading-tight truncate block mt-0.5">
+                {isSuperadmin ? "Super Admin" : email}
               </span>
             </div>
           </button>
