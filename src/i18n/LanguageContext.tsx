@@ -3,6 +3,7 @@ import { en, type TranslationKeys } from "./en";
 import { es } from "./es";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { validateTranslations } from "./audit";
 
 export type Locale = "en" | "es";
 
@@ -97,6 +98,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (twTitle) twTitle.setAttribute("content", t.seo.title);
     const twDesc = document.querySelector('meta[name="twitter:description"]');
     if (twDesc) twDesc.setAttribute("content", t.seo.description);
+    if (process.env.NODE_ENV === "development") {
+      validateTranslations();
+    }
   }, [locale]);
 
   return (
