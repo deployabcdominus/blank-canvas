@@ -48,7 +48,8 @@ export function WorkOrdersTableView({ orders, profileMap = {}, onOpen, onEdit, o
           <TableBody>
             {orders.map(order => {
               const statusKey = order.poi_token_used ? "installed" : (order.status || "Pendiente");
-              const status = STATUS_CONFIG[statusKey] || STATUS_CONFIG["Pendiente"];
+              const status = (STATUS_CONFIG as any)[statusKey] || (STATUS_CONFIG as any)["Pendiente"];
+              const statusLabel = status?.label || statusKey || "Pending";
               const woLabel = order.wo_number || order.id.slice(0, 8).toUpperCase();
               const assignee = order.assignedToUserId ? profileMap[order.assignedToUserId] || "—" : "—";
               const delivery = order.estimatedDelivery || order.estimatedCompletion || "—";
@@ -60,7 +61,7 @@ export function WorkOrdersTableView({ orders, profileMap = {}, onOpen, onEdit, o
                   <TableCell className="text-sm text-muted-foreground">{order.product_type || order.project || "—"}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
-                      <Badge className={`${status.bg} ${status.text} border-0 text-[10px]`}>{status.label}</Badge>
+                      <Badge className={`${status.bg} ${status.text} border-0 text-[10px]`}>{statusLabel}</Badge>
                       {order.qc_signature_url && <ShieldCheck className="w-3 h-3 text-violet-400" />}
                       {order.poi_token_used && <CheckCircle className="w-3 h-3 text-emerald-400" />}
                     </div>
