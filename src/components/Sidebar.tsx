@@ -336,7 +336,7 @@ function SidebarPlatformNav({ items, location, industryLabels, platformLabel, co
   t: any;
 }) {
   return (
-    <nav className="flex-1 overflow-y-auto scrollbar-none space-y-1 min-h-0">
+    <nav className="space-y-1 min-h-0">
       <p className="hidden lg:block px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
         {platformLabel || "Platform"}
       </p>
@@ -373,7 +373,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
 
   return (
     <>
-      <nav className="flex-1 min-h-0 space-y-3 lg:space-y-4 overflow-y-auto scrollbar-none">
+      <nav className="min-h-0 space-y-3 lg:space-y-4">
         {principalItems.length > 0 && (
           <div className="space-y-1">
             <p className="hidden lg:block px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500 select-none">
