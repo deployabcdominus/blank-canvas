@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          https://signflowapp.com/work-orders continuamos teniendo ese problema en admin de tenant
+          el problema persiste en /work-orders
         </p>
       </div>
 
