@@ -111,7 +111,7 @@ export default function Settings() {
     if (!user?.email) return;
     setResetSent(true);
     const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: window.location.origin + '/settings?tab=perfil',
+      redirectTo: window.location.origin + '/reset-password',
     });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });

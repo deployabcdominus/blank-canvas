@@ -23,6 +23,7 @@ const Access = lazy(() => import("./pages/Access"));
 const Invite = lazy(() => import("./pages/Invite"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const SuperadminDashboard = lazy(() => import("./pages/SuperadminDashboard"));
 const TenantTeamManagement = lazy(() => import("./pages/TenantTeamManagement"));
@@ -90,6 +91,7 @@ const AppContent = () => {
           <Route path="/invite" element={<Invite />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<Register />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
           
           <Route path="/p/:proposalId" element={<ProposalApproval />} />
