@@ -74,8 +74,15 @@ export const Sidebar = memo(() => {
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/90 lg:bg-zinc-950/80 backdrop-blur-3xl w-[72px] lg:w-[260px] px-2 lg:px-4 py-4 lg:py-6 overflow-hidden scrollbar-none shadow-2xl transition-all duration-500 will-change-transform h-screen"
-      style={{ letterSpacing: "-0.015em" }}
+      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/90 lg:bg-zinc-950/80 backdrop-blur-3xl w-[72px] lg:w-[260px] px-2 lg:px-4 py-4 lg:py-6 overflow-hidden scrollbar-none shadow-2xl transition-all duration-500 will-change-transform h-[100dvh]"
+      style={{ 
+        letterSpacing: "-0.015em",
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        height: '100dvh',
+        zIndex: 100
+      }}
       role="navigation"
       aria-label="Menu lateral principal"
     >

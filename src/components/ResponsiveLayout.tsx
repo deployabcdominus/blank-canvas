@@ -17,7 +17,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/20 relative overflow-x-hidden">
+    <div className="flex min-h-[100dvh] bg-background text-foreground selection:bg-primary/20 relative overflow-x-hidden isolate">
       <Sidebar />
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
