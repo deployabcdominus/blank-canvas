@@ -48,7 +48,7 @@ export const PageTransition = ({ children, variant = "fade" }: PageTransitionPro
       exit="out"
       variants={activeVariant}
       transition={defaultTransition}
-      className="min-h-screen will-change-transform transform-gpu"
+      className="min-h-screen"
     >
       {children}
     </motion.div>

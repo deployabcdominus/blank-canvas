@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, memo, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { LeadsService } from "@/services/leads.service";
@@ -69,7 +70,7 @@ export const Sidebar = memo(() => {
 
   if (roleLoading) return null;
 
-  return (
+  return createPortal(
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
@@ -130,7 +131,8 @@ export const Sidebar = memo(() => {
         settingsLabel={t.nav.settings}
         logoutLabel={t.nav.logout}
       />
-    </motion.aside>
+    </motion.aside>,
+    document.body
   );
 });
 
