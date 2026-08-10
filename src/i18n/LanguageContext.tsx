@@ -98,7 +98,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (twTitle) twTitle.setAttribute("content", t.seo.title);
     const twDesc = document.querySelector('meta[name="twitter:description"]');
     if (twDesc) twDesc.setAttribute("content", t.seo.description);
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
       validateTranslations();
     }
   }, [locale]);

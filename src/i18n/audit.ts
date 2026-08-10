@@ -25,7 +25,7 @@ export function validateTranslations() {
 
   compareObjects(en, es);
 
-  if (missingKeys.length > 0 && process.env.NODE_ENV === 'development') {
+  if (missingKeys.length > 0 && import.meta.env.DEV) {
     console.warn(
       `[i18n Audit] Missing Spanish translations for keys:\n- ${missingKeys.join('\n- ')}`
     );
