@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { AlertCircle, Clock, FileWarning, Camera, DollarSign, CheckCircle2, ChevronRight } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ interface AttentionItem {
 
 export function AttentionNeededPanel({ leads, proposals, orders, installations }: any) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const attentionItems = useMemo(() => {
     const items: AttentionItem[] = [];
@@ -26,8 +28,8 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
       items.push({
         id: `lead-${l.id}`,
         type: "lead",
-        label: `Follow-up: ${l.name}`,
-        description: "Lead marked for manual follow-up",
+        label: `${t.dashboard.followUp}: ${l.name}`,
+        description: t.dashboard.manualFollowUp,
         severity: "warning",
         icon: Clock,
         actionPath: `/leads?id=${l.id}`,
@@ -40,8 +42,8 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
         items.push({
           id: `order-dim-${o.id}`,
           type: "order",
-          label: `Missing Dims: ${o.client}`,
-          description: "Production order missing final dimensions",
+          label: `${t.dashboard.missingDims}: ${o.client}`,
+          description: t.dashboard.missingDimsDesc,
           severity: "urgent",
           icon: FileWarning,
           actionPath: `/work-orders?id=${o.id}`,
@@ -51,8 +53,8 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
         items.push({
           id: `order-mock-${o.id}`,
           type: "order",
-          label: `No Mockup: ${o.client}`,
-          description: "Design review pending or missing files",
+          label: `${t.dashboard.noMockup}: ${o.client}`,
+          description: t.dashboard.noMockupDesc,
           severity: "warning",
           icon: Camera,
           actionPath: `/work-orders?id=${o.id}`,
@@ -65,8 +67,8 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
       items.push({
         id: `install-${i.id}`,
         type: "installation",
-        label: `Review Install: ${i.client}`,
-        description: "Installation finished, needs admin verification",
+        label: `${t.dashboard.reviewInstall}: ${i.client}`,
+        description: t.dashboard.reviewInstallDesc,
         severity: "urgent",
         icon: CheckCircle2,
         actionPath: "/installation",
@@ -78,8 +80,8 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
       items.push({
         id: `close-${o.id}`,
         type: "order",
-        label: `Ready to Close: ${o.client}`,
-        description: "Acceptance and payment verified",
+        label: `${t.dashboard.readyToClose}: ${o.client}`,
+        description: t.dashboard.readyToCloseDesc,
         severity: "info",
         icon: DollarSign,
         actionPath: `/work-orders?id=${o.id}`,
@@ -90,7 +92,7 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
       const priority = { urgent: 0, warning: 1, info: 2 };
       return priority[a.severity] - priority[b.severity];
     }).slice(0, 8); // Show top 8
-  }, [leads, proposals, orders, installations]);
+  }, [leads, proposals, orders, installations, t]);
 
   if (attentionItems.length === 0) return null;
 
@@ -99,9 +101,9 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
       <CardHeader className="pb-3 border-b border-white/[0.04]">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-          <CardTitle className="text-sm font-bold tracking-wider uppercase text-zinc-400">Needs Attention</CardTitle>
+          <CardTitle className="text-sm font-bold tracking-wider uppercase text-zinc-400">{t.dashboard.attentionNeeded}</CardTitle>
           <Badge variant="outline" className="ml-auto bg-red-500/10 text-red-400 border-red-500/20">
-            {attentionItems.length} Actions
+            {attentionItems.length} {t.dashboard.actions}
           </Badge>
         </div>
       </CardHeader>
@@ -128,7 +130,7 @@ export function AttentionNeededPanel({ leads, proposals, orders, installations }
                 onClick={() => navigate(item.actionPath)}
                 className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-zinc-400 hover:text-white hover:bg-white/5"
               >
-                View <ChevronRight className="w-3 h-3 ml-1" />
+                {t.dashboard.view} <ChevronRight className="w-3 h-3 ml-1" />
               </Button>
             </div>
           ))}
