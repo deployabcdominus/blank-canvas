@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User, Shield, Settings, ChevronRight, Recycle } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import {
