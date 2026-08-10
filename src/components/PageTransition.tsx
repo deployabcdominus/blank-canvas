@@ -92,7 +92,7 @@ export const PageTransition = ({
       variants={activeVariant}
       transition={{
         duration,
-        ease: easing,
+        ease: easing as any,
       }}
       className="w-full min-h-screen relative overflow-hidden"
       style={{ backfaceVisibility: "hidden", perspective: "1200px" }}
