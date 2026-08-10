@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          cuando admin de tenant clica en boton Generate full AI briefing aparece ese error y no carga lo que deberia cargar
+          https://signflowapp.com/work-orders continuamos teniendo ese problema en admin de tenant
         </p>
       </div>
 
