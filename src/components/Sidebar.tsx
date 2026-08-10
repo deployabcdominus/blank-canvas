@@ -83,7 +83,7 @@ export const Sidebar = memo(() => {
         <div className="hidden lg:block">
           <BrandLogo size={38} showText variant="iconWithText" textClassName="text-lg font-semibold tracking-tight" />
           <p className="text-[10px] text-zinc-500 mt-1.5 uppercase tracking-[0.08em] font-medium">
-            {isSuperadmin ? "Platform Admin" : FIXED_BRANDING.appTagline}
+            {isSuperadmin ? (t as any).nav.platform : t.landing.footer.tagline}
           </p>
         </div>
         <div className="lg:hidden">

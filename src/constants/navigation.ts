@@ -41,39 +41,39 @@ export const principalGroup: NavGroup = {
 };
 
 export const crmGroup: NavGroup = {
-  groupLabel: "CRM & Ventas",
+  groupLabel: "CRM & Sales",
   icon: Users,
   items: [
     { icon: Users, label: "Leads", labelKey: "leads", path: "/leads", roles: ['admin', 'sales', 'member'] },
-    { icon: FileText, label: "Propuestas", path: "/proposals", roles: ['admin', 'sales', 'member'] },
-    { icon: Contact, label: "Clientes", path: "/clients", roles: ['admin', 'sales', 'operations', 'member'] },
+    { icon: FileText, label: "Proposals", path: "/proposals", roles: ['admin', 'sales', 'member'] },
+    { icon: Contact, label: "Accounts", path: "/clients", roles: ['admin', 'sales', 'operations', 'member'] },
   ],
 };
 
 export const productionGroup: NavGroup = {
-  groupLabel: "Producción",
+  groupLabel: "Production",
   icon: FolderKanban,
   items: [
     { icon: ClipboardList, label: "Work Orders", labelKey: "workOrders", path: "/work-orders", roles: ['admin', 'operations', 'viewer'] },
     { icon: Building, label: "Partners", labelKey: "installerCompanies", path: "/installer-companies", roles: ['admin', 'operations'] },
-    { icon: Package, label: "Inventario", path: "/inventory", roles: ["admin", "operations"] },
+    { icon: Package, label: "Inventory", path: "/inventory", roles: ["admin", "operations"] },
   ],
 };
 
 export const adminGroup: NavGroup = {
-  groupLabel: "Administración",
+  groupLabel: "Administration",
   icon: DollarSign,
   items: [
-    { icon: DollarSign, label: "Pagos", path: "/payments", roles: ['admin', 'sales'] },
-    { icon: BarChart3, label: "Reportes", path: "/reports", roles: ['admin'] },
-    { icon: Activity, label: "Auditoría", path: "/audit-log", roles: ['admin'] },
-    { icon: UserCog, label: "Gestión de equipo", path: "/team-management", roles: ['admin'] },
+    { icon: DollarSign, label: "Payments", path: "/payments", roles: ['admin', 'sales'] },
+    { icon: BarChart3, label: "Reports", path: "/reports", roles: ['admin'] },
+    { icon: Activity, label: "Audit Logs", path: "/audit-log", roles: ['admin'] },
+    { icon: UserCog, label: "Team Management", path: "/team-management", roles: ['admin'] },
     { icon: Activity, label: "Pilot", path: "/pilot", roles: ['admin'] },
   ],
 };
 
 export const utilityItems: NavItem[] = [
-  { icon: Settings, label: "Configuración", path: "/settings", roles: ['admin'] },
+  { icon: Settings, label: "Settings", path: "/settings", roles: ['admin'] },
 ];
 
 // ── All tenant groups (ordered) ──

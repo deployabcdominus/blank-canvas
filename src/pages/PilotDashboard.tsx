@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          por favor analizemos los errores de UI UX en relacion a mostrar textos en spanish y english al mismo tiempo, solo deberia mostrar el idioma seteado y no mezclarlos
+          actualmente el admin del tenant adrian muestra un sibtitulo en spanish debajo del logo en la sidebar, deberia ser en ingles, y en la propia sidebar hay menus en spanish que deberian estar en english, todo en english porque el user lo tiene seteado en su perfil
         </p>
       </div>
 
