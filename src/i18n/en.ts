@@ -152,7 +152,7 @@ export const en = {
     },
     footer: {
       tagline:
-        "High-performance operations hub.",
+        "High-Performance Production Hub.",
       product: "Product",
       productLinks: ["Features", "Pricing", "Integrations", "Updates"],
       company: "Company",
