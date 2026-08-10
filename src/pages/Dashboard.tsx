@@ -69,14 +69,14 @@ const Dashboard = () => {
     const pendingBalanceVal = orders.reduce((acc: number, o: any) => acc + (Number(o.final_balance_due) || 0), 0);
 
     return [
-      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${leadsFollowUpCount} need follow-up`, value: activeLeadsCount, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "production" as KanbanColumn, label: "In Production", desc: `${inProductionCount} orders active`, value: inProductionCount, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
-      { key: "install" as KanbanColumn, label: "Ready to Install", desc: `${readyForInstallCount} pending schedule`, value: readyForInstallCount, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "closed" as KanbanColumn, label: "Closed MTD", desc: "Successfully completed", value: closedThisMonthCount, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "revenue" as any, label: "Total Estimated", desc: "Pipeline value", value: totalEstimatedRevenueVal, icon: TrendingUp, accent: "hud-indigo", isCurrency: true },
-      { key: "approved" as any, label: "Approved Value", desc: "Booked business", value: approvedProposalValueVal, icon: CheckCircle2, accent: "hud-green", isCurrency: true },
-      { key: "balance" as any, label: "Pending Balance", desc: "Awaiting payment", value: pendingBalanceVal, icon: DollarSign, accent: "hud-amber", isCurrency: true },
-      { key: "pending" as any, label: "Acceptance Pending", desc: "Awaiting client", value: waitingForAcceptanceCount, icon: ClipboardList, accent: "hud-cyan" },
+      { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${leadsFollowUpCount} ${t.dashboard.leadsFollowUp}`, value: activeLeadsCount, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "production" as KanbanColumn, label: t.dashboard.inProduction, desc: `${inProductionCount} ${t.dashboard.ordersActive}`, value: inProductionCount, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
+      { key: "install" as KanbanColumn, label: t.dashboard.readyToInstall, desc: `${readyForInstallCount} ${t.dashboard.pendingSchedule}`, value: readyForInstallCount, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "closed" as KanbanColumn, label: t.dashboard.closedMtd, desc: t.dashboard.successfullyCompleted, value: closedThisMonthCount, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
+      { key: "revenue" as any, label: t.dashboard.totalEstimated, desc: t.dashboard.pipelineValue, value: totalEstimatedRevenueVal, icon: TrendingUp, accent: "hud-indigo", isCurrency: true },
+      { key: "approved" as any, label: t.dashboard.approvedValue, desc: t.dashboard.bookedBusiness, value: approvedProposalValueVal, icon: CheckCircle2, accent: "hud-green", isCurrency: true },
+      { key: "balance" as any, label: t.dashboard.pendingBalance, desc: t.dashboard.awaitingPayment, value: pendingBalanceVal, icon: DollarSign, accent: "hud-amber", isCurrency: true },
+      { key: "pending" as any, label: t.dashboard.acceptancePending, desc: t.dashboard.awaitingClient, value: waitingForAcceptanceCount, icon: ClipboardList, accent: "hud-cyan" },
     ];
   }, [leads, orders, proposals, t]);
 
