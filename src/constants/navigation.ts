@@ -68,7 +68,7 @@ export const adminGroup: NavGroup = {
     { icon: BarChart3, label: "Reports", path: "/reports", roles: ['admin'] },
     { icon: Activity, label: "Audit Logs", path: "/audit-log", roles: ['admin'] },
     { icon: UserCog, label: "Team Management", path: "/team-management", roles: ['admin'] },
-    { icon: Activity, label: "Pilot", path: "/pilot", roles: ['admin'] },
+    { icon: Activity, label: "Pilot", path: "/pilot", roles: ['superadmin'] },
   ],
 };
 
