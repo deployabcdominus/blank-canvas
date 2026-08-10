@@ -112,6 +112,11 @@ export default function WorkOrderDetail() {
   const { company } = useCompany();
 
   const order = useMemo(() => orders.find(o => o.id === id), [orders, id]);
+  
+  if (id && !order && !workOrdersQuery.isLoading) {
+    throw new Error(`Production Order ${id} not found or access denied`);
+  }
+
   const { steps, loading: stepsLoading, startStep, completeStep, progress: stepsProgress } = useProductionSteps(id);
 
   // Edit mode
@@ -180,10 +185,10 @@ export default function WorkOrderDetail() {
     const raw = order as any;
     setNotes(order.notes || "");
     setQcChecklist({
-      design_verified: raw?.qc_checklist?.design_verified || false,
-      material_specs_confirmed: raw?.qc_checklist?.material_specs_confirmed || false,
-      wiring_test_passed: raw?.qc_checklist?.wiring_test_passed || false,
-      final_sign_cleaned: raw?.qc_checklist?.final_sign_cleaned || false,
+      design_verified: !!raw?.qc_checklist?.design_verified,
+      material_specs_confirmed: !!raw?.qc_checklist?.material_specs_confirmed,
+      wiring_test_passed: !!raw?.qc_checklist?.wiring_test_passed,
+      final_sign_cleaned: !!raw?.qc_checklist?.final_sign_cleaned,
     });
     setSignatureUrl(raw.qc_signature_url || null);
     setQcSignerName(raw.qc_signer_name || null);
