@@ -421,8 +421,9 @@ function SidebarUserFooter({ avatarUrl, fullName, email, initials, isSuperadmin,
 }) {
   return (
     <div className="flex-shrink-0 mt-3 pt-3 border-t border-white/[0.04] space-y-1.5">
-      <div className="flex justify-center lg:justify-start lg:px-1">
+      <div className="flex items-center justify-between lg:justify-start lg:gap-3 lg:px-1">
         <NotificationBell />
+        <LanguageSwitcher className="h-9" />
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
