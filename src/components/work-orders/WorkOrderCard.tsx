@@ -17,9 +17,12 @@ const getStatusConfig = (t: any) => ({
   "Pendiente":          { bg: "rgba(107,114,128,0.12)", color: "#6b7280", label: t.workOrders.statusLabels.pending },
   "En Progreso":        { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: t.workOrders.statusLabels.inProduction },
   "En Producción":      { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: t.workOrders.statusLabels.inProduction },
+  "in_progress":        { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", label: t.workOrders.statusLabels.inProduction },
   "Control de Calidad": { bg: "rgba(245,158,11,0.12)", color: "#f59e0b", label: t.workOrders.statusLabels.qc },
+  "qc":                 { bg: "rgba(245,158,11,0.12)", color: "#f59e0b", label: t.workOrders.statusLabels.qc },
   "Completada":         { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: t.workOrders.statusLabels.ready },
   "Listo":              { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: t.workOrders.statusLabels.ready },
+  "done":               { bg: "rgba(16,185,129,0.12)", color: "#10b981", label: t.workOrders.statusLabels.ready },
   "installed":          { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: t.workOrders.statusLabels.installed },
   "Instalado":         { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6", label: t.workOrders.statusLabels.installed },
 });

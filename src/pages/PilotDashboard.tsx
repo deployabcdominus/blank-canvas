@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          O problema continua sem ser resolvido, por favor, atue imediatamente.
+          por favor analizemos los errores de UI UX en relacion a mostrar textos en spanish y english al mismo tiempo, solo deberia mostrar el idioma seteado y no mezclarlos
         </p>
       </div>
 
@@ -127,7 +127,7 @@ export default function PilotDashboard() {
                     </li>
                     <li className="flex items-center gap-2 text-sm text-blue-500 font-bold animate-pulse">
                       <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center border-blue-500">13</Badge>
-                      Phase 13: Autonomous AI & Enterprise SSO (Active)
+                      {(t as any).landing.pilot.stage13Active}
                     </li>
                     <li className="pt-2 border-t border-violet-500/10 text-xs text-muted-foreground italic">
                       {(t as any).landing.pilot.stageCompletion}
@@ -172,14 +172,14 @@ export default function PilotDashboard() {
           
           <Card className="glass-card border-white/5">
             <CardHeader>
-              <CardTitle>Phase 8: Growth Engine</CardTitle>
+              <CardTitle>{(t as any).landing.pilot.phase8Title}</CardTitle>
               <CardDescription>
-                Marketing automation infrastructure is now provisioned. Connect your delivery providers to start automated campaigns.
+                {(t as any).landing.pilot.phase8Desc}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl">
-                <p className="text-muted-foreground italic">Campaign designer and referral link generator coming in the next update.</p>
+                <p className="text-muted-foreground italic">{(t as any).landing.pilot.phase8ComingSoon}</p>
               </div>
             </CardContent>
           </Card>
@@ -218,14 +218,14 @@ export default function PilotDashboard() {
           
           <Card className="glass-card border-white/5">
             <CardHeader>
-              <CardTitle>Phase 9: Predictive Intelligence</CardTitle>
+              <CardTitle>{(t as any).landing.pilot.phase9Title}</CardTitle>
               <CardDescription>
                 {(t as any).landing.pilot.phase9Desc}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl">
-                <p className="text-muted-foreground italic">Cost tracking and automated margin suggestions will populate as you complete work orders.</p>
+                <p className="text-muted-foreground italic">{(t as any).landing.pilot.phase9ComingSoon}</p>
               </div>
             </CardContent>
           </Card>
@@ -264,7 +264,7 @@ export default function PilotDashboard() {
           
           <Card className="glass-card border-white/5">
             <CardHeader>
-              <CardTitle>Phase 10: API & Ecosystem</CardTitle>
+              <CardTitle>{(t as any).landing.pilot.phase10Title}</CardTitle>
               <CardDescription>
                 {(t as any).landing.pilot.phase10Desc}
               </CardDescription>
@@ -274,7 +274,7 @@ export default function PilotDashboard() {
                 {['QuickBooks', 'Stripe', 'Zapier', 'Slack'].map(app => (
                   <div key={app} className="flex flex-col items-center justify-center p-4 border border-white/10 rounded-xl bg-white/5 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
                     <span className="text-xs font-semibold">{app}</span>
-                    <span className="text-[10px] text-muted-foreground mt-1">Available soon</span>
+                    <span className="text-[10px] text-muted-foreground mt-1">{t.common.loading}...</span>
                   </div>
                 ))}
               </div>
@@ -315,7 +315,7 @@ export default function PilotDashboard() {
           
           <Card className="glass-card border-white/5">
             <CardHeader>
-              <CardTitle>Phase 11: White-Label Client Portal</CardTitle>
+              <CardTitle>{(t as any).landing.pilot.phase11Title}</CardTitle>
               <CardDescription>
                 {(t as any).landing.pilot.phase11Desc}
               </CardDescription>
@@ -323,8 +323,8 @@ export default function PilotDashboard() {
             <CardContent>
               <div className="h-[200px] flex items-center justify-center border-2 border-dashed border-white/10 rounded-xl bg-white/5">
                 <div className="text-center space-y-2">
-                  <p className="text-muted-foreground font-medium">Portal Customization Preview</p>
-                  <p className="text-xs text-muted-foreground/60 italic">Upload your branding in Company Settings to preview your white-label portal.</p>
+                  <p className="text-muted-foreground font-medium">{(t as any).landing.pilot.portalPreview}</p>
+                  <p className="text-xs text-muted-foreground/60 italic">{(t as any).landing.pilot.portalPreviewDesc}</p>
                 </div>
               </div>
             </CardContent>
