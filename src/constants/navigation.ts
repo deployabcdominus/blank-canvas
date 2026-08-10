@@ -27,6 +27,7 @@ export const platformItems: NavItem[] = [
   { icon: Building, label: "Companies", path: "/superadmin?tab=companies" },
   { icon: Users, label: "Users", path: "/superadmin?tab=users" },
   { icon: ServerCog, label: "Provisioning", path: "/superadmin?tab=provisioning" },
+  { icon: Activity, label: "Pilot", path: "/pilot" },
   { icon: Settings, label: "Settings", path: "/superadmin/settings" },
 ];
 
@@ -68,7 +69,6 @@ export const adminGroup: NavGroup = {
     { icon: BarChart3, label: "Reports", path: "/reports", roles: ['admin'] },
     { icon: Activity, label: "Audit Logs", path: "/audit-log", roles: ['admin'] },
     { icon: UserCog, label: "Team Management", path: "/team-management", roles: ['admin'] },
-    { icon: Activity, label: "Pilot", path: "/pilot", roles: ['superadmin'] },
   ],
 };
 
