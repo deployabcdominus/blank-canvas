@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          Añade un selector de idioma en mi app para que el usuario pueda cambiar entre español e inglés y se mantenga al recargar la página.
+          siguen mostrando errores de traduccion cuando alternamos de idiomas usando el swith
         </p>
       </div>
 
