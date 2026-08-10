@@ -2032,6 +2032,85 @@ export type Database = {
           },
         ]
       }
+      region_settings: {
+        Row: {
+          created_at: string | null
+          currency_code: string | null
+          date_format: string | null
+          id: string
+          language_code: string | null
+          region_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          currency_code?: string | null
+          date_format?: string | null
+          id?: string
+          language_code?: string | null
+          region_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          currency_code?: string | null
+          date_format?: string | null
+          id?: string
+          language_code?: string | null
+          region_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "region_settings_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: true
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      regions: {
+        Row: {
+          code: string
+          company_id: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          company_id: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "regions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       security_events: {
         Row: {
           actor_id: string | null
