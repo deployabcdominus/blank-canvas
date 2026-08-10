@@ -1,56 +1,28 @@
-import { SignFlowLogo } from "@/components/SignFlowLogo";
+import React from "react";
+import { Link } from "react-router-dom";
+import { SignFlowLogo } from "./SignFlowLogo";
 
-type LogoSize = "sm" | "md" | "lg" | number;
-
-interface BrandLogoProps {
-  size?: LogoSize;
-  showText?: boolean;
-  variant?: "icon" | "iconWithText";
-  className?: string;
+export const BrandLogo = ({ 
+  size = 32, 
+  showText = true, 
+  className = "", 
+  variant = "iconWithText",
+  textClassName = ""
+}: { 
+  size?: number; 
+  showText?: boolean; 
+  className?: string; 
+  variant?: "iconOnly" | "textOnly" | "iconWithText";
   textClassName?: string;
-  showGlow?: boolean;
-}
-
-const sizeMap: Record<string, number> = {
-  sm: 28,
-  md: 36,
-  lg: 56,
-};
-
-/**
- * Single source of truth for the app logo.
- * Renders the technical SignFlow mark everywhere (sidebar, auth pages, landing).
- */
-export const BrandLogo = ({
-  size = "md",
-  showText = false,
-  variant = "icon",
-  className = "",
-  textClassName = "",
-  showGlow = false,
-}: BrandLogoProps) => {
-  const px = typeof size === "number" ? size : sizeMap[size];
-  const displayText = variant === "iconWithText" || showText;
-
+}) => {
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <div className="relative flex-shrink-0" style={{ width: px, height: px }}>
-        {showGlow && (
-          <div
-            className="absolute inset-0 rounded-full blur-lg opacity-30"
-            style={{
-              background: "radial-gradient(circle, hsl(var(--primary) / 0.5), transparent 70%)",
-              transform: "scale(1.6)",
-            }}
-          />
-        )}
-        <SignFlowLogo variant="technical" className="relative z-10 w-full h-full text-foreground" />
-      </div>
-      {displayText && (
-        <span className={`font-semibold tracking-tight ${textClassName}`}>
-          Sign Flow
+    <Link to="/" className={`flex items-center gap-2 hover:opacity-90 transition-opacity ${className}`}>
+      <SignFlowLogo size={size} variant={variant === "textOnly" ? "minimal" : "technical"} />
+      {showText && variant !== "iconOnly" && (
+        <span className={`font-bold tracking-tight text-white ${textClassName}`}>
+          SignFlow
         </span>
       )}
-    </div>
+    </Link>
   );
 };
