@@ -158,8 +158,6 @@ const Dashboard = () => {
         </div>
       </ResponsiveLayout>
     </PageTransition>
-      </ResponsiveLayout>
-    </PageTransition>
   );
 };
 
