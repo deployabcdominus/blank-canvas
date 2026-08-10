@@ -160,7 +160,7 @@ export function SignFlowDashboardView({
             transition={{ delay: 0.2 }}
             className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-[1.1]"
           >
-            {t.auth.login.welcomeBack}, <span className="text-primary">{userName.split(' ')[0]}</span> 👋
+            {t.auth.login.welcomeBack}, <span className="text-primary drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">{userName.split(' ')[0]}</span> 👋
           </motion.h2>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
