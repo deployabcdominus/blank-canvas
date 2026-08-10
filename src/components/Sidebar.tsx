@@ -361,7 +361,7 @@ function SidebarPlatformNav({ items, location, industryLabels, platformLabel, co
 }) {
   return (
     <nav className="space-y-1 min-h-0">
-      <p className="hidden lg:block px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
+      <p className="hidden lg:block px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600">
         {platformLabel || "Platform"}
       </p>
       {items.map(item => (
