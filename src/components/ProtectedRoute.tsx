@@ -18,6 +18,7 @@ const TENANT_ONLY_ROUTES = [
 ];
 
 const ROUTE_ROLE_MAP: Record<string, string[]> = {
+  '/pilot': ['superadmin'],
   '/work-orders': ['admin', 'operations', 'viewer'],
   '/installation': ['admin', 'operations', 'viewer'],
   '/installer-companies': ['admin', 'operations'],
