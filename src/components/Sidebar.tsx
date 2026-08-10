@@ -260,18 +260,18 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
     <NavLink
       to={item.path}
       onMouseEnter={handleMouseEnter}
-      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl p-2.5 lg:px-4 lg:py-3 ${
+      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl p-2.5 lg:px-4 lg:py-3.5 ${
         isActive
-          ? "bg-white/10 text-white font-semibold shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-          : "text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03]"
+          ? "bg-primary text-white font-bold shadow-[0_8px_16px_rgba(139,92,246,0.3)] ring-1 ring-white/10"
+          : "text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.05]"
       }`}
       title={label}
       aria-current={active ? "page" : undefined}
     >
       <item.icon
-        className={`flex-shrink-0 transition-colors duration-300 ${active ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300"}`}
+        className={`flex-shrink-0 transition-colors duration-300 ${active ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"}`}
         size={20}
-        strokeWidth={active ? 2 : 1.5}
+        strokeWidth={active ? 2.5 : 1.5}
         aria-hidden="true"
       />
       <span className="hidden lg:block text-[14px] leading-tight ml-3.5 truncate">
@@ -279,8 +279,8 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
       </span>
       {active && (
         <motion.div
-          layoutId="sidebar-active-dot"
-          className="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary hidden lg:block"
+          layoutId="sidebar-active-pill"
+          className="absolute right-2 w-1 h-5 rounded-full bg-white/40 hidden lg:block"
           transition={{ type: "spring", stiffness: 400, damping: 28 }}
         />
       )}
