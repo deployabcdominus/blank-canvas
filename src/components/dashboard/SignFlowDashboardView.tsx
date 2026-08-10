@@ -40,7 +40,8 @@ const ModuleCard = ({ step, title, subtitle, badge, badgeVariant, cta, onClick, 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="glass-card flex flex-col h-full border-zinc-200/50 hover:border-primary/30 transition-all duration-300 group overflow-hidden rounded-2xl bg-white/70">
+      <Card className="glass-card flex flex-col h-full border-zinc-200/60 hover:border-primary/30 transition-all duration-300 group overflow-hidden rounded-3xl bg-white shadow-xl shadow-zinc-200/20">
+
         <div className="p-5 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -303,7 +304,8 @@ export function SignFlowDashboardView({
       </div>
 
       {/* 4. STRATEGIC METRICS BAR */}
-      <Card className="glass-card border-zinc-200/50 p-6 md:p-8 bg-white/80">
+      <Card className="rounded-[2rem] border-zinc-200/60 p-8 md:p-12 bg-white shadow-2xl shadow-zinc-200/30">
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
             <h3 className="text-zinc-900 font-bold text-lg mb-1">{t.dashboard.glance || "Your Business at a Glance"}</h3>
