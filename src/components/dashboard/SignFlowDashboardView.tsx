@@ -334,16 +334,21 @@ export function SignFlowDashboardView({
       </Card>
       
       {/* 5. BOTTOM CTA / TIP */}
-      <div className="flex flex-col md:flex-row items-center justify-between p-4 px-6 rounded-2xl bg-zinc-900 text-white shadow-xl shadow-zinc-200">
-        <div className="flex items-center gap-3 mb-4 md:mb-0">
-          <div className="p-2 rounded-lg bg-white/10">
-            <TrendingUp size={20} className="text-primary" />
+      <div className="flex flex-col md:flex-row items-center justify-between p-8 px-10 rounded-[2rem] bg-zinc-950 text-white shadow-2xl shadow-zinc-400/20 border border-white/5">
+        <div className="flex items-center gap-6 mb-6 md:mb-0">
+          <div className="p-4 rounded-2xl bg-white/10 ring-1 ring-white/20">
+            <TrendingUp size={24} className="text-primary" />
           </div>
-          <p className="text-sm font-medium">
-            <span className="text-primary font-bold">Pro Tip:</span> Connect your custom domain to build trust and boost conversions.
-          </p>
+          <div>
+            <p className="text-lg font-bold text-white mb-1">
+              Maximize your conversion rate
+            </p>
+            <p className="text-zinc-400 text-sm">
+              Connect your custom domain to build trust and boost sales performance.
+            </p>
+          </div>
         </div>
-        <Button variant="outline" className="bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-xl px-6 border border-white/10">
+        <Button className="bg-primary hover:bg-primary/90 text-white rounded-[1.2rem] px-10 py-7 text-base font-bold shadow-xl shadow-primary/25">
           Connect Domain
         </Button>
       </div>
