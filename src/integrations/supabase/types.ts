@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_processing_logs: {
+        Row: {
+          ai_metadata: Json | null
+          company_id: string
+          created_at: string | null
+          id: string
+          raw_content_url: string | null
+          source_id: string
+          source_type: string
+          transcription: string | null
+        }
+        Insert: {
+          ai_metadata?: Json | null
+          company_id: string
+          created_at?: string | null
+          id?: string
+          raw_content_url?: string | null
+          source_id: string
+          source_type: string
+          transcription?: string | null
+        }
+        Update: {
+          ai_metadata?: Json | null
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          raw_content_url?: string | null
+          source_id?: string
+          source_type?: string
+          transcription?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_processing_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -257,6 +298,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      enterprise_sso_configs: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          entity_id: string
+          id: string
+          is_active: boolean | null
+          provider_type: string
+          sso_url: string
+          updated_at: string | null
+          x509_certificate: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          entity_id: string
+          id?: string
+          is_active?: boolean | null
+          provider_type: string
+          sso_url: string
+          updated_at?: string | null
+          x509_certificate?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          entity_id?: string
+          id?: string
+          is_active?: boolean | null
+          provider_type?: string
+          sso_url?: string
+          updated_at?: string | null
+          x509_certificate?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enterprise_sso_configs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       installations: {
         Row: {
@@ -917,6 +1002,44 @@ export type Database = {
             columns: ["proposal_id"]
             isOneToOne: false
             referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      performance_metrics: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          device_type: string | null
+          id: string
+          load_time_ms: number | null
+          offline_sync_count: number | null
+          os: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          load_time_ms?: number | null
+          offline_sync_count?: number | null
+          os?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          load_time_ms?: number | null
+          offline_sync_count?: number | null
+          os?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
