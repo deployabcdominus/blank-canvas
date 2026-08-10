@@ -23,7 +23,7 @@
 @layer base {
   :root {
     /* ── Core: Light Mode (Day Mode) ── */
-    --background: 210 20% 98%;            /* Soft off-white/grey */
+    --background: 210 20% 99%;            /* Clean white-blue background */
     --foreground: 224 71% 4%;             /* Deep navy black */
 
     /* Surface layers (Light Mode) */
