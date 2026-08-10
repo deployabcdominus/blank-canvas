@@ -23,18 +23,18 @@
 @layer base {
   :root {
     /* ── Core: Light Mode (Day Mode) ── */
-    --background: 210 20% 99%;            /* Clean white-blue background */
-    --foreground: 224 71% 4%;             /* Deep navy black */
+    --background: 240 10% 3.9%;            /* Dark background */
+    --foreground: 0 0% 98%;               /* Light text */
 
     /* Surface layers (Light Mode) */
-    --surface: 0 0% 100% / 0.80;
-    --surface-hover: 210 20% 96% / 0.90;
-    --elevated: 0 0% 100% / 1.0;
+    --surface: 240 10% 8% / 0.80;
+    --surface-hover: 240 10% 12% / 0.90;
+    --elevated: 240 10% 8% / 1.0;
     
     /* Text hierarchy (Light Mode) */
-    --text-primary: 224 71% 4%;
-    --text-secondary: 224 10% 45%;
-    --text-tertiary: 224 8% 65%;
+    --text-primary: 0 0% 98%;
+    --text-secondary: 240 5% 65%;
+    --text-tertiary: 240 5% 45%;
 
     /* Accent — Violet Primary (Ref Image Reference) */
     --accent-brand: 265 85% 60%;          
@@ -53,9 +53,9 @@
     --color-info-bg: 199 89% 42% / 0.08;
 
     /* Borders (Light Mode) */
-    --border-subtle: 224 10% 92%;
-    --border-default: 224 10% 88%;
-    --border-strong: 224 10% 80%;
+    --border-subtle: 240 10% 12%;
+    --border-default: 240 10% 16%;
+    --border-strong: 240 10% 20%;
 
     /* Shadows (Premium Elevation) */
     --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
@@ -63,22 +63,22 @@
     --shadow-glass: 0 10px 15px -3px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 1);
 
     /* ── Shadcn tokens ── */
-    --card: 0 0% 100%;
-    --card-foreground: 224 71% 4%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 4%;
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 98%;
     --primary: 265 85% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 224 71% 4%;
-    --muted: 210 20% 96%;
-    --muted-foreground: 224 10% 45%;
-    --accent: 210 20% 96%;
-    --accent-foreground: 224 71% 4%;
+    --secondary: 240 10% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 10% 12%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 10% 12%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 224 10% 88%;
-    --input: 224 10% 92%;
+    --border: 240 10% 16%;
+    --input: 240 10% 16%;
     --ring: 265 85% 60%;
     --radius: 1rem;
 
@@ -93,17 +93,17 @@
     --sidebar-ring: 265 85% 60%;
 
     /* Glass surfaces (Adjusted for Light BG) */
-    --glass-bg: 0 0% 100% / 0.65;
-    --glass-bg-strong: 0 0% 100% / 0.85;
-    --glass-border: 224 10% 88% / 0.5;
+    --glass-bg: 240 10% 8% / 0.65;
+    --glass-bg-strong: 240 10% 12% / 0.85;
+    --glass-border: 240 10% 16% / 0.5;
 
     /* Dashboard card */
-    --dash-card-bg: 0 0% 100% / 0.70;
-    --dash-card-border: 224 10% 88%;
-    --dash-text-heading: 224 71% 4%;
-    --dash-text-value: 224 71% 4%;
-    --dash-text-label: 224 10% 45%;
-    --dash-text-muted: 224 10% 60%;
+    --dash-card-bg: 240 10% 8% / 0.70;
+    --dash-card-border: 240 10% 16%;
+    --dash-text-heading: 0 0% 98%;
+    --dash-text-value: 0 0% 98%;
+    --dash-text-label: 240 5% 65%;
+    --dash-text-muted: 240 5% 45%;
   }
 }
 
@@ -187,7 +187,7 @@
   }
 
   .glass-card {
-    @apply rounded-2xl bg-white border border-zinc-200/60;
+    @apply rounded-2xl bg-zinc-900 border border-white/5;
     box-shadow: var(--shadow-card);
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
   }
@@ -199,7 +199,7 @@
   .glass-card:hover {
     transform: translateY(-4px) scale(1.01);
     border-color: rgba(0, 0, 0, 0.10);
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.03);
     box-shadow: 
       0 12px 32px -8px rgba(0,0,0,0.12),
       0 0 20px -2px hsl(var(--primary) / 0.08),

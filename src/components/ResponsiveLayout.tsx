@@ -67,8 +67,8 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
                   </div>
                 )}
                 <div>
-                  {title && <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900">{title}</h1>}
-                  {subtitle && <p className="text-zinc-500 text-sm md:text-base mt-0.5 font-medium">{subtitle}</p>}
+                  {title && <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">{title}</h1>}
+                  {subtitle && <p className="text-zinc-400 text-sm md:text-base mt-0.5 font-medium">{subtitle}</p>}
                 </div>
               </div>
             </motion.div>
