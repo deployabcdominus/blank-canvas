@@ -75,24 +75,21 @@ export const Sidebar = memo(() => {
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/95 lg:bg-zinc-950/90 backdrop-blur-3xl w-[72px] lg:w-[260px] px-2 lg:px-4 py-4 lg:py-6 shadow-2xl transition-all duration-300 isolate h-[100dvh]"
+      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/80 backdrop-blur-3xl w-[72px] lg:w-[280px] p-4 lg:p-6 shadow-2xl transition-all duration-300 isolate h-[100dvh]"
       role="navigation"
       aria-label="Menu lateral principal"
     >
-      {/* Logo */}
-      <div className="mb-5 lg:mb-7 flex-shrink-0 flex justify-center lg:justify-start lg:px-1">
+      {/* Logo Section */}
+      <div className="mb-8 lg:mb-10 flex-shrink-0 flex justify-center lg:justify-start">
         <div className="hidden lg:block w-full">
-          <BrandLogo size={42} showText variant="iconWithText" textClassName="text-xl font-black tracking-tight" />
-          <p className="text-[10px] text-zinc-500 mt-1.5 uppercase tracking-[0.12em] font-bold">
-            {isSuperadmin ? (t as any).nav.platform : "Production Hub"}
-          </p>
+          <BrandLogo size={36} showText variant="iconWithText" textClassName="text-xl font-bold tracking-tight text-white" />
         </div>
         <div className="lg:hidden">
-          <BrandLogo size={36} variant="iconOnly" />
+          <BrandLogo size={32} variant="iconOnly" />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-none space-y-3 lg:space-y-4 pr-1">
+      <div className="flex-1 overflow-y-auto scrollbar-none space-y-6 lg:space-y-8 pr-1">
       {isSuperadmin ? (
         <SidebarPlatformNav
           items={platformItems}
@@ -117,20 +114,46 @@ export const Sidebar = memo(() => {
       )}
       </div>
 
-      {/* User footer */}
-      <SidebarUserFooter
-        avatarUrl={avatarUrl}
-        fullName={fullName}
-        email={email}
-        initials={initials}
-        isSuperadmin={isSuperadmin}
-        isAdmin={isAdmin}
-        onLogout={async () => { await signOut(); navigate("/login"); }}
-        onNavigate={navigate}
-        profileLabel={t.nav.profile}
-        settingsLabel={t.nav.settings}
-        logoutLabel={t.nav.logout}
-      />
+      {/* Footer Section: Plan & User */}
+      <div className="mt-auto space-y-6">
+        {/* Plan Upgrade Card (Ref Image Reference) */}
+        {!isSuperadmin && isAdmin && (
+          <div className="hidden lg:block p-4 rounded-2xl bg-white/[0.03] border border-white/[0.05] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-40 transition-opacity">
+              <Shield size={40} className="text-primary" />
+            </div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Pro Plan</span>
+              </div>
+              <p className="text-[12px] text-zinc-400 mb-3 leading-relaxed">
+                Unlock full automation and unlimited leads.
+              </p>
+              <button 
+                onClick={() => navigate("/settings?tab=billing")}
+                className="w-full py-2 px-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white text-[12px] font-semibold transition-colors border border-white/[0.05]"
+              >
+                Manage Plan
+              </button>
+            </div>
+          </div>
+        )}
+
+        <SidebarUserFooter
+          avatarUrl={avatarUrl}
+          fullName={fullName}
+          email={email}
+          initials={initials}
+          isSuperadmin={isSuperadmin}
+          isAdmin={isAdmin}
+          onLogout={async () => { await signOut(); navigate("/login"); }}
+          onNavigate={navigate}
+          profileLabel={t.nav.profile}
+          settingsLabel={t.nav.settings}
+          logoutLabel={t.nav.logout}
+        />
+      </div>
     </motion.aside>,
     document.body
   );
