@@ -147,15 +147,15 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         <div className="grid grid-cols-3 gap-2 mb-3 text-center">
           <div className="p-2 rounded-xl bg-zinc-800/50 border border-white/5">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.paid}</p>
-            <p className="text-xs font-bold text-emerald-600">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-mint">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
-          <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+          <div className="p-2 rounded-xl bg-zinc-800/50 border border-white/5">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.balance}</p>
             <p className="text-xs font-bold text-primary">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
-          <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+          <div className="p-2 rounded-xl bg-zinc-800/50 border border-white/5">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.total}</p>
-            <p className="text-xs font-bold text-zinc-900">${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-white">${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
         </div>
       )}
@@ -165,7 +165,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         <div className="flex items-center gap-1 mb-3">
           {PIPELINE_STEPS.map((step, i) => (
             <div key={step} className="flex items-center gap-1 flex-1">
-              <div className={`h-1.5 rounded-full flex-1 transition-colors ${i <= currentStep ? 'bg-primary' : 'bg-zinc-100'}`} />
+              <div className={`h-1.5 rounded-full flex-1 transition-colors ${i <= currentStep ? 'bg-primary' : 'bg-zinc-800'}`} />
             </div>
           ))}
           <span className="text-[10px] text-muted-foreground ml-1 whitespace-nowrap">
@@ -191,7 +191,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
       <div className="flex-1" />
 
       {/* Actions — simplified */}
-      <div className="flex items-center gap-2 pt-3 border-t border-zinc-100 flex-wrap">
+      <div className="flex items-center gap-2 pt-3 border-t border-white/5 flex-wrap">
         {onEdit && (
           <Button size="sm" variant="outline" onClick={() => onEdit(proposal)} className="text-xs h-8 px-2.5">
             <Edit2 className="w-3.5 h-3.5 mr-1" /> {t.proposalCard.edit}
