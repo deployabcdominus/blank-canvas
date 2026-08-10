@@ -91,7 +91,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.35 }}
-      className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 transition-all duration-300 hover:-translate-y-0.5 flex flex-col"
+      className="rounded-[2rem] border border-white/5 bg-zinc-900/50 p-5 transition-all duration-300 hover:bg-zinc-800/80 hover:-translate-y-0.5 flex flex-col"
     >
       {/* Header */}
       <div className="flex items-start gap-3 mb-4">
@@ -108,7 +108,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-bold truncate leading-tight text-zinc-900">{companyName}</h3>
+          <h3 className="text-base font-bold truncate leading-tight text-white">{companyName}</h3>
           <p className="text-xs text-muted-foreground truncate mt-0.5">{contactName}</p>
         </div>
         <Badge variant="outline" className={`${statusColor} shrink-0 text-[11px]`}>
@@ -129,33 +129,33 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
       {/* Project */}
       <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-1">
         <FileText className="w-3.5 h-3.5 shrink-0" />
-        <span className="truncate text-zinc-700 font-medium">{proposal.project}</span>
+        <span className="truncate text-zinc-400 font-medium">{proposal.project}</span>
       </div>
 
       {/* Amount */}
-      <p className="text-2xl font-black tracking-tight mb-3 text-zinc-900">
+      <p className="text-2xl font-black tracking-tight mb-3 text-white">
         ${proposal.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
       </p>
 
       {/* Description */}
       {proposal.description && (
-        <p className="text-xs text-zinc-500 font-medium line-clamp-3 mb-3 leading-relaxed">{proposal.description}</p>
+        <p className="text-xs text-zinc-400 font-medium line-clamp-3 mb-3 leading-relaxed">{proposal.description}</p>
       )}
 
       {/* Payment summary (only for approved) */}
       {isApproved && (
         <div className="grid grid-cols-3 gap-2 mb-3 text-center">
-          <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+          <div className="p-2 rounded-xl bg-zinc-800/50 border border-white/5">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.paid}</p>
-            <p className="text-xs font-bold text-emerald-600">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-mint">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
-          <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+          <div className="p-2 rounded-xl bg-zinc-800/50 border border-white/5">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.balance}</p>
             <p className="text-xs font-bold text-primary">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
-          <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+          <div className="p-2 rounded-xl bg-zinc-800/50 border border-white/5">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.total}</p>
-            <p className="text-xs font-bold text-zinc-900">${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-white">${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
         </div>
       )}
@@ -165,7 +165,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         <div className="flex items-center gap-1 mb-3">
           {PIPELINE_STEPS.map((step, i) => (
             <div key={step} className="flex items-center gap-1 flex-1">
-              <div className={`h-1.5 rounded-full flex-1 transition-colors ${i <= currentStep ? 'bg-primary' : 'bg-zinc-100'}`} />
+              <div className={`h-1.5 rounded-full flex-1 transition-colors ${i <= currentStep ? 'bg-primary' : 'bg-zinc-800'}`} />
             </div>
           ))}
           <span className="text-[10px] text-muted-foreground ml-1 whitespace-nowrap">
@@ -191,7 +191,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
       <div className="flex-1" />
 
       {/* Actions — simplified */}
-      <div className="flex items-center gap-2 pt-3 border-t border-zinc-100 flex-wrap">
+      <div className="flex items-center gap-2 pt-3 border-t border-white/5 flex-wrap">
         {onEdit && (
           <Button size="sm" variant="outline" onClick={() => onEdit(proposal)} className="text-xs h-8 px-2.5">
             <Edit2 className="w-3.5 h-3.5 mr-1" /> {t.proposalCard.edit}
