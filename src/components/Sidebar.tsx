@@ -260,10 +260,10 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
     <NavLink
       to={item.path}
       onMouseEnter={handleMouseEnter}
-      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-2xl lg:rounded-xl p-2.5 lg:px-4 lg:py-3 ${
+      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl p-2.5 lg:px-4 lg:py-3 ${
         isActive
-          ? "bg-primary/10 border border-primary/20 text-white font-semibold shadow-[0_0_20px_rgba(139,92,246,0.15)]"
-          : "border border-transparent text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03]"
+          ? "bg-white/10 text-white font-semibold shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+          : "text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03]"
       }`}
       title={label}
       aria-current={active ? "page" : undefined}
@@ -309,7 +309,7 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
       <div className="hidden lg:block">
         <Collapsible open={isOpen} onOpenChange={onToggle}>
           <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 group cursor-pointer select-none rounded-xl hover:bg-white/[0.02] transition-colors">
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 group-hover:text-zinc-400 transition-colors">
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-600 group-hover:text-zinc-400 transition-colors">
               {group.groupLabel}
             </span>
             <ChevronRight

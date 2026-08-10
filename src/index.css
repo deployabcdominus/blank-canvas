@@ -57,10 +57,10 @@
     --border-default: 224 10% 88%;
     --border-strong: 224 10% 80%;
 
-    /* Shadows (Light Mode) */
-    --shadow-card: 0 2px 4px rgba(0,0,0,0.02), 0 8px 16px rgba(0,0,0,0.04);
-    --shadow-elevated: 0 12px 24px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.02);
-    --shadow-glass: 0 8px 32px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8);
+    /* Shadows (Premium Elevation) */
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+    --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+    --shadow-glass: 0 10px 15px -3px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 1);
 
     /* ── Shadcn tokens ── */
     --card: 0 0% 100%;
@@ -187,12 +187,14 @@
   }
 
   .glass-card {
-    @apply glass rounded-2xl;
-    box-shadow: 
-      0 4px 20px -4px rgba(0,0,0,0.08),
-      inset 0 1px 0 rgba(255,255,255,0.8), 
-      inset 0 -1px 0 rgba(0,0,0,0.02);
+    @apply rounded-2xl bg-white border border-zinc-200/60;
+    box-shadow: var(--shadow-card);
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+    border-color: hsl(var(--primary) / 0.2);
   }
   .glass-card:hover {
     transform: translateY(-4px) scale(1.01);
@@ -301,7 +303,7 @@
     backdrop-filter: blur(20px) saturate(120%);
     -webkit-backdrop-filter: blur(20px) saturate(120%);
     transition: background-color 200ms ease, border-color 200ms ease;
-    box-shadow: 4px 0 24px -4px rgba(0,0,0,0.15);
+    box-shadow: 10px 0 50px -10px rgba(0,0,0,0.4);
   }
 
   .sidebar-nav-item {
