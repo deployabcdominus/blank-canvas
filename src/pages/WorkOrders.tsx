@@ -88,7 +88,7 @@ const WorkOrders = () => {
   const paginated = filter.processed.slice((safePage - 1) * filter.pageSize, safePage * filter.pageSize);
 
   return (
-    <PageTransition>
+    <PageTransition effect="slide-left">
       <ResponsiveLayout>
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
