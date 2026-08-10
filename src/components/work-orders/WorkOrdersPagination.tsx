@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { useLanguage } from "@/i18n/LanguageContext";
+
 interface Props {
   currentPage: number;
   totalItems: number;
@@ -13,6 +15,7 @@ interface Props {
 const PAGE_SIZES = [12, 24, 48];
 
 export function WorkOrdersPagination({ currentPage, totalItems, pageSize, onPageChange, onPageSizeChange }: Props) {
+  const { locale } = useLanguage();
   const totalPages = Math.ceil(totalItems / pageSize);
   if (totalPages <= 1 && totalItems <= PAGE_SIZES[0]) return null;
 
@@ -22,7 +25,7 @@ export function WorkOrdersPagination({ currentPage, totalItems, pageSize, onPage
   return (
     <div className="flex items-center justify-between flex-wrap gap-3 mt-6">
       <span className="text-xs text-muted-foreground">
-        Mostrando {start}–{end} de {totalItems}
+        {locale === 'es' ? 'Mostrando' : 'Showing'} {start}–{end} {locale === 'es' ? 'de' : 'of'} {totalItems}
       </span>
       <div className="flex items-center gap-2">
         <Select value={String(pageSize)} onValueChange={v => onPageSizeChange(Number(v))}>
@@ -31,7 +34,7 @@ export function WorkOrdersPagination({ currentPage, totalItems, pageSize, onPage
           </SelectTrigger>
           <SelectContent>
             {PAGE_SIZES.map(s => (
-              <SelectItem key={s} value={String(s)}>{s}/pág</SelectItem>
+              <SelectItem key={s} value={String(s)}>{s}/{locale === 'es' ? 'pág' : 'page'}</SelectItem>
             ))}
           </SelectContent>
         </Select>
