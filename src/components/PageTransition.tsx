@@ -42,7 +42,7 @@ export const PageTransition = ({ children, variant = "fade" }: PageTransitionPro
 
   return (
     <motion.div
-      key={location.pathname}
+      key={location.key}
       initial="initial"
       animate="in"
       exit="out"
