@@ -14,7 +14,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { STRIPE_TIERS } from "@/lib/stripe-tiers";
-import brandLogoSrc from "@/assets/brand-logo.png";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const INDUSTRIES = [
   { value: "Servicios IT y Software", label: "Servicios IT" },
