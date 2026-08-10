@@ -160,11 +160,11 @@ export default function MobileTechnicianView() {
     setSaving(true);
     try {
       const updates: any = { status: newStatus };
-      if (newStatus === "Finalizada") updates.progress = 100;
-      if (newStatus === "En Progreso") updates.start_date = new Date().toISOString();
+      if (newStatus === "Finalizada" || newStatus === "done") updates.progress = 100;
+      if (newStatus === "En Progreso" || newStatus === "in_progress") updates.start_date = new Date().toISOString();
       await supabase.from("production_orders").update(updates).eq("id", selectedOrder.id);
       setSelectedOrder(prev => prev ? { ...prev, status: newStatus, ...updates } : null);
-      toast({ title: newStatus === "Finalizada" ? `✅ ${(t as any).technician.actions.finish.replace(" Orden", "")}` : `▶️ ${(t as any).technician.actions.start.replace(" Orden", "")}` });
+      toast({ title: (newStatus === "Finalizada" || newStatus === "done") ? `✅ ${(t as any).technician.actions.finish.replace(" Orden", "")}` : `▶️ ${(t as any).technician.actions.start.replace(" Orden", "")}` });
       loadOrders();
     } catch {
       toast({ title: "Error", variant: "destructive" });
@@ -250,7 +250,7 @@ export default function MobileTechnicianView() {
                     (o.status === "En Progreso" || o.status === "in_progress") ? "bg-orange-500/15 text-orange-400 border-orange-500/20" :
                     "bg-white/[0.06] text-muted-foreground border-white/[0.06]"
                   }`}>
-                    {o.status}
+                    {locale === 'en' ? (o.status === 'Pendiente' ? 'Pending' : o.status === 'En Progreso' ? 'In Production' : o.status === 'Control de Calidad' ? 'QC' : o.status === 'Completada' ? 'Ready' : o.status) : o.status}
                   </Badge>
                   <ChevronRight className="w-4 h-4 text-muted-foreground/40" />
                 </div>
@@ -299,7 +299,7 @@ export default function MobileTechnicianView() {
               {/* Status card */}
               <div className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-xl">
                 <p className="text-xs text-muted-foreground mb-1">{(t as any).technician.currentStatus}</p>
-                <p className="text-lg font-bold">{selectedOrder.status}</p>
+                <p className="text-lg font-bold">{locale === 'en' ? (selectedOrder.status === 'Pendiente' ? 'Pending' : selectedOrder.status === 'En Progreso' ? 'In Production' : selectedOrder.status === 'Control de Calidad' ? 'QC' : selectedOrder.status === 'Completada' ? 'Ready' : selectedOrder.status) : selectedOrder.status}</p>
                 {selectedOrder.estimated_delivery && (
                   <p className="text-xs text-muted-foreground mt-2">
                     {(t as any).technician.delivery}: {new Date(selectedOrder.estimated_delivery).toLocaleDateString(locale)}
