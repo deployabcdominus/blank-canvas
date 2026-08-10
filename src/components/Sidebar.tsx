@@ -81,14 +81,14 @@ export const Sidebar = memo(() => {
     >
       {/* Logo */}
       <div className="mb-5 lg:mb-7 flex-shrink-0 flex justify-center lg:justify-start lg:px-1">
-        <div className="hidden lg:block">
-          <BrandLogo size={38} showText variant="iconWithText" textClassName="text-lg font-semibold tracking-tight" />
-          <p className="text-[10px] text-zinc-500 mt-1.5 uppercase tracking-[0.08em] font-medium">
-            {isSuperadmin ? (t as any).nav.platform : t.landing.footer.tagline}
+        <div className="hidden lg:block w-full">
+          <BrandLogo size={42} showText variant="iconWithText" textClassName="text-xl font-black tracking-tight" />
+          <p className="text-[10px] text-zinc-500 mt-1.5 uppercase tracking-[0.12em] font-bold">
+            {isSuperadmin ? (t as any).nav.platform : "Production Hub"}
           </p>
         </div>
         <div className="lg:hidden">
-          <BrandLogo size={32} />
+          <BrandLogo size={36} variant="iconOnly" />
         </div>
       </div>
 

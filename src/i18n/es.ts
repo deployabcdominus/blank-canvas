@@ -154,7 +154,7 @@ export const es: TranslationKeys = {
     },
     footer: {
       tagline:
-        "Hub de operaciones de alto rendimiento.",
+        "Producción de Alto Rendimiento.",
       product: "Producto",
       productLinks: ["Funciones", "Precios", "Integraciones", "Actualizaciones"],
       company: "Empresa",
