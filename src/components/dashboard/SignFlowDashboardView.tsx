@@ -198,8 +198,8 @@ export function SignFlowDashboardView({
           subtitle="Captura y califica nuevos prospectos. Mantén tu pipeline de ventas siempre lleno."
           badge="Activo"
           badgeVariant="success"
-          cta="Gestionar Leads"
-          onClick={() => navigate('/leads')}
+          cta={leads.length > 0 ? "Gestionar Leads" : "Crear Lead"}
+          onClick={() => navigate(leads.length > 0 ? '/leads' : '/leads?new=true')}
           delay={0.1}
           preview={
             <div className="w-full space-y-2 px-2">
