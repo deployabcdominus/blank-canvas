@@ -18,7 +18,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
 
   return (
     <div className="flex min-h-[100dvh] bg-background text-foreground selection:bg-primary/20 relative isolate overflow-x-hidden">
-      <div className="hidden md:block shrink-0 w-[72px] lg:w-[260px] min-h-screen" aria-hidden="true" />
+      <div className="hidden md:block shrink-0 w-[72px] lg:w-[260px] min-h-[100dvh]" aria-hidden="true" />
       <Sidebar />
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
@@ -26,7 +26,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
       />
       
       <main 
-        className="flex-1 flex flex-col transition-all duration-300 p-3 sm:p-6 w-full max-w-full min-h-screen pt-4 md:pt-6 relative z-0"
+        className="flex-1 flex flex-col transition-all duration-300 p-3 sm:p-6 w-full max-w-full min-h-[100dvh] pt-4 md:pt-6 relative z-0"
       >
         <div className="md:hidden flex items-center gap-3 mb-4 sticky top-0 z-30 bg-background/80 backdrop-blur-md py-2">
           <Button
