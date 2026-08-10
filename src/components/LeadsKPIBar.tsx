@@ -59,8 +59,8 @@ export const LeadsKPIBar = ({ leads, proposals, isMobile }: LeadsKPIBarProps) =>
             {kpi.icon}
           </div>
           <div>
-            <p className="text-2xl font-bold leading-tight">{kpi.value}</p>
-            <p className="text-xs text-muted-foreground">{kpi.label}</p>
+            <p className="text-2xl font-black leading-tight text-zinc-900">{kpi.value}</p>
+            <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">{kpi.label}</p>
           </div>
         </div>
       ))}

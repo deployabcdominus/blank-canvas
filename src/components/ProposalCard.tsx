@@ -147,7 +147,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
         <div className="grid grid-cols-3 gap-2 mb-3 text-center">
           <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.paid}</p>
-            <p className="text-xs font-bold text-mint">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-emerald-600">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
           <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.balance}</p>
@@ -155,7 +155,7 @@ export const ProposalCard = ({ proposal, index, onEdit, onDelete, onCreateOrder,
           </div>
           <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
             <p className="text-[10px] text-muted-foreground">{t.proposalCard.total}</p>
-            <p className="text-xs font-bold">${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            <p className="text-xs font-bold text-zinc-900">${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
           </div>
         </div>
       )}
