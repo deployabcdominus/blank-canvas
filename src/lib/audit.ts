@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import * as Sentry from "@sentry/react";
 
 export type AuditAction = 'creado' | 'editado' | 'eliminado' | 'cambio_estado' | 'aprobado' | 'asignado' | 'enviado';
 export type AuditEntityType = 'lead' | 'cliente' | 'propuesta' | 'pago' | 'proyecto' | 'orden_produccion' | 'ejecucion' | 'equipo';
@@ -54,5 +55,6 @@ export async function logAudit({ action, entityType, entityId, entityLabel, deta
     });
   } catch (err) {
     if (import.meta.env.DEV) console.error('Audit log error:', err);
+    Sentry.captureException(err, { extra: { auditParams: { action, entityType, entityId, entityLabel } } });
   }
 }
