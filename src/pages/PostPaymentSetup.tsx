@@ -276,12 +276,10 @@ const PostPaymentSetup = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-10"
             >
-              <div className="flex items-center justify-center gap-2 mb-6">
-                <div className="w-8 h-8 overflow-hidden">
-                  <img src={brandLogoSrc} alt="Sign Flow" className="w-full h-full object-contain" />
-                </div>
-                <span className="font-bold text-lg text-zinc-100">Sign Flow</span>
+              <div className="flex items-center justify-center mb-6">
+                <BrandLogo size={32} showText textClassName="font-bold text-lg text-zinc-100" />
               </div>
+
 
               <motion.div
                 initial={{ scale: 0 }}
