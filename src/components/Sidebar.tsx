@@ -118,7 +118,7 @@ export const Sidebar = memo(() => {
       <div className="mt-auto space-y-6">
         {/* Plan Upgrade Card (Ref Image Reference) */}
         {!isSuperadmin && isAdmin && (
-          <div className="hidden lg:block p-4 rounded-2xl bg-white/[0.03] border border-white/[0.05] relative overflow-hidden group">
+          <div className="hidden lg:block p-4 rounded-2xl bg-primary/5 border border-primary/10 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-40 transition-opacity">
               <Shield size={40} className="text-primary" />
             </div>
@@ -132,7 +132,7 @@ export const Sidebar = memo(() => {
               </p>
               <button 
                 onClick={() => navigate("/settings?tab=billing")}
-                className="w-full py-2 px-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white text-[12px] font-semibold transition-colors border border-white/[0.05]"
+                className="w-full py-2 px-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-white text-[12px] font-semibold transition-colors border border-primary/10"
               >
                 Manage Plan
               </button>
