@@ -152,7 +152,7 @@ export const en = {
     },
     footer: {
       tagline:
-        "The comprehensive operations management platform for service and project businesses.",
+        "High-performance operations hub.",
       product: "Product",
       productLinks: ["Features", "Pricing", "Integrations", "Updates"],
       company: "Company",

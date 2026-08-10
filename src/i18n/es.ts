@@ -154,7 +154,7 @@ export const es: TranslationKeys = {
     },
     footer: {
       tagline:
-        "La plataforma integral de gestión operativa para negocios de servicios y proyectos.",
+        "Hub de operaciones de alto rendimiento.",
       product: "Producto",
       productLinks: ["Funciones", "Precios", "Integraciones", "Actualizaciones"],
       company: "Empresa",
