@@ -227,9 +227,9 @@ const Leads = () => {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 80, opacity: 0 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/[0.08] bg-zinc-900/90 backdrop-blur-xl shadow-2xl"
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl border border-zinc-200 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
               >
-                <span className="text-sm font-medium text-zinc-300">
+                <span className="text-sm font-bold text-zinc-900">
                   {actions.selectedIds.size} {t.leads.selectedCount}{actions.selectedIds.size > 1 ? 's' : ''}
                 </span>
                 <Button
@@ -243,7 +243,7 @@ const Leads = () => {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 text-xs text-zinc-400 hover:text-zinc-100"
+                  className="h-8 text-xs text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
                   onClick={() => actions.setSelectedIds(new Set())}
                 >
                   <XCircle className="w-3.5 h-3.5 mr-1.5" /> {t.leads.deselect}
@@ -275,7 +275,7 @@ const Leads = () => {
           />
 
           <AlertDialog open={actions.isConfirmClearOpen} onOpenChange={actions.setIsConfirmClearOpen}>
-            <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
+            <AlertDialogContent className="bg-white border-zinc-200 shadow-2xl rounded-[2rem]">
               <AlertDialogHeader>
                 <AlertDialogTitle>{t.leads.clearAllTitle}</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -283,7 +283,7 @@ const Leads = () => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-white/5 border-white/10">{t.common.cancel}</AlertDialogCancel>
+                <AlertDialogCancel className="bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100">{t.common.cancel}</AlertDialogCancel>
                 <AlertDialogAction onClick={actions.handleClearLeads} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                   {t.leads.clearAllConfirm}
                 </AlertDialogAction>
@@ -292,7 +292,7 @@ const Leads = () => {
           </AlertDialog>
 
           <AlertDialog open={actions.isConfirmDeleteOpen} onOpenChange={actions.setIsConfirmDeleteOpen}>
-            <AlertDialogContent className="bg-zinc-900/80 backdrop-blur-2xl border-white/[0.08] shadow-2xl">
+            <AlertDialogContent className="bg-white border-zinc-200 shadow-2xl rounded-[2rem]">
               <AlertDialogHeader>
                 <AlertDialogTitle>{t.leads.deleteTitle}</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -300,7 +300,7 @@ const Leads = () => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-white/5 border-white/10">{t.common.cancel}</AlertDialogCancel>
+                <AlertDialogCancel className="bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100">{t.common.cancel}</AlertDialogCancel>
                 <AlertDialogAction onClick={actions.handleConfirmDeleteSingle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                   {t.common.delete}
                 </AlertDialogAction>

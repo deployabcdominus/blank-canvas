@@ -76,26 +76,21 @@ export function WorkOrderCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
       onClick={() => navigate(`/work-orders/${order.id}`)}
-      className="rounded-xl cursor-pointer transition-all duration-200 group flex flex-col w-full active:scale-[0.98]"
+      className="rounded-2xl cursor-pointer transition-all duration-300 group flex flex-col w-full active:scale-[0.98] border border-zinc-200 bg-white shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 hover:-translate-y-1.5"
       style={{
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(139,92,246,0.2)",
-        borderRadius: 12,
-        padding: "16px",
-        gap: 12,
+        padding: "20px",
+        gap: 14,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)";
-        e.currentTarget.style.background = "rgba(139,92,246,0.05)";
+        e.currentTarget.style.borderColor = "hsl(var(--primary) / 0.4)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "rgba(139,92,246,0.2)";
-        e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+        e.currentTarget.style.borderColor = "hsl(var(--border))";
       }}
     >
       {/* Row 1: Header — Client + Status */}
       <div className="flex items-start justify-between gap-2">
-        <h3 className="text-base md:text-lg font-semibold text-white truncate min-w-0 flex-1">{order.client}</h3>
+        <h3 className="text-base md:text-lg font-bold text-zinc-900 truncate min-w-0 flex-1">{order.client}</h3>
         <Badge className={`border-0 text-[10px] shrink-0 font-semibold`} style={{ background: status.bg, color: status.color }}>
           {statusLabel}
         </Badge>
@@ -103,7 +98,7 @@ export function WorkOrderCard({
 
       {/* Row 2: Subtitle — Type + WO# */}
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm text-zinc-400 truncate min-w-0 flex-1">
+        <p className="text-sm text-zinc-500 truncate min-w-0 flex-1">
           {order.product_type || order.project_name || order.project || "—"}
         </p>
         <span className="text-xs text-zinc-500 font-mono shrink-0">{woLabel}</span>
@@ -113,7 +108,7 @@ export function WorkOrderCard({
       <div className="flex items-center gap-3">
         <div
           className="flex-1 overflow-hidden"
-          style={{ height: 6, borderRadius: 3, background: "rgba(255,255,255,0.1)" }}
+          style={{ height: 6, borderRadius: 3, background: "hsl(var(--muted))" }}
         >
           <div
             className="h-full transition-all duration-300"
@@ -127,17 +122,17 @@ export function WorkOrderCard({
 
       {/* Row 4: Info row */}
       <div className="flex items-center gap-4 text-xs flex-wrap">
-        <span className="flex items-center gap-1.5" style={{ color: formattedDelivery ? "#9ca3af" : "#4b5563" }}>
+        <span className="flex items-center gap-1.5" style={{ color: formattedDelivery ? "#64748b" : "#94a3b8" }}>
           <Calendar className="w-3.5 h-3.5" />
           {formattedDelivery || (t as any).workOrders.details.noDate}
         </span>
-        <span className="flex items-center gap-1.5" style={{ color: assigneeName ? "#9ca3af" : "#4b5563" }}>
+        <span className="flex items-center gap-1.5" style={{ color: assigneeName ? "#64748b" : "#94a3b8" }}>
           <User className="w-3.5 h-3.5" />
           {assigneeName || (t as any).workOrders.details.unassigned}
         </span>
 
         {order.product_type && (
-          <span className="flex items-center gap-1.5 text-zinc-400">
+          <span className="flex items-center gap-1.5 text-zinc-500">
             <Wrench className="w-3.5 h-3.5" />
             {order.product_type}
           </span>
