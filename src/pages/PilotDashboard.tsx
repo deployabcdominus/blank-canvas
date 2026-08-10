@@ -50,12 +50,10 @@ export default function PilotDashboard() {
     <div className="container mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">
-          1
+          {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          {isEn 
-            ? "1" 
-            : "1"}
+          {t.landing.pilot.subtitle}
         </p>
       </div>
 
