@@ -17,7 +17,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/20">
+    <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/20 relative">
       <Sidebar />
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
@@ -25,7 +25,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
       />
       
       <main 
-        className="flex-1 transition-all duration-300 p-3 sm:p-6 ml-0 md:ml-[72px] lg:ml-[260px] w-full max-w-full overflow-x-hidden min-h-screen flex flex-col pt-4 md:pt-6"
+        className="flex-1 transition-all duration-300 p-3 sm:p-6 ml-0 md:ml-[72px] lg:ml-[260px] w-full max-w-full min-h-screen flex flex-col pt-4 md:pt-6"
       >
         <div className="md:hidden flex items-center gap-3 mb-4 sticky top-0 z-30 bg-background/80 backdrop-blur-md py-2">
           <Button
