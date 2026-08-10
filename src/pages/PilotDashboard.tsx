@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          Agrego estados de loading y manejo de errores con mensajes claros en el dashboard de superadmin para evitar pantallas vacías o inconsistentes si falla una consulta.
+          revisemos profundamente la app y dime que fase o etapa falta por ejecutar
         </p>
       </div>
 
