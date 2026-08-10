@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          revisemos profundamente la app y dime que fase o etapa falta por ejecutar
+          Unifica el texto del elemento “body” para que el mensaje solicitado aparezca correctamente y de forma consistente en todos los lugares donde se renderiza.
         </p>
       </div>
 
