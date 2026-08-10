@@ -55,7 +55,7 @@ export function WorkOrderCard({
 
 
   const statusKey = order.poi_token_used ? "installed" : (order.status || "Pendiente");
-  const status = (STATUS_CONFIG as any)[statusKey] || (STATUS_CONFIG as any)["Pendiente"];
+  const status = (STATUS_CONFIG as any)[statusKey] || (STATUS_CONFIG as any)["Pendiente"] || { bg: "transparent", color: "white", label: statusKey || "Pendiente" };
   const statusLabel = status?.label || statusKey || "Pendiente";
 
   const woLabel = order.wo_number || `WO-${order.id.slice(0, 8).toUpperCase()}`;
