@@ -92,6 +92,7 @@ export const Sidebar = memo(() => {
         </div>
       </div>
 
+      <div className="flex-1 overflow-y-auto scrollbar-none space-y-3 lg:space-y-4 pr-1">
       {isSuperadmin ? (
         <SidebarPlatformNav
           items={platformItems}
@@ -114,6 +115,7 @@ export const Sidebar = memo(() => {
           t={t}
         />
       )}
+      </div>
 
       {/* User footer */}
       <SidebarUserFooter
