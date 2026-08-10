@@ -58,12 +58,13 @@ export default function PilotDashboard() {
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-7 max-w-4xl">
+        <TabsList className="grid w-full grid-cols-8 max-w-5xl">
           <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
           <TabsTrigger value="marketing">{t.landing.pilot.marketing}</TabsTrigger>
           <TabsTrigger value="intelligence">{(t as any).landing.pilot.intelligence}</TabsTrigger>
           <TabsTrigger value="integrations">{(t as any).landing.pilot.integrations}</TabsTrigger>
           <TabsTrigger value="portal">{(t as any).landing.pilot.portal}</TabsTrigger>
+          <TabsTrigger value="scaling">{(t as any).landing.pilot.scaling}</TabsTrigger>
           <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
           <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
@@ -119,9 +120,9 @@ export default function PilotDashboard() {
                       <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center">11</Badge>
                       {(t as any).landing.pilot.stage11}
                     </li>
-                    <li className="flex items-center gap-2 text-sm">
-                      <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center">12</Badge>
-                      {(t as any).landing.pilot.stage12}
+                    <li className="flex items-center gap-2 text-sm text-emerald-500 font-medium">
+                      <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center border-emerald-500">12</Badge>
+                      {(t as any).landing.pilot.stage12} (Active)
                     </li>
                     <li className="pt-2 border-t border-violet-500/10 text-xs text-muted-foreground italic">
                       {(t as any).landing.pilot.stageCompletion}
@@ -319,6 +320,73 @@ export default function PilotDashboard() {
                 <div className="text-center space-y-2">
                   <p className="text-muted-foreground font-medium">Portal Customization Preview</p>
                   <p className="text-xs text-muted-foreground/60 italic">Upload your branding in Company Settings to preview your white-label portal.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="scaling" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="glass-card border-violet-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.activeRegions}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">1</div>
+                <p className="text-xs text-muted-foreground mt-1">{(t as any).landing.pilot.primaryNode}: US-East</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-blue-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.globalLatency}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">42ms</div>
+                <p className="text-xs text-muted-foreground mt-1">{(t as any).landing.pilot.uptime}: 99.99%</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-emerald-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.multiRegionSync}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Active</div>
+                <p className="text-xs text-muted-foreground mt-1">Real-time edge propagation</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card className="glass-card border-white/5">
+            <CardHeader>
+              <CardTitle>Phase 12: Global Scaling & Multi-Region</CardTitle>
+              <CardDescription>
+                {(t as any).landing.pilot.phase12Desc}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h4 className="text-sm font-semibold">Deployment Infrastructure</h4>
+                  <div className="space-y-2">
+                    {['North America (Primary)', 'Europe (Edge)', 'Asia Pacific (Planned)'].map(region => (
+                      <div key={region} className="flex items-center justify-between p-3 border border-white/10 rounded-lg bg-white/5">
+                        <span className="text-sm">{region}</span>
+                        <Badge variant={region.includes('Primary') ? 'default' : 'outline'} className="text-[10px]">
+                          {region.includes('Planned') ? 'Coming Soon' : 'Operational'}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col justify-center items-center text-center space-y-3">
+                  <div className="w-16 h-16 rounded-full bg-violet-500/20 flex items-center justify-center border border-violet-500/40">
+                    <div className="w-8 h-8 rounded-full border-2 border-violet-500 animate-ping opacity-20" />
+                  </div>
+                  <h4 className="font-medium">Edge Network Active</h4>
+                  <p className="text-xs text-muted-foreground max-w-[200px]">
+                    Automatic traffic routing based on technical specialist geolocation.
+                  </p>
                 </div>
               </div>
             </CardContent>
