@@ -75,24 +75,21 @@ export const Sidebar = memo(() => {
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/95 lg:bg-zinc-950/90 backdrop-blur-3xl w-[72px] lg:w-[260px] px-2 lg:px-4 py-4 lg:py-6 shadow-2xl transition-all duration-300 isolate h-[100dvh]"
+      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/80 backdrop-blur-3xl w-[72px] lg:w-[280px] p-4 lg:p-6 shadow-2xl transition-all duration-300 isolate h-[100dvh]"
       role="navigation"
       aria-label="Menu lateral principal"
     >
-      {/* Logo */}
-      <div className="mb-5 lg:mb-7 flex-shrink-0 flex justify-center lg:justify-start lg:px-1">
+      {/* Logo Section */}
+      <div className="mb-8 lg:mb-10 flex-shrink-0 flex justify-center lg:justify-start">
         <div className="hidden lg:block w-full">
-          <BrandLogo size={42} showText variant="iconWithText" textClassName="text-xl font-black tracking-tight" />
-          <p className="text-[10px] text-zinc-500 mt-1.5 uppercase tracking-[0.12em] font-bold">
-            {isSuperadmin ? (t as any).nav.platform : "Production Hub"}
-          </p>
+          <BrandLogo size={36} showText variant="iconWithText" textClassName="text-xl font-bold tracking-tight text-white" />
         </div>
         <div className="lg:hidden">
-          <BrandLogo size={36} variant="iconOnly" />
+          <BrandLogo size={32} variant="iconOnly" />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-none space-y-3 lg:space-y-4 pr-1">
+      <div className="flex-1 overflow-y-auto scrollbar-none space-y-6 lg:space-y-8 pr-1">
       {isSuperadmin ? (
         <SidebarPlatformNav
           items={platformItems}
@@ -117,20 +114,46 @@ export const Sidebar = memo(() => {
       )}
       </div>
 
-      {/* User footer */}
-      <SidebarUserFooter
-        avatarUrl={avatarUrl}
-        fullName={fullName}
-        email={email}
-        initials={initials}
-        isSuperadmin={isSuperadmin}
-        isAdmin={isAdmin}
-        onLogout={async () => { await signOut(); navigate("/login"); }}
-        onNavigate={navigate}
-        profileLabel={t.nav.profile}
-        settingsLabel={t.nav.settings}
-        logoutLabel={t.nav.logout}
-      />
+      {/* Footer Section: Plan & User */}
+      <div className="mt-auto space-y-6">
+        {/* Plan Upgrade Card (Ref Image Reference) */}
+        {!isSuperadmin && isAdmin && (
+          <div className="hidden lg:block p-4 rounded-2xl bg-white/[0.03] border border-white/[0.05] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-40 transition-opacity">
+              <Shield size={40} className="text-primary" />
+            </div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Pro Plan</span>
+              </div>
+              <p className="text-[12px] text-zinc-400 mb-3 leading-relaxed">
+                Unlock full automation and unlimited leads.
+              </p>
+              <button 
+                onClick={() => navigate("/settings?tab=billing")}
+                className="w-full py-2 px-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white text-[12px] font-semibold transition-colors border border-white/[0.05]"
+              >
+                Manage Plan
+              </button>
+            </div>
+          </div>
+        )}
+
+        <SidebarUserFooter
+          avatarUrl={avatarUrl}
+          fullName={fullName}
+          email={email}
+          initials={initials}
+          isSuperadmin={isSuperadmin}
+          isAdmin={isAdmin}
+          onLogout={async () => { await signOut(); navigate("/login"); }}
+          onNavigate={navigate}
+          profileLabel={t.nav.profile}
+          settingsLabel={t.nav.settings}
+          logoutLabel={t.nav.logout}
+        />
+      </div>
     </motion.aside>,
     document.body
   );
@@ -237,30 +260,30 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
     <NavLink
       to={item.path}
       onMouseEnter={handleMouseEnter}
-      className={`group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl lg:rounded-lg p-2.5 lg:px-3 lg:py-2.5 ${
-        active
-          ? "bg-white/[0.04] border border-white/[0.1] text-white font-semibold shadow-lg shadow-black/20"
-          : "border border-transparent text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.03] hover:translate-x-0.5"
+      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-2xl lg:rounded-xl p-2.5 lg:px-4 lg:py-3 ${
+        isActive
+          ? "bg-primary/10 border border-primary/20 text-white font-semibold shadow-[0_0_20px_rgba(139,92,246,0.15)]"
+          : "border border-transparent text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03]"
       }`}
       title={label}
       aria-current={active ? "page" : undefined}
     >
+      <item.icon
+        className={`flex-shrink-0 transition-colors duration-300 ${active ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300"}`}
+        size={20}
+        strokeWidth={active ? 2 : 1.5}
+        aria-hidden="true"
+      />
+      <span className="hidden lg:block text-[14px] leading-tight ml-3.5 truncate">
+        {label}
+      </span>
       {active && (
         <motion.div
-          layoutId="sidebar-active-pill"
-          className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-r-full bg-primary shadow-[0_0_10px_rgba(139,92,246,0.5)]"
+          layoutId="sidebar-active-dot"
+          className="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary hidden lg:block"
           transition={{ type: "spring", stiffness: 400, damping: 28 }}
         />
       )}
-      <item.icon
-        className={`flex-shrink-0 ${active ? "text-white" : "text-zinc-400 group-hover:text-zinc-200"}`}
-        size={18}
-        strokeWidth={1.5}
-        aria-hidden="true"
-      />
-      <span className="hidden lg:block text-sm leading-tight ml-3 truncate">
-        {label}
-      </span>
     </NavLink>
   );
 });
@@ -285,14 +308,14 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
     <div className="space-y-1">
       <div className="hidden lg:block">
         <Collapsible open={isOpen} onOpenChange={onToggle}>
-          <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-1.5 group cursor-pointer select-none rounded-md hover:bg-white/[0.02] transition-colors">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
+          <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 group cursor-pointer select-none rounded-xl hover:bg-white/[0.02] transition-colors">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 group-hover:text-zinc-400 transition-colors">
               {group.groupLabel}
             </span>
             <ChevronRight
-              className={`text-zinc-600 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`}
-              size={12}
-              strokeWidth={2}
+              className={`text-zinc-700 transition-transform duration-200 group-hover:text-zinc-500 ${isOpen ? "rotate-90" : ""}`}
+              size={14}
+              strokeWidth={2.5}
             />
           </CollapsibleTrigger>
           <CollapsibleContent>
@@ -338,7 +361,7 @@ function SidebarPlatformNav({ items, location, industryLabels, platformLabel, co
 }) {
   return (
     <nav className="space-y-1 min-h-0">
-      <p className="hidden lg:block px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
+      <p className="hidden lg:block px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600">
         {platformLabel || "Platform"}
       </p>
       {items.map(item => (
@@ -377,7 +400,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
       <nav className="min-h-0 space-y-3 lg:space-y-4">
         {principalItems.length > 0 && (
           <div className="space-y-1">
-            <p className="hidden lg:block px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500 select-none">
+            <p className="hidden lg:block px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 select-none">
               {principalGroup.groupLabel}
             </p>
             {principalItems.map(item => (
@@ -403,7 +426,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
 
       {visibleUtils.length > 0 && (
         <div className="pt-3 mt-2 border-t border-white/[0.04] space-y-0.5">
-          <p className="hidden lg:block px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 select-none">
+          <p className="hidden lg:block px-4 pb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 select-none">
             {adjustmentsLabel || "Settings"}
           </p>
           {visibleUtils.map(item => (
@@ -424,30 +447,33 @@ function SidebarUserFooter({ avatarUrl, fullName, email, initials, isSuperadmin,
   profileLabel?: string; settingsLabel?: string; logoutLabel?: string;
 }) {
   return (
-    <div className="flex-shrink-0 mt-3 pt-3 border-t border-white/[0.04] space-y-1.5">
-      <div className="flex items-center justify-between lg:justify-start lg:gap-3 lg:px-1">
+    <div className="flex-shrink-0 pt-4 border-t border-white/[0.04]">
+      <div className="flex items-center justify-between lg:justify-start lg:gap-3 lg:px-2 mb-4">
         <NotificationBell />
         <LanguageSwitcher className="h-9" />
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="flex items-center rounded-xl transition-all duration-200 hover:bg-white/[0.03] w-full justify-center lg:justify-start lg:gap-3 lg:px-2.5 lg:py-2.5 p-2"
+            className="flex items-center rounded-2xl transition-all duration-200 hover:bg-white/[0.03] w-full justify-center lg:justify-start lg:gap-3 lg:px-2.5 lg:py-2.5 p-2"
             title="Mi Perfil"
             aria-label="Menú del usuario"
           >
-            <Avatar className="w-9 h-9 flex-shrink-0 ring-2 ring-primary/25 ring-offset-1 ring-offset-zinc-950">
-              {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar className="w-10 h-10 flex-shrink-0 ring-2 ring-primary/25 ring-offset-2 ring-offset-zinc-950">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt="Avatar" />}
+                <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-zinc-950 rounded-full" />
+            </div>
             <div className="hidden lg:block text-left min-w-0 flex-1">
-              <span className="font-medium text-[13px] block leading-tight truncate text-white">
-                {fullName.split(" ")[0]}
+              <span className="font-bold text-[14px] block leading-tight truncate text-white">
+                {fullName}
               </span>
-              <span className="text-[11px] text-zinc-500 leading-tight truncate block">
-                {isSuperadmin ? "Superadmin" : email}
+              <span className="text-[11px] text-zinc-500 leading-tight truncate block mt-0.5">
+                {isSuperadmin ? "Super Admin" : email}
               </span>
             </div>
           </button>

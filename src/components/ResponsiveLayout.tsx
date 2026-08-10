@@ -19,7 +19,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
   return (
     <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/20 relative isolate overflow-x-hidden">
       {/* Sidebar spacer: reserves space for the fixed sidebar on desktop */}
-      <div className="hidden md:block shrink-0 w-[72px] lg:w-[260px]" aria-hidden="true" />
+      <div className="hidden md:block shrink-0 w-[72px] lg:w-[280px]" aria-hidden="true" />
       
       <Sidebar />
       
