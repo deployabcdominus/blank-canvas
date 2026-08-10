@@ -325,6 +325,7 @@ export function SignFlowDashboardView({
             <MetricItem 
               label={t.dashboard.activeProjects || "Active Campaigns"} 
               value={7} 
+              delta={4.5}
               icon={TrendingUp}
               delay={0.7}
             />
