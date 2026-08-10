@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          actualmente el admin del tenant adrian muestra un sibtitulo en spanish debajo del logo en la sidebar, deberia ser en ingles, y en la propia sidebar hay menus en spanish que deberian estar en english, todo en english porque el user lo tiene seteado en su perfil
+          {t.landing.pilot.subtitle}
         </p>
       </div>
 
