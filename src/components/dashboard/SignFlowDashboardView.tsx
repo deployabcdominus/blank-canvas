@@ -40,7 +40,7 @@ const ModuleCard = ({ step, title, subtitle, badge, badgeVariant, cta, onClick, 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="glass-card flex flex-col h-full border-zinc-200/60 hover:border-primary/30 transition-all duration-300 group overflow-hidden rounded-3xl bg-white shadow-xl shadow-zinc-200/20">
+      <Card className="glass-card flex flex-col h-full border-zinc-200/60 hover:border-primary/40 transition-all duration-500 group overflow-hidden rounded-[2.5rem] bg-white shadow-2xl shadow-zinc-200/20">
 
         <div className="p-5 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-4">
@@ -71,7 +71,7 @@ const ModuleCard = ({ step, title, subtitle, badge, badgeVariant, cta, onClick, 
         
         <div className="p-5 pt-0 mt-auto">
           <Button 
-            className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-6 font-semibold shadow-lg shadow-primary/20"
+            className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl py-7 font-bold text-base shadow-xl shadow-primary/20 transition-all duration-300 group-hover:scale-[1.02]"
             onClick={onClick}
           >
             {cta}
@@ -300,7 +300,7 @@ export function SignFlowDashboardView({
             <p className="text-zinc-500 text-sm">Real-time performance metrics</p>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 flex-1 max-w-4xl">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-12 md:gap-16 flex-1 max-w-5xl">
             <MetricItem 
               label={t.dashboard.totalLeads || "Total Leads"} 
               value={leads.length} 

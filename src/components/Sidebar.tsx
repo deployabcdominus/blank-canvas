@@ -75,7 +75,7 @@ export const Sidebar = memo(() => {
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-zinc-200 bg-zinc-950 w-[72px] lg:w-[280px] p-4 lg:p-6 shadow-xl transition-all duration-300 isolate h-[100dvh]"
+      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/5 bg-[#0a0a0c] w-[72px] lg:w-[300px] p-4 lg:p-8 shadow-[10px_0_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-500 isolate h-[100dvh]"
       role="navigation"
       aria-label="Menu lateral principal"
     >
@@ -260,9 +260,9 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
     <NavLink
       to={item.path}
       onMouseEnter={handleMouseEnter}
-      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl p-2.5 lg:px-4 lg:py-3.5 ${
+      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-2xl p-3 lg:px-5 lg:py-4 ${
         isActive
-          ? "bg-primary text-white font-bold shadow-[0_8px_16px_rgba(139,92,246,0.3)] ring-1 ring-white/10"
+          ? "bg-primary text-white font-bold shadow-[0_12px_24px_rgba(139,92,246,0.4)] scale-[1.02] z-10"
           : "text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.05]"
       }`}
       title={label}
