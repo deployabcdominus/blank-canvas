@@ -53,7 +53,9 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          siguen mostrando errores de traduccion cuando alternamos de idiomas usando el swith
+          {isEn 
+            ? "Learn what this pilot represents and its strategic purpose." 
+            : "Descubre qué significa este piloto y para qué sirve."}
         </p>
       </div>
 
