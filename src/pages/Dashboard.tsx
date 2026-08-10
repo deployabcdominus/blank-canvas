@@ -15,10 +15,12 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useRealtimeDashboard } from "@/hooks/useRealtimeDashboard";
 import { useDashboardToasts } from "@/hooks/useDashboardToasts";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { isThisMonth, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { Users, ClipboardList, MapPin, CheckCircle2, AlertTriangle, Loader2, DollarSign, TrendingUp } from "lucide-react";
 import { GracePeriodBanner } from "@/components/GracePeriodBanner";
 import { AttentionNeededPanel } from "@/components/dashboard/AttentionNeededPanel";
+import { SignFlowDashboardView } from "@/components/dashboard/SignFlowDashboardView";
 
 // Lazy-loaded heavy components
 const RevenueChart = lazy(() => import("@/components/dashboard/RevenueChart").then(m => ({ default: m.RevenueChart })));
@@ -40,6 +42,7 @@ const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
   const { canViewFinancials, canViewOperations, isAdmin, isSuperadmin, companyId, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
+  const { profile } = useUserProfile();
   useRealtimeDashboard();
   useDashboardToasts();
 
@@ -100,79 +103,61 @@ const Dashboard = () => {
           </div>
         )}
         <GracePeriodBanner />
-        
 
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.5 }} 
-          className="mb-6 md:mb-8 flex items-end justify-between px-1"
-        >
-          <div>
-            <h1 className="font-bold text-2xl md:text-4xl tracking-tight text-white mb-1">{t.dashboard.controlCenter}</h1>
-            <p className="text-zinc-400 text-xs md:text-base font-medium">
-              {showFinancials ? t.dashboard.executiveView : t.dashboard.operativeView}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <span className="text-[10px] md:text-xs text-muted-foreground">{t.common.live}</span>
-          </div>
-        </motion.div>
+        {/* New SignFlow Dashboard View */}
+        <SignFlowDashboardView 
+          leads={leads}
+          proposals={proposals}
+          orders={orders}
+          installations={installations}
+          payments={payments}
+          userName={profile?.fullName || t.common.user || "User"}
+          t={t}
+        />
 
-        {isAdmin && (
-          <Suspense fallback={<div className="h-32 w-full animate-pulse bg-muted/20 rounded-xl mb-6" />}>
-            <AiBriefing />
-          </Suspense>
-        )}
+        {/* Keeping existing functional components below the new hero/feature grid for deep analytics */}
+        <div className="mt-8 space-y-8">
+          {isAdmin && (
+            <Suspense fallback={<div className="h-32 w-full animate-pulse bg-muted/20 rounded-xl mb-6" />}>
+              <AiBriefing />
+            </Suspense>
+          )}
 
-        <AttentionNeededPanel leads={leads} proposals={proposals} orders={orders} installations={installations} />
+          <AttentionNeededPanel leads={leads} proposals={proposals} orders={orders} installations={installations} />
 
-
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
-          {stats.map((stat, index) => (
-            <HudCard key={stat.key} label={stat.label} desc={hasNoCompany ? t.dashboard.noAccess : stat.desc} value={stat.value} isCurrency={(stat as any).isCurrency} icon={hasNoCompany ? AlertTriangle : stat.icon} isActive={activeFilter === stat.key} onClick={() => handleKpiClick(stat.key)} index={index} accentClass={stat.accent} noAccess={hasNoCompany} delta={stat.delta} sparkline={stat.sparkline} />
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 mb-6 md:mb-10">
-          <Suspense fallback={<WidgetLoader />}>
-            {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
-          </Suspense>
-          <Suspense fallback={<WidgetLoader />}>
-            {canViewOperations && <WorkOrdersRadial orders={orders} />}
-          </Suspense>
-          <Suspense fallback={<WidgetLoader />}>
-            <GeoHeatmap installations={installations} />
-          </Suspense>
-
-        </div>
-
-
-        {isAdmin && (
-          <Suspense fallback={<WidgetLoader />}>
-            <WeeklyReport />
-          </Suspense>
-        )}
-
-
-        {isAdmin && (
-          <div className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
             <Suspense fallback={<WidgetLoader />}>
-              <TeamActivityWidget />
+              {showFinancials && <RevenueChart proposals={proposals} payments={payments} />}
+            </Suspense>
+            <Suspense fallback={<WidgetLoader />}>
+              {canViewOperations && <WorkOrdersRadial orders={orders} />}
+            </Suspense>
+            <Suspense fallback={<WidgetLoader />}>
+              <GeoHeatmap installations={installations} />
             </Suspense>
           </div>
 
-        )}
+          {isAdmin && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Suspense fallback={<WidgetLoader />}>
+                <WeeklyReport />
+              </Suspense>
+              <Suspense fallback={<WidgetLoader />}>
+                <TeamActivityWidget />
+              </Suspense>
+            </div>
+          )}
 
-        <div className="mt-8">
-          <h2 className="text-lg font-bold mb-4 px-1">{t.nav.production} Pipeline</h2>
-          <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
+          <div>
+            <h2 className="text-xl font-black mb-6 px-1 text-white tracking-tight flex items-center gap-2">
+              <span className="w-1.5 h-6 bg-primary rounded-full" />
+              {t.nav.production} Pipeline
+            </h2>
+            <HudPipeline leads={leads} proposals={proposals} orders={orders} installations={installations} activeFilter={activeFilter} />
+          </div>
         </div>
+      </ResponsiveLayout>
+    </PageTransition>
       </ResponsiveLayout>
     </PageTransition>
   );
