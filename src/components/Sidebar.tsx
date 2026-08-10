@@ -400,7 +400,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
       <nav className="min-h-0 space-y-3 lg:space-y-4">
         {principalItems.length > 0 && (
           <div className="space-y-1">
-            <p className="hidden lg:block px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500 select-none">
+            <p className="hidden lg:block px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 select-none">
               {principalGroup.groupLabel}
             </p>
             {principalItems.map(item => (
