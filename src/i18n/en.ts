@@ -190,7 +190,7 @@ export const en = {
     },
     pilot: {
       title: "Pilot Readiness Dashboard",
-      subtitle: "executing Phase 13: Intelligence Ecosystem",
+      subtitle: "Autonomous AI & Strategic Systems (Phase 13 Active)",
       checklist: "Checklist",
       feedback: "Feedback",
       history: "All Issues",

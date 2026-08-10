@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          por favor analizemos los errores de UI UX en relacion a mostrar textos en spanish y english al mismo tiempo, solo deberia mostrar el idioma seteado y no mezclarlos
+          {t.landing.pilot.subtitle}
         </p>
       </div>
 

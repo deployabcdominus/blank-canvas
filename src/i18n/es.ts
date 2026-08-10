@@ -192,7 +192,7 @@ export const es: TranslationKeys = {
     },
     pilot: {
       title: "Panel de Preparación para Piloto",
-      subtitle: "ejecutando Fase 13: Ecosistema de Inteligencia",
+      subtitle: "IA Autónoma y Sistemas Estratégicos (Fase 13 Activa)",
       checklist: "Lista",
       feedback: "Comentarios",
       history: "Todos los Problemas",

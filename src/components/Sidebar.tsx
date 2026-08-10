@@ -57,7 +57,7 @@ export const Sidebar = memo(() => {
     if (isAdmin && groups[3]) {
       const recycleItem = {
         path: "/leads/recycle-bin",
-        label: "Papelera",
+        label: t.leads.recycleBin,
         icon: Recycle,
         roles: ["admin", "superadmin"],
       } as any;
@@ -83,7 +83,7 @@ export const Sidebar = memo(() => {
         <div className="hidden lg:block">
           <BrandLogo size={38} showText variant="iconWithText" textClassName="text-lg font-semibold tracking-tight" />
           <p className="text-[10px] text-zinc-500 mt-1.5 uppercase tracking-[0.08em] font-medium">
-            {isSuperadmin ? "Platform Admin" : FIXED_BRANDING.appTagline}
+            {isSuperadmin ? (t as any).nav.platform : t.landing.footer.tagline}
           </p>
         </div>
         <div className="lg:hidden">
@@ -98,6 +98,7 @@ export const Sidebar = memo(() => {
           industryLabels={industryLabels}
           platformLabel={t.nav.platform}
           companyId={companyId}
+          t={t}
         />
       ) : (
         <SidebarTenantNav
@@ -109,6 +110,7 @@ export const Sidebar = memo(() => {
           isAdmin={isAdmin}
           adjustmentsLabel={t.nav.adjustments}
           companyId={companyId}
+          t={t}
         />
       )}
 
@@ -138,9 +140,31 @@ Sidebar.displayName = "Sidebar";
 const isActivePath = (location: { pathname: string; search: string }, path: string) =>
   location.pathname + location.search === path || location.pathname === path;
 
-const getLabel = (item: NavItem, industryLabels: IndustryLabels) => {
+const getLabel = (item: NavItem, industryLabels: IndustryLabels, t: any) => {
   if (item.labelKey && industryLabels[item.labelKey]) return industryLabels[item.labelKey];
-  return item.label;
+  
+  // Localized fallbacks for hardcoded labels in constants/navigation.ts
+  const navKeys: Record<string, string> = {
+    "Dashboard": t.nav.dashboard,
+    "Leads": t.nav.leads,
+    "Proposals": t.nav.proposals,
+    "Accounts": t.nav.accounts,
+    "Work Orders": t.nav.workOrders,
+    "Partners": t.nav.subcontractors,
+    "Inventory": t.nav.inventory,
+    "Payments": t.nav.payments,
+    "Reports": t.nav.reports || t.landing.reports.title,
+    "Audit Logs": t.nav.auditLog,
+    "Team Management": t.nav.teamManagement,
+    "Pilot": "Pilot",
+    "Overview": t.nav.platform || "Overview",
+    "Companies": t.nav.accounts || "Companies",
+    "Users": t.nav.teamManagement || "Users",
+    "Provisioning": "Provisioning",
+    "Settings": t.nav.settings,
+  };
+
+  return navKeys[item.label] || item.label;
 };
 
 const canSee = (item: NavItem, role: string | null) => {
@@ -151,11 +175,12 @@ const canSee = (item: NavItem, role: string | null) => {
 
 /* ─── Nav Item ─── */
 
-const SidebarNavItem = memo(({ item, location, industryLabels, companyId }: {
+const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
   item: NavItem;
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
   companyId: string | null;
+  t: any;
 }) => {
   const queryClient = useQueryClient();
 
@@ -203,7 +228,7 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId }: {
   }, [item.path, companyId, queryClient]);
 
   const active = isActivePath(location, item.path);
-  const label = getLabel(item, industryLabels);
+  const label = getLabel(item, industryLabels, t);
   return (
     <NavLink
       to={item.path}
@@ -241,11 +266,12 @@ SidebarNavItem.displayName = "SidebarNavItem";
 
 /* ─── Collapsible Group ─── */
 
-const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role, industryLabels, companyId }: {
+const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role, industryLabels, companyId, t }: {
   group: NavGroup; isOpen: boolean; onToggle: () => void;
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels;
   companyId: string | null;
+  t: any;
 }) => {
 
   const visibleItems = group.items.filter(i => canSee(i, role));
@@ -276,7 +302,7 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
                   className="space-y-0.5 mt-1"
                 >
                   {visibleItems.map(item => (
-                    <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
+                    <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} t={t} />
                   ))}
                 </motion.div>
               )}
@@ -286,7 +312,7 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
       </div>
       <div className="lg:hidden space-y-1">
         {visibleItems.map(item => (
-          <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
+          <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} t={t} />
         ))}
       </div>
     </div>
@@ -298,12 +324,13 @@ SidebarCollapsibleGroup.displayName = "SidebarCollapsibleGroup";
 
 /* ─── Platform Nav ─── */
 
-function SidebarPlatformNav({ items, location, industryLabels, platformLabel, companyId }: {
+function SidebarPlatformNav({ items, location, industryLabels, platformLabel, companyId, t }: {
   items: NavItem[];
   location: { pathname: string; search: string };
   industryLabels: IndustryLabels;
   platformLabel?: string;
   companyId: string | null;
+  t: any;
 }) {
   return (
     <nav className="flex-1 overflow-y-auto scrollbar-none space-y-1 min-h-0">
@@ -311,7 +338,7 @@ function SidebarPlatformNav({ items, location, industryLabels, platformLabel, co
         {platformLabel || "Platform"}
       </p>
       {items.map(item => (
-        <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
+        <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} t={t} />
       ))}
     </nav>
   );
@@ -319,12 +346,13 @@ function SidebarPlatformNav({ items, location, industryLabels, platformLabel, co
 
 /* ─── Tenant Nav ─── */
 
-function SidebarTenantNav({ groups, utilityItems: utils, location, role, industryLabels, isAdmin, adjustmentsLabel, companyId }: {
+function SidebarTenantNav({ groups, utilityItems: utils, location, role, industryLabels, isAdmin, adjustmentsLabel, companyId, t }: {
   groups: NavGroup[]; utilityItems: NavItem[];
   location: { pathname: string; search: string };
   role: string | null; industryLabels: IndustryLabels; isAdmin: boolean;
   adjustmentsLabel?: string;
   companyId: string | null;
+  t: any;
 }) {
   const activeGroupIdx = groups.findIndex(g =>
     g.items.some(i => isActivePath(location, i.path))
@@ -349,7 +377,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
               {principalGroup.groupLabel}
             </p>
             {principalItems.map(item => (
-              <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
+              <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} t={t} />
             ))}
           </div>
         )}
@@ -364,6 +392,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
             role={role}
             industryLabels={industryLabels}
             companyId={companyId}
+            t={t}
           />
         ))}
       </nav>
@@ -374,7 +403,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
             {adjustmentsLabel || "Settings"}
           </p>
           {visibleUtils.map(item => (
-            <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} />
+            <SidebarNavItem key={item.path} item={item} location={location} industryLabels={industryLabels} companyId={companyId} t={t} />
           ))}
         </div>
       )}
