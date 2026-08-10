@@ -52,9 +52,30 @@ export default function PilotDashboard() {
         <h1 className="text-3xl font-bold tracking-tight">
           {t.landing.pilot.title}
         </h1>
-        <p className="text-muted-foreground">
-          el problema persiste en /work-orders
-        </p>
+        <div className="text-muted-foreground whitespace-pre-wrap">
+          <h2 className="text-xl font-bold mt-4 mb-2">Investigação de Problema de Acesso à Página /work-orders</h2>
+          
+          <p><strong>Problema:</strong> O administrador do tenant não consegue carregar a página <code>/work-orders</code>.</p>
+          
+          <p><strong>Objetivo:</strong> Identificar a causa raiz e resolver o problema de acesso à página <code>/work-orders</code> para o administrador do tenant.</p>
+          
+          <p className="mt-4"><strong>Requisitos:</strong></p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Realizar uma investigação aprofundada para diagnosticar a falha.</li>
+            <li>Identificar se o problema está relacionado a permissões, configuração do tenant, erros na aplicação ou infraestrutura.</li>
+            <li>Fornecer uma solução ou plano de ação para corrigir o problema.</li>
+          </ul>
+
+          <p className="mt-4"><strong>Passos Sugeridos:</strong></p>
+          <ol className="list-decimal pl-5 space-y-1">
+            <li><strong>Verificar Logs:</strong> Analisar os logs do servidor e da aplicação em busca de erros relacionados à requisição para <code>/work-orders</code> quando o administrador tenta acessá-la.</li>
+            <li><strong>Revisar Permissões:</strong> Confirmar se o perfil de administrador do tenant possui as permissões necessárias para acessar a rota <code>/work-orders</code>.</li>
+            <li><strong>Testar em Diferentes Ambientes:</strong> Se possível, verificar se o problema ocorre em ambientes de desenvolvimento, staging e produção.</li>
+            <li><strong>Analisar Configuração do Tenant:</strong> Investigar se há alguma configuração específica do tenant que possa estar impedindo o acesso.</li>
+            <li><strong>Simular Acesso:</strong> Tentar acessar a página com credenciais de administrador em um ambiente controlado para reproduzir o erro.</li>
+            <li><strong>Consultar Documentação:</strong> Revisar a documentação da aplicação para verificar requisitos ou limitações conhecidas para acesso a esta página.</li>
+          </ol>
+        </div>
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
