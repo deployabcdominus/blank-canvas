@@ -100,14 +100,14 @@ const MetricItem = ({ label, value, delta, icon: Icon, delay = 0 }: MetricItemPr
       transition={{ delay, duration: 0.4 }}
       className="flex flex-col gap-1 p-2"
     >
-      <div className="flex items-center gap-2 mb-1">
-        <div className="p-1.5 rounded-lg bg-zinc-100 border border-zinc-200">
-          <Icon className="w-4 h-4 text-zinc-500" strokeWidth={1.5} />
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-100 shadow-sm">
+          <Icon className="w-5 h-5 text-primary" strokeWidth={2} />
         </div>
-        <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">{label}</span>
+        <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-zinc-400">{label}</span>
       </div>
       <div className="flex items-end gap-2">
-        <span className="text-2xl font-bold text-zinc-900 tracking-tight">{value}</span>
+        <span className="text-3xl font-black text-zinc-900 tracking-tight">{value}</span>
         {delta !== undefined && (
           <div className={`flex items-center gap-0.5 text-[10px] font-bold mb-1 ${delta === 0 ? "text-zinc-500" : isUp ? "text-emerald-600" : "text-red-600"}`}>
             {delta === 0 ? <Minus className="w-3 h-3" /> : isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -151,7 +151,7 @@ export function SignFlowDashboardView({
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-[2rem] border border-zinc-200/60 p-10 md:p-14 mb-4 bg-white shadow-2xl shadow-zinc-200/30"
+        className="relative overflow-hidden rounded-[2.5rem] border border-zinc-200/60 p-12 md:p-16 mb-6 bg-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
       >
         <div className="relative z-10 max-w-3xl">
           <motion.h2 
@@ -292,7 +292,8 @@ export function SignFlowDashboardView({
       </div>
 
       {/* 4. STRATEGIC METRICS BAR */}
-      <Card className="rounded-[2rem] border-zinc-200/60 p-8 md:p-12 bg-white shadow-2xl shadow-zinc-200/30">
+      <Card className="rounded-[2.5rem] border-zinc-200/60 p-10 md:p-16 bg-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)]">
+
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
