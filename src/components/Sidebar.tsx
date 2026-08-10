@@ -260,30 +260,30 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
     <NavLink
       to={item.path}
       onMouseEnter={handleMouseEnter}
-      className={`group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-xl lg:rounded-lg p-2.5 lg:px-3 lg:py-2.5 ${
-        active
-          ? "bg-white/[0.04] border border-white/[0.1] text-white font-semibold shadow-lg shadow-black/20"
-          : "border border-transparent text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.03] hover:translate-x-0.5"
+      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-2xl lg:rounded-xl p-2.5 lg:px-4 lg:py-3 ${
+        isActive
+          ? "bg-primary/10 border border-primary/20 text-white font-semibold shadow-[0_0_20px_rgba(139,92,246,0.15)]"
+          : "border border-transparent text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03]"
       }`}
       title={label}
       aria-current={active ? "page" : undefined}
     >
+      <item.icon
+        className={`flex-shrink-0 transition-colors duration-300 ${active ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300"}`}
+        size={20}
+        strokeWidth={active ? 2 : 1.5}
+        aria-hidden="true"
+      />
+      <span className="hidden lg:block text-[14px] leading-tight ml-3.5 truncate">
+        {label}
+      </span>
       {active && (
         <motion.div
-          layoutId="sidebar-active-pill"
-          className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-r-full bg-primary shadow-[0_0_10px_rgba(139,92,246,0.5)]"
+          layoutId="sidebar-active-dot"
+          className="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary hidden lg:block"
           transition={{ type: "spring", stiffness: 400, damping: 28 }}
         />
       )}
-      <item.icon
-        className={`flex-shrink-0 ${active ? "text-white" : "text-zinc-400 group-hover:text-zinc-200"}`}
-        size={18}
-        strokeWidth={1.5}
-        aria-hidden="true"
-      />
-      <span className="hidden lg:block text-sm leading-tight ml-3 truncate">
-        {label}
-      </span>
     </NavLink>
   );
 });
