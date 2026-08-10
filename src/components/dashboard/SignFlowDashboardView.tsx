@@ -151,42 +151,30 @@ export function SignFlowDashboardView({
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl glass-card border-zinc-200/50 p-8 md:p-10 mb-2 bg-white/80"
+        className="relative overflow-hidden rounded-[2rem] border border-zinc-200/60 p-10 md:p-14 mb-4 bg-white shadow-2xl shadow-zinc-200/30"
       >
-        <div className="relative z-10 max-w-2xl">
+        <div className="relative z-10 max-w-3xl">
           <motion.h2 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight mb-4 leading-[1.1]"
+            className="text-4xl md:text-6xl font-black text-zinc-900 tracking-tight mb-6 leading-[1.05]"
           >
-            {t.auth.login.welcomeBack}, <span className="text-primary drop-shadow-[0_0_15px_rgba(139,92,246,0.1)]">{userName.split(' ')[0]}</span> 👋
+            {t.auth.login.welcomeBack}, <span className="text-primary">{userName.split(' ')[0]}</span>! 👋
           </motion.h2>
-          <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-xl md:text-2xl font-bold text-zinc-800 mb-3"
-          >
-            {t.landing.seo.title.split('|')[0]}
-          </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-zinc-500 text-base md:text-lg font-medium leading-relaxed"
+            className="text-zinc-500 text-xl md:text-2xl font-medium leading-relaxed max-w-2xl"
           >
             {t.landing.hero.subtitle}
           </motion.p>
         </div>
         
-        {/* Illustration Decor */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 hidden lg:flex items-center justify-center pr-10 opacity-10 pointer-events-none">
-          <div className="relative w-48 h-48">
-            <Layers className="w-full h-full text-primary" strokeWidth={1} />
-            <div className="absolute top-0 right-0 w-12 h-12 bg-primary/20 rounded-full blur-2xl" />
-            <div className="absolute bottom-0 left-0 w-20 h-20 bg-primary/10 rounded-full blur-3xl" />
-          </div>
+        {/* Abstract Illustration Decor */}
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:flex items-center justify-end pr-20 opacity-5 pointer-events-none">
+          <Layers className="w-96 h-96 text-primary rotate-12" strokeWidth={0.5} />
         </div>
       </motion.div>
 
