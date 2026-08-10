@@ -535,6 +535,22 @@ export const en = {
     generatePoiLink: "Generate POI Link",
     noPhotosYet: "No photos yet. Share the POI link with the installer.",
     installationDocumented: "✓ Installation Documented",
+    statusLabels: {
+      pending: "Pending",
+      inProduction: "In Production",
+      qc: "QC",
+      ready: "Ready",
+      installed: "Installed",
+    },
+    details: {
+      viewDetails: "View Details",
+      generatePoi: "Generate POI Link",
+      printSheet: "Print Production Sheet",
+      unassigned: "Unassigned",
+      noDate: "No date",
+      qcSigned: "QC Signed",
+      installed: "Installed",
+    },
   },
 
   /* ── Settings / Configuration Hub ── */

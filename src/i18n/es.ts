@@ -537,6 +537,22 @@ export const es: TranslationKeys = {
     generatePoiLink: "Generar Link POI",
     noPhotosYet: "Sin fotos aún. Comparte el link POI con el instalador.",
     installationDocumented: "✓ Instalación Documentada",
+    statusLabels: {
+      pending: "Pendiente",
+      inProduction: "En Producción",
+      qc: "QC",
+      ready: "Listo",
+      installed: "Instalado",
+    },
+    details: {
+      viewDetails: "Ver Detalles",
+      generatePoi: "Generar Enlace POI",
+      printSheet: "Imprimir Hoja de Producción",
+      unassigned: "Sin asignar",
+      noDate: "Sin fecha",
+      qcSigned: "QC Firmado",
+      installed: "Instalado",
+    },
   },
 
   /* ── Settings / Configuration Hub ── */
