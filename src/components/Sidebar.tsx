@@ -57,7 +57,7 @@ export const Sidebar = memo(() => {
     if (isAdmin && groups[3]) {
       const recycleItem = {
         path: "/leads/recycle-bin",
-        label: "Papelera",
+        label: t.leads.recycleBin,
         icon: Recycle,
         roles: ["admin", "superadmin"],
       } as any;
