@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   DollarSign, Building, TrendingUp, Database, Eye, Activity,
-  ArrowUpRight, Plus, UserPlus, Users, Loader2,
+  ArrowUpRight, Plus, UserPlus, Users, Loader2, AlertCircle,
 } from "lucide-react";
+import { StatCardSkeleton } from "@/components/ui/skeleton-card";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip,
   ResponsiveContainer, CartesianGrid,
@@ -92,15 +93,18 @@ const ChartTooltip = ({ active, payload, label }: any) => {
 export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompany, setShowCreateCompany }: Props) {
   const [health, setHealth] = useState<PlatformHealth | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchHealth = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const { data, error } = await supabase.rpc("get_platform_health" as any);
-      if (error) throw error;
+      const { data, error: rpcError } = await supabase.rpc("get_platform_health" as any);
+      if (rpcError) throw rpcError;
       setHealth(data as unknown as PlatformHealth);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Platform health error:", e);
+      setError(e.message || "Error cargando métricas de plataforma");
     }
     setLoading(false);
   }, []);
@@ -155,17 +159,44 @@ export function SuperadminOverview({ companies, allUsers, setTab, onSelectCompan
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <StatCardSkeleton key={i} />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card className="glass-card border-white/[0.06] h-[300px] flex items-center justify-center">
+            <Loader2 className="w-6 h-6 animate-spin text-primary/40" />
+          </Card>
+          <Card className="glass-card border-white/[0.06] h-[300px] flex items-center justify-center">
+            <Loader2 className="w-6 h-6 animate-spin text-primary/40" />
+          </Card>
+        </div>
       </div>
     );
   }
 
-  if (!health) {
+  if (error || !health) {
     return (
-      <div className="text-center py-16 text-muted-foreground">
-        Error cargando métricas de plataforma.
-      </div>
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center justify-center py-20 text-center"
+      >
+        <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
+          <Activity className="w-8 h-8 text-red-400/60" />
+        </div>
+        <h3 className="text-lg font-semibold text-white mb-2">
+          Error en la plataforma
+        </h3>
+        <p className="text-muted-foreground max-w-md mb-6">
+          {error || "No se pudieron cargar las métricas de salud en este momento. Por favor, intenta de nuevo."}
+        </p>
+        <Button onClick={fetchHealth} variant="outline" className="glass">
+          Reintentar conexión
+        </Button>
+      </motion.div>
     );
   }
 
