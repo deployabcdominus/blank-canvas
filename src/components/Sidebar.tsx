@@ -308,14 +308,14 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
     <div className="space-y-1">
       <div className="hidden lg:block">
         <Collapsible open={isOpen} onOpenChange={onToggle}>
-          <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-1.5 group cursor-pointer select-none rounded-md hover:bg-white/[0.02] transition-colors">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
+          <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 group cursor-pointer select-none rounded-xl hover:bg-white/[0.02] transition-colors">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 group-hover:text-zinc-400 transition-colors">
               {group.groupLabel}
             </span>
             <ChevronRight
-              className={`text-zinc-600 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`}
-              size={12}
-              strokeWidth={2}
+              className={`text-zinc-700 transition-transform duration-200 group-hover:text-zinc-500 ${isOpen ? "rotate-90" : ""}`}
+              size={14}
+              strokeWidth={2.5}
             />
           </CollapsibleTrigger>
           <CollapsibleContent>
