@@ -165,13 +165,28 @@ export function AiBriefing() {
 
       // Parse error codes from edge function
       if (response.error) {
+        console.error("AI Briefing Edge Function error object:", response.error);
+        
         let errorCode = "unknown";
-        const errorContext = (response.error as { context?: Response }).context;
-        if (errorContext) {
-          try {
-            const payload = await errorContext.clone().json();
-            errorCode = payload?.error || errorCode;
-          } catch { /* ignore */ }
+        
+        // Handle explicit error status from invoke
+        if ((response.error as any).status === 401) {
+          errorCode = "session_expired";
+        } else if ((response.error as any).status === 503) {
+          errorCode = "ai_not_configured";
+        } else if ((response.error as any).status === 429) {
+          errorCode = "rate_limited";
+        } else {
+          // Attempt to parse body if it's a context/response object
+          const errorContext = (response.error as any).context || (response.error as any);
+          if (errorContext && typeof errorContext.json === 'function') {
+            try {
+              const payload = await errorContext.clone().json();
+              errorCode = payload?.error || errorCode;
+            } catch (e) { 
+              console.warn("Could not parse error body as JSON:", e);
+            }
+          }
         }
 
         if (errorCode === "session_expired") {
@@ -182,7 +197,11 @@ export function AiBriefing() {
         } else if (errorCode === "rate_limited") {
           toast({ title: tc.toasts.rateLimited, description: tc.toasts.rateLimitedDesc });
         } else {
-          toast({ title: tc.toasts.connectionError, description: tc.toasts.connectionErrorDesc });
+          toast({ 
+            title: tc.toasts.connectionError, 
+            description: `${tc.toasts.connectionErrorDesc} (${errorCode})`,
+            variant: "destructive" 
+          });
         }
         setBriefingOpen(false);
         return;
