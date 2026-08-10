@@ -53,7 +53,7 @@ export default function PilotDashboard() {
           {t.landing.pilot.title}
         </h1>
         <p className="text-muted-foreground">
-          Unifica el texto del elemento “body” para que el mensaje solicitado aparezca correctamente y de forma consistente en todos los lugares donde se renderiza.
+          cuando admin de tenant clica en boton Generate full AI briefing aparece ese error y no carga lo que deberia cargar
         </p>
       </div>
 
