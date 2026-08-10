@@ -18,10 +18,14 @@ export const BrandLogo = ({
 }) => {
   return (
     <Link to="/" className={`flex items-center gap-2 hover:opacity-90 transition-opacity ${className}`}>
-      <SignFlowLogo 
-        variant={variant === "textOnly" ? "minimal" : "technical"} 
-        className={cn(variant === "textOnly" ? "w-0 h-0 hidden" : `w-[${size}px] h-[${size}px]`)} 
-      />
+      {variant !== "textOnly" && (
+        <div style={{ width: size, height: size }}>
+          <SignFlowLogo 
+            variant="technical" 
+            className="w-full h-full" 
+          />
+        </div>
+      )}
       {showText && variant !== "iconOnly" && (
         <span className={`font-bold tracking-tight text-white ${textClassName}`}>
           SignFlow
