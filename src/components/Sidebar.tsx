@@ -75,7 +75,7 @@ export const Sidebar = memo(() => {
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/80 backdrop-blur-3xl w-[72px] lg:w-[280px] p-4 lg:p-6 shadow-2xl transition-all duration-300 isolate h-[100dvh]"
+      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-zinc-200 bg-zinc-950 w-[72px] lg:w-[280px] p-4 lg:p-6 shadow-xl transition-all duration-300 isolate h-[100dvh]"
       role="navigation"
       aria-label="Menu lateral principal"
     >
