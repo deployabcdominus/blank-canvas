@@ -81,8 +81,8 @@ const Login = () => {
       return;
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
-      redirectTo: `${window.location.origin}/settings?tab=perfil&lang=${locale}`,
+    const { error } = await supabase.auth.resetPasswordForEmail(formData.email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password?lang=${locale}`,
     });
 
     if (error) {
