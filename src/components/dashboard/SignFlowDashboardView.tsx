@@ -40,7 +40,8 @@ const ModuleCard = ({ step, title, subtitle, badge, badgeVariant, cta, onClick, 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="glass-card flex flex-col h-full border-zinc-200/50 hover:border-primary/30 transition-all duration-300 group overflow-hidden rounded-2xl bg-white/70">
+      <Card className="glass-card flex flex-col h-full border-zinc-200/60 hover:border-primary/40 transition-all duration-500 group overflow-hidden rounded-[2.5rem] bg-white shadow-2xl shadow-zinc-200/20">
+
         <div className="p-5 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -70,7 +71,7 @@ const ModuleCard = ({ step, title, subtitle, badge, badgeVariant, cta, onClick, 
         
         <div className="p-5 pt-0 mt-auto">
           <Button 
-            className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-6 font-semibold shadow-lg shadow-primary/20"
+            className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl py-7 font-bold text-base shadow-xl shadow-primary/20 transition-all duration-300 group-hover:scale-[1.02]"
             onClick={onClick}
           >
             {cta}
@@ -99,14 +100,14 @@ const MetricItem = ({ label, value, delta, icon: Icon, delay = 0 }: MetricItemPr
       transition={{ delay, duration: 0.4 }}
       className="flex flex-col gap-1 p-2"
     >
-      <div className="flex items-center gap-2 mb-1">
-        <div className="p-1.5 rounded-lg bg-zinc-100 border border-zinc-200">
-          <Icon className="w-4 h-4 text-zinc-500" strokeWidth={1.5} />
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-100 shadow-sm">
+          <Icon className="w-5 h-5 text-primary" strokeWidth={2} />
         </div>
-        <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">{label}</span>
+        <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-zinc-400">{label}</span>
       </div>
       <div className="flex items-end gap-2">
-        <span className="text-2xl font-bold text-zinc-900 tracking-tight">{value}</span>
+        <span className="text-3xl font-black text-zinc-900 tracking-tight">{value}</span>
         {delta !== undefined && (
           <div className={`flex items-center gap-0.5 text-[10px] font-bold mb-1 ${delta === 0 ? "text-zinc-500" : isUp ? "text-emerald-600" : "text-red-600"}`}>
             {delta === 0 ? <Minus className="w-3 h-3" /> : isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -150,42 +151,30 @@ export function SignFlowDashboardView({
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl glass-card border-zinc-200/50 p-8 md:p-10 mb-2 bg-white/80"
+        className="relative overflow-hidden rounded-[2.5rem] border border-zinc-200/60 p-12 md:p-16 mb-6 bg-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
       >
-        <div className="relative z-10 max-w-2xl">
+        <div className="relative z-10 max-w-3xl">
           <motion.h2 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-3xl md:text-5xl font-black text-zinc-900 tracking-tight mb-4 leading-[1.1]"
+            className="text-4xl md:text-6xl font-black text-zinc-900 tracking-tight mb-6 leading-[1.05]"
           >
-            {t.auth.login.welcomeBack}, <span className="text-primary drop-shadow-[0_0_15px_rgba(139,92,246,0.1)]">{userName.split(' ')[0]}</span> 👋
+            {t.auth.login.welcomeBack}, <span className="text-primary">{userName.split(' ')[0]}</span>! 👋
           </motion.h2>
-          <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-xl md:text-2xl font-bold text-zinc-800 mb-3"
-          >
-            {t.landing.seo.title.split('|')[0]}
-          </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-zinc-500 text-base md:text-lg font-medium leading-relaxed"
+            className="text-zinc-500 text-xl md:text-2xl font-medium leading-relaxed max-w-2xl"
           >
             {t.landing.hero.subtitle}
           </motion.p>
         </div>
         
-        {/* Illustration Decor */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 hidden lg:flex items-center justify-center pr-10 opacity-10 pointer-events-none">
-          <div className="relative w-48 h-48">
-            <Layers className="w-full h-full text-primary" strokeWidth={1} />
-            <div className="absolute top-0 right-0 w-12 h-12 bg-primary/20 rounded-full blur-2xl" />
-            <div className="absolute bottom-0 left-0 w-20 h-20 bg-primary/10 rounded-full blur-3xl" />
-          </div>
+        {/* Abstract Illustration Decor */}
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:flex items-center justify-end pr-20 opacity-5 pointer-events-none">
+          <Layers className="w-96 h-96 text-primary rotate-12" strokeWidth={0.5} />
         </div>
       </motion.div>
 
@@ -303,14 +292,16 @@ export function SignFlowDashboardView({
       </div>
 
       {/* 4. STRATEGIC METRICS BAR */}
-      <Card className="glass-card border-zinc-200/50 p-6 md:p-8 bg-white/80">
+      <Card className="rounded-[2.5rem] border-zinc-200/60 p-10 md:p-16 bg-white shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)]">
+
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
             <h3 className="text-zinc-900 font-bold text-lg mb-1">{t.dashboard.glance || "Your Business at a Glance"}</h3>
             <p className="text-zinc-500 text-sm">Real-time performance metrics</p>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 flex-1 max-w-4xl">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-12 md:gap-16 flex-1 max-w-5xl">
             <MetricItem 
               label={t.dashboard.totalLeads || "Total Leads"} 
               value={leads.length} 
@@ -335,6 +326,7 @@ export function SignFlowDashboardView({
             <MetricItem 
               label={t.dashboard.activeProjects || "Active Campaigns"} 
               value={7} 
+              delta={4.5}
               icon={TrendingUp}
               delay={0.7}
             />
@@ -343,16 +335,21 @@ export function SignFlowDashboardView({
       </Card>
       
       {/* 5. BOTTOM CTA / TIP */}
-      <div className="flex flex-col md:flex-row items-center justify-between p-4 px-6 rounded-2xl bg-zinc-900 text-white shadow-xl shadow-zinc-200">
-        <div className="flex items-center gap-3 mb-4 md:mb-0">
-          <div className="p-2 rounded-lg bg-white/10">
-            <TrendingUp size={20} className="text-primary" />
+      <div className="flex flex-col md:flex-row items-center justify-between p-8 px-10 rounded-[2rem] bg-zinc-950 text-white shadow-2xl shadow-zinc-400/20 border border-white/5">
+        <div className="flex items-center gap-6 mb-6 md:mb-0">
+          <div className="p-4 rounded-2xl bg-white/10 ring-1 ring-white/20">
+            <TrendingUp size={24} className="text-primary" />
           </div>
-          <p className="text-sm font-medium">
-            <span className="text-primary font-bold">Pro Tip:</span> Connect your custom domain to build trust and boost conversions.
-          </p>
+          <div>
+            <p className="text-lg font-bold text-white mb-1">
+              Maximize your conversion rate
+            </p>
+            <p className="text-zinc-400 text-sm">
+              Connect your custom domain to build trust and boost sales performance.
+            </p>
+          </div>
         </div>
-        <Button variant="outline" className="bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-xl px-6 border border-white/10">
+        <Button className="bg-primary hover:bg-primary/90 text-white rounded-[1.2rem] px-10 py-7 text-base font-bold shadow-xl shadow-primary/25">
           Connect Domain
         </Button>
       </div>

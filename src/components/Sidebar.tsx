@@ -75,7 +75,7 @@ export const Sidebar = memo(() => {
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/[0.04] bg-zinc-950/80 backdrop-blur-3xl w-[72px] lg:w-[280px] p-4 lg:p-6 shadow-2xl transition-all duration-300 isolate h-[100dvh]"
+      className="fixed left-0 top-0 bottom-0 z-[100] hidden md:flex flex-col border-r border-white/5 bg-[#0a0a0c] w-[72px] lg:w-[300px] p-4 lg:p-8 shadow-[10px_0_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-500 isolate h-[100dvh]"
       role="navigation"
       aria-label="Menu lateral principal"
     >
@@ -260,18 +260,18 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
     <NavLink
       to={item.path}
       onMouseEnter={handleMouseEnter}
-      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-2xl lg:rounded-xl p-2.5 lg:px-4 lg:py-3 ${
+      className={({ isActive }) => `group relative flex items-center transition-all duration-300 justify-center lg:justify-start rounded-2xl p-3 lg:px-5 lg:py-4 ${
         isActive
-          ? "bg-primary/10 border border-primary/20 text-white font-semibold shadow-[0_0_20px_rgba(139,92,246,0.15)]"
-          : "border border-transparent text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.03]"
+          ? "bg-primary text-white font-bold shadow-[0_12px_24px_rgba(139,92,246,0.4)] scale-[1.02] z-10"
+          : "text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.05]"
       }`}
       title={label}
       aria-current={active ? "page" : undefined}
     >
       <item.icon
-        className={`flex-shrink-0 transition-colors duration-300 ${active ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300"}`}
+        className={`flex-shrink-0 transition-colors duration-300 ${active ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"}`}
         size={20}
-        strokeWidth={active ? 2 : 1.5}
+        strokeWidth={active ? 2.5 : 1.5}
         aria-hidden="true"
       />
       <span className="hidden lg:block text-[14px] leading-tight ml-3.5 truncate">
@@ -279,8 +279,8 @@ const SidebarNavItem = memo(({ item, location, industryLabels, companyId, t }: {
       </span>
       {active && (
         <motion.div
-          layoutId="sidebar-active-dot"
-          className="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary hidden lg:block"
+          layoutId="sidebar-active-pill"
+          className="absolute right-2 w-1 h-5 rounded-full bg-white/40 hidden lg:block"
           transition={{ type: "spring", stiffness: 400, damping: 28 }}
         />
       )}
@@ -309,7 +309,7 @@ const SidebarCollapsibleGroup = memo(({ group, isOpen, onToggle, location, role,
       <div className="hidden lg:block">
         <Collapsible open={isOpen} onOpenChange={onToggle}>
           <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 group cursor-pointer select-none rounded-xl hover:bg-white/[0.02] transition-colors">
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 group-hover:text-zinc-400 transition-colors">
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-600 group-hover:text-zinc-400 transition-colors">
               {group.groupLabel}
             </span>
             <ChevronRight
