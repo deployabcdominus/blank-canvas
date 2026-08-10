@@ -22,107 +22,88 @@
 
 @layer base {
   :root {
-    /* ── Core: Zinc-950 base + Violet Premium ── */
-    --background: 240 6% 6%;              /* ~#0f0f11 zinc-950 */
-    --foreground: 0 0% 95%;               /* #F2F2F2 */
+    /* ── Core: Light Mode (Day Mode) ── */
+    --background: 210 20% 98%;            /* Soft off-white/grey */
+    --foreground: 224 71% 4%;             /* Deep navy black */
 
-    /* Glass surfaces */
-    --glass-bg: 240 6% 10% / 0.50;
-    --glass-bg-strong: 240 6% 14% / 0.75;
-    --glass-border: 0 0% 100% / 0.08;
+    /* Surface layers (Light Mode) */
+    --surface: 0 0% 100% / 0.80;
+    --surface-hover: 210 20% 96% / 0.90;
+    --elevated: 0 0% 100% / 1.0;
+    
+    /* Text hierarchy (Light Mode) */
+    --text-primary: 224 71% 4%;
+    --text-secondary: 224 10% 45%;
+    --text-tertiary: 224 8% 65%;
 
-    /* Surface layers */
-    --surface: 240 6% 10% / 0.60;
-    --surface-hover: 240 6% 15% / 0.80;
-    --elevated: 240 6% 12% / 0.90;
-    --sidebar-bg: 240 6% 7% / 0.60;
+    /* Accent — Violet Primary (Ref Image Reference) */
+    --accent-brand: 265 85% 60%;          
+    --accent-brand-hover: 265 85% 55%;
+    --accent-brand-light: 265 85% 60% / 0.10;
+    --accent-brand-lighter: 265 85% 60% / 0.04;
 
-    /* Text hierarchy */
-    --text-primary: 0 0% 95%;
-    --text-secondary: 240 5% 65%;
-    --text-tertiary: 240 4% 45%;
+    /* Semantic (Adjusted for Light BG) */
+    --color-success: 142 72% 35%;
+    --color-success-bg: 142 72% 35% / 0.08;
+    --color-warning: 36 91% 40%;
+    --color-warning-bg: 36 91% 40% / 0.08;
+    --color-danger: 0 72% 45%;
+    --color-danger-bg: 0 72% 45% / 0.08;
+    --color-info: 199 89% 42%;
+    --color-info-bg: 199 89% 42% / 0.08;
 
-    /* Accent — Violet Primary */
-    --accent-brand: 265 85% 60%;          /* Electric violet */
-    --accent-brand-hover: 265 85% 68%;
-    --accent-brand-light: 265 85% 60% / 0.15;
-    --accent-brand-lighter: 265 85% 60% / 0.06;
+    /* Borders (Light Mode) */
+    --border-subtle: 224 10% 92%;
+    --border-default: 224 10% 88%;
+    --border-strong: 224 10% 80%;
 
-    /* Semantic */
-    --color-success: 142 72% 37%;
-    --color-success-bg: 142 72% 37% / 0.10;
-    --color-warning: 36 91% 44%;
-    --color-warning-bg: 36 91% 44% / 0.10;
-    --color-danger: 0 72% 51%;
-    --color-danger-bg: 0 72% 51% / 0.10;
-    --color-info: 199 89% 48%;
-    --color-info-bg: 199 89% 48% / 0.10;
+    /* Shadows (Light Mode) */
+    --shadow-card: 0 2px 4px rgba(0,0,0,0.02), 0 8px 16px rgba(0,0,0,0.04);
+    --shadow-elevated: 0 12px 24px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.02);
+    --shadow-glass: 0 8px 32px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8);
 
-    /* Borders */
-    --border-subtle: 0 0% 100% / 0.04;
-    --border-default: 0 0% 100% / 0.08;
-    --border-strong: 0 0% 100% / 0.16;
-
-    /* Shadows */
-    --shadow-card: 0 1px 3px rgba(0,0,0,0.40), 0 4px 16px rgba(0,0,0,0.50);
-    --shadow-elevated: 0 2px 8px rgba(0,0,0,0.50), 0 12px 32px rgba(0,0,0,0.60);
-    --shadow-glass: 0 8px 32px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.04);
-
-    /* Accent Palette (supporting colors) */
-    --mint: 160 50% 45%;
-    --soft-blue: 210 80% 56%;
-    --lavender: 260 60% 58%;
-    --pale-pink: 340 55% 60%;
-    --mint-foreground: 160 50% 90%;
-    --mint-hover: 160 50% 50%;
-    --soft-blue-foreground: 210 80% 92%;
-    --soft-blue-hover: 210 80% 62%;
-    --lavender-foreground: 260 60% 92%;
-    --lavender-hover: 260 60% 64%;
-    --pale-pink-foreground: 340 55% 92%;
-    --pale-pink-hover: 340 55% 66%;
-
-    /* ── Shadcn tokens — Violet primary ── */
-    --card: 240 6% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 240 6% 10%;
-    --popover-foreground: 0 0% 93%;
-    --primary: 265 85% 60%;               /* Electric violet */
+    /* ── Shadcn tokens ── */
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 265 85% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 6% 13%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 240 6% 13%;
-    --muted-foreground: 240 5% 55%;
-    --accent: 240 6% 13%;
-    --accent-foreground: 0 0% 93%;
-    --destructive: 0 72% 51%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 224 71% 4%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 224 10% 45%;
+    --accent: 210 20% 96%;
+    --accent-foreground: 224 71% 4%;
+    --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 16%;
-    --input: 240 6% 13%;
+    --border: 224 10% 88%;
+    --input: 224 10% 92%;
     --ring: 265 85% 60%;
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* ── Sidebar — glass dark ── */
-    --sidebar-background: 240 6% 7%;
-    --sidebar-foreground: 240 5% 55%;
+    /* ── Sidebar — Dark (Retained from previous turn) ── */
+    --sidebar-background: 224 71% 4%;     /* Pure dark navy/black */
+    --sidebar-foreground: 224 10% 65%;
     --sidebar-primary: 265 85% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 6% 11%;
-    --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-border: 0 0% 100% / 0.06;
+    --sidebar-accent: 224 71% 8%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 224 71% 12% / 0.5;
     --sidebar-ring: 265 85% 60%;
 
-    /* Dashboard card */
-    --dash-card-bg: 240 6% 10% / 0.50;
-    --dash-card-border: 0 0% 100% / 0.08;
-    --dash-text-heading: 0 0% 95%;
-    --dash-text-value: 0 0% 100%;
-    --dash-text-label: 240 5% 70%;
-    --dash-text-muted: 240 4% 45%;
+    /* Glass surfaces (Adjusted for Light BG) */
+    --glass-bg: 0 0% 100% / 0.65;
+    --glass-bg-strong: 0 0% 100% / 0.85;
+    --glass-border: 224 10% 88% / 0.5;
 
-    /* Violet / Fucsia blobs */
-    --blob-violet: 265 85% 50%;
-    --blob-fuchsia: 330 80% 50%;
+    /* Dashboard card */
+    --dash-card-bg: 0 0% 100% / 0.70;
+    --dash-card-border: 224 10% 88%;
+    --dash-text-heading: 224 71% 4%;
+    --dash-text-value: 224 71% 4%;
+    --dash-text-label: 224 10% 45%;
+    --dash-text-muted: 224 10% 60%;
   }
 }
 
@@ -138,18 +119,18 @@
     letter-spacing: -0.015em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: hsl(240 6% 6%);
+    background: hsl(var(--background));
     cursor: default;
     text-rendering: optimizeLegibility;
     touch-action: manipulation;
   }
 
   ::selection {
-    background: hsl(265 85% 60% / 0.25);
-    color: hsl(265 85% 95%);
+    background: hsl(var(--primary) / 0.15);
+    color: hsl(var(--primary));
   }
 
-  /* Ambient violet / fuchsia blobs — always visible */
+  /* Soft Ambient blobs for light mode */
   body::before,
   body::after {
     content: '';
@@ -157,21 +138,22 @@
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
-    filter: blur(180px);
+    filter: blur(140px);
+    opacity: 0.4;
   }
   body::before {
-    top: -10%;
-    left: -10%;
-    width: 55vw;
-    height: 55vh;
-    background: radial-gradient(circle, hsl(265 85% 50% / 0.15), transparent 70%);
+    top: -5%;
+    left: -5%;
+    width: 40vw;
+    height: 40vh;
+    background: radial-gradient(circle, hsl(var(--primary) / 0.10), transparent 75%);
   }
   body::after {
-    bottom: -10%;
-    right: -10%;
-    width: 55vw;
-    height: 55vh;
-    background: radial-gradient(circle, hsl(330 80% 50% / 0.12), transparent 70%);
+    bottom: -5%;
+    right: -5%;
+    width: 40vw;
+    height: 40vh;
+    background: radial-gradient(circle, hsl(var(--lavender) / 0.08), transparent 75%);
   }
 
   /* Ensure main content stacks above blobs */
@@ -196,10 +178,10 @@
 /* ── Custom Utilities ── */
 @layer utilities {
   .glass {
-    background: rgba(15, 15, 20, 0.45);
-    backdrop-filter: blur(20px) saturate(140%);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     will-change: transform, opacity;
     transform: translateZ(0);
   }
@@ -207,25 +189,25 @@
   .glass-card {
     @apply glass rounded-2xl;
     box-shadow: 
-      0 4px 24px -4px rgba(0,0,0,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.04), 
-      inset 0 -1px 0 rgba(0,0,0,0.1);
+      0 4px 20px -4px rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.8), 
+      inset 0 -1px 0 rgba(0,0,0,0.02);
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
   }
   .glass-card:hover {
     transform: translateY(-4px) scale(1.01);
-    border-color: rgba(255, 255, 255, 0.15);
-    background: rgba(20, 20, 25, 0.55);
+    border-color: rgba(0, 0, 0, 0.10);
+    background: rgba(255, 255, 255, 0.85);
     box-shadow: 
-      0 12px 32px -8px rgba(0,0,0,0.6),
-      0 0 20px -2px hsl(var(--primary) / 0.15),
-      inset 0 1px 0 rgba(255,255,255,0.08);
+      0 12px 32px -8px rgba(0,0,0,0.12),
+      0 0 20px -2px hsl(var(--primary) / 0.08),
+      inset 0 1px 0 rgba(255,255,255,1);
   }
 
   .dash-card {
     @apply glass;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
     border-radius: 20px;
     transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
                 border-color 250ms ease, 
@@ -238,8 +220,8 @@
   .dash-card:hover {
     transform: translateY(-2px);
     border-color: hsl(var(--primary) / 0.25);
-    background: rgba(15, 15, 20, 0.55);
-    box-shadow: 0 12px 32px -8px rgba(0,0,0,0.5), 0 0 20px -2px hsl(var(--primary) / 0.1);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 12px 32px -8px rgba(0,0,0,0.08), 0 0 20px -2px hsl(var(--primary) / 0.05);
   }
 
   /* Card hover micro-interaction */
@@ -252,8 +234,8 @@
   .card-interactive:hover {
     transform: translateY(-2px);
     border-color: hsl(var(--primary) / 0.2);
-    background: rgba(255, 255, 255, 0.02);
-    box-shadow: 0 8px 30px -4px rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.02);
+    box-shadow: 0 8px 30px -4px rgba(0,0,0,0.1);
   }
 
   /* Stat card staggered entrance */
@@ -314,12 +296,12 @@
 
   /* ── Sidebar — Ultra-minimal dark ── */
   .sidebar-premium {
-    background: hsl(240 6% 7% / 0.60);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    background: hsl(var(--sidebar-background));
+    border-right: 1px solid hsl(var(--sidebar-border));
     backdrop-filter: blur(20px) saturate(120%);
     -webkit-backdrop-filter: blur(20px) saturate(120%);
     transition: background-color 200ms ease, border-color 200ms ease;
-    box-shadow: 4px 0 24px -4px rgba(0,0,0,0.5);
+    box-shadow: 4px 0 24px -4px rgba(0,0,0,0.15);
   }
 
   .sidebar-nav-item {

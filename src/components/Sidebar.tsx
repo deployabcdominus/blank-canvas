@@ -118,7 +118,7 @@ export const Sidebar = memo(() => {
       <div className="mt-auto space-y-6">
         {/* Plan Upgrade Card (Ref Image Reference) */}
         {!isSuperadmin && isAdmin && (
-          <div className="hidden lg:block p-4 rounded-2xl bg-white/[0.03] border border-white/[0.05] relative overflow-hidden group">
+          <div className="hidden lg:block p-4 rounded-2xl bg-white/[0.08] border border-white/[0.1] relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-40 transition-opacity">
               <Shield size={40} className="text-primary" />
             </div>
@@ -127,12 +127,12 @@ export const Sidebar = memo(() => {
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                 <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Pro Plan</span>
               </div>
-              <p className="text-[12px] text-zinc-400 mb-3 leading-relaxed">
+              <p className="text-[12px] text-zinc-300 mb-3 leading-relaxed">
                 Unlock full automation and unlimited leads.
               </p>
               <button 
                 onClick={() => navigate("/settings?tab=billing")}
-                className="w-full py-2 px-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white text-[12px] font-semibold transition-colors border border-white/[0.05]"
+                className="w-full py-2 px-3 rounded-xl bg-white/[0.1] hover:bg-white/[0.15] text-white text-[12px] font-semibold transition-colors border border-white/[0.1]"
               >
                 Manage Plan
               </button>
