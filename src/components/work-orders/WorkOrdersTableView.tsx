@@ -3,18 +3,25 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Eye, QrCode, Printer, CheckCircle, Pencil, Trash2, ShieldCheck } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
 
-const STATUS_CONFIG: Record<string, { bg: string; text: string; label: string }> = {
-  "Pendiente":          { bg: "bg-zinc-500/15", text: "text-zinc-400", label: "Pending" },
-  "En Progreso":        { bg: "bg-blue-500/15", text: "text-blue-400", label: "In Production" },
-  "Control de Calidad": { bg: "bg-amber-500/15", text: "text-amber-400", label: "QC" },
-  "Completada":         { bg: "bg-emerald-500/15", text: "text-emerald-400", label: "Ready" },
-  "installed":          { bg: "bg-violet-500/15", text: "text-violet-400", label: "Installed" },
-};
+const getStatusConfig = (t: any): Record<string, { bg: string; text: string; label: string }> => ({
+  "Pendiente":          { bg: "bg-zinc-500/15", text: "text-zinc-400", label: t.workOrders.statusLabels.pending },
+  "En Progreso":        { bg: "bg-blue-500/15", text: "text-blue-400", label: t.workOrders.statusLabels.inProduction },
+  "En Producción":      { bg: "bg-blue-500/15", text: "text-blue-400", label: t.workOrders.statusLabels.inProduction },
+  "in_progress":        { bg: "bg-blue-500/15", text: "text-blue-400", label: t.workOrders.statusLabels.inProduction },
+  "Control de Calidad": { bg: "bg-amber-500/15", text: "text-amber-400", label: t.workOrders.statusLabels.qc },
+  "qc":                 { bg: "bg-amber-500/15", text: "text-amber-400", label: t.workOrders.statusLabels.qc },
+  "Completada":         { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
+  "Listo":              { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
+  "done":               { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
+  "installed":          { bg: "bg-violet-500/15", text: "text-violet-400", label: t.workOrders.statusLabels.installed },
+  "Instalado":         { bg: "bg-violet-500/15", text: "text-violet-400", label: t.workOrders.statusLabels.installed },
+});
 
 interface Props {
   orders: WorkOrder[];
@@ -29,6 +36,8 @@ interface Props {
 }
 
 export function WorkOrdersTableView({ orders, profileMap = {}, onOpen, onEdit, onMarkBuilt, onDelete, onGeneratePOI, canEdit = true, canDelete = false }: Props) {
+  const { t } = useLanguage();
+  const STATUS_CONFIG = getStatusConfig(t);
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,92,246,0.15)" }}>
@@ -85,26 +94,26 @@ export function WorkOrdersTableView({ orders, profileMap = {}, onOpen, onEdit, o
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={e => { e.stopPropagation(); onOpen?.(order); }}>
-                          <Eye className="w-3.5 h-3.5 mr-2" /> View Details
+                          <Eye className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.viewDetails}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={e => { e.stopPropagation(); onGeneratePOI?.(order); }}>
-                          <QrCode className="w-3.5 h-3.5 mr-2" /> Generate POI Link
+                          <QrCode className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.generatePoi}
                         </DropdownMenuItem>
                         {canEdit && (
                           <DropdownMenuItem onClick={e => { e.stopPropagation(); onEdit?.(order); }}>
-                            <Pencil className="w-3.5 h-3.5 mr-2" /> Edit
+                            <Pencil className="w-3.5 h-3.5 mr-2" /> {t.common.edit}
                           </DropdownMenuItem>
                         )}
                         {order.status === "Control de Calidad" && onMarkBuilt && (
                           <DropdownMenuItem onClick={e => { e.stopPropagation(); onMarkBuilt(order.id); }}>
-                            <CheckCircle className="w-3.5 h-3.5 mr-2" /> Mark Complete
+                            <CheckCircle className="w-3.5 h-3.5 mr-2" /> {(t as any).workOrders.details.markComplete}
                           </DropdownMenuItem>
                         )}
                         {canDelete && onDelete && (
                           <>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={e => { e.stopPropagation(); onDelete(order.id); }} className="text-destructive focus:text-destructive">
-                              <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+                              <Trash2 className="w-3.5 h-3.5 mr-2" /> {t.common.delete}
                             </DropdownMenuItem>
                           </>
                         )}
