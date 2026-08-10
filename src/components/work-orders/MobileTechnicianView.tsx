@@ -247,7 +247,7 @@ export default function MobileTechnicianView() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className={`text-[10px] ${
-                    o.status === "En Progreso" ? "bg-orange-500/15 text-orange-400 border-orange-500/20" :
+                    (o.status === "En Progreso" || o.status === "in_progress") ? "bg-orange-500/15 text-orange-400 border-orange-500/20" :
                     "bg-white/[0.06] text-muted-foreground border-white/[0.06]"
                   }`}>
                     {o.status}

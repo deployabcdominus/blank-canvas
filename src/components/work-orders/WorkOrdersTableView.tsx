@@ -48,7 +48,7 @@ export function WorkOrdersTableView({ orders, profileMap = {}, onOpen, onEdit, o
           <TableBody>
             {orders.map(order => {
               const statusKey = order.poi_token_used ? "installed" : (order.status || "Pendiente");
-              const status = (STATUS_CONFIG as any)[statusKey] || (STATUS_CONFIG as any)["Pendiente"];
+              const status = (STATUS_CONFIG as any)[statusKey] || (STATUS_CONFIG as any)["Pendiente"] || { bg: "bg-zinc-500/15", text: "text-zinc-400", label: statusKey || "Pending" };
               const statusLabel = status?.label || statusKey || "Pending";
               const woLabel = order.wo_number || order.id.slice(0, 8).toUpperCase();
               const assignee = order.assignedToUserId ? profileMap[order.assignedToUserId] || "—" : "—";

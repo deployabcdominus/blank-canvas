@@ -98,9 +98,14 @@ const MATERIAL_FIELDS = [
 
 const STATUS_COLORS: Record<string, string> = {
   "Pendiente": "bg-amber-500/20 text-amber-300 border-amber-500/30",
+  "pending": "bg-amber-500/20 text-amber-300 border-amber-500/30",
   "En Progreso": "bg-violet-500/20 text-violet-300 border-violet-500/30",
+  "in_progress": "bg-violet-500/20 text-violet-300 border-violet-500/30",
   "Control de Calidad": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  "qc": "bg-blue-500/20 text-blue-300 border-blue-500/30",
   "Completada": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+  "done": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+  "verified": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
 };
 
 const defaultStaff: ResponsibleStaff = {
