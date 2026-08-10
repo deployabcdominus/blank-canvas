@@ -11,16 +11,20 @@ import { motion } from "framer-motion";
 
 const getStatusConfig = (t: any): Record<string, { bg: string; text: string; label: string }> => ({
   "Pendiente":          { bg: "bg-zinc-500/15", text: "text-zinc-400", label: t.workOrders.statusLabels.pending },
+  "pending":            { bg: "bg-zinc-500/15", text: "text-zinc-400", label: t.workOrders.statusLabels.pending },
   "En Progreso":        { bg: "bg-blue-500/15", text: "text-blue-400", label: t.workOrders.statusLabels.inProduction },
   "En Producción":      { bg: "bg-blue-500/15", text: "text-blue-400", label: t.workOrders.statusLabels.inProduction },
+  "in_production":      { bg: "bg-blue-500/15", text: "text-blue-400", label: t.workOrders.statusLabels.inProduction },
   "in_progress":        { bg: "bg-blue-500/15", text: "text-blue-400", label: t.workOrders.statusLabels.inProduction },
   "Control de Calidad": { bg: "bg-amber-500/15", text: "text-amber-400", label: t.workOrders.statusLabels.qc },
   "qc":                 { bg: "bg-amber-500/15", text: "text-amber-400", label: t.workOrders.statusLabels.qc },
   "Completada":         { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
   "Listo":              { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
+  "ready":              { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
   "done":               { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
+  "completed":          { bg: "bg-emerald-500/15", text: "text-emerald-400", label: t.workOrders.statusLabels.ready },
   "installed":          { bg: "bg-violet-500/15", text: "text-violet-400", label: t.workOrders.statusLabels.installed },
-  "Instalado":         { bg: "bg-violet-500/15", text: "text-violet-400", label: t.workOrders.statusLabels.installed },
+  "Instalado":          { bg: "bg-violet-500/15", text: "text-violet-400", label: t.workOrders.statusLabels.installed },
 });
 
 interface Props {
