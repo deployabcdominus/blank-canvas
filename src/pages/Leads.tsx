@@ -65,7 +65,7 @@ const Leads = () => {
   const sidebarWidth = isMobile ? 0 : isTablet ? 80 : 256;
 
   return (
-    <PageTransition>
+    <PageTransition effect="slide-right">
       <div className="flex min-h-screen bg-background text-foreground overflow-x-hidden w-full">
         <Sidebar />
         <MobileMenu isOpen={actions.isMobileMenuOpen} onClose={() => actions.setIsMobileMenuOpen(false)} />

@@ -90,7 +90,7 @@ const Dashboard = () => {
   const showFinancials = canViewFinancials;
 
   return (
-    <PageTransition>
+    <PageTransition effect="zoom-in">
       <ResponsiveLayout>
         {/* Incomplete profile banner */}
         {hasNoCompany && (
