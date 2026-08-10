@@ -426,7 +426,7 @@ function SidebarTenantNav({ groups, utilityItems: utils, location, role, industr
 
       {visibleUtils.length > 0 && (
         <div className="pt-3 mt-2 border-t border-white/[0.04] space-y-0.5">
-          <p className="hidden lg:block px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 select-none">
+          <p className="hidden lg:block px-4 pb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-600 select-none">
             {adjustmentsLabel || "Settings"}
           </p>
           {visibleUtils.map(item => (
