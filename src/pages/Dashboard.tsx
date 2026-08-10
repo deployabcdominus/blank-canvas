@@ -42,7 +42,7 @@ const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState<KanbanColumn | null>(null);
   const { canViewFinancials, canViewOperations, isAdmin, isSuperadmin, companyId, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
-  const { profile } = useUserProfile();
+  const profile = useUserProfile();
   useRealtimeDashboard();
   useDashboardToasts();
 
@@ -111,7 +111,7 @@ const Dashboard = () => {
           orders={orders}
           installations={installations}
           payments={payments}
-          userName={profile?.fullName || t.common.user || "User"}
+          userName={profile?.fullName || "User"}
           t={t}
         />
 
