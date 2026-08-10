@@ -208,7 +208,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
         <div className="space-y-1.5 mb-4">
           <a
             href={`tel:${lead.contact.phone}`}
-            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-zinc-900 transition-colors"
           >
             <Phone className="w-3.5 h-3.5" aria-hidden="true" />
             {lead.contact.phone}
