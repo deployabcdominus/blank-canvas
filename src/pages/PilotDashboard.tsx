@@ -58,13 +58,14 @@ export default function PilotDashboard() {
       </div>
 
       <Tabs defaultValue="checklist" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-8 max-w-5xl">
+        <TabsList className="grid w-full grid-cols-9 max-w-6xl">
           <TabsTrigger value="checklist">{t.landing.pilot.checklist}</TabsTrigger>
           <TabsTrigger value="marketing">{t.landing.pilot.marketing}</TabsTrigger>
           <TabsTrigger value="intelligence">{(t as any).landing.pilot.intelligence}</TabsTrigger>
           <TabsTrigger value="integrations">{(t as any).landing.pilot.integrations}</TabsTrigger>
           <TabsTrigger value="portal">{(t as any).landing.pilot.portal}</TabsTrigger>
           <TabsTrigger value="scaling">{(t as any).landing.pilot.scaling}</TabsTrigger>
+          <TabsTrigger value="enterprise">{(t as any).landing.pilot.enterprise}</TabsTrigger>
           <TabsTrigger value="feedback">{t.landing.pilot.feedback}</TabsTrigger>
           <TabsTrigger value="history">{t.landing.pilot.history}</TabsTrigger>
         </TabsList>
@@ -122,7 +123,11 @@ export default function PilotDashboard() {
                     </li>
                     <li className="flex items-center gap-2 text-sm text-emerald-500 font-medium">
                       <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center border-emerald-500">12</Badge>
-                      {(t as any).landing.pilot.stage12} (Active)
+                      {(t as any).landing.pilot.stage12}
+                    </li>
+                    <li className="flex items-center gap-2 text-sm text-blue-500 font-bold animate-pulse">
+                      <Badge variant="outline" className="h-5 w-5 rounded-full p-0 flex items-center justify-center border-blue-500">13</Badge>
+                      Phase 13: Autonomous AI & Enterprise SSO (Active)
                     </li>
                     <li className="pt-2 border-t border-violet-500/10 text-xs text-muted-foreground italic">
                       {(t as any).landing.pilot.stageCompletion}
@@ -386,6 +391,78 @@ export default function PilotDashboard() {
                   <h4 className="font-medium">Edge Network Active</h4>
                   <p className="text-xs text-muted-foreground max-w-[200px]">
                     Automatic traffic routing based on technical specialist geolocation.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="enterprise" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="glass-card border-violet-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.ssoStatus}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Ready</div>
+                <p className="text-xs text-muted-foreground mt-1">SAML 2.0 / Okta Support</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-blue-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.aiInsights}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Active</div>
+                <p className="text-xs text-muted-foreground mt-1">Voice-to-Task enabled</p>
+              </CardContent>
+            </Card>
+            <Card className="glass-card border-emerald-500/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">{(t as any).landing.pilot.mobilePerformance}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">A+</div>
+                <p className="text-xs text-muted-foreground mt-1">Lighthouse Score: 98</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card className="glass-card border-white/5">
+            <CardHeader>
+              <CardTitle>Phase 13: Autonomous Intelligence & Enterprise</CardTitle>
+              <CardDescription>
+                {(t as any).landing.pilot.phase13Desc}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h4 className="text-sm font-semibold">Intelligence Features</h4>
+                  <div className="space-y-2">
+                    {[
+                      { name: 'Voice Transcription', status: 'Operational' },
+                      { name: 'Automated Blueprint OCR', status: 'BETA' },
+                      { name: 'Mobile Offline Hardening', status: 'Active' },
+                      { name: 'Enterprise SSO (SAML)', status: 'Operational' }
+                    ].map(feature => (
+                      <div key={feature.name} className="flex items-center justify-between p-3 border border-white/10 rounded-lg bg-white/5">
+                        <span className="text-sm">{feature.name}</span>
+                        <Badge variant={feature.status === 'Operational' || feature.status === 'Active' ? 'default' : 'outline'} className="text-[10px]">
+                          {feature.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col justify-center items-center text-center space-y-3">
+                  <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/40">
+                    <div className="w-8 h-8 rounded-full border-2 border-blue-500 animate-pulse" />
+                  </div>
+                  <h4 className="font-medium">AI Node Operational</h4>
+                  <p className="text-xs text-muted-foreground max-w-[200px]">
+                    Autonomous task generation and enterprise authentication bridging active.
                   </p>
                 </div>
               </div>
