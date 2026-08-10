@@ -192,7 +192,7 @@ export const es: TranslationKeys = {
     },
     pilot: {
       title: "Panel de Preparación para Piloto",
-      subtitle: "Cargar los problemas de seguridad de los resultados del escaneo y solucionar los problemas seleccionados.",
+      subtitle: "IA Autónoma y Sistemas Estratégicos (Fase 13 Activa)",
       checklist: "Lista",
       feedback: "Comentarios",
       history: "Todos los Problemas",

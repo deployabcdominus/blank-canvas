@@ -40,10 +40,10 @@ export const LeadPipelineStepper = ({ currentStage }: LeadPipelineStepperProps) 
 
   return (
     <div className="w-full">
-      <div className="relative flex items-center justify-between rounded-2xl border border-white/5 bg-zinc-900/40 px-3 py-2">
+      <div className="relative flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2">
         {/* Connector line */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-8">
-          <div className="h-[1.5px] w-full rounded-full bg-zinc-800" />
+          <div className="h-[1.5px] w-full rounded-full bg-muted-foreground/10" />
           <motion.div
             className="h-[1.5px] rounded-full absolute top-0 left-0 bg-primary"
             initial={{ width: "0%" }}
@@ -71,8 +71,8 @@ export const LeadPipelineStepper = ({ currentStage }: LeadPipelineStepperProps) 
                 className={`
                   relative flex items-center justify-center rounded-full w-7 h-7 transition-all duration-300
                   ${done ? "bg-primary text-primary-foreground shadow-[0_0_8px_hsl(var(--primary)/0.3)]" : ""}
-                  ${active ? "bg-primary/20 text-primary ring-1.5 ring-primary/40 shadow-[0_0_12px_hsl(var(--primary)/0.2)]" : ""}
-                  ${future ? "bg-zinc-800 text-zinc-600" : ""}
+                  ${active ? "bg-primary/20 text-primary ring-1.5 ring-primary/40 shadow-[0_0_12px_hsl(var(--primary)/0.25)]" : ""}
+                  ${future ? "bg-muted text-muted-foreground/30" : ""}
                 `}
               >
                 {done ? (
@@ -92,7 +92,7 @@ export const LeadPipelineStepper = ({ currentStage }: LeadPipelineStepperProps) 
 
               <span
                 className={`text-[9px] font-medium leading-tight transition-colors ${
-                  done ? "text-primary" : active ? "text-white" : "text-zinc-500"
+                  done ? "text-primary" : active ? "text-foreground" : "text-muted-foreground/30"
                 }`}
               >
                 {stage.label}

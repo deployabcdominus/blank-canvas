@@ -76,8 +76,8 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.5 }}
-      className={`rounded-2xl border bg-white transition-all duration-500 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover relative w-full ${
-        selected ? 'border-primary shadow-[0_12px_24px_rgba(139,92,246,0.15)] bg-primary/[0.02]' : 'border-zinc-200 shadow-sm hover:border-primary/40 hover:bg-white hover:shadow-2xl hover:shadow-zinc-200/50 hover:-translate-y-1.5 active:scale-[0.98]'
+      className={`rounded-xl border bg-zinc-900/60 transition-all duration-500 p-5 md:p-6 flex flex-col justify-between group cursor-pointer shimmer-hover relative w-full ${
+        selected ? 'border-violet-500/40 ring-2 ring-violet-500/20 bg-violet-500/[0.03]' : 'border-white/[0.06] hover:border-primary/30 hover:bg-zinc-900/80 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1.5 active:scale-[0.98]'
       }`}
       role="article"
       aria-labelledby={`lead-${lead.id}-company`}
@@ -104,18 +104,18 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
                 src={lead.logoUrl} 
                 alt={lead.company} 
                 className="w-full h-full object-contain"
-                containerClassName="w-11 h-11 rounded-xl border border-zinc-100 bg-zinc-50 flex-shrink-0"
+                containerClassName="w-11 h-11 rounded-xl border border-white/[0.06] bg-white/[0.03] flex-shrink-0"
               />
             ) : (
-              <div className="w-11 h-11 rounded-xl border border-zinc-100 bg-zinc-50 flex items-center justify-center flex-shrink-0">
-                <span className="text-sm font-bold text-zinc-400">{lead.company?.charAt(0)?.toUpperCase() || '?'}</span>
+              <div className="w-11 h-11 rounded-xl border border-white/[0.06] bg-white/[0.03] flex items-center justify-center flex-shrink-0">
+                <span className="text-sm font-bold text-zinc-500">{lead.company?.charAt(0)?.toUpperCase() || '?'}</span>
               </div>
             )}
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h3
                   id={`lead-${lead.id}-company`}
-                  className="text-base font-bold truncate text-zinc-900"
+                  className="text-base font-bold truncate text-zinc-100"
                 >
                   {lead.company}
                 </h3>
@@ -125,7 +125,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
                   </Badge>
                 )}
               </div>
-              <p className="text-zinc-500 text-sm truncate">{lead.name}</p>
+              <p className="text-zinc-400 text-sm truncate">{lead.name}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
               <DropdownMenuTrigger asChild>
                 <button
                   onClick={(e) => e.stopPropagation()}
-                  className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900"
+                  className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/[0.05] text-zinc-500 hover:text-foreground"
                   aria-label={t.leadCard.actionsAriaLabel}
                 >
                   <MoreVertical size={14} />
@@ -165,9 +165,9 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
 
         {/* Service type */}
         <div className="flex items-center justify-between mb-2">
-          <p className="text-sm font-medium text-zinc-500">{lead.service}</p>
+          <p className="text-sm font-medium text-zinc-400">{lead.service}</p>
           {lead.leadSource && (
-            <Badge variant="outline" className="text-[10px] bg-zinc-50 text-zinc-400 border-zinc-200">
+            <Badge variant="outline" className="text-[10px] bg-zinc-800/40 text-zinc-500 border-zinc-700/40">
               {lead.leadSource}
             </Badge>
           )}
@@ -176,7 +176,7 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
         {/* Price block */}
         <div className="mb-3">
           {linkedProposal ? (
-            <p className="text-2xl font-bold text-zinc-900">
+            <p className="text-2xl font-bold text-zinc-100">
               ${linkedProposal.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </p>
           ) : lead.agreedPrice ? (
@@ -208,14 +208,14 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
         <div className="space-y-1.5 mb-4">
           <a
             href={`tel:${lead.contact.phone}`}
-            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-zinc-900 transition-colors"
+            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-foreground transition-colors"
           >
             <Phone className="w-3.5 h-3.5" aria-hidden="true" />
             {lead.contact.phone}
           </a>
           <a
             href={`mailto:${lead.contact.email}`}
-            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-zinc-900 transition-colors"
+            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-foreground transition-colors"
           >
             <Mail className="w-3.5 h-3.5" aria-hidden="true" />
             {lead.contact.email}
@@ -233,8 +233,8 @@ export const LeadCard = ({ lead, proposals, index, isMobile, selected, onSelect,
       </div>
 
       {/* Footer */}
-      <div className={`flex items-center justify-between pt-3 border-t border-zinc-100 gap-3`} onClick={e => e.stopPropagation()}>
-        <span className="text-xs text-zinc-400">
+      <div className={`flex items-center justify-between pt-3 border-t border-white/[0.06] gap-3`} onClick={e => e.stopPropagation()}>
+        <span className="text-xs text-zinc-600">
           {daysAgoText}
         </span>
         <div className="flex items-center gap-2">

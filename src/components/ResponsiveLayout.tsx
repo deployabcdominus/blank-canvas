@@ -19,7 +19,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
   return (
     <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/20 relative isolate overflow-x-hidden">
       {/* Sidebar spacer: reserves space for the fixed sidebar on desktop */}
-      <div className="hidden md:block shrink-0 w-[72px] lg:w-[300px]" aria-hidden="true" />
+      <div className="hidden md:block shrink-0 w-[72px] lg:w-[280px]" aria-hidden="true" />
       
       <Sidebar />
       
@@ -68,7 +68,7 @@ export const ResponsiveLayout = ({ children, title, subtitle, icon: Icon }: Resp
                 )}
                 <div>
                   {title && <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">{title}</h1>}
-                  {subtitle && <p className="text-zinc-400 text-sm md:text-base mt-0.5 font-medium">{subtitle}</p>}
+                  {subtitle && <p className="text-zinc-400 text-sm md:text-base mt-0.5">{subtitle}</p>}
                 </div>
               </div>
             </motion.div>

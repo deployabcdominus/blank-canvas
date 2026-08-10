@@ -190,7 +190,7 @@ export const en = {
     },
     pilot: {
       title: "Pilot Readiness Dashboard",
-      subtitle: "Load the security issues from the scan results and fix the selected issues.",
+      subtitle: "Autonomous AI & Strategic Systems (Phase 13 Active)",
       checklist: "Checklist",
       feedback: "Feedback",
       history: "All Issues",

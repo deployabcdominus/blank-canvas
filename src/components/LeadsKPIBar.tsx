@@ -53,14 +53,14 @@ export const LeadsKPIBar = ({ leads, proposals, isMobile }: LeadsKPIBarProps) =>
       {kpis.map((kpi) => (
         <div
           key={kpi.label}
-          className="rounded-[2rem] p-4 flex items-center gap-3 border border-white/5 bg-zinc-900/50 hover:bg-zinc-800 transition-all duration-300"
+          className="glass-card p-4 flex items-center gap-3 hover:glow-blue transition-all duration-300"
         >
-          <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0 border border-white/5">
+          <div className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center flex-shrink-0">
             {kpi.icon}
           </div>
           <div>
-            <p className="text-2xl font-black leading-tight text-white">{kpi.value}</p>
-            <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">{kpi.label}</p>
+            <p className="text-2xl font-bold leading-tight">{kpi.value}</p>
+            <p className="text-xs text-muted-foreground">{kpi.label}</p>
           </div>
         </div>
       ))}
