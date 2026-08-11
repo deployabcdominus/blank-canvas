@@ -1727,6 +1727,7 @@ export const es = {
     },
       markComplete: "Marcar Completado",
     },
+    },
   },
   workOrdersRadial: {
     completedLabel: "workOrdersRadial.completedLabel",
