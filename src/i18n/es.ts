@@ -391,6 +391,10 @@ export const es = {
   currency: "currency",
   current: "current",
   dashboard: {
+    setupTip: "Configura tu dominio personalizado para profesionalizar tu marca.",
+    setupCta: "Configurar",
+    heroSubtitle: "Resumen de la operación de hoy",
+    
     metrics: {
       totalLeads: "Total Leads",
       inProduction: "En Producción",
