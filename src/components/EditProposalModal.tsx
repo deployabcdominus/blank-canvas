@@ -104,26 +104,26 @@ export const EditProposalModal = ({ isOpen, onClose, proposal, onEditProposal }:
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Editar Propuesta</DialogTitle>
+          <DialogTitle>{t.editProposalModal.title}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Cliente</Label>
+              <Label>{t.editProposalModal.clientLabel}</Label>
               <Input {...register("client")} required />
             </div>
             <div className="space-y-2">
-              <Label>Proyecto</Label>
+              <Label>{t.editProposalModal.projectLabel}</Label>
               <Input {...register("project")} required />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Valor</Label>
+              <Label>{t.editProposalModal.amountLabel}</Label>
               <Input {...register("value")} type="number" step="0.01" required />
             </div>
             <div className="space-y-2">
-              <Label>Estado</Label>
+              <Label>{t.editProposalModal.statusLabel}</Label>
               <Select value={watch("status")} onValueChange={(v) => setValue("status", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -133,12 +133,12 @@ export const EditProposalModal = ({ isOpen, onClose, proposal, onEditProposal }:
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Descripción</Label>
+            <Label>{t.editProposalModal.descriptionLabel}</Label>
             <Textarea {...register("description")} className="min-h-[100px]" />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>Cancelar</Button>
-            <Button type="submit" disabled={submitting}>{submitting ? 'Guardando...' : 'Guardar Cambios'}</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>{t.editProposalModal.cancel}</Button>
+            <Button type="submit" disabled={submitting}>{submitting ? t.common.saving : t.editProposalModal.save}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
