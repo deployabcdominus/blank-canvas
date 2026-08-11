@@ -1499,7 +1499,7 @@ export const es = {
       verified: "settings.mfa.verified",
     },
     org: {
-      changeLogo: "Cambiar logo",
+      changeLogo: "Cambiar logo corporativo",
       companyName: "Nombre de la empresa",
       logo: "Logo de la empresa",
       logoNote: "Se recomienda un archivo PNG o SVG con fondo transparente.",
@@ -1596,7 +1596,7 @@ export const es = {
       subtitle: "Configura el acceso a planos y archivos técnicos locales.",
       title: "Almacenamiento de Red",
     },
-    subtitle: "settings.subtitle",
+    subtitle: "Configura las preferencias de tu cuenta y de la organización.",
     tabs: {
       catalogs: "Catálogos",
       configuration: "Configuración Avanzada",
