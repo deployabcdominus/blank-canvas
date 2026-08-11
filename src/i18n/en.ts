@@ -391,6 +391,12 @@ export const en = {
   currency: "currency",
   current: "current",
   dashboard: {
+    metrics: {
+      totalLeads: "Total Leads",
+      inProduction: "In Production",
+      monthlySales: "Monthly Sales",
+      installations: "Installations"
+    },
     acceptancePending: "dashboard.acceptancePending",
     actions: "dashboard.actions",
     activeLeads: "dashboard.activeLeads",
@@ -913,7 +919,7 @@ export const en = {
     administration: "nav.administration",
     auditLog: "nav.auditLog",
     crmSales: "nav.crmSales",
-    dashboard: "nav.dashboard",
+    dashboard: "Dashboard",
     fieldServices: "Field Services",
     inventory: "nav.inventory",
     leads: "Leads",
