@@ -170,7 +170,7 @@ const isActivePath = (location: { pathname: string; search: string }, path: stri
 const getLabel = (item: NavItem, industryLabels: IndustryLabels, t: any) => {
   if (item.labelKey && industryLabels[item.labelKey]) return industryLabels[item.labelKey];
   
-  // Localized fallbacks for hardcoded labels in constants/navigation.ts
+  // Localized fallbacks for labels in constants/navigation.ts
   const navKeys: Record<string, string> = {
     "Dashboard": t.nav.dashboard,
     "Leads": t.nav.leads,
@@ -180,13 +180,13 @@ const getLabel = (item: NavItem, industryLabels: IndustryLabels, t: any) => {
     "Partners": t.nav.subcontractors,
     "Inventory": t.nav.inventory,
     "Payments": t.nav.payments,
-    "Reports": t.nav.reports || t.landing.reports.title,
+    "Reports": t.nav.reports,
     "Audit Logs": t.nav.auditLog,
     "Team Management": t.nav.teamManagement,
     "Pilot": "Pilot",
-    "Overview": t.nav.platform || "Overview",
-    "Companies": t.nav.accounts || "Companies",
-    "Users": t.nav.teamManagement || "Users",
+    "Overview": t.nav.platform,
+    "Companies": t.nav.accounts,
+    "Users": t.nav.teamManagement,
     "Provisioning": "Provisioning",
     "Settings": t.nav.settings,
   };
