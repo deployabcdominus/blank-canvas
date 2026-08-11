@@ -121,7 +121,7 @@ export const PricingSection = () => {
         window.open(data.url, "_blank");
       }
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || (isEn ? "Could not open the portal" : "No se pudo abrir el portal"), variant: "destructive" });
+      toast({ title: t.common.error, description: err.message || t.settings.pricing.portalError, variant: "destructive" });
     } finally {
       setLoadingPortal(false);
     }
@@ -132,15 +132,15 @@ export const PricingSection = () => {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">{isEn ? "Your Subscription" : "Tu Suscripción"}</h2>
+        <h2 className="text-2xl font-bold mb-2">{t.settings.pricing.title}</h2>
         <p className="text-muted-foreground text-sm">
-          {isEn ? "Current plan:" : "Plan actual:"}{" "}
+          {t.settings.pricing.currentPlan}{" "}
           <Badge variant="outline" className="ml-1 border-primary/30 text-primary font-semibold">
             {planTier.charAt(0).toUpperCase() + planTier.slice(1)}
           </Badge>
           {subscriptionStatus === "past_due" && (
             <Badge variant="destructive" className="ml-2 text-xs">
-              {isEn ? "Payment Overdue" : "Pago Pendiente"}
+              {t.settings.pricing.paymentOverdue}
             </Badge>
           )}
         </p>
