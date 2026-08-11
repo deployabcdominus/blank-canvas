@@ -402,6 +402,13 @@ export const en = {
     select: "Select",
     selected: "Selected",
     view: "View",
+    alreadyExists: "Already exists",
+    error: "Error",
+    saveSuccess: "Saved successfully",
+    add: "Add",
+    saving: "Saving...",
+    cancel: "Cancel",
+  },
   },
 
   /* ── Navigation / Sidebar ── */
