@@ -1599,7 +1599,7 @@ export const en = {
     subtitle: "Configure your account and organization preferences.",
     tabs: {
       catalogs: "Catalogs",
-      configuration: "Advanced Config",
+      configuration: "Configuration",
       domains: "Domains",
       integrations: "Integrations",
       notifications: "Notifications",

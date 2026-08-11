@@ -1518,7 +1518,7 @@ export const es = {
         save: "Guardar",
         saving: "Guardando...",
         subtitle: "Define las categorías de servicios que ofrece tu taller para clasificar proyectos.",
-        title: "Tipos de Servicio",
+        title: "Tipos de Servicios",
       },
     },
     planUsage: {
@@ -1599,7 +1599,7 @@ export const es = {
     subtitle: "Configura las preferencias de tu cuenta y de la organización.",
     tabs: {
       catalogs: "Catálogos",
-      configuration: "Configuración Avanzada",
+      configuration: "Configuración",
       domains: "Dominios",
       integrations: "Integraciones",
       notifications: "Notificaciones",
