@@ -742,11 +742,11 @@ export const es = {
       tagline: "landing.footer.tagline",
     },
     hero: {
-      ctaPrimary: "landing.hero.ctaPrimary",
-      subtitle: "landing.hero.subtitle",
-      titleLine1: "landing.hero.titleLine1",
-      titleLine2: "landing.hero.titleLine2",
-      trust: "landing.hero.trust",
+      ctaPrimary: "Empieza Gratis",
+      subtitle: "La plataforma todo en uno para gestionar tu negocio de rotulación. Desde leads hasta la instalación, lo tenemos cubierto.",
+      titleLine1: "Construye el futuro de",
+      titleLine2: "tu negocio de rótulos",
+      trust: "Más de 500 empresas de rotulación confían en nosotros",
     },
     industries: {
       badge: "landing.industries.badge",
@@ -779,10 +779,10 @@ export const es = {
       q: "landing.mockup.q",
     },
     nav: {
-      faq: "landing.nav.faq",
-      industries: "landing.nav.industries",
-      login: "landing.nav.login",
-      pricing: "landing.nav.pricing",
+      faq: "FAQ",
+      industries: "Industrias",
+      login: "Ingresar",
+      pricing: "Precios",
     },
     pilot: {
       aboutPilot: "landing.pilot.aboutPilot",

@@ -742,11 +742,11 @@ export const en = {
       tagline: "landing.footer.tagline",
     },
     hero: {
-      ctaPrimary: "landing.hero.ctaPrimary",
-      subtitle: "landing.hero.subtitle",
-      titleLine1: "landing.hero.titleLine1",
-      titleLine2: "landing.hero.titleLine2",
-      trust: "landing.hero.trust",
+      ctaPrimary: "Get Started Free",
+      subtitle: "The all-in-one platform to manage your sign business. From leads to installation, we've got you covered.",
+      titleLine1: "Build the future of",
+      titleLine2: "your sign business",
+      trust: "Trusted by over 500+ sign companies worldwide",
     },
     industries: {
       badge: "landing.industries.badge",
@@ -779,10 +779,10 @@ export const en = {
       q: "landing.mockup.q",
     },
     nav: {
-      faq: "landing.nav.faq",
-      industries: "landing.nav.industries",
-      login: "landing.nav.login",
-      pricing: "landing.nav.pricing",
+      faq: "FAQ",
+      industries: "Industries",
+      login: "Login",
+      pricing: "Pricing",
     },
     pilot: {
       aboutPilot: "landing.pilot.aboutPilot",
