@@ -53,7 +53,7 @@ export const es: TranslationKeys = {
       plansTitle: "Selecciona tu plan",
       plansSubtitle: "Elige el nivel que mejor se adapte a tu crecimiento.",
       planPopular: "Más popular",
-      getPlan: "Seleccionar {plan},
+      getPlan: "Seleccionar {plan}",
 
   common: {
     save: "Guardar",
@@ -450,7 +450,7 @@ export const es: TranslationKeys = {
     },
     compliance: {
       title: "Cumplimiento Normativo",
-      requiresPermit: "Requiere permisos especiales de {{municipality}},
+      requiresPermit: "Requiere permisos especiales de {{municipality}}",
 
   hudCard: {
     filtered: "Filtrado",
@@ -473,7 +473,7 @@ export const es: TranslationKeys = {
       atRisk: "En riesgo",
       closingRate: "Tasa de cierre",
       alert: "Alerta",
-      pipelineValue: "{{value}},
+      pipelineValue: "{{value}}",
 
   hudPipeline: {
     title: "Pipeline de Proyectos",
@@ -542,7 +542,7 @@ export const es: TranslationKeys = {
       pago: "pago",
       orden: "orden",
     },
-    newEntity: "un nuevo {{entity},
+    newEntity: "un nuevo {{entity}",
 
   weeklyReport: {
     title: "Rendimiento Semanal",
@@ -685,7 +685,7 @@ export const es: TranslationKeys = {
     errorNoClientId: "Error al crear el cliente: no se recibió ID",
     errorNoProjectId: "Error al crear el proyecto: no se recibió ID",
     errorProposalTitle: "Error al crear propuesta",
-    errorProposalDesc: "Detalle: {{msg}},
+    errorProposalDesc: "Detalle: {{msg}}",
 
   inviteMember: {
     title: "Invitar Miembro",
@@ -703,7 +703,7 @@ export const es: TranslationKeys = {
     cancel: "Cancelar",
     creating: "Creando...",
     generate: "Generar Invitación",
-    linkLabel: "Link de invitación para {{email},
+    linkLabel: "Link de invitación para {{email}",
 
   leadCard: {
     priceTbd: "Precio por definir",
@@ -716,7 +716,7 @@ export const es: TranslationKeys = {
     },
     daysAgoSingular: "hace {{n}} día",
     daysAgoPlural: "hace {{n}} días",
-    selectAriaLabel: "Seleccionar lead {{company}},
+    selectAriaLabel: "Seleccionar lead {{company}}",
 
   proposalCard: {
     statusLabels: {
@@ -766,7 +766,7 @@ export const es: TranslationKeys = {
 
   notificationBell: {
     ariaLabel: "Notificaciones",
-    ariaLabelUnread: "Notificaciones ({{n}},
+    ariaLabelUnread: "Notificaciones ({{n}}",
 
   addLeadModal: {
     title: "Agregar Nuevo Lead",
@@ -793,7 +793,7 @@ export const es: TranslationKeys = {
     toastInvalidFormatDesc: "Seleccione una imagen.",
     toastImageError: "Error al procesar imagen",
     toastSuccess: "¡Lead agregado con éxito!",
-    toastSuccessDesc: "{{name}},
+    toastSuccessDesc: "{{name}}",
 
   editLeadModal: {
     contactInfoTitle: "Información de Contacto",
@@ -834,7 +834,7 @@ export const es: TranslationKeys = {
     advanceToProposal: "Avanzar a Propuesta",
     viewProposal: "Ver Propuesta",
     deleteDialogTitle: "¿Eliminar este lead?",
-    deleteDialogDesc: "Se eliminará permanentemente \"{{name}},
+    deleteDialogDesc: "Se eliminará permanentemente \"{{name}}",
 
   pipelineKanban: {
     title: "Pipeline de Proyectos",
@@ -931,7 +931,7 @@ export const es: TranslationKeys = {
   newWorkOrderModal: {
     defaultTitle: "Nueva Orden de Servicio",
     defaultSubtitle: "Configura el contexto del proyecto y las especificaciones técnicas",
-    resourcesBadge: "{{n}},
+    resourcesBadge: "{{n}}",
 
   seo: {
     title: "SignFlow | El SO de Operaciones y Flujo de Trabajo Todo-en-Uno",
@@ -1010,6 +1010,6 @@ export const es: TranslationKeys = {
     },
     timeline: {
       noSteps: "No hay etapas definidas para esta orden",
-      stepsOf: "{{completed}},
+      stepsOf: "{{completed}}",
 
 };

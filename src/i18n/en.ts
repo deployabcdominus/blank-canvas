@@ -675,7 +675,7 @@ export const en = {
     },
     compliance: {
       title: "Regulatory Compliance",
-      requiresPermit: "Requires special permits from {{municipality}},
+      requiresPermit: "Requires special permits from {{municipality}}",
 
   hudCard: {
     filtered: "Filtered",
@@ -698,7 +698,7 @@ export const en = {
       atRisk: "At risk",
       closingRate: "Closing rate",
       alert: "Alert",
-      pipelineValue: "{{value}},
+      pipelineValue: "{{value}}",
 
   hudPipeline: {
     title: "Project Pipeline",
@@ -902,7 +902,7 @@ export const en = {
     errorNoClientId: "Error creating client: no ID received",
     errorNoProjectId: "Error creating project: no ID received",
     errorProposalTitle: "Error creating proposal",
-    errorProposalDesc: "Detail: {{msg}},
+    errorProposalDesc: "Detail: {{msg}}",
 
   inviteMember: {
     title: "Invite Member",
@@ -920,7 +920,7 @@ export const en = {
     cancel: "Cancel",
     creating: "Creating...",
     generate: "Generate Invitation",
-    linkLabel: "Invitation link for {{email},
+    linkLabel: "Invitation link for {{email}",
 
   leadCard: {
     priceTbd: "Price to be determined",
@@ -933,7 +933,7 @@ export const en = {
     },
     daysAgoSingular: "{{n}} day ago",
     daysAgoPlural: "{{n}} days ago",
-    selectAriaLabel: "Select lead {{company}},
+    selectAriaLabel: "Select lead {{company}}",
 
   proposalCard: {
     statusLabels: {
@@ -983,7 +983,7 @@ export const en = {
 
   notificationBell: {
     ariaLabel: "Notifications",
-    ariaLabelUnread: "Notifications ({{n}},
+    ariaLabelUnread: "Notifications ({{n}}",
 
   addLeadModal: {
     title: "Add New Lead",
@@ -1010,7 +1010,7 @@ export const en = {
     toastInvalidFormatDesc: "Select an image.",
     toastImageError: "Error processing image",
     toastSuccess: "Lead added successfully!",
-    toastSuccessDesc: "{{name}},
+    toastSuccessDesc: "{{name}}",
 
   editLeadModal: {
     contactInfoTitle: "Contact Information",
@@ -1051,7 +1051,7 @@ export const en = {
     advanceToProposal: "Advance to Proposal",
     viewProposal: "View Proposal",
     deleteDialogTitle: "Delete this lead?",
-    deleteDialogDesc: "\"{{name}},
+    deleteDialogDesc: "\"{{name}}",
 
   pipelineKanban: {
     title: "Project Pipeline",
@@ -1148,7 +1148,7 @@ export const en = {
   newWorkOrderModal: {
     defaultTitle: "New Service Order",
     defaultSubtitle: "Configure project context and technical specifications",
-    resourcesBadge: "{{n}},
+    resourcesBadge: "{{n}}",
 
   seo: {
     title: "SignFlow | The All-in-One Operations & Workflow OS",
@@ -1227,7 +1227,7 @@ export const en = {
     },
     timeline: {
       noSteps: "No steps defined for this order",
-      stepsOf: "of {{total},
+      stepsOf: "of {{total}",
 
   }
   }
