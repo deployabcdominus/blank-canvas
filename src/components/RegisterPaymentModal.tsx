@@ -138,7 +138,7 @@ export const RegisterPaymentModal = ({ isOpen, onClose, proposal, companyId }: R
               <SelectContent>
                 {METHOD_KEYS.map(key => (
                   <SelectItem key={key} value={key}>
-                    {m.methods[key as keyof typeof m.methods]}
+                    {m.methods[key as keyof typeof m.methods]?.toString()}
                   </SelectItem>
                 ))}
               </SelectContent>

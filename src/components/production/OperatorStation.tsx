@@ -187,7 +187,7 @@ export default function OperatorStation() {
               <span className="truncate max-w-[200px]">{task.order_client}</span>
             </div>
             <Badge className={`text-[10px] font-bold border ${PRIORITY_BADGE[task.order_priority] || PRIORITY_BADGE.media}`}>
-              {t.production.operatorStation.priority[task.order_priority as keyof typeof t.production.operatorStation.priority]?.toUpperCase() || task.order_priority?.toUpperCase()}
+              {t.production.operatorStation.priority[task.order_priority as keyof typeof t.production.operatorStation.priority]?.toString().toUpperCase() || task.order_priority?.toString().toUpperCase()}
             </Badge>
           </div>
 

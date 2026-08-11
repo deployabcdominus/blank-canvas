@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,8 @@ import { useCompany } from "@/hooks/useCompany";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 
 export const ServiceTypesSettings: React.FC = () => {
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
   const { company, updateCompanySettings } = useCompany();
   const currentTypes = useServiceTypes();
   const { toast } = useToast();
@@ -18,9 +21,11 @@ export const ServiceTypesSettings: React.FC = () => {
   const [newService, setNewService] = useState('');
   const [saving, setSaving] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setServices(currentTypes);
   }, [currentTypes]);
+
+  const hasChanges = JSON.stringify(services) !== JSON.stringify(currentTypes);
 
   const addService = () => {
     const trimmed = newService.trim();
@@ -57,8 +62,6 @@ export const ServiceTypesSettings: React.FC = () => {
     }
   };
 
-  const { t, locale } = useLanguage();
-  const isEn = locale === "en";
 
   return (
     <Card>

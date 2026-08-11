@@ -371,9 +371,9 @@ export default function Settings() {
                       <Globe className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <CardTitle>{t.settings.domains?.title || "Custom Domains"}</CardTitle>
+                      <CardTitle>{(t.settings.domains as any)?.title || "Custom Domains"}</CardTitle>
                       <CardDescription>
-                        {t.settings.domains?.subtitle || "Manage your brand identity and email deliverability."}
+                        {(t.settings.domains as any)?.subtitle || "Manage your brand identity and email deliverability."}
                       </CardDescription>
                     </div>
                   </div>
@@ -385,7 +385,7 @@ export default function Settings() {
                         <h4 className="text-sm font-semibold flex items-center gap-2">
                           www.signflowapp.com
                           <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                            {t.settings.domains.active}
+                            {locale === "en" ? "Active" : "Activo"}
                           </Badge>
                         </h4>
                         <p className="text-xs text-muted-foreground">

@@ -125,7 +125,7 @@ export function ProductionControlBar({
           onClick={() => setShowFilters(!showFilters)}
         >
           <Filter className="w-3.5 h-3.5" />
-          {t.production.filters.filter}
+          {locale === "en" ? "Filter" : "Filtrar"}
 
 
           {hasFilters && (
@@ -159,7 +159,7 @@ export function ProductionControlBar({
       {showFilters && (
         <div className="glass-card p-4 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t.production.filters.filter}</span>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{locale === "en" ? "Filter" : "Filtrar"}</span>
             {hasFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs h-6 px-2 gap-1">
                 <X className="w-3 h-3" /> {locale === "en" ? "Clear" : "Limpiar"}

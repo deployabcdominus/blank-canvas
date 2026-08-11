@@ -35,6 +35,8 @@ export const PricingSection = () => {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [loadingPortal, setLoadingPortal] = useState(false);
 
+  const { t } = useLanguage();
+
   const PLANS: PlanDef[] = [
     {
       tier: "start",
@@ -67,8 +69,6 @@ export const PricingSection = () => {
       features: t.settings.pricing.features.elite,
     },
   ];
-
-  const { t } = useLanguage();
 
   // Handle Stripe redirect success
   useEffect(() => {

@@ -93,10 +93,10 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
   const handleCopyText = () => {
     const lines = [
       `📋 ${t.production.quickOrders.title.toUpperCase()}`,
-      `${t.production.quickOrders.clientLabel.replace('*', '').trim()}: ${order.client}`,
-      `${t.production.quickOrders.projectLabel.replace('*', '').trim()}: ${order.project}`,
+      `${t.production.quickOrders.clientLabel.toString().replace('*', '').trim()}: ${order.client}`,
+      `${t.production.quickOrders.projectLabel.toString().replace('*', '').trim()}: ${order.project}`,
       `${t.common.date}: ${new Date().toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-US')}`,
-      `${t.production.quickOrders.priorityLabel.replace(':', '').trim()}: ${order.priority}`,
+      `${t.production.quickOrders.priorityLabel.toString().replace(':', '').trim()}: ${order.priority}`,
       '',
       `📦 ${t.production.quickOrders.materials.toUpperCase()}:`,
       ...order.materials.map((m: OrderMaterial) => `  • ${m.name} — ${m.quantity} ${m.unit}`),

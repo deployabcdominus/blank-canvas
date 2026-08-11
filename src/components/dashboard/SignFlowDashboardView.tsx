@@ -164,10 +164,10 @@ export function SignFlowDashboardView({
             animate={{ opacity: 1, x: 0 }}
             className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2"
           >
-            {t.auth.login.welcomeBack}, <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">{userName.split(' ')[0]}</span> 👋
+            {t.auth.login.welcomeBack}, <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">{userName ? userName.split(' ')[0] : ''}</span> 👋
           </motion.h2>
           <p className="text-zinc-500 text-sm font-medium">
-             {t.landing.seo.title.split('|')[0]} • Resumen de operación actual
+             {((t.seo as any)?.title || "SignFlow").split('|')[0]} • {(t.dashboard as any)?.heroSubtitle || "Resumen de operación actual"}
           </p>
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] to-transparent rounded-3xl" />
@@ -244,10 +244,10 @@ export function SignFlowDashboardView({
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricItem label="Total Leads" value={leads.length} delta={12} icon={Users} delay={0.4} />
-        <MetricItem label="En Producción" value={stats.production} delta={-5} icon={Layers} delay={0.5} />
-        <MetricItem label="Ventas Mensual" value={`$${(stats.sales / 1000).toFixed(1)}k`} delta={22} icon={DollarSign} delay={0.6} />
-        <MetricItem label="Instalaciones" value={stats.installations} delta={0} icon={MapPin} delay={0.7} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.totalLeads || "Total Leads"} value={leads.length} delta={12} icon={Users} delay={0.4} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.inProduction || "En Producción"} value={stats.production} delta={-5} icon={Layers} delay={0.5} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.monthlySales || "Ventas Mensual"} value={`$${(stats.sales / 1000).toFixed(1)}k`} delta={22} icon={DollarSign} delay={0.6} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.installations || "Instalaciones"} value={stats.installations} delta={0} icon={MapPin} delay={0.7} />
       </div>
 
       {/* Tip */}
@@ -259,10 +259,10 @@ export function SignFlowDashboardView({
       >
         <div className="flex items-center gap-3 text-sm text-zinc-300">
           <CheckCircle2 className="w-5 h-5 text-primary" />
-          <span>Configura tu dominio personalizado para profesionalizar tu marca.</span>
+          <span>{(t.dashboard as any)?.setupTip || "Configura tu dominio personalizado para profesionalizar tu marca."}</span>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate('/settings?tab=domain')} className="text-primary hover:text-primary">
-          Configurar
+          {(t.dashboard as any)?.setupCta || "Configurar"}
         </Button>
       </motion.div>
     </div>

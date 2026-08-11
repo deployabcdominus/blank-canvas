@@ -690,7 +690,7 @@ const Index = () => {
                         )}
                         {!isAnnual && <div className="mb-7" />}
                         <ul className="space-y-4 mb-10">
-                          {plan.features.map((f, fi) => (
+                          {Array.isArray(plan.features) && plan.features.map((f, fi) => (
                             <motion.li
                               key={f}
                               className="flex items-start gap-3 text-[13px] text-zinc-400"
@@ -758,17 +758,17 @@ const Index = () => {
 
             <Reveal delay={0.1}>
               <Accordion type="single" collapsible className="space-y-3">
-                {L.faq.items.map((item, i) => (
+                {Array.isArray(L.faq.items) && L.faq.items.map((item, i) => (
                   <AccordionItem
                     key={i}
                     value={`faq-${i}`}
                     className="rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl px-6 py-1 data-[state=open]:border-purple-500/15 transition-colors duration-300"
                   >
                     <AccordionTrigger className="text-[15px] font-semibold text-zinc-200 hover:text-white hover:no-underline py-5 [&[data-state=open]>svg]:rotate-180">
-                      {item.q}
+                      {(item as any).q}
                     </AccordionTrigger>
                     <AccordionContent className="text-[14px] text-zinc-400 leading-[1.8] pb-5">
-                      {item.a}
+                      {(item as any).a}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -849,7 +849,7 @@ const Index = () => {
                 <div key={col.title}>
                   <h4 className="text-[12px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-5">{col.title}</h4>
                   <ul className="space-y-3">
-                    {col.links.map((item) => (
+                    {Array.isArray(col.links) && col.links.map((item) => (
                       <li key={item}>
                         <a href="#" className="text-[13px] text-zinc-600 hover:text-purple-400/60 transition-colors duration-300">
                           {item}
