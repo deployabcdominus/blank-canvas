@@ -397,6 +397,13 @@ export const es: TranslationKeys = {
     total: "Total",
     amount: "Monto",
     value: "Valor",
+    width: "Ancho",
+    height: "Alto",
+    depth: "Prof.",
+    measurements: "Medidas",
+    select: "Seleccionar",
+    selected: "Seleccionados",
+    view: "Ver",
   },
 
   /* ── Navigation / Sidebar ── */
@@ -646,6 +653,9 @@ export const es: TranslationKeys = {
   settings: {
     title: "Configuración",
     subtitle: "Gestione la configuración del sistema",
+    general: {
+      customDomainLabel: "Carpeta de red / Ruta del proyecto",
+    },
     tabs: {
       profile: "Perfil",
       organization: "Organización",
@@ -734,6 +744,23 @@ export const es: TranslationKeys = {
     domains: {
       title: "Dominios y Correo",
       subtitle: "Gestione su identidad de marca y envío de correos profesionales.",
+      active: "Activo",
+      primaryDomain: "Dominio principal para tu plataforma y enlaces públicos.",
+      visit: "Visitar",
+      emailConfig: "Configuración de Correo",
+      businessEmail: "Correo Corporativo (SMTP/DNS)",
+      businessEmailDesc: "Configura tu dominio para enviar correos profesionales a tus clientes.",
+      configure: "Configurar",
+      setupTitle: "Configuración de Correo",
+      setupDesc: "Abriendo configuración segura de dominio...",
+      dnsNote: "Los cambios de dominio requieren verificación DNS y pueden tardar 24-48 horas en propagarse globalmente.",
+      companyDetails: "Detalles de la Empresa",
+      companyDetailsDesc: "Información pública para tu negocio de señalética.",
+      publicEmail: "Email Público",
+      publicPhone: "Teléfono Público",
+      businessAddress: "Dirección del Negocio",
+      autoCreateOrders: "Auto-crear Órdenes de Producción",
+      autoCreateOrdersDesc: "Generar automáticamente órdenes cuando se aprueban las propuestas.",
     },
     catalogs: {
       title: "Catálogos del sistema",
@@ -817,6 +844,93 @@ export const es: TranslationKeys = {
         },
       },
     },
+    integrations: {
+      title: "Integraciones",
+      subtitle: "Conecte sus herramientas favoritas",
+      quickbooks: {
+        title: "QuickBooks Online",
+        desc: "Sincronización bidireccional automática de clientes, propuestas e invoices",
+        bullets: [
+          "Clientes sincronizados en tiempo real",
+          "Propuestas convertidas a Estimates en QBO",
+          "Pagos registrados como Invoices automáticamente"
+        ]
+      },
+      stripe: {
+        title: "Stripe Payments",
+        desc: "Acepta pagos online directamente desde tus propuestas y portal del cliente",
+        bullets: [
+          "Links de pago en propuestas",
+          "Suscripciones y pagos recurrentes",
+          "Dashboard financiero unificado"
+        ]
+      },
+      gcal: {
+        title: "Google Calendar",
+        desc: "Sincroniza órdenes de servicio y ejecuciones automáticamente con tu calendario",
+        bullets: [
+          "Órdenes → eventos automáticos",
+          "Recordatorios al equipo",
+          "Vista de agenda del mes"
+        ]
+      },
+      whatsapp: {
+        title: "WhatsApp Business",
+        desc: "Notificaciones automáticas a clientes en cada etapa del proyecto",
+        bullets: [
+          "Estado de orden en tiempo real",
+          "Aprobación de propuestas por WhatsApp",
+          "Recordatorios de pago automáticos"
+        ]
+      },
+      docusign: {
+        title: "DocuSign",
+        desc: "Firma digital de propuestas y contratos desde el portal del cliente",
+        bullets: [
+          "Propuestas con firma electrónica legal",
+          "Contratos firmados en minutos",
+          "Archivo automático de documentos"
+        ]
+      },
+      zapier: {
+        title: "Zapier",
+        desc: "Conecta SignFlow con más de 5,000 apps sin código",
+        bullets: [
+          "Automatizaciones sin límite",
+          "Conecta con tu CRM actual",
+          "Workflows personalizados"
+        ]
+      },
+      ai: {
+        title: "AI Assistant Pro",
+        desc: "Tu consultor de negocios con IA que aprende de tu empresa y predice oportunidades",
+        bullets: [
+          "Generación automática de propuestas por voz",
+          "Predicción de precios óptimos",
+          "Detección de clientes en riesgo de churn",
+          "Recomendaciones de ventas en tiempo real"
+        ],
+        waitlist: "Unirme a la lista de espera",
+        exclusive: "Exclusivo",
+        privateBeta: "Beta Privada",
+        betaPlaces: "Solo 50 lugares disponibles para beta"
+      },
+      notifyMe: "Notificarme",
+      notified: "¡Te avisaremos cuando esté listo!",
+      comingSoon: "Próximamente"
+    }
+  },
+
+  /* ── Banners & Notifications ── */
+  banners: {
+    pastDue: {
+      title: "Tu suscripción tiene un pago pendiente.",
+      desc: "Actualiza tu método de pago para evitar la suspensión del servicio."
+    },
+    planLimit: {
+      reached: "Has alcanzado el límite de {entity} en tu plan {plan}.",
+      near: "Estás usando {current} de {max} {entity} disponibles."
+    }
   },
 
   /* ── Payments ── */
@@ -1777,8 +1891,79 @@ export const es: TranslationKeys = {
       salesValue: "Valor de Propuestas Aprobadas",
       productionStatus: "Trabajos de Producción por Estado",
     },
-  },
-} as const;
+    quickOrders: {
+      title: "Orden de Producción",
+      newTitle: "Nueva Orden de Producción",
+      workshopMode: "Modo rápido de taller",
+      copySuccess: "Resumen copiado al portapapeles",
+      essentials: "Datos esenciales",
+      clientLabel: "Cliente *",
+      projectLabel: "Proyecto *",
+      serviceLabel: "Tipo de servicio",
+      targetDateLabel: "Fecha objetivo",
+      priorityLabel: "Prioridad:",
+      clientPlaceholder: "Nombre del cliente",
+      projectPlaceholder: "Ej: Monument Sign ABC Corp",
+      selectClient: "Seleccionar cliente",
+      orWriteDirect: "O escribir nombre directo",
+      materials: "Materiales",
+      frequentMaterials: "⚡ Materiales frecuentes — clic para agregar",
+      hideCatalog: "Ocultar catálogo completo",
+      searchOthers: "Buscar otros materiales",
+      searchPlaceholder: "Buscar material...",
+      all: "Todos",
+      addCustom: "Agregar material personalizado...",
+      customNamePlaceholder: "Nombre del material",
+      quantity: "Cant",
+      technicalDetails: "Detalles técnicos",
+      productionNotes: "Notas de producción",
+      quickChecklist: "Checklist rápido",
+      measurements: "Medidas",
+      whatsappCopy: "WhatsApp",
+      print: "Imprimir",
+      evidence: "Sin evidencia aún",
+      evidenceDesc: "Usa el botón de cámara para agregar fotos",
+      uploadDesign: "Subir imagen del diseño",
+      deleteConfirm: "¿Eliminar esta orden de producción?",
+      completeConfirm: "¿Confirmas que esta orden está completada?",
+      completeDesc: "El progreso se marcará al 100% y el estado cambiará a 'Completada'.",
+      technician: {
+        subtitle: "Asignaciones activas",
+        sync: "Última sinc",
+        noOrders: "No hay órdenes pendientes asignadas",
+        myTask: "Mi Tarea",
+        details: "Detalles",
+        photos: "Fotos",
+        currentStatus: "Estado Actual",
+        delivery: "Entrega Objetivo",
+        progress: "Progreso",
+        notes: "Notas del Proyecto",
+        techSheet: "Ficha Técnica",
+        evidenceTitle: "Evidencia Fotográfica",
+        photosCount: "fotos",
+        customFields: "Personalizar campos técnicos",
+        advancedFieldsNote: "Personaliza los campos técnicos según tu negocio.",
+        uploading: "Subiendo foto...",
+        uploadSuccess: "Foto subida",
+        uploadError: "Error al subir foto",
+        saveSuccess: "Ficha técnica guardada",
+        saveError: "Error al guardar",
+        notified: "Se te notificará cuando esta integración esté disponible.",
+        nameUpdated: "Nombre actualizado",
+        nameUpdatedDesc: "Tu nombre se guardó correctamente.",
+        settingsSaved: "Configuración guardada",
+        settingsSavedDesc: "La configuración se actualizó correctamente.",
+        settingsRestored: "Configuración restaurada",
+        settingsRestoredDesc: "La configuración fue restaurada a los valores predeterminados.",
+        actions: {
+          start: "Iniciar Orden",
+          finish: "Finalizar Orden",
+          saving: "Guardando...",
+        }
+      }
+    }
+  }
+};
 
 
 

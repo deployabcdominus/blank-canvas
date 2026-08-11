@@ -22,6 +22,7 @@ import { toast as sonnerToast } from "sonner";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 // ── Types ──
 interface NewProductionOrderModalProps {
@@ -85,42 +86,43 @@ const CHECKLIST_ITEMS = [
 // ── Print View Component ──
 const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
   const printRef = useRef<HTMLDivElement>(null);
+  const { t, locale } = useLanguage();
 
   const handlePrint = () => window.print();
 
   const handleCopyText = () => {
     const lines = [
-      `📋 ORDEN DE PRODUCCIÓN`,
-      `Cliente: ${order.client}`,
-      `Proyecto: ${order.project}`,
-      `Fecha: ${new Date().toLocaleDateString('es-ES')}`,
-      `Prioridad: ${order.priority}`,
+      `📋 ${t.production.quickOrders.title.toUpperCase()}`,
+      `${t.production.quickOrders.clientLabel.replace('*', '').trim()}: ${order.client}`,
+      `${t.production.quickOrders.projectLabel.replace('*', '').trim()}: ${order.project}`,
+      `${t.common.date}: ${new Date().toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-US')}`,
+      `${t.production.quickOrders.priorityLabel.replace(':', '').trim()}: ${order.priority}`,
       '',
-      '📦 MATERIALES:',
+      `📦 ${t.production.quickOrders.materials.toUpperCase()}:`,
       ...order.materials.map((m: OrderMaterial) => `  • ${m.name} — ${m.quantity} ${m.unit}`),
       '',
-      order.width || order.height ? `📐 MEDIDAS: ${order.width || '-'}" × ${order.height || '-'}" × ${order.depth || '-'}"` : '',
-      order.notes ? `📝 NOTAS: ${order.notes}` : '',
+      order.width || order.height ? `📐 ${t.common.measurements.toUpperCase()}: ${order.width || '-'}" × ${order.height || '-'}" × ${order.depth || '-'}"` : '',
+      order.notes ? `📝 ${t.common.notes.toUpperCase()}: ${order.notes}` : '',
       '',
-      '✅ CHECKLIST:',
+      `✅ CHECKLIST:`,
       ...order.checklist.map((c: any) => `  ${c.checked ? '☑' : '☐'} ${c.label}`),
     ].filter(Boolean).join('\n');
 
     navigator.clipboard.writeText(lines);
-    sonnerToast.success('Resumen copiado al portapapeles');
+    sonnerToast.success(t.production.quickOrders.copySuccess);
   };
 
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-[800px] max-h-[90vh] p-0 bg-background/90 backdrop-blur-2xl border border-border/30 flex flex-col">
         <div className="px-6 py-4 border-b border-border/20 flex items-center justify-between">
-          <DialogTitle className="text-lg font-semibold">Orden de Producción</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">{t.production.quickOrders.title}</DialogTitle>
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={handleCopyText} className="gap-1.5 text-xs">
-              <Copy className="w-3.5 h-3.5" /> WhatsApp
+              <Copy className="w-3.5 h-3.5" /> {t.production.quickOrders.whatsappCopy}
             </Button>
             <Button size="sm" onClick={handlePrint} className="gap-1.5 text-xs">
-              <Printer className="w-3.5 h-3.5" /> Imprimir
+              <Printer className="w-3.5 h-3.5" /> {t.production.quickOrders.print}
             </Button>
           </div>
         </div>
@@ -129,8 +131,8 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             {/* Header */}
             <div className="flex justify-between items-start border-b border-border/20 pb-4">
               <div>
-                <h2 className="text-xl font-bold">Orden de Producción</h2>
-                <p className="text-sm text-muted-foreground">Fecha: {new Date().toLocaleDateString('es-ES')}</p>
+                <h2 className="text-xl font-bold">{t.production.quickOrders.title}</h2>
+                <p className="text-sm text-muted-foreground">{t.common.date}: {new Date().toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-US')}</p>
               </div>
               <Badge className={order.priority === 'Urgente' ? 'bg-destructive/20 text-destructive' : 'bg-muted'}>
                 {order.priority}
@@ -140,26 +142,26 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             {/* Client info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Cliente</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.production.quickOrders.clientLabel.replace('*', '').trim()}</p>
                 <p className="font-semibold">{order.client}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Proyecto</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.production.quickOrders.projectLabel.replace('*', '').trim()}</p>
                 <p className="font-semibold">{order.project}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Servicio</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.production.quickOrders.serviceLabel}</p>
                 <p>{order.serviceType}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Fecha objetivo</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t.production.quickOrders.targetDateLabel}</p>
                 <p>{order.targetDate || '—'}</p>
               </div>
             </div>
 
             {/* Materials table */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">Materiales</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">{t.production.quickOrders.materials}</h3>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border/30">
@@ -183,7 +185,7 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             {/* Dimensions */}
             {(order.width || order.height) && (
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">Medidas</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">{t.common.measurements}</h3>
                 <p>{order.width || '—'}" × {order.height || '—'}" × {order.depth || '—'}" (pulgadas)</p>
               </div>
             )}
@@ -191,14 +193,14 @@ const PrintView = ({ order, onClose }: { order: any; onClose: () => void }) => {
             {/* Notes */}
             {order.notes && (
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">Notas de producción</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">{t.production.quickOrders.productionNotes}</h3>
                 <p className="text-sm whitespace-pre-wrap">{order.notes}</p>
               </div>
             )}
 
             {/* Checklist */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">Checklist</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-3">{t.production.quickOrders.quickChecklist}</h3>
               <div className="grid grid-cols-3 gap-2">
                 {order.checklist.map((c: any) => (
                   <div key={c.key} className="flex items-center gap-2">
@@ -226,6 +228,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
   const { proposals } = useProposalsQuery(companyId);
   const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
+  const { t } = useLanguage();
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
   const resolvedServices = catalogServices.length > 0 ? catalogServices.map(s => s.label) : serviceTypes;
@@ -381,13 +384,13 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
               <Package className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-base font-semibold">Nueva Orden de Producción</DialogTitle>
-              <p className="text-xs text-muted-foreground">Modo rápido de taller</p>
+              <DialogTitle className="text-base font-semibold">{t.production.quickOrders.newTitle}</DialogTitle>
+              <p className="text-xs text-muted-foreground">{t.production.quickOrders.workshopMode}</p>
             </div>
           </div>
           {selectedMaterials.length > 0 && (
             <Badge className="bg-primary/15 text-primary border border-primary/20 text-xs">
-              {selectedMaterials.length} materiales
+              {selectedMaterials.length} {t.production.quickOrders.materials.toLowerCase()}
             </Badge>
           )}
         </div>
@@ -398,15 +401,15 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
             {/* ═══ ZONE 1: Essential Data ═══ */}
             <section className="space-y-3">
-              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Datos esenciales</h3>
+              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t.production.quickOrders.essentials}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Client */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Cliente *</Label>
+                  <Label className="text-xs">{t.production.quickOrders.clientLabel}</Label>
                   {sentProposals.length > 0 ? (
                     <Select value={selectedClientId} onValueChange={(v) => { setSelectedClientId(v); setCustomClient(''); }}>
                       <SelectTrigger className="bg-muted/30 border-border/20 h-9 text-sm">
-                        <SelectValue placeholder="Seleccionar cliente" />
+                        <SelectValue placeholder={t.production.quickOrders.selectClient} />
                       </SelectTrigger>
                       <SelectContent>
                         {sentProposals.map(p => (
@@ -418,25 +421,25 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                       </SelectContent>
                     </Select>
                   ) : (
-                    <Input value={customClient} onChange={e => setCustomClient(e.target.value)} placeholder="Nombre del cliente" className="bg-muted/30 border-border/20 h-9 text-sm" />
+                    <Input value={customClient} onChange={e => setCustomClient(e.target.value)} placeholder={t.production.quickOrders.clientPlaceholder} className="bg-muted/30 border-border/20 h-9 text-sm" />
                   )}
                   {sentProposals.length > 0 && (
-                    <Input value={customClient} onChange={e => { setCustomClient(e.target.value); setSelectedClientId(''); }} placeholder="O escribir nombre directo" className="bg-muted/20 border-border/10 h-8 text-xs" />
+                    <Input value={customClient} onChange={e => { setCustomClient(e.target.value); setSelectedClientId(''); }} placeholder={t.production.quickOrders.orWriteDirect} className="bg-muted/20 border-border/10 h-8 text-xs" />
                   )}
                 </div>
 
                 {/* Project */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Proyecto *</Label>
-                  <Input value={projectName} onChange={e => setProjectName(e.target.value)} placeholder="Ej: Monument Sign ABC Corp" className="bg-muted/30 border-border/20 h-9 text-sm" />
+                  <Label className="text-xs">{t.production.quickOrders.projectLabel}</Label>
+                  <Input value={projectName} onChange={e => setProjectName(e.target.value)} placeholder={t.production.quickOrders.projectPlaceholder} className="bg-muted/30 border-border/20 h-9 text-sm" />
                 </div>
 
                 {/* Service */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Tipo de servicio</Label>
+                  <Label className="text-xs">{t.production.quickOrders.serviceLabel}</Label>
                   <Select value={serviceType} onValueChange={setServiceType}>
                     <SelectTrigger className="bg-muted/30 border-border/20 h-9 text-sm">
-                      <SelectValue placeholder="Seleccionar" />
+                      <SelectValue placeholder={t.common.select} />
                     </SelectTrigger>
                     <SelectContent>
                       {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -446,7 +449,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
                 {/* Target date */}
                 <DateField
-                  label="Fecha objetivo"
+                  label={t.production.quickOrders.targetDateLabel}
                   value={targetDate}
                   onChange={setTargetDate}
                   minDate={new Date()}
@@ -456,7 +459,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
               {/* Priority toggle */}
               <div className="flex items-center gap-2">
-                <Label className="text-xs">Prioridad:</Label>
+                <Label className="text-xs">{t.production.quickOrders.priorityLabel}</Label>
                 <button
                   onClick={() => setPriority(p => p === 'Normal' ? 'Urgente' : 'Normal')}
                   className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
@@ -473,11 +476,11 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
             {/* ═══ ZONE 2: Materials ═══ */}
             <section className="space-y-3">
-              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Materiales</h3>
+              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t.production.quickOrders.materials}</h3>
 
               {/* Frequent materials - quick add grid */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">⚡ Materiales frecuentes — clic para agregar</p>
+                <p className="text-xs text-muted-foreground mb-2">{t.production.quickOrders.frequentMaterials}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {frequentMaterials.map(mat => {
                     const sel = isSelected(mat.id);
@@ -510,7 +513,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                   className="text-xs text-primary hover:underline flex items-center gap-1"
                 >
                   {showAllMaterials ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  {showAllMaterials ? 'Ocultar catálogo completo' : 'Buscar otros materiales'}
+                  {showAllMaterials ? t.production.quickOrders.hideCatalog : t.production.quickOrders.searchOthers}
                 </button>
 
                 <AnimatePresence>
@@ -526,7 +529,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                         <Input
                           value={materialSearch}
                           onChange={e => setMaterialSearch(e.target.value)}
-                          placeholder="Buscar material..."
+                          placeholder={t.production.quickOrders.searchPlaceholder}
                           className="pl-8 bg-muted/30 border-border/20 h-8 text-xs"
                         />
                       </div>
@@ -539,7 +542,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                             !activeCategoryFilter ? 'bg-primary/15 text-primary border-primary/20' : 'bg-muted/20 text-muted-foreground border-border/15 hover:bg-muted/40'
                           }`}
                         >
-                          Todos
+                          {t.production.quickOrders.all}
                         </button>
                         {CATEGORIES.map(cat => (
                           <button
@@ -580,11 +583,11 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                   value={customMaterialName}
                   onChange={e => setCustomMaterialName(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addCustomMaterial()}
-                  placeholder="Material personalizado..."
+                  placeholder={t.production.quickOrders.addCustom}
                   className="bg-muted/20 border-border/15 h-8 text-xs flex-1"
                 />
                 <Button size="sm" variant="outline" onClick={addCustomMaterial} className="h-8 px-3 text-xs" disabled={!customMaterialName.trim()}>
-                  <Plus className="w-3 h-3 mr-1" /> Agregar
+                  <Plus className="w-3 h-3 mr-1" /> {t.common.add}
                 </Button>
               </div>
 
@@ -592,7 +595,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
               {selectedMaterials.length > 0 && (
                 <div className="space-y-1.5 p-3 rounded-xl bg-muted/10 border border-border/15">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">
-                    Seleccionados ({selectedMaterials.length})
+                    {t.common.selected} ({selectedMaterials.length})
                   </p>
                   {selectedMaterials.map(mat => (
                     <motion.div
@@ -630,33 +633,33 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
             {/* ═══ ZONE 3: Technical Details ═══ */}
             <section className="space-y-3">
-              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Detalles técnicos</h3>
+              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t.production.quickOrders.technicalDetails}</h3>
 
               {/* Dimensions */}
               <div>
-                <Label className="text-xs mb-1.5 block">Medidas (pulgadas)</Label>
+                <Label className="text-xs mb-1.5 block">{t.production.quickOrders.measurements} (in)</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  <Input value={width} onChange={e => setWidth(e.target.value)} placeholder="Ancho" className="bg-muted/30 border-border/20 h-8 text-xs" />
-                  <Input value={height} onChange={e => setHeight(e.target.value)} placeholder="Alto" className="bg-muted/30 border-border/20 h-8 text-xs" />
-                  <Input value={depth} onChange={e => setDepth(e.target.value)} placeholder="Prof." className="bg-muted/30 border-border/20 h-8 text-xs" />
+                  <Input value={width} onChange={e => setWidth(e.target.value)} placeholder={t.common.width} className="bg-muted/30 border-border/20 h-8 text-xs" />
+                  <Input value={height} onChange={e => setHeight(e.target.value)} placeholder={t.common.height} className="bg-muted/30 border-border/20 h-8 text-xs" />
+                  <Input value={depth} onChange={e => setDepth(e.target.value)} placeholder={t.common.depth} className="bg-muted/30 border-border/20 h-8 text-xs" />
                 </div>
               </div>
 
               {/* Notes */}
               <div className="space-y-1.5">
-                <Label className="text-xs">Notas de producción</Label>
-                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Instrucciones, observaciones..." className="bg-muted/30 border-border/20 min-h-[60px] resize-none text-xs" />
+                <Label className="text-xs">{t.production.quickOrders.productionNotes}</Label>
+                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder={t.common.notes + "..."} className="bg-muted/30 border-border/20 min-h-[60px] resize-none text-xs" />
               </div>
 
               {/* Folder path */}
               <div className="space-y-1.5">
-                <Label className="text-xs">Carpeta de red</Label>
+                <Label className="text-xs">{t.settings.general.customDomainLabel}</Label>
                 <Input value={folderPath} onChange={e => setFolderPath(e.target.value)} placeholder="\\dropbox\The Sign Space\Projects\..." className="bg-muted/20 border-border/15 h-8 text-xs font-mono" />
               </div>
 
               {/* Checklist */}
               <div>
-                <Label className="text-xs mb-2 block">Checklist rápido</Label>
+                <Label className="text-xs mb-2 block">{t.production.quickOrders.quickChecklist}</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {checklist.map(item => (
                     <button
@@ -685,13 +688,13 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
         {/* ── FOOTER ── */}
         <div className="shrink-0 px-6 py-3 border-t border-border/20 bg-background/60 backdrop-blur-xl flex flex-col-reverse sm:flex-row sm:items-center gap-2">
           <Button variant="ghost" size="sm" onClick={() => { resetForm(); onClose(); }} className="text-xs sm:mr-auto">
-            Cancelar
+            {t.common.cancel}
           </Button>
           <Button variant="outline" size="sm" onClick={() => createOrder(true)} className="text-xs gap-1.5">
-            <Printer className="w-3.5 h-3.5" /> Crear y Ver
+            <Printer className="w-3.5 h-3.5" /> {t.common.create} & {t.common.view}
           </Button>
           <Button size="sm" onClick={() => createOrder(false)} className="text-xs gap-1.5 bg-primary">
-            <Plus className="w-3.5 h-3.5" /> Crear Orden
+            <Plus className="w-3.5 h-3.5" /> {t.common.create} {t.production.quickOrders.title}
           </Button>
         </div>
       </DialogContent>

@@ -395,6 +395,13 @@ export const en = {
     total: "Total",
     amount: "Amount",
     value: "Value",
+    width: "Width",
+    height: "Height",
+    depth: "Depth",
+    measurements: "Measurements",
+    select: "Select",
+    selected: "Selected",
+    view: "View",
   },
 
   /* ── Navigation / Sidebar ── */
@@ -644,6 +651,9 @@ export const en = {
   settings: {
     title: "Configuration Hub",
     subtitle: "Manage your system settings",
+    general: {
+      customDomainLabel: "Network Folder / Project Path",
+    },
     tabs: {
       profile: "Profile",
       organization: "Organization",
@@ -732,6 +742,23 @@ export const en = {
     domains: {
       title: "Custom Domains & Email",
       subtitle: "Manage your brand identity and professional email sending.",
+      active: "Active",
+      primaryDomain: "Primary domain for your platform and public links.",
+      visit: "Visit",
+      emailConfig: "Email Configuration",
+      businessEmail: "Business Email (SMTP/DNS)",
+      businessEmailDesc: "Configure your domain to send professional emails to clients.",
+      configure: "Configure",
+      setupTitle: "Email Setup",
+      setupDesc: "Opening secure domain configuration...",
+      dnsNote: "Domain changes require DNS verification and may take up to 24-48 hours to propagate globally.",
+      companyDetails: "Company Details",
+      companyDetailsDesc: "Public information for your signage business.",
+      publicEmail: "Public Email",
+      publicPhone: "Public Phone",
+      businessAddress: "Business Address",
+      autoCreateOrders: "Auto-create Production Orders",
+      autoCreateOrdersDesc: "Automatically generate orders when proposals are approved.",
     },
     catalogs: {
       title: "System Catalogs",
@@ -815,6 +842,93 @@ export const en = {
         },
       },
     },
+    integrations: {
+      title: "Integrations",
+      subtitle: "Connect your favorite tools",
+      quickbooks: {
+        title: "QuickBooks Online",
+        desc: "Automatic two-way sync for clients, proposals, and invoices",
+        bullets: [
+          "Real-time synced clients",
+          "Proposals converted to Estimates in QBO",
+          "Payments recorded as Invoices automatically"
+        ]
+      },
+      stripe: {
+        title: "Stripe Payments",
+        desc: "Accept online payments directly from your proposals and client portal",
+        bullets: [
+          "Payment links in proposals",
+          "Subscriptions and recurring payments",
+          "Unified financial dashboard"
+        ]
+      },
+      gcal: {
+        title: "Google Calendar",
+        desc: "Automatically sync work orders and executions with your calendar",
+        bullets: [
+          "Work orders → automatic events",
+          "Team reminders",
+          "Monthly agenda view"
+        ]
+      },
+      whatsapp: {
+        title: "WhatsApp Business",
+        desc: "Automatic notifications to clients at every project stage",
+        bullets: [
+          "Real-time order status",
+          "Proposal approval via WhatsApp",
+          "Automatic payment reminders"
+        ]
+      },
+      docusign: {
+        title: "DocuSign",
+        desc: "Digital signature for proposals and contracts from the client portal",
+        bullets: [
+          "Proposals with legal e-signature",
+          "Contracts signed in minutes",
+          "Automatic document archiving"
+        ]
+      },
+      zapier: {
+        title: "Zapier",
+        desc: "Connect SignFlow with over 5,000 apps without code",
+        bullets: [
+          "Unlimited automations",
+          "Connect with your current CRM",
+          "Custom workflows"
+        ]
+      },
+      ai: {
+        title: "AI Assistant Pro",
+        desc: "Your AI business consultant that learns from your company and predicts opportunities",
+        bullets: [
+          "Automatic voice-based proposal generation",
+          "Optimal price prediction",
+          "Churn risk detection",
+          "Real-time sales recommendations"
+        ],
+        waitlist: "Join the waitlist",
+        exclusive: "Exclusive",
+        privateBeta: "Private Beta",
+        betaPlaces: "Only 50 places available for beta"
+      },
+      notifyMe: "Notify me",
+      notified: "We'll let you know when it's ready!",
+      comingSoon: "Coming Soon"
+    }
+  },
+
+  /* ── Banners & Notifications ── */
+  banners: {
+    pastDue: {
+      title: "Your subscription has a pending payment.",
+      desc: "Please update your payment method to avoid service suspension."
+    },
+    planLimit: {
+      reached: "You have reached the {plan} plan limit for {entity}.",
+      near: "You are using {current} of {max} available {entity}."
+    }
   },
 
   /* ── Payments ── */
@@ -1775,7 +1889,78 @@ export const en = {
       salesValue: "Approved Proposals Value",
       productionStatus: "Production Jobs by Status",
     },
-  },
+    quickOrders: {
+      title: "Production Order",
+      newTitle: "New Production Order",
+      workshopMode: "Workshop Fast Mode",
+      copySuccess: "Summary copied to clipboard",
+      essentials: "Essential Data",
+      clientLabel: "Client *",
+      projectLabel: "Project *",
+      serviceLabel: "Service Type",
+      targetDateLabel: "Target Date",
+      priorityLabel: "Priority:",
+      clientPlaceholder: "Client name",
+      projectPlaceholder: "e.g. Monument Sign ABC Corp",
+      selectClient: "Select client",
+      orWriteDirect: "Or write name directly",
+      materials: "Materials",
+      frequentMaterials: "⚡ Frequent materials — click to add",
+      hideCatalog: "Hide full catalog",
+      searchOthers: "Search other materials",
+      searchPlaceholder: "Search material...",
+      all: "All",
+      addCustom: "Add custom material...",
+      customNamePlaceholder: "Material name",
+      quantity: "Qty",
+      technicalDetails: "Technical details",
+      productionNotes: "Production notes",
+      quickChecklist: "Quick checklist",
+      measurements: "Measurements",
+      whatsappCopy: "WhatsApp",
+      print: "Print",
+      evidence: "No evidence yet",
+      evidenceDesc: "Use camera button to add photos",
+      uploadDesign: "Upload design image",
+      deleteConfirm: "Delete this production order?",
+      completeConfirm: "Confirm this order is completed?",
+      completeDesc: "Progress will be set to 100% and status will change to 'Completed'.",
+      technician: {
+        subtitle: "Active assignments",
+        sync: "Last sync",
+        noOrders: "No pending orders assigned",
+        myTask: "My Task",
+        details: "Details",
+        photos: "Photos",
+        currentStatus: "Current Status",
+        delivery: "Target Delivery",
+        progress: "Progress",
+        notes: "Project Notes",
+        techSheet: "Technical Sheet",
+        evidenceTitle: "Photo Evidence",
+        photosCount: "photos",
+        customFields: "Customize technical fields",
+        advancedFieldsNote: "Customize technical fields for your business.",
+        uploading: "Uploading photo...",
+        uploadSuccess: "Photo uploaded",
+        uploadError: "Error uploading photo",
+        saveSuccess: "Technical sheet saved",
+        saveError: "Error saving",
+        notified: "You will be notified when this integration is available.",
+        nameUpdated: "Name updated",
+        nameUpdatedDesc: "Your name was saved successfully.",
+        settingsSaved: "Settings saved",
+        settingsSavedDesc: "Settings updated successfully.",
+        settingsRestored: "Settings restored",
+        settingsRestoredDesc: "Settings have been restored to defaults.",
+        actions: {
+          start: "Start Order",
+          finish: "Finish Order",
+          saving: "Saving...",
+        }
+      }
+    }
+  }
 };
 
 

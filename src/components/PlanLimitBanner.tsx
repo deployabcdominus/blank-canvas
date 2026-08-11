@@ -4,20 +4,6 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-const ENTITY_LABELS_ES: Record<string, string> = {
-  work_orders: "órdenes de trabajo",
-  leads: "leads",
-  users: "usuarios",
-  proposals: "propuestas",
-};
-
-const ENTITY_LABELS_EN: Record<string, string> = {
-  work_orders: "work orders",
-  leads: "leads",
-  users: "users",
-  proposals: "proposals",
-};
-
 interface PlanLimitBannerProps {
   entity: "work_orders" | "leads" | "users" | "proposals";
 }
@@ -25,10 +11,9 @@ interface PlanLimitBannerProps {
 export function PlanLimitBanner({ entity }: PlanLimitBannerProps) {
   const limits = usePlanLimits();
   const navigate = useNavigate();
-  const { locale } = useLanguage();
-  const isEn = locale === "en";
+  const { t } = useLanguage();
   const limit = limits[entity];
-  const label = isEn ? ENTITY_LABELS_EN[entity] : ENTITY_LABELS_ES[entity];
+  const label = t.settings.planUsage[entity];
 
   if (limits.loading || limit.isUnlimited) return null;
 
@@ -47,9 +32,9 @@ export function PlanLimitBanner({ entity }: PlanLimitBannerProps) {
         <div className="flex items-center gap-3">
           <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
           <p className="text-sm text-red-300">
-            {isEn
-              ? <>You have reached the <span className="font-semibold">{limits.planName}</span> plan limit for {label}.</>
-              : <>Has alcanzado el límite de {label} en tu plan{" "}<span className="font-semibold">{limits.planName}</span>.</>}
+            {t.banners.planLimit.reached
+              .replace("{plan}", limits.planName)
+              .replace("{entity}", label)}
           </p>
         </div>
         <Button
@@ -59,7 +44,7 @@ export function PlanLimitBanner({ entity }: PlanLimitBannerProps) {
           variant="outline"
         >
           <TrendingUp className="w-3.5 h-3.5 mr-1.5" />
-          Upgrade
+          {t.common.next}
         </Button>
       </div>
     );
@@ -79,9 +64,10 @@ export function PlanLimitBanner({ entity }: PlanLimitBannerProps) {
       >
         <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
         <p className="text-sm text-amber-300">
-          {isEn
-            ? <>You are using <span className="font-semibold">{limit.current}</span> of{" "}<span className="font-semibold">{limit.max}</span> available {label}.</>
-            : <>Estás usando <span className="font-semibold">{limit.current}</span> de{" "}<span className="font-semibold">{limit.max}</span> {label} disponibles.</>}
+          {t.banners.planLimit.near
+            .replace("{current}", limit.current.toString())
+            .replace("{max}", limit.max.toString())
+            .replace("{entity}", label)}
         </p>
       </div>
     );

@@ -2,10 +2,12 @@ import { motion } from "framer-motion";
 import { CreditCard } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export const GracePeriodBanner = () => {
   const { subscriptionStatus } = useSubscription();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   if (subscriptionStatus !== "past_due") return null;
 
@@ -19,9 +21,9 @@ export const GracePeriodBanner = () => {
       <div className="flex items-center gap-3">
         <CreditCard className="w-4 h-4 text-amber-400 flex-shrink-0" />
         <p className="text-sm text-amber-200">
-          <span className="font-medium">Tu suscripción tiene un pago pendiente.</span>{" "}
+          <span className="font-medium">{t.banners.pastDue.title}</span>{" "}
           <span className="text-amber-200/70">
-            Actualiza tu método de pago para evitar la suspensión del servicio.
+            {t.banners.pastDue.desc}
           </span>
         </p>
       </div>
