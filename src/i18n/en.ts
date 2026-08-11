@@ -1839,9 +1839,6 @@ export const en = {
   }
 };
 
-
-
-
 // Use a deep string type so both locales can have different values
 type DeepStringify<T> = T extends string
   ? string
