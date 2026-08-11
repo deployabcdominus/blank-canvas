@@ -409,7 +409,6 @@ export const en = {
     saving: "Saving...",
     cancel: "Cancel",
   },
-  },
 
   /* ── Navigation / Sidebar ── */
   nav: {
