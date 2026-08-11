@@ -1227,6 +1227,32 @@ export const en = {
     timeline: {
       noSteps: "No steps defined for this order",
       stepsOf: "of {{total},
+
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
+  }
 };
 
 // Use a deep string type so both locales can have different values
