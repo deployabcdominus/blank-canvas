@@ -1907,7 +1907,35 @@ export const en = {
       uploadDesign: "Upload design image",
       deleteConfirm: "Delete this production order?",
       completeConfirm: "Confirm this order is completed?",
-      completeDesc: "Progress will be set to 100% and status will change to 'Completed'."
+      completeDesc: "Progress will be set to 100% and status will change to 'Completed'.",
+      technician: {
+        subtitle: "Active assignments",
+        sync: "Last sync",
+        noOrders: "No pending orders assigned",
+        myTask: "My Task",
+        details: "Details",
+        photos: "Photos",
+        currentStatus: "Current Status",
+        delivery: "Target Delivery",
+        progress: "Progress",
+        notes: "Project Notes",
+        techSheet: "Technical Sheet",
+        evidenceTitle: "Photo Evidence",
+        photosCount: "photos",
+        customFields: "Customize technical fields",
+        advancedFieldsNote: "Customize technical fields for your business.",
+        uploading: "Uploading photo...",
+        uploadSuccess: "Photo uploaded",
+        uploadError: "Error uploading photo",
+        saveSuccess: "Technical sheet saved",
+        saveError: "Error saving",
+        actions: {
+          start: "Start Order",
+          finish: "Finish Order",
+          saving: "Saving...",
+        }
+      }
+    }
     }
   },
 };

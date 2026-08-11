@@ -1909,7 +1909,35 @@ export const es: TranslationKeys = {
       uploadDesign: "Subir imagen del diseño",
       deleteConfirm: "¿Eliminar esta orden de producción?",
       completeConfirm: "¿Confirmas que esta orden está completada?",
-      completeDesc: "El progreso se marcará al 100% y el estado cambiará a 'Completada'."
+      completeDesc: "El progreso se marcará al 100% y el estado cambiará a 'Completada'.",
+      technician: {
+        subtitle: "Asignaciones activas",
+        sync: "Última sinc",
+        noOrders: "No hay órdenes pendientes asignadas",
+        myTask: "Mi Tarea",
+        details: "Detalles",
+        photos: "Fotos",
+        currentStatus: "Estado Actual",
+        delivery: "Entrega Objetivo",
+        progress: "Progreso",
+        notes: "Notas del Proyecto",
+        techSheet: "Ficha Técnica",
+        evidenceTitle: "Evidencia Fotográfica",
+        photosCount: "fotos",
+        customFields: "Personalizar campos técnicos",
+        advancedFieldsNote: "Personaliza los campos técnicos según tu negocio.",
+        uploading: "Subiendo foto...",
+        uploadSuccess: "Foto subida",
+        uploadError: "Error al subir foto",
+        saveSuccess: "Ficha técnica guardada",
+        saveError: "Error al guardar",
+        actions: {
+          start: "Iniciar Orden",
+          finish: "Finalizar Orden",
+          saving: "Guardando...",
+        }
+      }
+    }
     }
   },
 };
