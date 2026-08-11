@@ -39,48 +39,44 @@ export const PricingSection = () => {
     {
       tier: "start",
       name: "Start",
-      tagline: isEn ? "Freelancers / Self-employed" : "Auto-empleados / Freelance",
+      tagline: t.settings.pricing.taglines.start,
       price: "$29",
       icon: Zap,
       recommended: false,
       priceId: STRIPE_TIERS.start.price_id,
-      features: isEn
-        ? ["CRM + Manual Management", "Up to 3 users", "Standard labels", "File uploads", "Basic security"]
-        : ["CRM + Gestión Manual", "Hasta 3 usuarios", "Etiquetas estándar", "Subida de archivos", "Seguridad básica"],
+      features: t.settings.pricing.features.start,
     },
     {
       tier: "pro",
       name: "Pro",
-      tagline: isEn ? "Small & Medium Businesses" : "Pequeñas y Medianas Empresas",
+      tagline: t.settings.pricing.taglines.pro,
       price: "$79",
       icon: Sparkles,
       recommended: true,
       priceId: STRIPE_TIERS.pro.price_id,
-      features: isEn
-        ? ["Everything in Start, plus:", "Digital signature portal", "Mockup generator", "Advanced automation", "Custom dictionaries", "Daily backup", "Up to 15 users"]
-        : ["Todo en Start, más:", "Portal de firma digital", "Generador de Mockups", "Automatización avanzada", "Diccionarios personalizados", "Backup diario", "Hasta 15 usuarios"],
+      features: t.settings.pricing.features.pro,
     },
     {
       tier: "elite",
       name: "Elite",
-      tagline: isEn ? "Enterprise & Multi-team" : "Empresas con múltiples equipos",
+      tagline: t.settings.pricing.taglines.elite,
       price: "$149",
       icon: Crown,
       recommended: false,
       priceId: STRIPE_TIERS.elite.price_id,
-      features: isEn
-        ? ["Everything in Pro, plus:", "Pro Plans & Annotations", "Unlimited fields", "Subcontractors / Logistics", "API & Webhooks", "Full Audit Logs", "Unlimited users", "Priority support"]
-        : ["Todo en Pro, más:", "Planos y Anotaciones Pro", "Campos ilimitados", "Subcontratistas / Logística", "API y Webhooks", "Audit Logs completos", "Usuarios ilimitados", "Soporte prioritario"],
+      features: t.settings.pricing.features.elite,
     },
   ];
+
+  const { t } = useLanguage();
 
   // Handle Stripe redirect success
   useEffect(() => {
     const stripeResult = searchParams.get("stripe");
     if (stripeResult === "success") {
       toast({
-        title: isEn ? "🎉 Thank you for trusting us!" : "🎉 ¡Gracias por confiar en nosotros!",
-        description: isEn ? "Your plan is now active. Enjoy all features." : "Tu plan ya está activo. Disfruta de todas las funciones.",
+        title: t.settings.pricing.successTitle,
+        description: t.settings.pricing.successDesc,
       });
       checkSubscription();
       searchParams.delete("stripe");
