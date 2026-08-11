@@ -237,7 +237,7 @@ export function SignFlowDashboardView({
                 <MapPin className="text-zinc-700 w-8 h-8" />
               </div>
               <p className="text-[10px] text-zinc-500 text-center uppercase tracking-widest">
-                {t.dashboard.modules.fieldServices.todayCount.replace('{count}', '4')}
+                {t.dashboard?.modules?.fieldServices?.todayCount?.replace?.('{count}', '4') || '4 installations today'}
               </p>
             </div>
           }
