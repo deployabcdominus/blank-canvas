@@ -429,7 +429,7 @@ export default function Settings() {
                   <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-200">
                     <Shield className="w-4 h-4 shrink-0" />
                     <p className="text-xs">
-                      Domain changes require DNS verification and may take up to 24-48 hours to propagate globally.
+                      {t.settings.domains.dnsNote}
                     </p>
                   </div>
                 </CardContent>
@@ -437,13 +437,13 @@ export default function Settings() {
 
               <Card className="glass border-white/10">
                 <CardHeader>
-                  <CardTitle>Company Details</CardTitle>
-                  <CardDescription>Public information for your signage business.</CardDescription>
+                  <CardTitle>{t.settings.domains.companyDetails}</CardTitle>
+                  <CardDescription>{t.settings.domains.companyDetailsDesc}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <Label>Public Email</Label>
+                      <Label>{t.settings.domains.publicEmail}</Label>
                       <Input 
                         value={company?.email || ""} 
                         onChange={(e) => updateCompanySettings({ email: e.target.value })}
@@ -452,7 +452,7 @@ export default function Settings() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Public Phone</Label>
+                      <Label>{t.settings.domains.publicPhone}</Label>
                       <Input 
                         value={company?.phone || ""} 
                         onChange={(e) => updateCompanySettings({ phone: e.target.value })}
@@ -462,7 +462,7 @@ export default function Settings() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Business Address</Label>
+                    <Label>{t.settings.domains.businessAddress}</Label>
                     <Input 
                       value={company?.address || ""} 
                       onChange={(e) => updateCompanySettings({ address: e.target.value })}
@@ -472,8 +472,8 @@ export default function Settings() {
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/[0.02]">
                     <div className="space-y-0.5">
-                      <Label className="text-sm">Auto-create Production Orders</Label>
-                      <p className="text-[11px] text-muted-foreground">Automatically generate orders when proposals are approved.</p>
+                      <Label className="text-sm">{t.settings.domains.autoCreateOrders}</Label>
+                      <p className="text-[11px] text-muted-foreground">{t.settings.domains.autoCreateOrdersDesc}</p>
                     </div>
                     <Switch 
                       checked={(company as any)?.auto_create_production_orders} 
