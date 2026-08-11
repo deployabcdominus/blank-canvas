@@ -1715,6 +1715,16 @@ export const es = {
     },
     subtitle: "Gestión de piso de producción",
     title: "Órdenes de Trabajo",
+    details: {
+      viewDetails: "Ver Detalles",
+      generatePoi: "Generar POI",
+      printSheet: "Imprimir Hoja",
+      noDate: "Sin Fecha",
+      unassigned: "Sin Asignar",
+      qcSigned: "QC Firmado",
+      installed: "Instalado",
+      markComplete: "Marcar Completado",
+    },
   },
   workOrdersRadial: {
     completedLabel: "workOrdersRadial.completedLabel",

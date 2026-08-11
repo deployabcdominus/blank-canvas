@@ -1715,6 +1715,16 @@ export const en = {
     },
     subtitle: "Production floor management",
     title: "Work Orders",
+    details: {
+      viewDetails: "View Details",
+      generatePoi: "Generate POI",
+      printSheet: "Print Sheet",
+      noDate: "No Date",
+      unassigned: "Unassigned",
+      qcSigned: "QC Signed",
+      installed: "Installed",
+      markComplete: "Mark Complete",
+    },
   },
   workOrdersRadial: {
     completedLabel: "workOrdersRadial.completedLabel",
