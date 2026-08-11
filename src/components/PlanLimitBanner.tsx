@@ -4,20 +4,6 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-const ENTITY_LABELS_ES: Record<string, string> = {
-  work_orders: "órdenes de trabajo",
-  leads: "leads",
-  users: "usuarios",
-  proposals: "propuestas",
-};
-
-const ENTITY_LABELS_EN: Record<string, string> = {
-  work_orders: "work orders",
-  leads: "leads",
-  users: "users",
-  proposals: "proposals",
-};
-
 interface PlanLimitBannerProps {
   entity: "work_orders" | "leads" | "users" | "proposals";
 }
@@ -86,9 +72,6 @@ export function PlanLimitBanner({ entity }: PlanLimitBannerProps) {
       </div>
     );
   }
-
-  return null;
-}
 
   return null;
 }
