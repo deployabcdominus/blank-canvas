@@ -2115,6 +2115,3 @@ export const es: TranslationKeys = {
     }
   }
 };
-
-
-
