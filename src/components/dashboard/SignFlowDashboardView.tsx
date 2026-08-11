@@ -164,10 +164,10 @@ export function SignFlowDashboardView({
             animate={{ opacity: 1, x: 0 }}
             className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2"
           >
-            {t.auth.login.welcomeBack}, <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">{userName.split(' ')[0]}</span> 👋
+            {t.auth.login.welcomeBack}, <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">{userName ? userName.split(' ')[0] : ''}</span> 👋
           </motion.h2>
           <p className="text-zinc-500 text-sm font-medium">
-             {t.landing.seo.title.split('|')[0]} • Resumen de operación actual
+             {t.seo.title.split('|')[0]} • Resumen de operación actual
           </p>
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] to-transparent rounded-3xl" />
