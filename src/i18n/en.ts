@@ -1606,7 +1606,7 @@ export const en = {
     existingEntity: "teamActivity.existingEntity",
     newEntity: "teamActivity.newEntity",
     noActivity: "teamActivity.noActivity",
-    timeAgo: "teamActivity.timeAgo",
+    timeAgo: { now: "just now", minutes: "{{count}}m ago", hours: "{{count}}h ago", days: "{{count}}d ago" },
     title: "teamActivity.title",
     viewAll: "teamActivity.viewAll",
   },
