@@ -534,6 +534,7 @@ export const es: TranslationKeys = {
       qcSigned: "QC Firmado",
       installed: "Instalado",
     },
+  }  }
   banners: {
     pastDue: {
       title: "Tu suscripción tiene un pago pendiente.",
