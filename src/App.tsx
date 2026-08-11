@@ -138,18 +138,18 @@ const App = () => {
     <GlobalErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <AuthProvider>
-            <SettingsProvider>
-              <LanguageProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <SettingsProvider>
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
                   <NavigationProgressBar />
                   <AppContent />
                 </BrowserRouter>
-              </LanguageProvider>
-            </SettingsProvider>
-          </AuthProvider>
+              </SettingsProvider>
+            </AuthProvider>
+          </LanguageProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </GlobalErrorBoundary>
