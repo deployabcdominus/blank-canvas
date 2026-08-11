@@ -1938,8 +1938,7 @@ export const es: TranslationKeys = {
         }
       }
     }
-    }
-  },
+  }
 };
 
 
