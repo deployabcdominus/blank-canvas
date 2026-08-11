@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './AuthContext';
 
 export interface AppSettings {
   theme: 'dark';
@@ -36,9 +35,21 @@ export const useSettings = () => {
 };
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
   const [settings, setSettings] = useState<AppSettings>(defaultSettings);
   const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserId(session?.user?.id ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserId(session?.user?.id ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Always enforce dark mode on mount
   useEffect(() => {
@@ -48,7 +59,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   // Load settings from Supabase (only glassEffect is user-configurable)
   useEffect(() => {
     const loadSettings = async () => {
-      if (!user) {
+      if (!userId) {
         setSettings(defaultSettings);
         setIsLoading(false);
         return;
@@ -58,7 +69,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         const { data, error } = await supabase
           .from('user_settings')
           .select('id, user_id, theme, brand_logo, brand_color, glass_effect')
-          .eq('user_id', user.id)
+          .eq('user_id', userId)
           .maybeSingle();
 
         if (error) throw error;
@@ -79,7 +90,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     };
 
     loadSettings();
-  }, [user]);
+  }, [userId]);
 
   // Apply glass effect changes
   useEffect(() => {
@@ -96,7 +107,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const newSettings = { ...settings, ...updates, theme: 'dark' as const };
     setSettings(newSettings);
 
-    if (user) {
+    if (userId) {
       try {
         await supabase
           .from('user_settings')
@@ -104,7 +115,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
             theme: 'dark',
             glass_effect: newSettings.glassEffect,
           })
-          .eq('user_id', user.id);
+          .eq('user_id', userId);
       } catch (error) {
         if (import.meta.env.DEV) console.error('Error updating settings:', error);
       }
@@ -114,7 +125,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const resetToDefaults = async () => {
     setSettings(defaultSettings);
     
-    if (user) {
+    if (userId) {
       try {
         await supabase
           .from('user_settings')
@@ -122,7 +133,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
             theme: 'dark',
             glass_effect: defaultSettings.glassEffect,
           })
-          .eq('user_id', user.id);
+          .eq('user_id', userId);
       } catch (error) {
         if (import.meta.env.DEV) console.error('Error resetting settings:', error);
       }
