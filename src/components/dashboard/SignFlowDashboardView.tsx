@@ -246,10 +246,10 @@ export function SignFlowDashboardView({
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricItem label={(t.dashboard as any)?.metrics?.totalLeads || "Total Leads"} value={leads.length} delta={12} icon={Users} delay={0.4} />
-        <MetricItem label={(t.dashboard as any)?.metrics?.inProduction || "En Producción"} value={stats.production} delta={-5} icon={Layers} delay={0.5} />
-        <MetricItem label={(t.dashboard as any)?.metrics?.monthlySales || "Ventas Mensual"} value={`$${(stats.sales / 1000).toFixed(1)}k`} delta={22} icon={DollarSign} delay={0.6} />
-        <MetricItem label={(t.dashboard as any)?.metrics?.installations || "Instalaciones"} value={stats.installations} delta={0} icon={MapPin} delay={0.7} />
+        <MetricItem label={t.dashboard.metrics.totalLeads} value={leads.length} delta={12} icon={Users} delay={0.4} />
+        <MetricItem label={t.dashboard.metrics.inProduction} value={stats.production} delta={-5} icon={Layers} delay={0.5} />
+        <MetricItem label={t.dashboard.metrics.monthlySales} value={`$${(stats.sales / 1000).toFixed(1)}k`} delta={22} icon={DollarSign} delay={0.6} />
+        <MetricItem label={t.dashboard.metrics.installations} value={stats.installations} delta={0} icon={MapPin} delay={0.7} />
       </div>
 
       {/* Tip */}
@@ -261,10 +261,10 @@ export function SignFlowDashboardView({
       >
         <div className="flex items-center gap-3 text-sm text-zinc-300">
           <CheckCircle2 className="w-5 h-5 text-primary" />
-          <span>{(t.dashboard as any)?.setupTip || "Configura tu dominio personalizado para profesionalizar tu marca."}</span>
+          <span>{t.dashboard.setupTip}</span>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate('/settings?tab=domain')} className="text-primary hover:text-primary">
-          {(t.dashboard as any)?.setupCta || "Configurar"}
+          {t.dashboard.setupCta}
         </Button>
       </motion.div>
     </div>
