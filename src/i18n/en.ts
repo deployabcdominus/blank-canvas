@@ -815,7 +815,6 @@ export const en = {
         },
       },
     },
-    },
     integrations: {
       title: "Integrations",
       subtitle: "Connect your favorite tools",
