@@ -54,7 +54,7 @@ export const ServiceTypesSettings: React.FC = () => {
     setSaving(true);
     try {
       await updateCompanySettings({ service_types: services } as any);
-      toast({ title: isEn ? "Service types saved" : "Tipos de servicio guardados", description: t.common.saveSuccess });
+      toast({ title: t.common.success, description: t.common.saveSuccess });
     } catch (err: any) {
       toast({ title: t.common.error, description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
     } finally {

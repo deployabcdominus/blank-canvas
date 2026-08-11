@@ -58,7 +58,7 @@ export default function Settings() {
   const [savingName, setSavingName] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   
-  const activeTab = searchParams.get('tab') || (isAdmin ? 'configuracion' : 'perfil');
+  const activeTab = searchParams.get('tab') || (isAdmin ? 'organization' : 'perfil');
 
   // Seed default catalog items when admin visits settings
   useSeedCatalogs();
@@ -81,8 +81,8 @@ export default function Settings() {
   const handleSave = () => {
     updateSettings(formData);
     toast({
-      title: t.production.quickOrders.technician.settingsSaved,
-      description: t.production.quickOrders.technician.settingsSavedDesc,
+      title: t.common.success,
+      description: t.common.saveSuccess,
     });
   };
 
@@ -99,9 +99,9 @@ export default function Settings() {
       // Update profiles table
       await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', user.id);
 
-      toast({ title: t.production.quickOrders.technician.nameUpdated, description: t.production.quickOrders.technician.nameUpdatedDesc });
+      toast({ title: t.common.success, description: t.common.saveSuccess });
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
+      toast({ title: t.common.error, description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
     } finally {
       setSavingName(false);
     }
@@ -136,7 +136,7 @@ export default function Settings() {
             {t.settings.tabs.profile}
           </TabsTrigger>
            {isAdmin && !isSuperadmin && (
-            <TabsTrigger value="organizacion">
+            <TabsTrigger value="organization">
               <Building2 className="w-4 h-4 mr-2" />
               {t.settings.tabs.organization}
             </TabsTrigger>
@@ -362,7 +362,127 @@ export default function Settings() {
         </TabsContent>
 
         {isAdmin && !isSuperadmin && (
-          <TabsContent value="domains">
+          <TabsContent value="organization">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t.settings.org.title}</CardTitle>
+                  <CardDescription>
+                    {t.settings.org.subtitle}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>{t.settings.org.logo}</Label>
+                      <div className="flex items-center gap-6">
+                        <div className="relative group">
+                          <div className="w-24 h-24 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center overflow-hidden transition-all group-hover:border-primary/50">
+                            {company?.logo_url ? (
+                              <img 
+                                src={company.logo_url} 
+                                alt="Logo" 
+                                className="w-full h-full object-contain p-2"
+                              />
+                            ) : (
+                              <ImageIcon className="w-8 h-8 text-zinc-600" />
+                            )}
+                          </div>
+                          <Label
+                            htmlFor="logo-upload"
+                            className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-2xl"
+                          >
+                            <Upload className="w-6 h-6 text-white" />
+                          </Label>
+                          <input
+                            id="logo-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file || !company?.id) return;
+                              
+                              setUploadingLogo(true);
+                              try {
+                                const fileExt = file.name.split('.').pop();
+                                const filePath = `${company.id}/logo.${fileExt}`;
+                                
+                                const { error: uploadError } = await supabase.storage
+                                  .from('company-assets')
+                                  .upload(filePath, file, { upsert: true });
+                                  
+                                if (uploadError) throw uploadError;
+                                
+                                const { data: { publicUrl } } = supabase.storage
+                                  .from('company-assets')
+                                  .getPublicUrl(filePath);
+                                  
+                                await updateCompanySettings({ logo_url: publicUrl } as any);
+                                toast({ title: t.common.success, description: t.settings.org.logoNote });
+                              } catch (err: any) {
+                                toast({ title: t.common.error, description: err.message, variant: "destructive" });
+                              } finally {
+                                setUploadingLogo(false);
+                              }
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium">{uploadingLogo ? t.settings.org.uploading : t.settings.org.uploadLogo}</p>
+                          <p className="text-xs text-muted-foreground">{t.settings.org.logoNote}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Separator className="bg-white/5" />
+
+                    <div className="space-y-2">
+                      <Label htmlFor="org-name">{t.settings.org.companyName}</Label>
+                      <div className="flex gap-3">
+                        <Input
+                          id="org-name"
+                          value={orgName}
+                          onChange={(e) => setOrgName(e.target.value)}
+                          placeholder={t.settings.org.namePlaceholder}
+                          className="max-w-md h-11 bg-white/[0.03] border-white/10"
+                        />
+                        <Button
+                          onClick={async () => {
+                            if (!orgName.trim()) return;
+                            setSavingOrg(true);
+                            try {
+                              await updateCompanyName(orgName.trim());
+                              toast({ title: t.common.success, description: t.common.saveSuccess });
+                            } catch (err: any) {
+                              toast({ title: t.common.error, description: err.message, variant: "destructive" });
+                            } finally {
+                              setSavingOrg(false);
+                            }
+                          }}
+                          disabled={savingOrg || !orgName.trim() || orgName.trim() === company?.name}
+                          className="h-11 px-6 font-bold"
+                        >
+                          {savingOrg ? (
+                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          ) : (
+                            <Save className="w-4 h-4 mr-2" />
+                          )}
+                          {t.settings.org.save}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <ServiceTypesSettings />
+            </div>
+          </TabsContent>
+        )}
+
+        {isAdmin && (
+          <TabsContent value="configuracion">
             <div className="grid gap-6">
               <Card className="glass overflow-hidden border-white/10">
                 <CardHeader className="pb-4">
