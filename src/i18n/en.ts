@@ -811,6 +811,59 @@ export const en = {
         other: "Other"
       }
     }
+
+    pricing: {
+      title: "Your Subscription",
+      currentPlan: "Current plan:",
+      paymentOverdue: "Payment Overdue",
+      overdueTitle: "Your subscription has a pending payment",
+      overdueSubtitle: "Please update your payment method to avoid service suspension.",
+      updatePayment: "Update Payment Method",
+      manageSub: "Manage Subscription (Invoices, Payment Method)",
+      recommended: "Recommended",
+      current: "Current",
+      perMonth: "/mo",
+      downgrade: "Downgrade",
+      upgrade: "Upgrade",
+      viewUpgrade: "View upgrade plans",
+      successTitle: "🎉 Thank you for trusting us!",
+      successDesc: "Your plan is now active. Enjoy all features.",
+      loginRequired: "You must be logged in",
+      portalError: "Could not open the portal",
+      paymentError: "Could not start payment",
+      plans: {
+        start: {
+          tagline: "Freelancers / Self-employed",
+          features: ["CRM + Manual Management", "Up to 3 users", "Standard labels", "File uploads", "Basic security"],
+        },
+        pro: {
+          tagline: "Small & Medium Businesses",
+          features: ["Everything in Start, plus:", "Digital signature portal", "Mockup generator", "Advanced automation", "Custom dictionaries", "Daily backup", "Up to 15 users"],
+        },
+        elite: {
+          tagline: "Enterprise & Multi-team",
+          features: ["Everything in Pro, plus:", "Pro Plans & Annotations", "Unlimited fields", "Subcontractors / Logistics", "API & Webhooks", "Full Audit Logs", "Unlimited users", "Priority support"],
+        },
+      }
+    },
+    mfa: {
+      title: "Multi-Factor Authentication (MFA)",
+      subtitle: "Add an extra layer of security to your account using an authenticator app.",
+      enabledSuccess: "MFA enabled successfully",
+      invalidCode: "Invalid code. Please try again.",
+      factorRemoved: "MFA factor removed",
+      verified: "Verified",
+      disable: "Disable",
+      notEnabled: "MFA is not enabled",
+      recommend: "We recommend enabling MFA to protect your account from unauthorized access.",
+      enable: "Enable MFA",
+      scanQr: "Scan the QR code with your authenticator app",
+      scanInstructions: "Open Google Authenticator, Authy, or similar and scan this code, then enter the 6-digit verification code below.",
+      verifyAndActivate: "Verify & Activate",
+      cancel: "Cancel",
+      authenticatorApp: "Authenticator App",
+    },
+    }
   },
 
   /* ── Work Orders ── */
