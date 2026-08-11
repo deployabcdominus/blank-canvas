@@ -398,7 +398,7 @@ export const en = {
       totalLeads: "Total Leads",
       inProduction: "In Production",
       monthlySales: "Monthly Sales",
-      installations: "Installations"
+      installations: "Active Projects"
     },
     modules: {
       leads: {
