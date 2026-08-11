@@ -765,10 +765,10 @@ const Index = () => {
                     className="rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl px-6 py-1 data-[state=open]:border-purple-500/15 transition-colors duration-300"
                   >
                     <AccordionTrigger className="text-[15px] font-semibold text-zinc-200 hover:text-white hover:no-underline py-5 [&[data-state=open]>svg]:rotate-180">
-                      {item.q}
+                      {(item as any).q}
                     </AccordionTrigger>
                     <AccordionContent className="text-[14px] text-zinc-400 leading-[1.8] pb-5">
-                      {item.a}
+                      {(item as any).a}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
