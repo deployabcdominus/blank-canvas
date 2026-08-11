@@ -89,7 +89,7 @@ export const PricingSection = () => {
 
   const handleCheckout = async (priceId: string, tier: string) => {
     if (!session?.access_token) {
-      toast({ title: "Error", description: isEn ? "You must be logged in" : "Debes iniciar sesión", variant: "destructive" });
+      toast({ title: t.common.error, description: t.settings.pricing.loginRequired, variant: "destructive" });
       return;
     }
     setLoadingTier(tier);
@@ -103,7 +103,7 @@ export const PricingSection = () => {
         window.open(data.url, "_blank");
       }
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || (isEn ? "Could not start payment" : "No se pudo iniciar el pago"), variant: "destructive" });
+      toast({ title: t.common.error, description: err.message || t.settings.pricing.paymentError, variant: "destructive" });
     } finally {
       setLoadingTier(null);
     }
