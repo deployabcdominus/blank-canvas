@@ -1883,7 +1883,6 @@ export const es: TranslationKeys = {
       }
     }
   }
-};
 
 import { en } from './en';
 
