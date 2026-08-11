@@ -1381,7 +1381,7 @@ export const es = {
     domains: {
       title: "Dominios Personalizados",
       subtitle: "Administra tu identidad de marca y entregabilidad de correo.",
-      active: "settings.domains.active",
+      active: "Activo",
       autoCreateOrders: "settings.domains.autoCreateOrders",
       autoCreateOrdersDesc: "settings.domains.autoCreateOrdersDesc",
       businessAddress: "settings.domains.businessAddress",
