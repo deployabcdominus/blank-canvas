@@ -3,10 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-
-const notify = (toast: ReturnType<typeof useToast>["toast"]) => {
-  toast({ title: "¡Te avisaremos cuando esté listo!" });
-};
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface IntegrationDef {
   icon: React.ReactNode;
@@ -16,57 +13,11 @@ interface IntegrationDef {
   badge: string;
   quarter: string;
   gradientClass: string;
+  onNotify: () => void;
 }
 
-const integrations: IntegrationDef[] = [
-  {
-    icon: <CreditCard className="w-7 h-7" style={{ color: "#635BFF" }} />,
-    title: "Stripe Payments",
-    subtitle: "Acepta pagos online directamente desde tus propuestas y portal del cliente",
-    bullets: ["Links de pago en propuestas", "Suscripciones y pagos recurrentes", "Dashboard financiero unificado"],
-    badge: "Próximamente",
-    quarter: "Q2 2026",
-    gradientClass: "integration-border-stripe",
-  },
-  {
-    icon: <CalendarDays className="w-7 h-7" style={{ color: "#4285F4" }} />,
-    title: "Google Calendar",
-    subtitle: "Sincroniza órdenes de servicio y ejecuciones automáticamente con tu calendario",
-    bullets: ["Órdenes → eventos automáticos", "Recordatorios al equipo", "Vista de agenda del mes"],
-    badge: "Próximamente",
-    quarter: "Q3 2026",
-    gradientClass: "integration-border-gcal",
-  },
-  {
-    icon: <MessageCircle className="w-7 h-7" style={{ color: "#25D366" }} />,
-    title: "WhatsApp Business",
-    subtitle: "Notificaciones automáticas a clientes en cada etapa del proyecto",
-    bullets: ["Estado de orden en tiempo real", "Aprobación de propuestas por WhatsApp", "Recordatorios de pago automáticos"],
-    badge: "Próximamente",
-    quarter: "Q3 2026",
-    gradientClass: "integration-border-whatsapp",
-  },
-  {
-    icon: <FileSignature className="w-7 h-7" style={{ color: "#FFB800" }} />,
-    title: "DocuSign",
-    subtitle: "Firma digital de propuestas y contratos desde el portal del cliente",
-    bullets: ["Propuestas con firma electrónica legal", "Contratos firmados en minutos", "Archivo automático de documentos"],
-    badge: "Próximamente",
-    quarter: "Q4 2026",
-    gradientClass: "integration-border-docusign",
-  },
-  {
-    icon: <Zap className="w-7 h-7" style={{ color: "#FF4A00" }} />,
-    title: "Zapier",
-    subtitle: "Conecta SignFlow con más de 5,000 apps sin código",
-    bullets: ["Automatizaciones sin límite", "Conecta con tu CRM actual", "Workflows personalizados"],
-    badge: "Próximamente",
-    quarter: "2027",
-    gradientClass: "integration-border-zapier",
-  },
-];
-
-function IntegrationCard({ def, onNotify }: { def: IntegrationDef; onNotify: () => void }) {
+function IntegrationCard({ def }: { def: IntegrationDef }) {
+  const { t } = useLanguage();
   return (
     <Card className={`relative overflow-hidden ${def.gradientClass}`}>
       <Badge className="absolute top-3 right-3 bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">
@@ -95,9 +46,9 @@ function IntegrationCard({ def, onNotify }: { def: IntegrationDef; onNotify: () 
             </li>
           ))}
         </ul>
-        <Button variant="outline" className="flex items-center gap-2" onClick={onNotify}>
+        <Button variant="outline" className="flex items-center gap-2" onClick={def.onNotify}>
           <Bell className="w-4 h-4" />
-          Notificarme
+          {t.settings.integrations.notifyMe}
         </Button>
       </CardContent>
     </Card>
@@ -106,13 +57,69 @@ function IntegrationCard({ def, onNotify }: { def: IntegrationDef; onNotify: () 
 
 export default function IntegrationsCards() {
   const { toast } = useToast();
-  const handleNotify = () => notify(toast);
+  const { t } = useLanguage();
+  
+  const handleNotify = () => {
+    toast({ title: t.settings.integrations.notified });
+  };
+
+  const integrations = [
+    {
+      icon: <CreditCard className="w-7 h-7" style={{ color: "#635BFF" }} />,
+      title: t.settings.integrations.stripe.title,
+      subtitle: t.settings.integrations.stripe.desc,
+      bullets: t.settings.integrations.stripe.bullets,
+      badge: t.settings.integrations.comingSoon,
+      quarter: "Q2 2026",
+      gradientClass: "integration-border-stripe",
+      onNotify: handleNotify
+    },
+    {
+      icon: <CalendarDays className="w-7 h-7" style={{ color: "#4285F4" }} />,
+      title: t.settings.integrations.gcal.title,
+      subtitle: t.settings.integrations.gcal.desc,
+      bullets: t.settings.integrations.gcal.bullets,
+      badge: t.settings.integrations.comingSoon,
+      quarter: "Q3 2026",
+      gradientClass: "integration-border-gcal",
+      onNotify: handleNotify
+    },
+    {
+      icon: <MessageCircle className="w-7 h-7" style={{ color: "#25D366" }} />,
+      title: t.settings.integrations.whatsapp.title,
+      subtitle: t.settings.integrations.whatsapp.desc,
+      bullets: t.settings.integrations.whatsapp.bullets,
+      badge: t.settings.integrations.comingSoon,
+      quarter: "Q3 2026",
+      gradientClass: "integration-border-whatsapp",
+      onNotify: handleNotify
+    },
+    {
+      icon: <FileSignature className="w-7 h-7" style={{ color: "#FFB800" }} />,
+      title: t.settings.integrations.docusign.title,
+      subtitle: t.settings.integrations.docusign.desc,
+      bullets: t.settings.integrations.docusign.bullets,
+      badge: t.settings.integrations.comingSoon,
+      quarter: "Q4 2026",
+      gradientClass: "integration-border-docusign",
+      onNotify: handleNotify
+    },
+    {
+      icon: <Zap className="w-7 h-7" style={{ color: "#FF4A00" }} />,
+      title: t.settings.integrations.zapier.title,
+      subtitle: t.settings.integrations.zapier.desc,
+      bullets: t.settings.integrations.zapier.bullets,
+      badge: t.settings.integrations.comingSoon,
+      quarter: "2027",
+      gradientClass: "integration-border-zapier",
+      onNotify: handleNotify
+    },
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Grid: 2 cols desktop, 1 mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* QuickBooks (existing) */}
+        {/* QuickBooks */}
         <Card className="relative overflow-hidden integration-border-qb">
           <Badge className="absolute top-3 right-3 bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">
             Q2 2026
@@ -125,16 +132,16 @@ export default function IntegrationsCards() {
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <CardTitle className="text-lg">QuickBooks Online</CardTitle>
-                  <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 text-xs">Próximamente</Badge>
+                  <CardTitle className="text-lg">{t.settings.integrations.quickbooks.title}</CardTitle>
+                  <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 text-xs">{t.settings.integrations.comingSoon}</Badge>
                 </div>
-                <CardDescription>Sincronización bidireccional automática de clientes, propuestas e invoices</CardDescription>
+                <CardDescription>{t.settings.integrations.quickbooks.desc}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-5">
             <ul className="space-y-2.5">
-              {["Clientes sincronizados en tiempo real", "Propuestas convertidas a Estimates en QBO", "Pagos registrados como Invoices automáticamente"].map((b) => (
+              {t.settings.integrations.quickbooks.bullets.map((b) => (
                 <li key={b} className="flex items-center gap-2.5 text-sm text-muted-foreground">
                   <CheckCircle2 className="w-4 h-4 text-muted-foreground/60 flex-shrink-0" />
                   {b}
@@ -143,22 +150,22 @@ export default function IntegrationsCards() {
             </ul>
             <Button variant="outline" className="flex items-center gap-2" onClick={handleNotify}>
               <Bell className="w-4 h-4" />
-              Notificarme
+              {t.settings.integrations.notifyMe}
             </Button>
           </CardContent>
         </Card>
 
         {/* Dynamic cards */}
         {integrations.map((def) => (
-          <IntegrationCard key={def.title} def={def} onNotify={handleNotify} />
+          <IntegrationCard key={def.title} def={def} />
         ))}
       </div>
 
-      {/* AI Assistant Pro — full width hero card */}
+      {/* AI Assistant Pro */}
       <Card className="relative overflow-hidden integration-ai-hero col-span-full">
         <div className="integration-ai-particles" aria-hidden />
         <Badge className="absolute top-4 right-4 bg-pink-500/20 text-pink-300 border-pink-500/30 text-xs">
-          Exclusivo
+          {t.settings.integrations.ai.exclusive}
         </Badge>
         <CardHeader className="relative z-10">
           <div className="flex items-center gap-4">
@@ -167,23 +174,18 @@ export default function IntegrationsCards() {
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <CardTitle className="text-2xl">AI Assistant Pro</CardTitle>
-                <Badge className="integration-ai-badge text-xs">Beta Privada</Badge>
+                <CardTitle className="text-2xl">{t.settings.integrations.ai.title}</CardTitle>
+                <Badge className="integration-ai-badge text-xs">{t.settings.integrations.ai.privateBeta}</Badge>
               </div>
               <CardDescription className="text-base">
-                Tu consultor de negocios con IA que aprende de tu empresa y predice oportunidades
+                {t.settings.integrations.ai.desc}
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent className="relative z-10 space-y-5">
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {[
-              "Generación automática de propuestas por voz",
-              "Predicción de precios óptimos",
-              "Detección de clientes en riesgo de churn",
-              "Recomendaciones de ventas en tiempo real",
-            ].map((b) => (
+            {t.settings.integrations.ai.bullets.map((b) => (
               <li key={b} className="flex items-center gap-2.5 text-sm text-muted-foreground">
                 <CheckCircle2 className="w-4 h-4 text-purple-400/80 flex-shrink-0" />
                 {b}
@@ -193,9 +195,9 @@ export default function IntegrationsCards() {
           <div className="space-y-2">
             <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white flex items-center gap-2" onClick={handleNotify}>
               <Rocket className="w-5 h-5" />
-              Unirme a la lista de espera
+              {t.settings.integrations.ai.waitlist}
             </Button>
-            <p className="text-xs text-muted-foreground">Solo 50 lugares disponibles para beta</p>
+            <p className="text-xs text-muted-foreground">{t.settings.integrations.ai.betaPlaces}</p>
           </div>
         </CardContent>
       </Card>
