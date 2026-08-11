@@ -653,6 +653,9 @@ export const es: TranslationKeys = {
   settings: {
     title: "Configuración",
     subtitle: "Gestione la configuración del sistema",
+    general: {
+      customDomainLabel: "Carpeta de red / Ruta del proyecto",
+    },
     tabs: {
       profile: "Perfil",
       organization: "Organización",
