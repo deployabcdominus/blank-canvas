@@ -433,8 +433,153 @@ export const es: TranslationKeys = {
     adjustments: "Ajustes",
     platform: "Plataforma",
     fieldServices: "Ejecuciones",
+    organization: "Organización",
     profile: "Perfil",
-    logout: "Salir",
+    logout: "Cerrar sesión",
+  },
+
+  /* ── Settings / Configuration Hub ── */
+  settings: {
+    title: "Configuration Hub",
+    subtitle: "Gestiona la identidad de tu negocio, equipo e integraciones",
+    tabs: {
+      profile: "Perfil",
+      organization: "Organización",
+      storage: "Almacenamiento",
+      configuration: "Configuración",
+      domains: "Dominios",
+      catalogs: "Catálogos",
+      integrations: "Integraciones",
+      notifications: "Notificaciones",
+      subscription: "Suscripción",
+    },
+    organization: {
+      title: "Detalles de la Organización",
+      subtitle: "Información general del negocio para documentos y marca.",
+      serviceTypes: {
+        title: "Tipos de Servicio",
+        subtitle: "Define los tipos de servicio que ofrece tu empresa. Se usan en leads, propuestas y órdenes de trabajo.",
+        placeholder: "Nuevo tipo de servicio...",
+        add: "Agregar",
+        save: "Guardar Tipos de Servicio",
+        saving: "Guardando...",
+      },
+      companyLogo: {
+        title: "Logo de la Empresa",
+        subtitle: "Usado para el portal de clientes y documentos.",
+        upload: "Subir Logo",
+      },
+      companyName: "Nombre de la Empresa",
+      saveCompany: "Guardar Nombre de la Organización",
+    },
+    catalogs: {
+      title: "Gestor de Catálogos",
+      subtitle: "Gestiona listas de opciones para los flujos de trabajo de tu negocio.",
+      leads: {
+        sources: "Fuentes de Leads",
+        sourcesDesc: "¿De dónde vienen tus prospectos?",
+        categories: "Categorías de Leads",
+        categoriesDesc: "Agrupa tus leads por línea de negocio.",
+      },
+      production: {
+        categories: "Categorías de Producción",
+        categoriesDesc: "Agrupa tus órdenes de producción.",
+      },
+      add: "Agregar",
+      adding: "Agregando...",
+      save: "Guardar",
+      cancel: "Cancelar",
+      updating: "Actualizando...",
+      updated: "Actualizado correctamente",
+      errorAdding: "Error al agregar",
+      errorUpdating: "Error al actualizar",
+      errorDeleting: "Error al eliminar",
+      defaultDeleteError: "Los valores predeterminados no se pueden eliminar",
+      placeholder: "Agregar nuevo {{type}}...",
+      empty: "No hay ítems. Agrega el primero abajo.",
+      note: "Presiona Enter o el botón para agregar. Los valores con 🔒 son predeterminados y no se pueden eliminar.",
+      deleted: '"{{label}}" eliminado',
+    },
+    integrations: {
+      title: "Integraciones",
+      subtitle: "Conecta SignFlow con tus herramientas actuales.",
+      comingSoon: "Próximamente",
+      notifyMe: "Notificarme",
+      notified: "Se te notificará cuando esta integración esté disponible.",
+      quickbooks: {
+        title: "QuickBooks Online",
+        desc: "Sincroniza facturas y pagos automáticamente.",
+        bullets: ["Facturación automatizada", "Sincronización de pagos", "Cálculo de impuestos"]
+      },
+      stripe: {
+        title: "Pagos con Stripe",
+        desc: "Acepta pagos digitales en tus propuestas.",
+        bullets: ["Pagos con tarjeta", "Apple/Google Pay", "Liquidación directa"]
+      },
+      gcal: {
+        title: "Google Calendar",
+        desc: "Sincroniza instalaciones y visitas.",
+        bullets: ["Sincronización en tiempo real", "Visibilidad para el equipo", "Evita duplicados"]
+      },
+      whatsapp: {
+        title: "WhatsApp Business",
+        desc: "Notificaciones automáticas de estado a clientes.",
+        bullets: ["Alertas de estado", "Link directo de chat", "Compartir multimedia"]
+      },
+      docusign: {
+        title: "DocuSign / HelloSign",
+        desc: "Firma electrónica legalmente vinculante.",
+        bullets: ["Validez legal", "Pista de auditoría", "Firma desde móvil"]
+      },
+      zapier: {
+        title: "Zapier",
+        desc: "Conecta con más de 5000 apps.",
+        bullets: ["Disparadores personalizados", "Flujos automatizados", "Exportación de datos"]
+      },
+      ai: {
+        title: "Asistente SignFlow AI",
+        desc: "Inteligencia autónoma para tu negocio.",
+        bullets: ["Precios predictivos", "Comandos de voz", "Agenda inteligente"],
+        exclusive: "Función Exclusiva Elite",
+        privateBeta: "Beta Privada",
+        waitlist: "Unirse a la lista",
+        betaPlaces: "Plazas limitadas de beta para miembros Elite."
+      }
+    },
+    domains: {
+      title: "Dominios Personalizados",
+      subtitle: "Gestiona tu identidad de marca y entregabilidad de correo.",
+      active: "Activo",
+      primaryDomain: "Dominio Principal",
+      visit: "Visitar",
+      emailConfig: "Configuración de Email",
+      emailConfigDesc: "Configura SPF/DKIM para enviar correos desde tu propio dominio.",
+      addDomain: "Agregar Dominio",
+    },
+    profile: {
+      title: "Configuración de Perfil",
+      subtitle: "Gestiona tu información personal y preferencias.",
+      subtitleSuperadmin: "Configuración del Administrador Global de la Plataforma.",
+      fullName: "Nombre Completo",
+      fullNamePlaceholder: "Tu nombre completo",
+      saveName: "Guardar Nombre",
+      saving: "Guardando...",
+      currentContext: "Contexto Actual",
+      platformSuperadmin: "Superadmin de Plataforma",
+      company: "Empresa / Tenant",
+      notAvailable: "No disponible",
+      adminOnlyNote: "Solo los administradores pueden cambiar los datos de la empresa.",
+      role: "Rol de Usuario",
+      preferredLanguage: "Idioma Preferido",
+      languageSubtitle: "La interfaz se adaptará a tu elección.",
+      credentials: "Credenciales",
+      password: "Contraseña",
+      changePassword: "Cambiar Contraseña",
+      resetPasswordNote: "Enviaremos un enlace de recuperación a tu email.",
+      emailSent: "Correo enviado",
+      accountCreated: "Cuenta Creada",
+      userId: "ID de Usuario",
+    },
   },
 
   /* ── Dashboard ── */
