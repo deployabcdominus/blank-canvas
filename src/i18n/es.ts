@@ -1496,9 +1496,9 @@ export const es = {
     pricing: {
       currentPlan: "settings.pricing.currentPlan",
       features: {
-        elite: "settings.pricing.features.elite",
-        pro: "settings.pricing.features.pro",
-        start: "settings.pricing.features.start",
+        elite: ["Todo en Pro", "Portal Marca Blanca", "Briefing de Operaciones IA", "Soporte Prioritario"],
+        pro: ["Todo en Start", "Mockups Avanzados", "Mapa de Instalaciones", "Usuarios Ilimitados"],
+        start: ["Gestión de Leads", "Propuestas Básicas", "Seguimiento de Producción", "Hasta 5 Usuarios"],
       },
       loginRequired: "settings.pricing.loginRequired",
       paymentError: "settings.pricing.paymentError",
@@ -1507,9 +1507,9 @@ export const es = {
       successDesc: "settings.pricing.successDesc",
       successTitle: "settings.pricing.successTitle",
       taglines: {
-        elite: "settings.pricing.taglines.elite",
-        pro: "settings.pricing.taglines.pro",
-        start: "settings.pricing.taglines.start",
+        elite: "Máximo rendimiento para líderes de la industria",
+        pro: "Operaciones escalables para equipos profesionales",
+        start: "Ideal para talleres en crecimiento",
       },
       title: "settings.pricing.title",
     },

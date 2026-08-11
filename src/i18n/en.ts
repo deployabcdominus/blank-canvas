@@ -1496,9 +1496,9 @@ export const en = {
     pricing: {
       currentPlan: "settings.pricing.currentPlan",
       features: {
-        elite: "settings.pricing.features.elite",
-        pro: "settings.pricing.features.pro",
-        start: "settings.pricing.features.start",
+        elite: ["Everything in Pro", "White-label Portal", "AI Operations Briefing", "Priority Support"],
+        pro: ["Everything in Start", "Advanced Mockups", "Installation Mapping", "Unlimited Users"],
+        start: ["Lead Management", "Basic Proposals", "Production Tracking", "Up to 5 Users"],
       },
       loginRequired: "settings.pricing.loginRequired",
       paymentError: "settings.pricing.paymentError",
@@ -1507,9 +1507,9 @@ export const en = {
       successDesc: "settings.pricing.successDesc",
       successTitle: "settings.pricing.successTitle",
       taglines: {
-        elite: "settings.pricing.taglines.elite",
-        pro: "settings.pricing.taglines.pro",
-        start: "settings.pricing.taglines.start",
+        elite: "Maximum performance for industry leaders",
+        pro: "Scalable operations for professional teams",
+        start: "Perfect for growing sign shops",
       },
       title: "settings.pricing.title",
     },
