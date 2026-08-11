@@ -651,6 +651,9 @@ export const en = {
   settings: {
     title: "Configuration Hub",
     subtitle: "Manage your system settings",
+    general: {
+      customDomainLabel: "Network Folder / Project Path",
+    },
     tabs: {
       profile: "Profile",
       organization: "Organization",
