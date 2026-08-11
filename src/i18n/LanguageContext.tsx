@@ -81,23 +81,23 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const t = dictionaries[locale];
     
     // Update title
-    document.title = t.seo.title;
+    document.title = (t.seo as any)?.title || "SignFlow";
     
     // Update meta description
     const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute("content", t.seo.description);
+    if (metaDesc) metaDesc.setAttribute("content", (t.seo as any)?.description || "");
     
     // Update OG tags
     const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute("content", t.seo.title);
+    if (ogTitle) ogTitle.setAttribute("content", (t.seo as any)?.title || "SignFlow");
     const ogDesc = document.querySelector('meta[property="og:description"]');
-    if (ogDesc) ogDesc.setAttribute("content", t.seo.description);
+    if (ogDesc) ogDesc.setAttribute("content", (t.seo as any)?.description || "");
     
     // Update Twitter tags
     const twTitle = document.querySelector('meta[name="twitter:title"]');
-    if (twTitle) twTitle.setAttribute("content", t.seo.title);
+    if (twTitle) twTitle.setAttribute("content", (t.seo as any)?.title || "SignFlow");
     const twDesc = document.querySelector('meta[name="twitter:description"]');
-    if (twDesc) twDesc.setAttribute("content", t.seo.description);
+    if (twDesc) twDesc.setAttribute("content", (t.seo as any)?.description || "");
     if (import.meta.env.DEV) {
       validateTranslations();
     }
