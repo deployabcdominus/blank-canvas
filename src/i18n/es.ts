@@ -1725,6 +1725,8 @@ export const es = {
       installed: "Instalado",
       markComplete: "Marcar Completado",
     },
+      markComplete: "Marcar Completado",
+    },
   },
   workOrdersRadial: {
     completedLabel: "workOrdersRadial.completedLabel",
