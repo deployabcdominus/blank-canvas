@@ -259,7 +259,7 @@ export function SignFlowDashboardView({
       >
         <div className="flex items-center gap-3 text-sm text-zinc-300">
           <CheckCircle2 className="w-5 h-5 text-primary" />
-          <span>Configura tu dominio personalizado para profesionalizar tu marca.</span>
+          <span>{(t.dashboard as any)?.setupTip || "Configura tu dominio personalizado para profesionalizar tu marca."}</span>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate('/settings?tab=domain')} className="text-primary hover:text-primary">
           Configurar
