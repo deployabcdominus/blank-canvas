@@ -1024,6 +1024,21 @@
         title: "settings.integrations.zapier.title",
       },
     },
+    mfa: {
+      authenticatorApp: "settings.mfa.authenticatorApp",
+      disable: "settings.mfa.disable",
+      enable: "settings.mfa.enable",
+      notEnabled: "settings.mfa.notEnabled",
+      recommendation: "settings.mfa.recommendation",
+      subtitle: "settings.mfa.subtitle",
+      title: "settings.mfa.title",
+      toasts: {
+        enabled: "settings.mfa.toasts.enabled",
+        invalidCode: "settings.mfa.toasts.invalidCode",
+        removed: "settings.mfa.toasts.removed",
+      },
+      verified: "settings.mfa.verified",
+    },
     org: {
       changeLogo: "settings.org.changeLogo",
       companyName: "settings.org.companyName",
