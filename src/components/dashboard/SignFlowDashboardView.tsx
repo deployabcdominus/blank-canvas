@@ -167,21 +167,21 @@ export function SignFlowDashboardView({
             {t.auth.login.welcomeBack}, <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">{userName ? userName.split(' ')[0] : ''}</span> 👋
           </motion.h2>
           <p className="text-zinc-500 text-sm font-medium">
-             {((t.seo as any)?.title || "SignFlow").split('|')[0]} • {(t.dashboard as any)?.heroSubtitle || "Resumen de operación actual"}
+             {((t.seo as any)?.title || "SignFlow").split('|')[0]} • {t.dashboard.heroSubtitle}
           </p>
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] to-transparent rounded-3xl" />
       </motion.div>
-
+      
       {/* Main Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <ModuleCard 
           step={1}
           title={t.nav.leads}
-          subtitle="Gestiona tu pipeline de ventas. Califica y convierte nuevos prospectos."
-          badge="Activo"
+          subtitle={t.dashboard.modules.leads.subtitle}
+          badge={t.dashboard.modules.leads.badge}
           badgeVariant="success"
-          cta={leads.length > 0 ? "Ver Leads" : "Crear Lead"}
+          cta={leads.length > 0 ? t.dashboard.modules.leads.ctaView : t.dashboard.modules.leads.ctaCreate}
           onClick={() => navigate(leads.length > 0 ? '/leads' : '/leads?new=true')}
           delay={0.1}
           preview={
@@ -199,19 +199,19 @@ export function SignFlowDashboardView({
         <ModuleCard 
           step={2}
           title={t.nav.production}
-          subtitle="Monitoreo en tiempo real. Calidad y plazos bajo control."
-          badge="En Progreso"
+          subtitle={t.dashboard.modules.production.subtitle}
+          badge={t.dashboard.modules.production.badge}
           badgeVariant="warning"
-          cta="Ver Producción"
+          cta={t.dashboard.modules.production.cta}
           onClick={() => navigate('/work-orders')}
           delay={0.2}
           preview={
             <div className="grid grid-cols-2 gap-2 p-3 h-full">
               {[
-                { label: 'Activas', val: stats.production, color: 'text-white' },
-                { label: 'A Tiempo', val: '92%', color: 'text-emerald-400' },
-                { label: 'Listas', val: '14', color: 'text-sky-400' },
-                { label: 'Promedio', val: '4.2d', color: 'text-zinc-300' }
+                { label: t.dashboard.modules.production.stats.active, val: stats.production, color: 'text-white' },
+                { label: t.dashboard.modules.production.stats.onTime, val: '92%', color: 'text-emerald-400' },
+                { label: t.dashboard.modules.production.stats.ready, val: '14', color: 'text-sky-400' },
+                { label: t.dashboard.modules.production.stats.average, val: '4.2d', color: 'text-zinc-300' }
               ].map(s => (
                 <div key={s.label} className="bg-white/[0.03] border border-white/[0.05] p-2 rounded-xl flex flex-col justify-center items-center">
                   <span className={`text-lg font-black ${s.color}`}>{s.val}</span>
@@ -225,10 +225,10 @@ export function SignFlowDashboardView({
         <ModuleCard 
           step={3}
           title={t.nav.fieldServices}
-          subtitle="Instalaciones y logística. Visibilidad total en campo."
-          badge="Programado"
+          subtitle={t.dashboard.modules.fieldServices.subtitle}
+          badge={t.dashboard.modules.fieldServices.badge}
           badgeVariant="info"
-          cta="Ver Instalaciones"
+          cta={t.dashboard.modules.fieldServices.cta}
           onClick={() => navigate('/installation')}
           delay={0.3}
           preview={
@@ -236,7 +236,9 @@ export function SignFlowDashboardView({
               <div className="flex-1 rounded-xl bg-zinc-900 flex items-center justify-center border border-white/[0.05]">
                 <MapPin className="text-zinc-700 w-8 h-8" />
               </div>
-              <p className="text-[10px] text-zinc-500 text-center uppercase tracking-widest">4 instalaciones hoy</p>
+              <p className="text-[10px] text-zinc-500 text-center uppercase tracking-widest">
+                {t.dashboard.modules.fieldServices.todayCount.replace('{count}', '4')}
+              </p>
             </div>
           }
         />

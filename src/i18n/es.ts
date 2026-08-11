@@ -394,12 +394,36 @@ export const es = {
     setupTip: "Configura tu dominio personalizado para profesionalizar tu marca.",
     setupCta: "Configurar",
     heroSubtitle: "Resumen de la operación de hoy",
-    
     metrics: {
       totalLeads: "Total Leads",
       inProduction: "En Producción",
       monthlySales: "Ventas Mensuales",
       installations: "Instalaciones"
+    },
+    modules: {
+      leads: {
+        subtitle: "Gestiona tu pipeline de ventas. Califica y convierte nuevos prospectos.",
+        badge: "Activo",
+        ctaView: "Ver Leads",
+        ctaCreate: "Crear Lead"
+      },
+      production: {
+        subtitle: "Monitoreo en tiempo real. Calidad y plazos bajo control.",
+        badge: "En Progreso",
+        cta: "Ver Producción",
+        stats: {
+          active: "Activas",
+          onTime: "A Tiempo",
+          ready: "Listas",
+          average: "Promedio"
+        }
+      },
+      fieldServices: {
+        subtitle: "Instalaciones y logística. Visibilidad total en campo.",
+        badge: "Programado",
+        cta: "Ver Instalaciones",
+        todayCount: "{count} instalaciones hoy"
+      }
     },
     acceptancePending: "dashboard.acceptancePending",
     actions: "dashboard.actions",

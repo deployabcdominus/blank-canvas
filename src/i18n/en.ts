@@ -393,13 +393,37 @@ export const en = {
   dashboard: {
     setupTip: "Set up your custom domain to professionalize your brand.",
     setupCta: "Configure",
-    heroSubtitle: "Overview of today s operations",
-    
+    heroSubtitle: "Overview of today's operations",
     metrics: {
       totalLeads: "Total Leads",
       inProduction: "In Production",
       monthlySales: "Monthly Sales",
       installations: "Installations"
+    },
+    modules: {
+      leads: {
+        subtitle: "Manage your sales pipeline. Qualify and convert new prospects.",
+        badge: "Active",
+        ctaView: "View Leads",
+        ctaCreate: "Create Lead"
+      },
+      production: {
+        subtitle: "Real-time monitoring. Quality and deadlines under control.",
+        badge: "In Progress",
+        cta: "View Production",
+        stats: {
+          active: "Active",
+          onTime: "On Time",
+          ready: "Ready",
+          average: "Average"
+        }
+      },
+      fieldServices: {
+        subtitle: "Installations and logistics. Total field visibility.",
+        badge: "Scheduled",
+        cta: "View Installations",
+        todayCount: "{count} installations today"
+      }
     },
     acceptancePending: "dashboard.acceptancePending",
     actions: "dashboard.actions",
