@@ -11,28 +11,6 @@ export const es: TranslationKeys = {
       getStarted: "Empezar",
       goToDashboard: "Ir al Dashboard",
     },
-    hero: {
-      badge: "Premium SaaS Operations Hub",
-      titleLine1: "Domina tu Taller.",
-      titleLine2: "Maximiza el Crecimiento.",
-      subtitle:
-        "La plataforma operativa de élite diseñada para equipos de servicios de alto rendimiento. Clarifica flujos, elimina fricciones y transforma cada proyecto en un centro de beneficios predecible con precisión premium.",
-      ctaPrimary: "Desplegar Ahora",
-      ctaSecondary: "Explorar Sistemas",
-      trust: "Confiado por más de 500 Líderes de Alto Rendimiento",
-    },
-    trusted: "Únete a más de 500 Líderes de Industria Escalando con Precisión",
-    industries: {
-      badge: "Industrias",
-      titleLine1: "Tu industria, tu lenguaje,",
-      titleLine2: "tu flujo de trabajo",
-      subtitle:
-        "Se adapta automáticamente a tu sector con etiquetas, estados y procesos personalizados.",
-      it: {
-        title: "Servicios IT",
-        desc: "Gestiona tickets, instalaciones de infraestructura y soporte técnico en campo.",
-        example: "De Tickets → a Órdenes de Instalación",
-      },
 
   auth: {
     login: {
@@ -75,17 +53,8 @@ export const es: TranslationKeys = {
       plansTitle: "Selecciona tu plan",
       plansSubtitle: "Elige el nivel que mejor se adapte a tu crecimiento.",
       planPopular: "Más popular",
-      getPlan: "Seleccionar {plan}",
-      wait: "Por favor, espera...",
-      month: "/mes",
-      passwordsMatchError: "Las contraseñas no coinciden.",
-      passwordLengthError: "La contraseña debe tener al menos 6 caracteres.",
-      success: "¡Cuenta creada!",
-      successDesc: "Bienvenido a SignFlow. Comencemos.",
-    }
-  },
+      getPlan: "Seleccionar {plan},
 
-  /* ── Common / Shared ── */
   common: {
     save: "Guardar",
     cancel: "Cancelar",
@@ -156,116 +125,7 @@ export const es: TranslationKeys = {
         save: "Guardar Tipos de Servicio",
         saving: "Guardando...",
       },
-      companyLogo: {
-        title: "Logo de la Empresa",
-        subtitle: "Usado para el portal de clientes y documentos.",
-        upload: "Subir Logo",
-      },
-      companyName: "Nombre de la Empresa",
-      saveCompany: "Guardar Nombre de la Organización",
-    },
-        catalogs: {
-      title: "Catálogos",
-      subtitle: "Gestiona las listas estándar para tu operación",
-      add: "Agregar",
-      adding: "Agregando...",
-      addSuccess: '"{label}" agregado a {title}',
-      addError: "Error al agregar",
-      updateSuccess: "Actualizado correctamente",
-      updateError: "Error al actualizar",
-      deleteSuccess: '"{label}" eliminado',
-      deleteError: "Error al eliminar",
-      defaultCannotDelete: "Los valores predeterminados no se pueden eliminar",
-      noItems: "No hay items. Agrega el primero abajo.",
-      placeholder: "Agregar nuevo {title.toLowerCase()}...",
-      pressEnter: "Presiona Enter o el botón para agregar. Los valores con 🔒 son predeterminados y no se pueden eliminar.",
-      defaultValue: "Valor predeterminado",
-      save: "Guardar",
-      cancel: "Cancelar",
-    },
-    integrations: {
-      title: "Integraciones",
-      subtitle: "Conecta SignFlow con tus herramientas actuales.",
-      comingSoon: "Próximamente",
-      notifyMe: "Notificarme",
-      notified: "Se te notificará cuando esta integración esté disponible.",
-      quickbooks: {
-        title: "QuickBooks Online",
-        desc: "Sincroniza facturas y pagos automáticamente.",
-        bullets: ["Facturación automatizada", "Sincronización de pagos", "Cálculo de impuestos"]
-      },
-      stripe: {
-        title: "Pagos con Stripe",
-        desc: "Acepta pagos digitales en tus propuestas.",
-        bullets: ["Pagos con tarjeta", "Apple/Google Pay", "Liquidación directa"]
-      },
-      gcal: {
-        title: "Google Calendar",
-        desc: "Sincroniza instalaciones y visitas.",
-        bullets: ["Sincronización en tiempo real", "Visibilidad para el equipo", "Evita duplicados"]
-      },
-      whatsapp: {
-        title: "WhatsApp Business",
-        desc: "Notificaciones automáticas de estado a clientes.",
-        bullets: ["Alertas de estado", "Link directo de chat", "Compartir multimedia"]
-      },
-      docusign: {
-        title: "DocuSign / HelloSign",
-        desc: "Firma electrónica legalmente vinculante.",
-        bullets: ["Validez legal", "Pista de auditoría", "Firma desde móvil"]
-      },
-      zapier: {
-        title: "Zapier",
-        desc: "Conecta con más de 5000 apps.",
-        bullets: ["Disparadores personalizados", "Flujos automatizados", "Exportación de datos"]
-      },
-      ai: {
-        title: "Asistente SignFlow AI",
-        desc: "Inteligencia autónoma para tu negocio.",
-        bullets: ["Precios predictivos", "Comandos de voz", "Agenda inteligente"],
-        exclusive: "Función Exclusiva Elite",
-        privateBeta: "Beta Privada",
-        waitlist: "Unirse a la lista",
-        betaPlaces: "Plazas limitadas de beta para miembros Elite."
-      }
-    },
-    domains: {
-      title: "Dominios Personalizados",
-      subtitle: "Gestiona tu identidad de marca y entregabilidad de correo.",
-      active: "Activo",
-      primaryDomain: "Dominio Principal",
-      visit: "Visitar",
-      emailConfig: "Configuración de Email",
-      emailConfigDesc: "Configura SPF/DKIM para enviar correos desde tu propio dominio.",
-      addDomain: "Agregar Dominio",
-    },
-    profile: {
-      title: "Configuración de Perfil",
-      subtitle: "Gestiona tu información personal y preferencias.",
-      subtitleSuperadmin: "Configuración del Administrador Global de la Plataforma.",
-      fullName: "Nombre Completo",
-      fullNamePlaceholder: "Tu nombre completo",
-      saveName: "Guardar Nombre",
-      saving: "Guardando...",
-      currentContext: "Contexto Actual",
-      platformSuperadmin: "Superadmin de Plataforma",
-      company: "Empresa / Tenant",
-      notAvailable: "No disponible",
-      adminOnlyNote: "Solo los administradores pueden cambiar los datos de la empresa.",
-      role: "Rol de Usuario",
-      preferredLanguage: "Idioma Preferido",
-      languageSubtitle: "La interfaz se adaptará a tu elección.",
-      credentials: "Credenciales",
-      password: "Contraseña",
-      changePassword: "Cambiar Contraseña",
-      resetPasswordNote: "Enviaremos un enlace de recuperación a tu email.",
-      emailSent: "Correo enviado",
-      accountCreated: "Cuenta Creada",
-      userId: "ID de Usuario",
-    },
-  },
 
-  /* ── Dashboard ── */
   dashboard: {
     controlCenter: "Centro de Control",
     executiveView: "Vista ejecutiva · Datos en tiempo real",
@@ -429,64 +289,8 @@ export const es: TranslationKeys = {
         sms: "SMS",
         pdf: "PDF / Manual",
         other: "Otro"
-      }
-    }
+      },
 
-    pricing: {
-      title: "Tu Suscripción",
-      currentPlan: "Plan actual:",
-      paymentOverdue: "Pago Pendiente",
-      overdueTitle: "Tu suscripción tiene un pago pendiente",
-      overdueSubtitle: "Por favor, actualiza tu método de pago para evitar la suspensión del servicio.",
-      updatePayment: "Actualizar Método de Pago",
-      manageSub: "Gestionar Suscripción (Facturas, Método de Pago)",
-      recommended: "Recomendado",
-      current: "Actual",
-      perMonth: "/mes",
-      downgrade: "Bajar plan",
-      upgrade: "Upgrade",
-      viewUpgrade: "Ver planes de upgrade",
-      successTitle: "🎉 ¡Gracias por confiar en nosotros!",
-      successDesc: "Tu plan ya está activo. Disfruta de todas las funciones.",
-      loginRequired: "Debes iniciar sesión",
-      portalError: "No se pudo abrir el portal",
-      paymentError: "No se pudo iniciar el pago",
-      plans: {
-        start: {
-          tagline: "Auto-empleados / Freelance",
-          features: ["CRM + Gestión Manual", "Hasta 3 usuarios", "Etiquetas estándar", "Subida de archivos", "Seguridad básica"],
-        },
-        pro: {
-          tagline: "Pequeñas y Medianas Empresas",
-          features: ["Todo en Start, más:", "Portal de firma digital", "Generador de Mockups", "Automatización avanzada", "Diccionarios personalizados", "Backup diario", "Hasta 15 usuarios"],
-        },
-        elite: {
-          tagline: "Empresas con múltiples equipos",
-          features: ["Todo en Pro, más:", "Planos y Anotaciones Pro", "Campos ilimitados", "Subcontratistas / Logística", "API y Webhooks", "Audit Logs completos", "Usuarios ilimitados", "Soporte prioritario"],
-        },
-      }
-    },
-    mfa: {
-      title: "Autenticación de Dos Factores (MFA)",
-      subtitle: "Agrega una capa extra de seguridad a tu cuenta usando una aplicación de autenticación.",
-      enabledSuccess: "MFA activado correctamente",
-      invalidCode: "Código inválido. Inténtalo de nuevo.",
-      factorRemoved: "Factor MFA eliminado",
-      verified: "Verificado",
-      disable: "Desactivar",
-      notEnabled: "MFA no está activado",
-      recommend: "Recomendamos activar MFA para proteger tu cuenta de accesos no autorizados.",
-      enable: "Activar MFA",
-      scanQr: "Escanea el código QR con tu app de autenticación",
-      scanInstructions: "Abre Google Authenticator, Authy o similar y escanea este código, luego ingresa el código de 6 dígitos abajo.",
-      verifyAndActivate: "Verificar y Activar",
-      cancel: "Cancelar",
-      authenticatorApp: "App de Autenticación",
-    },
-    }
-  },
-
-  /* ── Work Orders ── */
   workOrders: {
     title: "Órdenes de Servicio",
     addOrder: "Nueva Orden",
@@ -646,26 +450,8 @@ export const es: TranslationKeys = {
     },
     compliance: {
       title: "Cumplimiento Normativo",
-      requiresPermit: "Requiere permisos especiales de {{municipality}} County",
-      noPermit: "No requiere permisos especiales en esta jurisdicción",
-      warranty: "Garantía",
-      expired: "Expirada",
-      active: "Vigente",
-    },
-    legend: "Leyenda",
-    stats: {
-      visibleArea: "Área visible",
-      projects: "Proyectos",
-      billed: "Facturado",
-      collected: "Cobrado",
-      byStatus: "Por estado",
-      byType: "Por tipo",
-      noProjects: "Sin proyectos en esta área",
-      noData: "Sin datos",
-    },
-  },
+      requiresPermit: "Requiere permisos especiales de {{municipality}},
 
-  /* ── Dashboard Components ── */
   hudCard: {
     filtered: "Filtrado",
   },
@@ -687,35 +473,7 @@ export const es: TranslationKeys = {
       atRisk: "En riesgo",
       closingRate: "Tasa de cierre",
       alert: "Alerta",
-      pipelineValue: "{{value}} en valor",
-      noResponse: "Sin respuesta +7 días",
-      rateDiff: "{{diff}}% vs mes ant.",
-    },
-    alerts: {
-      noAlerts: "Sin alertas urgentes hoy",
-      atRiskMsg: "{{count}} propuesta(s) sin respuesta en +7 días",
-      activeLeadsMsg: "{{count}} leads activos esperando seguimiento",
-    },
-    aiUnavailable: "Asistente de IA no disponible · Verifica la configuración",
-    generateBriefing: "Generar briefing completo con IA",
-    briefingTitle: "Briefing Ejecutivo",
-    briefingDesc: "Análisis generado con IA · {{date}}",
-    copyBriefing: "Copiar briefing",
-    analyzing: "Analizando tu negocio...",
-    failedBriefing: "No se pudo generar el briefing.",
-    toasts: {
-      sessionExpired: "Sesión expirada",
-      sessionExpiredDesc: "Vuelve a iniciar sesión para usar el asistente de IA.",
-      aiNotConfigured: "Asistente no disponible",
-      aiNotConfiguredDesc: "La configuración del servicio de IA necesita revisión. Contacta al administrador.",
-      rateLimited: "Demasiadas solicitudes",
-      rateLimitedDesc: "Espera unos minutos antes de generar otro briefing.",
-      connectionError: "Problema de conexión",
-      connectionErrorDesc: "No se pudo conectar con el asistente. Inténtalo de nuevo más tarde.",
-      copied: "Copiado",
-      copiedDesc: "Briefing copiado al portapapeles",
-    },
-  },
+      pipelineValue: "{{value}},
 
   hudPipeline: {
     title: "Pipeline de Proyectos",
@@ -784,17 +542,8 @@ export const es: TranslationKeys = {
       pago: "pago",
       orden: "orden",
     },
-    newEntity: "un nuevo {{entity}}",
-    existingEntity: "el {{entity}}",
-    timeAgo: {
-      now: "ahora",
-      minutes: "hace {{n}} min",
-      hours: "hace {{n}}h",
-      days: "hace {{n}}d",
-    },
-  },
+    newEntity: "un nuevo {{entity},
 
-  /* ── Weekly Report ── */
   weeklyReport: {
     title: "Rendimiento Semanal",
     subtitle: "Últimos 7 días vs. semana anterior",
@@ -842,15 +591,7 @@ export const es: TranslationKeys = {
       Aprobada: "Aprobada",
       Rechazada: "Rechazada",
     },
-    sentMethodLabels: {
-      Gmail: "Gmail",
-      WhatsApp: "WhatsApp",
-      "PDF físico": "PDF físico",
-      Otro: "Otro",
-    },
-  },
 
-  /* ── EditProposalModal ── */
   editProposalModal: {
     title: "Editar Propuesta",
     clientLabel: "Cliente *",
@@ -875,15 +616,7 @@ export const es: TranslationKeys = {
       Aprobada: "Aprobada",
       Rechazada: "Rechazada",
     },
-    sentMethodLabels: {
-      Gmail: "Gmail",
-      WhatsApp: "WhatsApp",
-      "PDF físico": "PDF físico",
-      Otro: "Otro",
-    },
-  },
 
-  /* ── RegisterPaymentModal ── */
   registerPaymentModal: {
     title: "Registrar Pago",
     notApprovedWarning: "Solo puedes registrar pagos cuando la propuesta esté aprobada.",
@@ -910,9 +643,7 @@ export const es: TranslationKeys = {
       check: "Cheque",
       other: "Otro",
     },
-  },
 
-  /* ── AssignLeadModal ── */
   assignLeadModal: {
     title: "Asignar Lead a Comercial",
     assignedLabel: "Comercial asignado",
@@ -954,14 +685,8 @@ export const es: TranslationKeys = {
     errorNoClientId: "Error al crear el cliente: no se recibió ID",
     errorNoProjectId: "Error al crear el proyecto: no se recibió ID",
     errorProposalTitle: "Error al crear propuesta",
-    errorProposalDesc: "Detalle: {{msg}}. Verifique que todos los campos requeridos estén completos.",
-    errorProposalThrow: "Fallo en creación de propuesta: {{msg}}",
-    successTitle: "Lead convertido",
-    successDesc: "Cliente, proyecto y propuesta creados exitosamente.",
-    errorTitle: "Error",
-  },
+    errorProposalDesc: "Detalle: {{msg}},
 
-  /* ── InviteMemberModal ── */
   inviteMember: {
     title: "Invitar Miembro",
     emailLabel: "Email del invitado *",
@@ -978,16 +703,8 @@ export const es: TranslationKeys = {
     cancel: "Cancelar",
     creating: "Creando...",
     generate: "Generar Invitación",
-    linkLabel: "Link de invitación para {{email}}:",
-    linkExpiry: "Este link expira en 7 días. Compártelo solo con {{email}}.",
-    close: "Cerrar",
-    toastCreatedTitle: "Invitación creada",
-    toastCreatedDesc: "Link de invitación generado para {{email}}",
-    toastErrorTitle: "Error",
-    toastErrorDesc: "No se pudo crear la invitación",
-  },
+    linkLabel: "Link de invitación para {{email},
 
-  /* ── LeadCard ── */
   leadCard: {
     priceTbd: "Precio por definir",
     proposalStatus: {
@@ -999,21 +716,8 @@ export const es: TranslationKeys = {
     },
     daysAgoSingular: "hace {{n}} día",
     daysAgoPlural: "hace {{n}} días",
-    selectAriaLabel: "Seleccionar lead {{company}}",
-    actionsAriaLabel: "Acciones del lead",
-    edit: "Editar",
-    delete: "Eliminar",
-    viewProposal: "Ver Propuesta",
-    convert: "Convertir",
-    assign: "Asignar",
-    advanceToProposal: "Avanzar a Propuesta",
-    advanceAriaLabel: "Avanzar lead de {{name}} a propuesta",
-    convertAriaLabel: "Convertir a Cliente/Proyecto",
-    assignAriaLabel: "Asignar lead",
-    viewProposalAriaLabel: "Ver propuesta de este lead",
-  },
+    selectAriaLabel: "Seleccionar lead {{company}},
 
-  /* ── ProposalCard ── */
   proposalCard: {
     statusLabels: {
       draft: "Borrador",
@@ -1060,32 +764,10 @@ export const es: TranslationKeys = {
     toastErrorClear: "Error al limpiar las fotos.",
   },
 
-  /* ── NotificationBell ── */
   notificationBell: {
     ariaLabel: "Notificaciones",
-    ariaLabelUnread: "Notificaciones ({{n}} sin leer)",
-    title: "Notificaciones",
-    markAll: "Marcar todas",
-    tabRecent: "Recientes",
-    tabArchived: "Archivadas",
-    emptyRecent: "Todo al día",
-    emptyRecentSub: "No hay notificaciones pendientes",
-    emptyArchived: "Sin archivadas",
-    timeNow: "Ahora",
-    push: {
-      title: "Notificaciones Push",
-      subtitle: "Manténgase al día con alertas en tiempo real incluso cuando no esté en la app.",
-      enable: "Activar Notificaciones Push",
-      enabled: "Notificaciones Push Activadas",
-      status: "Estado",
-      browserDenied: "El navegador bloqueó las notificaciones. Restablezca los permisos en la configuración de su navegador.",
-      unsupported: "Las notificaciones push no son compatibles con este navegador.",
-      test: "Enviar Notificación de Prueba",
-      testDesc: "Ping de verificación enviado correctamente."
-    }
-  },
+    ariaLabelUnread: "Notificaciones ({{n}},
 
-  /* ── AddLeadModal ── */
   addLeadModal: {
     title: "Agregar Nuevo Lead",
     nameLabel: "Nombre *",
@@ -1111,46 +793,8 @@ export const es: TranslationKeys = {
     toastInvalidFormatDesc: "Seleccione una imagen.",
     toastImageError: "Error al procesar imagen",
     toastSuccess: "¡Lead agregado con éxito!",
-    toastSuccessDesc: "{{name}} fue agregado a la lista de leads.",
-    toastError: "Error al agregar lead",
-    toastErrorDesc: "Intente nuevamente.",
-    basicContactSection: "Contacto Básico",
-    leadSourceSection: "Fuente del Lead",
-    brokerSection: "Información del Broker",
-    projectNotesSection: "Notas del Proyecto",
-    priceAgreementSection: "Acuerdo de Precio",
-    assignmentSection: "Asignación y Seguimiento",
-    leadSourceLabel: "Origen del Lead",
-    leadSourcePlaceholder: "Seleccione origen",
-    brokerNameLabel: "Nombre del Broker",
-    brokerPhoneLabel: "Teléfono del Broker",
-    brokerEmailLabel: "Email del Broker",
-    brokerNotesLabel: "Notas del Broker",
-    informalNotesLabel: "Notas informales / Intake",
-    agreedPriceLabel: "Precio Acordado",
-    intakeQualityLabel: "Calidad de Entrada",
-    followUpRequiredLabel: "Requiere Seguimiento",
-    followUpNotesLabel: "Notas de Seguimiento",
-    intakeQualityOptions: {
-      complete: "Completa",
-      partial: "Parcial",
-      needs_follow_up: "Pendiente"
-    },
-    sources: {
-      whatsapp: "WhatsApp",
-      gmail: "Gmail",
-      phone: "Llamada",
-      sms: "SMS",
-      paper: "Papel / Nota",
-      broker: "Broker",
-      walkin: "Presencial",
-      referral: "Referido",
-      website: "Sitio Web",
-      other: "Otro"
-    }
-  },
+    toastSuccessDesc: "{{name}},
 
-  /* ── EditLeadModal ── */
   editLeadModal: {
     contactInfoTitle: "Información de Contacto",
     projectSpecsTitle: "Especificaciones del Proyecto",
@@ -1190,30 +834,8 @@ export const es: TranslationKeys = {
     advanceToProposal: "Avanzar a Propuesta",
     viewProposal: "Ver Propuesta",
     deleteDialogTitle: "¿Eliminar este lead?",
-    deleteDialogDesc: "Se eliminará permanentemente \"{{name}}\". Esta acción no se puede deshacer.",
-    deleteDialogCancel: "Cancelar",
-    deleteDialogConfirm: "Eliminar",
-    activityCreated: "Lead creado",
-    activityEdited: "Lead editado",
-    activityStatusChanged: "Estado → {{status}}",
-    activityStatusUpdated: "Estado actualizado",
-    systemLabel: "Sistema",
-    copiedToast: "Copiado",
-    copyAriaLabel: "Copiar",
-    toastInvalidFormat: "Formato inválido",
-    toastInvalidFormatDesc: "Seleccione una imagen.",
-    toastImageError: "Error al procesar imagen",
-    toastUpdated: "Lead actualizado",
-    toastUpdateError: "Error al actualizar",
-    toastAlreadyConverted: "Lead ya convertido",
-    toastProposalCreated: "¡Propuesta creada!",
-    toastProposalCreatedDesc: "Puedes verla directamente desde aquí.",
-    toastProposalError: "Error al crear propuesta",
-    toastDeleted: "Lead eliminado",
-    toastDeleteError: "Error al eliminar",
-  },
+    deleteDialogDesc: "Se eliminará permanentemente \"{{name}},
 
-  /* ── PipelineKanban ── */
   pipelineKanban: {
     title: "Pipeline de Proyectos",
     filtering: "Filtrando:",
@@ -1309,70 +931,8 @@ export const es: TranslationKeys = {
   newWorkOrderModal: {
     defaultTitle: "Nueva Orden de Servicio",
     defaultSubtitle: "Configura el contexto del proyecto y las especificaciones técnicas",
-    resourcesBadge: "{{n}} recursos",
-    urgentBadge: "Urgente",
-    projectContextTitle: "Contexto del Proyecto",
-    clientLabel: "Empresa / Cliente *",
-    selectClientPlaceholder: "Seleccionar cliente",
-    typeDirectly: "O escribir nombre directo",
-    clientPlaceholder: "Nombre del cliente",
-    projectLabel: "Proyecto *",
-    projectPlaceholder: "Nombre del proyecto",
-    serviceTypeLabel: "Tipo de servicio",
-    serviceTypePlaceholder: "Seleccionar",
-    targetDateLabel: "Fecha objetivo",
-    priorityLabel: "Prioridad:",
-    normalPriority: "Normal",
-    urgentPriority: "Urgente",
-    projectNotesTitle: "Notas del Proyecto",
-    notesPlaceholder: "Instrucciones, observaciones...",
-    quickChecklistTitle: "Checklist rápido",
-    networkFolderLabel: "Carpeta de red",
-    networkFolderPlaceholder: "\\\\server\\Projects\\...",
-    blueprintTitle: "Plano de Fabricación",
-    blueprintDropText: "Arrastra o haz clic para subir",
-    blueprintFormats: "DXF, PNG, JPG, PDF",
-    fullscreen: "Pantalla completa",
-    removePlan: "Quitar",
-    dimensionsTitle: "Medidas (pulgadas)",
-    widthPlaceholder: "Ancho",
-    heightPlaceholder: "Alto",
-    depthPlaceholder: "Prof.",
-    materialsTitle: "Constructor de Materiales",
-    clickToAdd: "⚡ Clic para agregar",
-    showCatalog: "Buscar otros recursos",
-    hideCatalog: "Ocultar catálogo",
-    searchMaterial: "Buscar recurso...",
-    allCategories: "Todos",
-    customMaterialPlaceholder: "Material personalizado...",
-    addMaterial: "Agregar",
-    selectedCount: "Seleccionados ({{n}})",
-    cancel: "Cancelar",
-    createAndView: "Crear y Ver",
-    sendToProduction: "Enviar a Producción",
-    printTitle: "Orden de Servicio",
-    printWhatsapp: "WhatsApp",
-    printPrint: "Imprimir",
-    printDate: "Fecha:",
-    printClient: "Cliente",
-    printProject: "Proyecto",
-    printService: "Servicio",
-    printTargetDate: "Fecha objetivo",
-    printResources: "Recursos",
-    printResource: "Recurso",
-    printQty: "Cant.",
-    printUnit: "Unidad",
-    printDimensions: "Medidas",
-    printNotes: "Notas",
-    printChecklist: "Checklist",
-    toastCopied: "Resumen copiado al portapapeles",
-    toastCreated: "Orden creada para \"{{client}}\"",
-    validationNoClient: "Ingrese un cliente.",
-    validationNoProject: "Ingrese el nombre del proyecto.",
-    validationNoMaterials: "Agregue al menos un recurso.",
-  },
+    resourcesBadge: "{{n}},
 
-  /* ── SEO / Meta ── */
   seo: {
     title: "SignFlow | El SO de Operaciones y Flujo de Trabajo Todo-en-Uno",
     description: "Escala tu negocio de servicios con SignFlow. Gestión profesional de flujos de trabajo para industrias de IT, HVAC y Señalética. Asegura tu plan hoy.",
@@ -1450,144 +1010,6 @@ export const es: TranslationKeys = {
     },
     timeline: {
       noSteps: "No hay etapas definidas para esta orden",
-      stepsOf: "{{completed}} de {{total}} etapas",
-      status: {
-        ready: "✓ Listo",
-        inProgress: "⚡ En curso",
-        pending: "Pendiente",
-      },
-    },
-    workOrders: {
-      statusLabels: {
-        pending: "Pendiente",
-        inProduction: "En Producción",
-        qc: "QC",
-        ready: "Listo",
-        installed: "Instalado",
-      },
-      details: {
-        viewDetails: "Ver Detalles",
-        generatePoi: "Generar Enlace POI",
-        printSheet: "Imprimir Hoja de Producción",
-        unassigned: "Sin asignar",
-        noDate: "Sin fecha",
-        qcSigned: "QC Firmado",
-        installed: "Instalado",
-      },
-    },
-    technician: {
-      title: "Mis Órdenes de Servicio",
-      subtitle: "Órdenes asignadas a ti",
-      sync: "Sinc",
-      noOrders: "No tienes órdenes asignadas",
-      currentStatus: "Estado actual",
-      delivery: "Entrega",
-      progress: "Progreso",
-      notes: "Notas",
-      techSheet: "Ficha Técnica",
-      photos: "Evidencia",
-      myTask: "Mi Tarea",
-      details: "Detalles",
-      actions: {
-        start: "Iniciar Orden",
-        finish: "Finalizar Orden",
-        saving: "Guardando...",
-      },
-    },
-    reports: {
-      title: "Reportes Estratégicos de Desempeño",
-      subtitle: "Análisis ejecutivo de métricas de negocio y crecimiento",
-      metricLeads: "Leads Totales",
-      metricProposals: "Propuestas Activas",
-      metricCompleted: "Trabajos Finalizados",
-      metricConversion: "Tasa de Conversión",
-      salesValue: "Valor de Propuestas Aprobadas",
-      productionStatus: "Trabajos de Producción por Estado",
-    },
-    quickOrders: {
-      title: "Orden de Producción",
-      newTitle: "Nueva Orden de Producción",
-      workshopMode: "Modo rápido de taller",
-      copySuccess: "Resumen copiado al portapapeles",
-      essentials: "Datos esenciales",
-      clientLabel: "Cliente *",
-      projectLabel: "Proyecto *",
-      serviceLabel: "Tipo de servicio",
-      targetDateLabel: "Fecha objetivo",
-      priorityLabel: "Prioridad:",
-      clientPlaceholder: "Nombre del cliente",
-      projectPlaceholder: "Ej: Monument Sign ABC Corp",
-      selectClient: "Seleccionar cliente",
-      orWriteDirect: "O escribir nombre directo",
-      materials: "Materiales",
-      frequentMaterials: "⚡ Materiales frecuentes — clic para agregar",
-      hideCatalog: "Ocultar catálogo completo",
-      searchOthers: "Buscar otros materiales",
-      searchPlaceholder: "Buscar material...",
-      all: "Todos",
-      addCustom: "Agregar material personalizado...",
-      customNamePlaceholder: "Nombre del material",
-      quantity: "Cant",
-      technicalDetails: "Detalles técnicos",
-      productionNotes: "Notas de producción",
-      quickChecklist: "Checklist rápido",
-      measurements: "Medidas",
-      whatsappCopy: "WhatsApp",
-      print: "Imprimir",
-      evidence: "Sin evidencia aún",
-      evidenceDesc: "Usa el botón de cámara para agregar fotos",
-      uploadDesign: "Subir imagen del diseño",
-      deleteConfirm: "¿Eliminar esta orden de producción?",
-      completeConfirm: "¿Confirmas que esta orden está completada?",
-      completeDesc: "El progreso se marcará al 100% y el estado cambiará a 'Completada'.",
-      technician: {
-        subtitle: "Asignaciones activas",
-        sync: "Última sinc",
-        noOrders: "No hay órdenes pendientes asignadas",
-        myTask: "Mi Tarea",
-        details: "Detalles",
-        photos: "Fotos",
-        currentStatus: "Estado Actual",
-        delivery: "Entrega Objetivo",
-        progress: "Progreso",
-        notes: "Notas del Proyecto",
-        techSheet: "Ficha Técnica",
-        evidenceTitle: "Evidencia Fotográfica",
-        photosCount: "fotos",
-        customFields: "Personalizar campos técnicos",
-        advancedFieldsNote: "Personaliza los campos técnicos según tu negocio.",
-        uploading: "Subiendo foto...",
-        uploadSuccess: "Foto subida",
-        uploadError: "Error al subir foto",
-        saveSuccess: "Ficha técnica guardada",
-        saveError: "Error al guardar",
-        notified: "Se te notificará cuando esta integración esté disponible.",
-        nameUpdated: "Nombre actualizado",
-        nameUpdatedDesc: "Tu nombre se guardó correctamente.",
-        settingsSaved: "Configuración guardada",
-        settingsSavedDesc: "La configuración se actualizó correctamente.",
-        settingsRestored: "Configuración restaurada",
-        settingsRestoredDesc: "La configuración fue restaurada a los valores predeterminados.",
-        actions: {
-          start: "Iniciar Orden",
-          finish: "Finalizar Orden",
-          saving: "Guardando...",
-        }
-      }
-    }
-  }
+      stepsOf: "{{completed}},
 
-import { en } from './en';
-
-type DeepStringify<T> = T extends string
-  ? string
-  : T extends readonly (infer U)[]
-    ? U extends string ? string[] : DeepStringify<U>[]
-    : T extends object
-      ? { [K in keyof T]: DeepStringify<T[K]> }
-      : T;
-
-export type TranslationKeys = DeepStringify<typeof en>;
-
-}
 };
