@@ -219,6 +219,16 @@ export const en = {
       cancel: "Cancel",
     },
     pricing: {
+      taglines: {
+        start: "Freelancers / Self-employed",
+        pro: "Small & Medium Businesses",
+        elite: "Enterprise & Multi-team",
+      },
+      features: {
+        start: ["CRM + Manual Management", "Up to 3 users", "Standard labels", "File uploads", "Basic security"],
+        pro: ["Everything in Start, plus:", "Digital signature portal", "Mockup generator", "Advanced automation", "Custom dictionaries", "Daily backup", "Up to 15 users"],
+        elite: ["Everything in Pro, plus:", "Pro Plans & Annotations", "Unlimited fields", "Subcontractors / Logistics", "API & Webhooks", "Full Audit Logs", "Unlimited users", "Priority support"],
+      },
       title: "Your Subscription",
       currentPlan: "Current plan:",
       paymentOverdue: "Payment Overdue",
@@ -242,6 +252,16 @@ export const en = {
       cancel: "Cancel",
     },
     pricing: {
+      taglines: {
+        start: "Freelancers / Self-employed",
+        pro: "Small & Medium Businesses",
+        elite: "Enterprise & Multi-team",
+      },
+      features: {
+        start: ["CRM + Manual Management", "Up to 3 users", "Standard labels", "File uploads", "Basic security"],
+        pro: ["Everything in Start, plus:", "Digital signature portal", "Mockup generator", "Advanced automation", "Custom dictionaries", "Daily backup", "Up to 15 users"],
+        elite: ["Everything in Pro, plus:", "Pro Plans & Annotations", "Unlimited fields", "Subcontractors / Logistics", "API & Webhooks", "Full Audit Logs", "Unlimited users", "Priority support"],
+      },
       title: "Your Subscription",
       currentPlan: "Current plan:",
       paymentOverdue: "Payment Overdue",
