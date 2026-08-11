@@ -167,7 +167,7 @@ export function SignFlowDashboardView({
             {t.auth.login.welcomeBack}, <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">{userName ? userName.split(' ')[0] : ''}</span> 👋
           </motion.h2>
           <p className="text-zinc-500 text-sm font-medium">
-             {t.seo.title.split('|')[0]} • Resumen de operación actual
+             {((t.seo as any)?.title || "SignFlow").split('|')[0]} • Resumen de operación actual
           </p>
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] to-transparent rounded-3xl" />
