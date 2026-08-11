@@ -894,6 +894,18 @@ export const es: TranslationKeys = {
     }
   },
 
+  /* ── Banners & Notifications ── */
+  banners: {
+    pastDue: {
+      title: "Tu suscripción tiene un pago pendiente.",
+      desc: "Actualiza tu método de pago para evitar la suspensión del servicio."
+    },
+    planLimit: {
+      reached: "Has alcanzado el límite de {entity} en tu plan {plan}.",
+      near: "Estás usando {current} de {max} {entity} disponibles."
+    }
+  },
+
   /* ── Payments ── */
   payments: {
     title: "Pagos",
