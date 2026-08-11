@@ -4,6 +4,7 @@ import { useCatalog, CatalogType } from "@/hooks/useCatalog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface CatalogManagerProps {
   type: CatalogType;
@@ -13,6 +14,7 @@ interface CatalogManagerProps {
 }
 
 export function CatalogManager({ type, title, description, hasColor = false }: CatalogManagerProps) {
+  const { t } = useLanguage();
   const { items, isLoading, add, update, remove } = useCatalog(type);
   const [newLabel, setNewLabel] = useState("");
   const [newColor, setNewColor] = useState("#6B7699");
@@ -23,10 +25,10 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
     if (!newLabel.trim()) return;
     try {
       await add.mutateAsync({ label: newLabel.trim(), color: hasColor ? newColor : undefined });
-      toast.success(`"${newLabel}" agregado a ${title}`);
+      toast.success(t.settings.catalogs.addSuccess.replace("{label}", newLabel).replace("{title}", title));
       setNewLabel("");
     } catch {
-      toast.error("Error al agregar");
+      toast.error(t.settings.catalogs.addError);
     }
   };
 
@@ -34,22 +36,22 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
     try {
       await update.mutateAsync({ id, label: editLabel });
       setEditingId(null);
-      toast.success("Actualizado correctamente");
+      toast.success(t.settings.catalogs.updateSuccess);
     } catch {
-      toast.error("Error al actualizar");
+      toast.error(t.settings.catalogs.updateError);
     }
   };
 
   const handleRemove = async (id: string, label: string, isDefault: boolean) => {
     if (isDefault) {
-      toast.error("Los valores predeterminados no se pueden eliminar");
+      toast.error(t.settings.catalogs.defaultCannotDelete);
       return;
     }
     try {
       await remove.mutateAsync(id);
-      toast.success(`"${label}" eliminado`);
+      toast.success(t.settings.catalogs.deleteSuccess.replace("{label}", label));
     } catch {
-      toast.error("Error al eliminar");
+      toast.error(t.settings.catalogs.deleteError);
     }
   };
 
@@ -69,7 +71,7 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
           </div>
         ) : items.length === 0 ? (
           <p className="text-sm text-muted-foreground py-4 text-center">
-            No hay items. Agrega el primero abajo.
+            {t.settings.catalogs.noItems}
           </p>
         ) : (
           items.map((item) => (
@@ -99,7 +101,7 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
               )}
 
               {item.is_default && (
-              <span title="Valor predeterminado">
+              <span title={t.settings.catalogs.defaultValue}>
                 <Lock size={11} className="text-muted-foreground/50 flex-shrink-0" />
               </span>
               )}
@@ -113,7 +115,7 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
                       className="h-6 px-2 text-xs"
                       onClick={() => handleUpdate(item.id)}
                     >
-                      Guardar
+                      {t.settings.catalogs.save}
                     </Button>
                     <Button
                       size="sm"
@@ -121,7 +123,7 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
                       className="h-6 px-2 text-xs"
                       onClick={() => setEditingId(null)}
                     >
-                      Cancelar
+                      {t.settings.catalogs.cancel}
                     </Button>
                   </>
                 ) : (
@@ -164,7 +166,7 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
           />
         )}
         <Input
-          placeholder={`Agregar nuevo ${title.toLowerCase()}...`}
+          placeholder={t.settings.catalogs.placeholder.replace("{title}", title.toLowerCase())}
           value={newLabel}
           onChange={(e) => setNewLabel(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAdd()}
@@ -177,11 +179,11 @@ export function CatalogManager({ type, title, description, hasColor = false }: C
           className="h-9 px-3"
         >
           <Plus size={14} className="mr-1" />
-          Agregar
+          {t.settings.catalogs.add}
         </Button>
       </div>
       <p className="text-[11px] text-muted-foreground mt-2">
-        Presiona Enter o el botón para agregar. Los valores con 🔒 son predeterminados y no se pueden eliminar.
+        {t.settings.catalogs.pressEnter}
       </p>
     </div>
   );
