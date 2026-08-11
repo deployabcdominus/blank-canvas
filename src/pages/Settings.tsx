@@ -371,9 +371,9 @@ export default function Settings() {
                       <Globe className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <CardTitle>{t.settings.domains?.title || "Custom Domains"}</CardTitle>
+                      <CardTitle>{(t.settings.domains as any)?.title || "Custom Domains"}</CardTitle>
                       <CardDescription>
-                        {t.settings.domains?.subtitle || "Manage your brand identity and email deliverability."}
+                        {(t.settings.domains as any)?.subtitle || "Manage your brand identity and email deliverability."}
                       </CardDescription>
                     </div>
                   </div>
