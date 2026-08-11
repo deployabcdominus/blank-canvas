@@ -1,4 +1,4 @@
-export const es = {
+{
   : {
     : {
       : "..",
@@ -322,26 +322,26 @@ export const es = {
     add: "common.add",
     all: "common.all",
     alreadyExists: "common.alreadyExists",
-    cancel: "Cancelar",
+    cancel: "common.cancel",
     close: "common.close",
     confirm: "common.confirm",
     create: "common.create",
     date: "common.date",
-    delete: "Eliminar",
+    delete: "common.delete",
     depth: "common.depth",
     download: "common.download",
     edit: "common.edit",
     email: "common.email",
-    error: "Error",
+    error: "common.error",
     export: "common.export",
     height: "common.height",
     loading: "common.loading",
     measurements: "common.measurements",
     next: "common.next",
     notes: "common.notes",
-    save: "Guardar",
+    save: "common.save",
     saveSuccess: "common.saveSuccess",
-    saving: "Guardando...",
+    saving: "common.saving",
     select: "common.select",
     selected: "common.selected",
     status: "common.status",
@@ -1481,12 +1481,12 @@ export const es = {
     },
     organization: {
       serviceTypes: {
-        add: "Agregar",
-        placeholder: "Nuevo tipo de servicio...",
-        save: "Guardar Tipos de Servicio",
+        add: "settings.organization.serviceTypes.add",
+        placeholder: "settings.organization.serviceTypes.placeholder",
+        save: "settings.organization.serviceTypes.save",
         saving: "settings.organization.serviceTypes.saving",
-        subtitle: "Define los tipos de servicio que ofrece tu empresa. Se usan en leads, propuestas y órdenes de trabajo.",
-        title: "Tipos de Servicio",
+        subtitle: "settings.organization.serviceTypes.subtitle",
+        title: "settings.organization.serviceTypes.title",
       },
     },
     planUsage: {
@@ -1507,12 +1507,12 @@ export const es = {
         pro: "settings.pricing.features.pro",
         start: "settings.pricing.features.start",
       },
-      loginRequired: "Debes iniciar sesión",
-      paymentError: "No se pudo iniciar el pago",
+      loginRequired: "settings.pricing.loginRequired",
+      paymentError: "settings.pricing.paymentError",
       paymentOverdue: "settings.pricing.paymentOverdue",
-      portalError: "No se pudo abrir el portal",
-      successDesc: "Tu plan ya está activo. Disfruta de todas las funciones.",
-      successTitle: "🎉 ¡Gracias por confiar en nosotros!",
+      portalError: "settings.pricing.portalError",
+      successDesc: "settings.pricing.successDesc",
+      successTitle: "settings.pricing.successTitle",
       taglines: {
         elite: "settings.pricing.taglines.elite",
         pro: "settings.pricing.taglines.pro",
@@ -1693,4 +1693,3 @@ export const es = {
     title: "workOrdersRadial.title",
   },
 }
-;

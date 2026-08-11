@@ -26,7 +26,7 @@ export const ServiceTypesSettings: React.FC = () => {
     const trimmed = newService.trim();
     if (!trimmed) return;
     if (services.includes(trimmed)) {
-      toast({ title: "Ya existe", description: "Este tipo de servicio ya está en la lista.", variant: "destructive" });
+      toast({ title: t.common.alreadyExists, description: isEn ? "This service type is already in the list." : "Este tipo de servicio ya está en la lista.", variant: "destructive" });
       return;
     }
     setServices(prev => [...prev, trimmed]);
@@ -35,7 +35,7 @@ export const ServiceTypesSettings: React.FC = () => {
 
   const removeService = (service: string) => {
     if (services.length <= 1) {
-      toast({ title: "Error", description: "Debe haber al menos un tipo de servicio.", variant: "destructive" });
+      toast({ title: t.common.error, description: isEn ? "There must be at least one service type." : "Debe haber al menos un tipo de servicio.", variant: "destructive" });
       return;
     }
     setServices(prev => prev.filter(s => s !== service));
@@ -43,28 +43,29 @@ export const ServiceTypesSettings: React.FC = () => {
 
   const handleSave = async () => {
     if (services.length === 0) {
-      toast({ title: "Error", description: "Agregue al menos un tipo de servicio.", variant: "destructive" });
+      toast({ title: t.common.error, description: isEn ? "Add at least one service type." : "Agregue al menos un tipo de servicio.", variant: "destructive" });
       return;
     }
     setSaving(true);
     try {
       await updateCompanySettings({ service_types: services } as any);
-      toast({ title: "Tipos de servicio guardados", description: "Los cambios se reflejan en todo el sistema." });
+      toast({ title: isEn ? "Service types saved" : "Tipos de servicio guardados", description: t.common.saveSuccess });
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "No se pudo guardar.", variant: "destructive" });
+      toast({ title: t.common.error, description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
     } finally {
       setSaving(false);
     }
   };
 
-  const hasChanges = JSON.stringify(services) !== JSON.stringify(currentTypes);
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tipos de Servicio</CardTitle>
+        <CardTitle>{t.settings.organization.serviceTypes.title}</CardTitle>
         <CardDescription>
-          Define los tipos de servicio que ofrece tu empresa. Se usan en leads, propuestas y órdenes de trabajo.
+          {t.settings.organization.serviceTypes.subtitle}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -87,11 +88,11 @@ export const ServiceTypesSettings: React.FC = () => {
             value={newService}
             onChange={e => setNewService(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && addService()}
-            placeholder="Nuevo tipo de servicio..."
+            placeholder={t.settings.organization.serviceTypes.placeholder}
             className="flex-1"
           />
           <Button variant="outline" onClick={addService} disabled={!newService.trim()}>
-            <Plus className="w-4 h-4 mr-1" /> Agregar
+            <Plus className="w-4 h-4 mr-1" /> {t.settings.organization.serviceTypes.add}
           </Button>
         </div>
 
@@ -101,7 +102,7 @@ export const ServiceTypesSettings: React.FC = () => {
           className="flex items-center gap-2"
         >
           <Save className="w-4 h-4" />
-          {saving ? 'Guardando...' : 'Guardar Tipos de Servicio'}
+          {saving ? t.settings.organization.serviceTypes.saving : t.settings.organization.serviceTypes.save}
         </Button>
       </CardContent>
     </Card>
