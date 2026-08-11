@@ -244,10 +244,10 @@ export function SignFlowDashboardView({
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricItem label="Total Leads" value={leads.length} delta={12} icon={Users} delay={0.4} />
-        <MetricItem label="En Producción" value={stats.production} delta={-5} icon={Layers} delay={0.5} />
-        <MetricItem label="Ventas Mensual" value={`$${(stats.sales / 1000).toFixed(1)}k`} delta={22} icon={DollarSign} delay={0.6} />
-        <MetricItem label="Instalaciones" value={stats.installations} delta={0} icon={MapPin} delay={0.7} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.totalLeads || "Total Leads"} value={leads.length} delta={12} icon={Users} delay={0.4} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.inProduction || "En Producción"} value={stats.production} delta={-5} icon={Layers} delay={0.5} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.monthlySales || "Ventas Mensual"} value={`$${(stats.sales / 1000).toFixed(1)}k`} delta={22} icon={DollarSign} delay={0.6} />
+        <MetricItem label={(t.dashboard as any)?.metrics?.installations || "Instalaciones"} value={stats.installations} delta={0} icon={MapPin} delay={0.7} />
       </div>
 
       {/* Tip */}
