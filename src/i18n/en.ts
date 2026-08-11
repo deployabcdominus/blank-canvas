@@ -815,6 +815,82 @@ export const en = {
         },
       },
     },
+    },
+    integrations: {
+      title: "Integrations",
+      subtitle: "Connect your favorite tools",
+      quickbooks: {
+        title: "QuickBooks Online",
+        desc: "Automatic two-way sync for clients, proposals, and invoices",
+        bullets: [
+          "Real-time synced clients",
+          "Proposals converted to Estimates in QBO",
+          "Payments recorded as Invoices automatically"
+        ]
+      },
+      stripe: {
+        title: "Stripe Payments",
+        desc: "Accept online payments directly from your proposals and client portal",
+        bullets: [
+          "Payment links in proposals",
+          "Subscriptions and recurring payments",
+          "Unified financial dashboard"
+        ]
+      },
+      gcal: {
+        title: "Google Calendar",
+        desc: "Automatically sync work orders and executions with your calendar",
+        bullets: [
+          "Work orders → automatic events",
+          "Team reminders",
+          "Monthly agenda view"
+        ]
+      },
+      whatsapp: {
+        title: "WhatsApp Business",
+        desc: "Automatic notifications to clients at every project stage",
+        bullets: [
+          "Real-time order status",
+          "Proposal approval via WhatsApp",
+          "Automatic payment reminders"
+        ]
+      },
+      docusign: {
+        title: "DocuSign",
+        desc: "Digital signature for proposals and contracts from the client portal",
+        bullets: [
+          "Proposals with legal e-signature",
+          "Contracts signed in minutes",
+          "Automatic document archiving"
+        ]
+      },
+      zapier: {
+        title: "Zapier",
+        desc: "Connect SignFlow with over 5,000 apps without code",
+        bullets: [
+          "Unlimited automations",
+          "Connect with your current CRM",
+          "Custom workflows"
+        ]
+      },
+      ai: {
+        title: "AI Assistant Pro",
+        desc: "Your AI business consultant that learns from your company and predicts opportunities",
+        bullets: [
+          "Automatic voice-based proposal generation",
+          "Optimal price prediction",
+          "Churn risk detection",
+          "Real-time sales recommendations"
+        ],
+        waitlist: "Join the waitlist",
+        exclusive: "Exclusive",
+        privateBeta: "Private Beta",
+        betaPlaces: "Only 50 places available for beta"
+      },
+      notifyMe: "Notify me",
+      notified: "We'll let you know when it's ready!",
+      comingSoon: "Coming Soon"
+    }
   },
 
   /* ── Payments ── */
