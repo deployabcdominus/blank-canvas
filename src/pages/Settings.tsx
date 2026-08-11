@@ -385,7 +385,7 @@ export default function Settings() {
                         <h4 className="text-sm font-semibold flex items-center gap-2">
                           www.signflowapp.com
                           <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                            {t.settings.domains.active}
+                            {locale === "en" ? "Active" : "Activo"}
                           </Badge>
                         </h4>
                         <p className="text-xs text-muted-foreground">
