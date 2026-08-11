@@ -1136,7 +1136,7 @@ export const es = {
         settingsSaved: "production.quickOrders.technician.settingsSaved",
         settingsSavedDesc: "production.quickOrders.technician.settingsSavedDesc",
       },
-      title: "production.quickOrders.title",
+      title: "Órdenes Rápidas",
       whatsappCopy: "production.quickOrders.whatsappCopy",
       workshopMode: "production.quickOrders.workshopMode",
     },
@@ -1410,7 +1410,7 @@ export const es = {
         title: "settings.integrations.ai.title",
         waitlist: "settings.integrations.ai.waitlist",
       },
-      comingSoon: "settings.integrations.comingSoon",
+      comingSoon: "Próximamente",
       docusign: {
         bullets: "settings.integrations.docusign.bullets",
         desc: "settings.integrations.docusign.desc",
@@ -1422,7 +1422,7 @@ export const es = {
         title: "settings.integrations.gcal.title",
       },
       notified: "settings.integrations.notified",
-      notifyMe: "settings.integrations.notifyMe",
+      notifyMe: "Notificarme",
       quickbooks: {
         bullets: "settings.integrations.quickbooks.bullets",
         desc: "settings.integrations.quickbooks.desc",
@@ -1475,11 +1475,11 @@ export const es = {
     organization: {
       serviceTypes: {
         add: "Agregar",
-        placeholder: "settings.organization.serviceTypes.placeholder",
+        placeholder: "Nuevo tipo de servicio...",
         save: "Guardar",
         saving: "Guardando...",
         subtitle: "settings.organization.serviceTypes.subtitle",
-        title: "settings.organization.serviceTypes.title",
+        title: "Tipos de Servicio",
       },
     },
     planUsage: {
