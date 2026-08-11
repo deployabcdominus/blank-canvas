@@ -73,7 +73,7 @@ const Dashboard = () => {
 
     return [
       { key: "leads" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${leadsFollowUpCount} ${t.dashboard.leadsFollowUp}`, value: activeLeadsCount, icon: Users, accent: "hud-indigo", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
-      { key: "production" as KanbanColumn, label: t.dashboard.activeLeads, desc: `${inProductionCount} ${t.dashboard.ordersActive}`, value: inProductionCount, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
+      { key: "production" as KanbanColumn, label: t.nav.production, desc: `${inProductionCount} ${t.dashboard.ordersActive}`, value: inProductionCount, icon: ClipboardList, accent: "hud-amber", delta: 0, sparkline: [0, 0, 0, 0, 1, 0, 1] },
       { key: "install" as KanbanColumn, label: t.dashboard.readyToInstall, desc: `${readyForInstallCount} ${t.dashboard.pendingSchedule}`, value: readyForInstallCount, icon: MapPin, accent: "hud-cyan", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
       { key: "closed" as KanbanColumn, label: t.dashboard.closedMtd, desc: t.dashboard.successfullyCompleted, value: closedThisMonthCount, icon: CheckCircle2, accent: "hud-green", delta: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] },
       { key: "revenue" as any, label: t.dashboard.totalEstimated, desc: t.dashboard.pipelineValue, value: totalEstimatedRevenueVal, icon: TrendingUp, accent: "hud-indigo", isCurrency: true },
