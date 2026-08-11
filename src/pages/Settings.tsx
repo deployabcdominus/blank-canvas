@@ -81,8 +81,8 @@ export default function Settings() {
   const handleSave = () => {
     updateSettings(formData);
     toast({
-      title: t.production.quickOrders.technician.settingsSaved,
-      description: t.production.quickOrders.technician.settingsSavedDesc,
+      title: t.common.success,
+      description: t.common.saveSuccess,
     });
   };
 
@@ -99,9 +99,9 @@ export default function Settings() {
       // Update profiles table
       await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', user.id);
 
-      toast({ title: t.production.quickOrders.technician.nameUpdated, description: t.production.quickOrders.technician.nameUpdatedDesc });
+      toast({ title: t.common.success, description: t.common.saveSuccess });
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
+      toast({ title: t.common.error, description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
     } finally {
       setSavingName(false);
     }
