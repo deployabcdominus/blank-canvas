@@ -1379,6 +1379,8 @@ export const en = {
       theme: "settings.config.theme",
     },
     domains: {
+      title: "Custom Domains",
+      subtitle: "Manage your brand identity and email deliverability.",
       active: "settings.domains.active",
       autoCreateOrders: "settings.domains.autoCreateOrders",
       autoCreateOrdersDesc: "settings.domains.autoCreateOrdersDesc",

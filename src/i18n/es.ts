@@ -1379,6 +1379,8 @@ export const es = {
       theme: "settings.config.theme",
     },
     domains: {
+      title: "Dominios Personalizados",
+      subtitle: "Administra tu identidad de marca y entregabilidad de correo.",
       active: "settings.domains.active",
       autoCreateOrders: "settings.domains.autoCreateOrders",
       autoCreateOrdersDesc: "settings.domains.autoCreateOrdersDesc",
