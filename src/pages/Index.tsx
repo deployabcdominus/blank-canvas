@@ -758,7 +758,7 @@ const Index = () => {
 
             <Reveal delay={0.1}>
               <Accordion type="single" collapsible className="space-y-3">
-                {L.faq.items.map((item, i) => (
+                {Array.isArray(L.faq.items) && L.faq.items.map((item, i) => (
                   <AccordionItem
                     key={i}
                     value={`faq-${i}`}
@@ -849,7 +849,7 @@ const Index = () => {
                 <div key={col.title}>
                   <h4 className="text-[12px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-5">{col.title}</h4>
                   <ul className="space-y-3">
-                    {col.links.map((item) => (
+                    {Array.isArray(col.links) && col.links.map((item) => (
                       <li key={item}>
                         <a href="#" className="text-[13px] text-zinc-600 hover:text-purple-400/60 transition-colors duration-300">
                           {item}
