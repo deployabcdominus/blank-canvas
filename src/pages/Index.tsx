@@ -690,7 +690,7 @@ const Index = () => {
                         )}
                         {!isAnnual && <div className="mb-7" />}
                         <ul className="space-y-4 mb-10">
-                          {plan.features.map((f, fi) => (
+                          {Array.isArray(plan.features) && plan.features.map((f, fi) => (
                             <motion.li
                               key={f}
                               className="flex items-start gap-3 text-[13px] text-zinc-400"
