@@ -81,8 +81,8 @@ export default function Settings() {
   const handleSave = () => {
     updateSettings(formData);
     toast({
-      title: isEn ? "Settings saved" : "Configuración guardada",
-      description: isEn ? "Settings updated successfully." : "La configuración se actualizó correctamente.",
+      title: t.production.quickOrders.technician.settingsSaved,
+      description: t.production.quickOrders.technician.settingsSavedDesc,
     });
   };
 
@@ -99,7 +99,7 @@ export default function Settings() {
       // Update profiles table
       await supabase.from('profiles').update({ full_name: fullName.trim() }).eq('id', user.id);
 
-      toast({ title: isEn ? "Name updated" : "Nombre actualizado", description: isEn ? "Your name was saved successfully." : "Tu nombre se guardó correctamente." });
+      toast({ title: t.production.quickOrders.technician.nameUpdated, description: t.production.quickOrders.technician.nameUpdatedDesc });
     } catch (err: any) {
       toast({ title: "Error", description: err.message || (isEn ? "Could not save." : "No se pudo guardar."), variant: "destructive" });
     } finally {
@@ -117,7 +117,7 @@ export default function Settings() {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       setResetSent(false);
     } else {
-      toast({ title: isEn ? "Email sent" : "Email enviado", description: isEn ? "Check your inbox to change your password." : "Revisa tu correo para cambiar la contraseña." });
+      toast({ title: t.settings.profile.emailSent, description: t.settings.profile.resetPasswordNote });
     }
   };
 
@@ -385,16 +385,16 @@ export default function Settings() {
                         <h4 className="text-sm font-semibold flex items-center gap-2">
                           www.signflowapp.com
                           <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                            Active
+                            {t.settings.domains.active}
                           </Badge>
                         </h4>
                         <p className="text-xs text-muted-foreground">
-                          Primary domain for your platform and public links.
+                          {t.settings.domains.primaryDomain}
                         </p>
                       </div>
                       <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5" asChild>
                         <a href="https://www.signflowapp.com" target="_blank" rel="noopener noreferrer">
-                          Visit <ExternalLink className="w-3 h-3" />
+                          {t.settings.domains.visit} <ExternalLink className="w-3 h-3" />
                         </a>
                       </Button>
                     </div>
@@ -402,11 +402,11 @@ export default function Settings() {
                     <Separator className="bg-white/5" />
 
                     <div className="space-y-3">
-                      <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Email Configuration</Label>
+                      <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">{t.settings.domains.emailConfig}</Label>
                       <div className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/10">
                         <div className="space-y-1">
-                          <p className="text-sm font-medium">Business Email (SMTP/DNS)</p>
-                          <p className="text-xs text-muted-foreground">Configure your domain to send professional emails to clients.</p>
+                          <p className="text-sm font-medium">{t.settings.domains.businessEmail}</p>
+                          <p className="text-xs text-muted-foreground">{t.settings.domains.businessEmailDesc}</p>
                         </div>
                         <Button 
                           size="sm" 
@@ -415,12 +415,12 @@ export default function Settings() {
                             // The actual logic would involve calling the email_domain setup dialog
                             // which is handled by the platform.
                             toast({
-                              title: "Email Setup",
-                              description: "Opening secure domain configuration...",
+                              title: t.settings.domains.setupTitle,
+                              description: t.settings.domains.setupDesc,
                             });
                           }}
                         >
-                          Configure
+                          {t.settings.domains.configure}
                         </Button>
                       </div>
                     </div>
@@ -733,7 +733,7 @@ export default function Settings() {
                         <AlertDialogAction onClick={() => {
                           resetToDefaults();
                           setFormData(settings);
-                          toast({ title: isEn ? "Settings restored" : "Configuración restaurada", description: isEn ? "Settings have been restored to defaults." : "La configuración fue restaurada a los valores predeterminados." });
+                          toast({ title: t.production.quickOrders.technician.settingsRestored, description: t.production.quickOrders.technician.settingsRestoredDesc });
                         }}>
                           {t.settings.config.restore}
                         </AlertDialogAction>
