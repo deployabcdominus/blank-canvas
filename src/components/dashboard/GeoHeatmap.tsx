@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 /* ── Status helpers ── */
-const statusLabel = (s: string, labels: { completed: string; inProgress: string; scheduled: string }) =>
-  s === "Completed" ? labels.completed : s === "In Progress" ? labels.inProgress : labels.scheduled;
+const statusLabel = (s: string, labels: any) =>
+  s === "Completed" ? labels?.completed || "Completed" : s === "In Progress" ? labels?.inProgress || "In Progress" : labels?.scheduled || "Scheduled";
 const statusBadge = (s: string) => {
   if (s === "Completed") return "background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.3)";
   if (s === "In Progress") return "background:rgba(249,115,22,0.2);color:#fb923c;border:1px solid rgba(249,115,22,0.3)";
