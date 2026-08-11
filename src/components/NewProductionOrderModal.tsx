@@ -22,6 +22,7 @@ import { toast as sonnerToast } from "sonner";
 import { useServiceTypes } from "@/hooks/useServiceTypes";
 import { useCatalog } from "@/hooks/useCatalog";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 // ── Types ──
 interface NewProductionOrderModalProps {
@@ -226,6 +227,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
   const { proposals } = useProposalsQuery(companyId);
   const { createWorkOrderMutation } = useWorkOrdersQuery(companyId);
   const { toast } = useToast();
+  const { t } = useLanguage();
   const serviceTypes = useServiceTypes();
   const { items: catalogServices } = useCatalog("lead_service");
   const resolvedServices = catalogServices.length > 0 ? catalogServices.map(s => s.label) : serviceTypes;
