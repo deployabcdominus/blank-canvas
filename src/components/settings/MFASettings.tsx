@@ -62,14 +62,14 @@ export function MFASettings() {
       });
       if (error) throw error;
 
-      toast.success(isEn ? "MFA enabled successfully" : "MFA activado correctamente");
+      toast.success(t.settings.mfa.toasts.enabled);
       setEnrolling(false);
       setQrCode(null);
       setFactorId(null);
       setOtpValue("");
       fetchFactors();
     } catch (err: any) {
-      toast.error(isEn ? "Invalid code. Please try again." : "Código inválido. Inténtalo de nuevo.");
+      toast.error(t.settings.mfa.toasts.invalidCode);
     } finally {
       setVerifying(false);
     }
@@ -79,7 +79,7 @@ export function MFASettings() {
     try {
       const { error } = await supabase.auth.mfa.unenroll({ factorId: fId });
       if (error) throw error;
-      toast.success(isEn ? "MFA factor removed" : "Factor MFA eliminado");
+      toast.success(t.settings.mfa.toasts.removed);
       fetchFactors();
     } catch (err: any) {
       toast.error(err.message);
@@ -97,6 +97,7 @@ export function MFASettings() {
   }
 
   const activeFactors = factors.filter(f => f.status === 'verified');
+  const { t } = useLanguage();
 
   return (
     <Card className="border-primary/20 bg-primary/5">
@@ -106,11 +107,9 @@ export function MFASettings() {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <CardTitle>{isEn ? "Multi-Factor Authentication (MFA)" : "Autenticación de Dos Factores (MFA)"}</CardTitle>
+            <CardTitle>{t.settings.mfa.title}</CardTitle>
             <CardDescription>
-              {isEn 
-                ? "Add an extra layer of security to your account using an authenticator app." 
-                : "Agrega una capa extra de seguridad a tu cuenta usando una aplicación de autenticación."}
+              {t.settings.mfa.subtitle}
             </CardDescription>
           </div>
         </div>
@@ -125,8 +124,8 @@ export function MFASettings() {
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="font-medium">{factor.friendly_name || "Authenticator App"}</p>
-                    <p className="text-xs text-muted-foreground">{isEn ? "Verified" : "Verificado"} • {new Date(factor.created_at).toLocaleDateString()}</p>
+                    <p className="font-medium">{factor.friendly_name || t.settings.mfa.authenticatorApp}</p>
+                    <p className="text-xs text-muted-foreground">{t.settings.mfa.verified} • {new Date(factor.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <Button 
@@ -136,7 +135,7 @@ export function MFASettings() {
                   onClick={() => unenrollFactor(factor.id)}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  {isEn ? "Disable" : "Desactivar"}
+                  {t.settings.mfa.disable}
                 </Button>
               </div>
             ))}
@@ -147,16 +146,14 @@ export function MFASettings() {
               <ShieldAlert className="w-6 h-6 text-muted-foreground" />
             </div>
             <div className="space-y-1">
-              <p className="font-medium">{isEn ? "MFA is not enabled" : "MFA no está activado"}</p>
+              <p className="font-medium">{t.settings.mfa.notEnabled}</p>
               <p className="text-sm text-muted-foreground max-w-xs">
-                {isEn 
-                  ? "We recommend enabling MFA to protect your account from unauthorized access." 
-                  : "Recomendamos activar MFA para proteger tu cuenta de accesos no autorizados."}
+                {t.settings.mfa.recommendation}
               </p>
             </div>
             <Button onClick={startEnrollment} className="mt-2">
               <QrCode className="w-4 h-4 mr-2" />
-              {isEn ? "Enable MFA" : "Activar MFA"}
+              {t.settings.mfa.enable}
             </Button>
           </div>
         ) : (
