@@ -1864,8 +1864,45 @@ export const es: TranslationKeys = {
       salesValue: "Valor de Propuestas Aprobadas",
       productionStatus: "Trabajos de Producción por Estado",
     },
+    quickOrders: {
+      title: "Orden de Producción",
+      newTitle: "Nueva Orden de Producción",
+      workshopMode: "Modo rápido de taller",
+      copySuccess: "Resumen copiado al portapapeles",
+      essentials: "Datos esenciales",
+      clientLabel: "Cliente *",
+      projectLabel: "Proyecto *",
+      serviceLabel: "Tipo de servicio",
+      targetDateLabel: "Fecha objetivo",
+      priorityLabel: "Prioridad:",
+      clientPlaceholder: "Nombre del cliente",
+      projectPlaceholder: "Ej: Monument Sign ABC Corp",
+      selectClient: "Seleccionar cliente",
+      orWriteDirect: "O escribir nombre directo",
+      materials: "Materiales",
+      frequentMaterials: "⚡ Materiales frecuentes — clic para agregar",
+      hideCatalog: "Ocultar catálogo completo",
+      searchOthers: "Buscar otros materiales",
+      searchPlaceholder: "Buscar material...",
+      all: "Todos",
+      addCustom: "Agregar material personalizado...",
+      customNamePlaceholder: "Nombre del material",
+      quantity: "Cant",
+      technicalDetails: "Detalles técnicos",
+      productionNotes: "Notas de producción",
+      quickChecklist: "Checklist rápido",
+      measurements: "Medidas",
+      whatsappCopy: "WhatsApp",
+      print: "Imprimir",
+      evidence: "Sin evidencia aún",
+      evidenceDesc: "Usa el botón de cámara para agregar fotos",
+      uploadDesign: "Subir imagen del diseño",
+      deleteConfirm: "¿Eliminar esta orden de producción?",
+      completeConfirm: "¿Confirmas que esta orden está completada?",
+      completeDesc: "El progreso se marcará al 100% y el estado cambiará a 'Completada'."
+    }
   },
-} as const;
+};
 
 
 
