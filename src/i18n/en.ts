@@ -432,8 +432,153 @@ export const en = {
     adjustments: "Settings",
     platform: "Platform",
     fieldServices: "Field Services",
+    organization: "Organization",
     profile: "Profile",
     logout: "Sign Out",
+  },
+
+  /* ── Settings / Configuration Hub ── */
+  settings: {
+    title: "Configuration Hub",
+    subtitle: "Manage your business identity, team, and system integrations",
+    tabs: {
+      profile: "Profile",
+      organization: "Organization",
+      storage: "Storage",
+      configuration: "Configuration",
+      domains: "Custom Domains",
+      catalogs: "Catalogs",
+      integrations: "Integrations",
+      notifications: "Notifications",
+      subscription: "Subscription",
+    },
+    organization: {
+      title: "Organization Details",
+      subtitle: "General business information for documents and branding.",
+      serviceTypes: {
+        title: "Service Types",
+        subtitle: "Define the types of service your company offers. They are used in leads, proposals, and work orders.",
+        placeholder: "New service type...",
+        add: "Add",
+        save: "Save Service Types",
+        saving: "Saving...",
+      },
+      companyLogo: {
+        title: "Company Logo",
+        subtitle: "Used for the client portal and document branding.",
+        upload: "Upload Logo",
+      },
+      companyName: "Company Name",
+      saveCompany: "Save Organization Name",
+    },
+    catalogs: {
+      title: "Catalog Manager",
+      subtitle: "Manage lists of options for your business workflows.",
+      leads: {
+        sources: "Lead Sources",
+        sourcesDesc: "Where are your leads coming from?",
+        categories: "Lead Categories",
+        categoriesDesc: "Group your leads by business line.",
+      },
+      production: {
+        categories: "Production Categories",
+        categoriesDesc: "Group your production orders.",
+      },
+      add: "Add",
+      adding: "Adding...",
+      save: "Save",
+      cancel: "Cancel",
+      updating: "Updating...",
+      updated: "Updated successfully",
+      errorAdding: "Error adding",
+      errorUpdating: "Error updating",
+      errorDeleting: "Error deleting",
+      defaultDeleteError: "Default values cannot be deleted",
+      placeholder: "Add new {{type}}...",
+      empty: "No items. Add the first one below.",
+      note: "Press Enter or the button to add. Values with 🔒 are default and cannot be deleted.",
+      deleted: '"{{label}}" deleted',
+    },
+    integrations: {
+      title: "Integrations",
+      subtitle: "Connect SignFlow with your existing tools.",
+      comingSoon: "Coming Soon",
+      notifyMe: "Notify me",
+      notified: "You will be notified when this integration is available.",
+      quickbooks: {
+        title: "QuickBooks Online",
+        desc: "Sync invoices and payments automatically.",
+        bullets: ["Automated invoicing", "Payment sync", "Tax calculations"]
+      },
+      stripe: {
+        title: "Stripe Payments",
+        desc: "Accept digital payments on your proposals.",
+        bullets: ["Credit card payments", "Apple/Google Pay", "Direct settlement"]
+      },
+      gcal: {
+        title: "Google Calendar",
+        desc: "Sync installations and site visits.",
+        bullets: ["Real-time sync", "Field team visibility", "Avoid double booking"]
+      },
+      whatsapp: {
+        title: "WhatsApp Business",
+        desc: "Automated status updates to clients.",
+        bullets: ["Status notifications", "Direct chat link", "Media sharing"]
+      },
+      docusign: {
+        title: "DocuSign / HelloSign",
+        desc: "Legally binding electronic signatures.",
+        bullets: ["Legal validity", "Audit trail", "Mobile signing"]
+      },
+      zapier: {
+        title: "Zapier",
+        desc: "Connect with 5000+ apps.",
+        bullets: ["Custom triggers", "Automated workflows", "Data export"]
+      },
+      ai: {
+        title: "SignFlow AI Assistant",
+        desc: "Autonomous intelligence for your business.",
+        bullets: ["Predictive pricing", "Voice commands", "Smart scheduling"],
+        exclusive: "Exclusive Elite Feature",
+        privateBeta: "Private Beta",
+        waitlist: "Join Waitlist",
+        betaPlaces: "Limited beta places available for Elite members."
+      }
+    },
+    domains: {
+      title: "Custom Domains",
+      subtitle: "Manage your brand identity and email deliverability.",
+      active: "Active",
+      primaryDomain: "Primary Domain",
+      visit: "Visit",
+      emailConfig: "Email Configuration",
+      emailConfigDesc: "Set up SPF/DKIM to send emails from your own domain.",
+      addDomain: "Add Domain",
+    },
+    profile: {
+      title: "Profile Settings",
+      subtitle: "Manage your personal information and preferences.",
+      subtitleSuperadmin: "Global Platform Administrator settings.",
+      fullName: "Full Name",
+      fullNamePlaceholder: "Your full name",
+      saveName: "Save Name",
+      saving: "Saving...",
+      currentContext: "Current Context",
+      platformSuperadmin: "Platform Superadmin",
+      company: "Company / Tenant",
+      notAvailable: "Not available",
+      adminOnlyNote: "Only administrators can change company data.",
+      role: "User Role",
+      preferredLanguage: "Preferred Language",
+      languageSubtitle: "The interface will adapt to your choice.",
+      credentials: "Credentials",
+      password: "Password",
+      changePassword: "Change Password",
+      resetPasswordNote: "We will send a reset link to your email.",
+      emailSent: "Email sent",
+      accountCreated: "Account Created",
+      userId: "User ID",
+    },
   },
 
   /* ── Dashboard ── */
