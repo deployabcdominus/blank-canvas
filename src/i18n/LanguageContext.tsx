@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, typ
 import { en, type TranslationKeys } from "./en";
 import { es } from "./es";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { validateTranslations } from "./audit";
 
 export type Locale = "en" | "es";
@@ -28,19 +29,7 @@ export function useT() {
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserId(session?.user?.id ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserId(session?.user?.id ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { user } = useAuth();
 
   // Default to 'en' unless explicitly stored
   const [locale, setLocaleState] = useState<Locale>(() => {
@@ -53,11 +42,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Load preference from profile on login
   useEffect(() => {
-    if (!userId) return;
+    if (!user) return;
     supabase
       .from("profiles")
       .select("language_preference")
-      .eq("id", userId)
+      .eq("id", user.id)
       .maybeSingle()
       .then(({ data }) => {
         const pref = data?.language_preference;
@@ -66,7 +55,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
           localStorage.setItem("sf_lang", pref);
         }
       });
-  }, [userId]);
+  }, [user?.id]);
 
   const setLocale = useCallback(
     (newLocale: Locale) => {
@@ -75,15 +64,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       document.documentElement.lang = newLocale;
 
       // Persist to profile if logged in
-      if (userId) {
+      if (user) {
         supabase
           .from("profiles")
           .update({ language_preference: newLocale })
-          .eq("id", userId)
+          .eq("id", user.id)
           .then();
       }
     },
-    [userId]
+    [user]
   );
 
   // Set html lang attribute and update meta tags
