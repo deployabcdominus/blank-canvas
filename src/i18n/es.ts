@@ -1840,3 +1840,15 @@ export const es: TranslationKeys = {
     }
   }
 };
+
+import { en } from './en';
+
+type DeepStringify<T> = T extends string
+  ? string
+  : T extends readonly (infer U)[]
+    ? U extends string ? string[] : DeepStringify<U>[]
+    : T extends object
+      ? { [K in keyof T]: DeepStringify<T[K]> }
+      : T;
+
+export type TranslationKeys = DeepStringify<typeof en>;
