@@ -32,9 +32,7 @@ const Register = () => {
       name: "Start",
       priceMonthly: 29,
       priceAnnual: 24,
-      features: isEn
-        ? ["Up to 50 active leads", "1 admin user", "Basic pipeline", "Email support"]
-        : ["Hasta 50 leads activos", "1 usuario administrador", "Pipeline básico", "Soporte por email"],
+      features: t.landing.pricing.start.features,
       recommended: false,
     },
     {
@@ -42,9 +40,7 @@ const Register = () => {
       name: "Pro",
       priceMonthly: 79,
       priceAnnual: 64,
-      features: isEn
-        ? ["Unlimited leads", "Up to 5 users", "Digital signature", "Roles & permissions", "Priority support"]
-        : ["Leads ilimitados", "Hasta 5 usuarios", "Firma digital", "Roles y permisos", "Soporte prioritario"],
+      features: t.landing.pricing.pro.features,
       recommended: true,
     },
     {
@@ -52,9 +48,7 @@ const Register = () => {
       name: "Elite",
       priceMonthly: 149,
       priceAnnual: 119,
-      features: isEn
-        ? ["Everything in Pro", "Unlimited users", "Advanced technical sheet", "Offline mode", "24/7 support"]
-        : ["Todo lo de Pro", "Usuarios ilimitados", "Ficha técnica avanzada", "Modo offline", "Soporte 24/7"],
+      features: t.landing.pricing.elite.features,
       recommended: false,
     },
   ];
