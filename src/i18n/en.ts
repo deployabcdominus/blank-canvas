@@ -892,6 +892,18 @@ export const en = {
     }
   },
 
+  /* ── Banners & Notifications ── */
+  banners: {
+    pastDue: {
+      title: "Your subscription has a pending payment.",
+      desc: "Please update your payment method to avoid service suspension."
+    },
+    planLimit: {
+      reached: "You have reached the {plan} plan limit for {entity}.",
+      near: "You are using {current} of {max} available {entity}."
+    }
+  },
+
   /* ── Payments ── */
   payments: {
     title: "Payments",
