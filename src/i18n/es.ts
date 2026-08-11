@@ -817,6 +817,81 @@ export const es: TranslationKeys = {
         },
       },
     },
+    integrations: {
+      title: "Integraciones",
+      subtitle: "Conecte sus herramientas favoritas",
+      quickbooks: {
+        title: "QuickBooks Online",
+        desc: "Sincronización bidireccional automática de clientes, propuestas e invoices",
+        bullets: [
+          "Clientes sincronizados en tiempo real",
+          "Propuestas convertidas a Estimates en QBO",
+          "Pagos registrados como Invoices automáticamente"
+        ]
+      },
+      stripe: {
+        title: "Stripe Payments",
+        desc: "Acepta pagos online directamente desde tus propuestas y portal del cliente",
+        bullets: [
+          "Links de pago en propuestas",
+          "Suscripciones y pagos recurrentes",
+          "Dashboard financiero unificado"
+        ]
+      },
+      gcal: {
+        title: "Google Calendar",
+        desc: "Sincroniza órdenes de servicio y ejecuciones automáticamente con tu calendario",
+        bullets: [
+          "Órdenes → eventos automáticos",
+          "Recordatorios al equipo",
+          "Vista de agenda del mes"
+        ]
+      },
+      whatsapp: {
+        title: "WhatsApp Business",
+        desc: "Notificaciones automáticas a clientes en cada etapa del proyecto",
+        bullets: [
+          "Estado de orden en tiempo real",
+          "Aprobación de propuestas por WhatsApp",
+          "Recordatorios de pago automáticos"
+        ]
+      },
+      docusign: {
+        title: "DocuSign",
+        desc: "Firma digital de propuestas y contratos desde el portal del cliente",
+        bullets: [
+          "Propuestas con firma electrónica legal",
+          "Contratos firmados en minutos",
+          "Archivo automático de documentos"
+        ]
+      },
+      zapier: {
+        title: "Zapier",
+        desc: "Conecta SignFlow con más de 5,000 apps sin código",
+        bullets: [
+          "Automatizaciones sin límite",
+          "Conecta con tu CRM actual",
+          "Workflows personalizados"
+        ]
+      },
+      ai: {
+        title: "AI Assistant Pro",
+        desc: "Tu consultor de negocios con IA que aprende de tu empresa y predice oportunidades",
+        bullets: [
+          "Generación automática de propuestas por voz",
+          "Predicción de precios óptimos",
+          "Detección de clientes en riesgo de churn",
+          "Recomendaciones de ventas en tiempo real"
+        ],
+        waitlist: "Unirme a la lista de espera",
+        exclusive: "Exclusivo",
+        privateBeta: "Beta Privada",
+        betaPlaces: "Solo 50 lugares disponibles para beta"
+      },
+      notifyMe: "Notificarme",
+      notified: "¡Te avisaremos cuando esté listo!",
+      comingSoon: "Próximamente"
+    }
   },
 
   /* ── Payments ── */
