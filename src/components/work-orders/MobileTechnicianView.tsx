@@ -133,7 +133,7 @@ export default function MobileTechnicianView() {
       }
     } catch (err) {
       console.error("Error loading orders:", err);
-      toast({ title: "Modo Offline", description: "Mostrando datos guardados localmente." });
+      toast({ title: locale === 'en' ? "Offline Mode" : "Modo Offline", description: locale === 'en' ? "Showing locally saved data." : "Mostrando datos guardados localmente." });
     }
   }, [user, companyId]);
 
@@ -165,7 +165,7 @@ export default function MobileTechnicianView() {
       await supabase.from("production_orders").update(updates).eq("id", selectedOrder.id);
       setSelectedOrder(prev => prev ? { ...prev, status: newStatus, ...updates } : null);
       const isFinished = newStatus === "Finalizada" || newStatus === "done" || newStatus === "Completada" || newStatus === "ready";
-      toast({ title: isFinished ? `✅ ${(t as any).technician.actions.finish.replace(" Orden", "")}` : `▶️ ${(t as any).technician.actions.start.replace(" Orden", "")}` });
+      toast({ title: isFinished ? `✅ ${(t as any).production.quickOrders.technician.actions.finish.replace(" Order", "")}` : `▶️ ${(t as any).production.quickOrders.technician.actions.start.replace(" Order", "")}` });
       loadOrders();
     } catch {
       toast({ title: "Error", variant: "destructive" });
@@ -181,9 +181,9 @@ export default function MobileTechnicianView() {
       await (supabase as any).from("production_orders")
         .update({ technical_details: techDetails })
         .eq("id", selectedOrder.id);
-      toast({ title: "Ficha técnica guardada" });
+      toast({ title: (t as any).production.quickOrders.technician.saveSuccess });
     } catch {
-      toast({ title: "Error al guardar", variant: "destructive" });
+      toast({ title: (t as any).production.quickOrders.technician.saveError, variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -200,9 +200,9 @@ export default function MobileTechnicianView() {
       if (error) throw error;
       const newPhotos = [...photos, path];
       setPhotos(newPhotos);
-      toast({ title: "📸 Foto subida" });
+      toast({ title: `📸 ${(t as any).production.quickOrders.technician.uploadSuccess}` });
     } catch {
-      toast({ title: "Error al subir foto", variant: "destructive" });
+      toast({ title: (t as any).production.quickOrders.technician.uploadError, variant: "destructive" });
     } finally {
       setUploadingPhoto(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -216,10 +216,10 @@ export default function MobileTechnicianView() {
         <div className="safe-top px-4 pt-6 pb-3">
           <h1 className="text-xl font-bold">{locale === 'en' ? 'My ' : 'Mis '}{labels.workOrders}</h1>
           <div className="flex items-center justify-between mt-1">
-            <p className="text-xs text-muted-foreground">{(t as any).technician.subtitle}</p>
+            <p className="text-xs text-muted-foreground">{(t as any).production.quickOrders.technician.subtitle}</p>
             {lastSync && (
               <p className="text-[10px] text-muted-foreground/60 italic">
-                {(t as any).technician.sync}: {new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {(t as any).production.quickOrders.technician.sync}: {new Date(lastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </p>
             )}
           </div>
@@ -230,7 +230,7 @@ export default function MobileTechnicianView() {
           {orders.length === 0 && (
             <div className="text-center py-16">
               <ClipboardList className="w-10 h-10 mx-auto text-muted-foreground/30 mb-3" />
-              <p className="text-sm text-muted-foreground">{(t as any).technician.noOrders}</p>
+              <p className="text-sm text-muted-foreground">{(t as any).production.quickOrders.technician.noOrders}</p>
             </div>
           )}
           {orders.map(o => (
@@ -272,9 +272,9 @@ export default function MobileTechnicianView() {
 
   /* ── Order Detail ── */
   const tabs: { id: MobileTab; label: string; icon: React.ElementType }[] = [
-    { id: "task", label: (t as any).technician.myTask, icon: ClipboardList },
-    { id: "details", label: (t as any).technician.details, icon: FileText },
-    { id: "photos", label: (t as any).technician.photos, icon: Camera },
+    { id: "task", label: (t as any).production.quickOrders.technician.myTask, icon: ClipboardList },
+    { id: "details", label: (t as any).production.quickOrders.technician.details, icon: FileText },
+    { id: "photos", label: (t as any).production.quickOrders.technician.photos, icon: Camera },
 
   ];
 
@@ -306,7 +306,7 @@ export default function MobileTechnicianView() {
             <motion.div key="task" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-4 py-3">
               {/* Status card */}
               <div className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-xl">
-                <p className="text-xs text-muted-foreground mb-1">{(t as any).technician.currentStatus}</p>
+                <p className="text-xs text-muted-foreground mb-1">{(t as any).production.quickOrders.technician.currentStatus}</p>
                 <p className="text-lg font-bold">
                   {locale === 'en' ? (
                     selectedOrder.status === 'Pendiente' || selectedOrder.status === 'pending' ? t.workOrders.statusLabels.pending : 
@@ -319,7 +319,7 @@ export default function MobileTechnicianView() {
                 </p>
                 {selectedOrder.estimated_delivery && (
                   <p className="text-xs text-muted-foreground mt-2">
-                    {(t as any).technician.delivery}: {new Date(selectedOrder.estimated_delivery).toLocaleDateString(locale)}
+                    {(t as any).production.quickOrders.technician.delivery}: {new Date(selectedOrder.estimated_delivery).toLocaleDateString(locale)}
                   </p>
                 )}
 
@@ -329,7 +329,7 @@ export default function MobileTechnicianView() {
               {/* Progress */}
               <div className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03]">
                 <div className="flex justify-between text-xs mb-2">
-                  <span className="text-muted-foreground">{(t as any).technician.progress}</span>
+                  <span className="text-muted-foreground">{(t as any).production.quickOrders.technician.progress}</span>
                   <span className="font-semibold">{selectedOrder.progress}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
@@ -343,7 +343,7 @@ export default function MobileTechnicianView() {
               {/* Notes */}
               {selectedOrder.notes && (
                 <div className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03]">
-                  <p className="text-xs text-muted-foreground mb-1">{(t as any).technician.notes}</p>
+                  <p className="text-xs text-muted-foreground mb-1">{(t as any).production.quickOrders.technician.notes}</p>
                   <p className="text-sm leading-relaxed">{selectedOrder.notes}</p>
                 </div>
               )}
@@ -355,7 +355,7 @@ export default function MobileTechnicianView() {
             <motion.div key="details" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-4 py-3">
               <div className="flex items-center gap-2 mb-1">
                 <Wrench className="w-4 h-4 text-orange-400" strokeWidth={1.5} />
-                <h3 className="text-sm font-semibold">{(t as any).technician.techSheet}</h3>
+                <h3 className="text-sm font-semibold">{(t as any).production.quickOrders.technician.techSheet}</h3>
               </div>
 
               {/* Dynamic fields — single column for mobile */}
@@ -423,12 +423,12 @@ export default function MobileTechnicianView() {
                 className="w-full h-12 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-foreground font-medium"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                {saving ? (t as any).technician.actions.saving : (t as any).technician.techSheet}
+                {saving ? (t as any).production.quickOrders.technician.actions.saving : (t as any).production.quickOrders.technician.techSheet}
               </Button>
 
-              <FeatureGuard feature="access_advanced_fields" message="Personaliza los campos técnicos según tu negocio.">
+              <FeatureGuard feature="access_advanced_fields" message={locale === 'en' ? "Customize technical fields for your business." : "Personaliza los campos técnicos según tu negocio."}>
                 <div className="p-3 rounded-xl border border-white/[0.06] bg-white/[0.02] text-center">
-                  <p className="text-xs text-muted-foreground">✨ Personalizar campos de ficha técnica</p>
+                  <p className="text-xs text-muted-foreground">✨ {(t as any).production.quickOrders.technician.customFields}</p>
                 </div>
               </FeatureGuard>
             </motion.div>
@@ -437,14 +437,14 @@ export default function MobileTechnicianView() {
           {/* ── Tab: Photos ── */}
           {tab === "photos" && (
             <motion.div key="photos" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-4 py-3">
-              <FeatureGuard feature="access_previews" message="El módulo de evidencia fotográfica está disponible en Plan Pro y superior.">
+              <FeatureGuard feature="access_previews" message={locale === 'en' ? "Photo evidence module is available in Pro Plan and above." : "El módulo de evidencia fotográfica está disponible en Plan Pro y superior."}>
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-semibold flex items-center gap-2">
                       <Camera className="w-4 h-4 text-orange-400" strokeWidth={1.5} />
-                      Evidencia Fotográfica
+                      {(t as any).production.quickOrders.technician.evidenceTitle}
                     </h3>
-                    <span className="text-xs text-muted-foreground">{photos.length} fotos</span>
+                    <span className="text-xs text-muted-foreground">{photos.length} {(t as any).production.quickOrders.technician.photosCount}</span>
                   </div>
 
                   {/* Gallery */}
@@ -471,8 +471,8 @@ export default function MobileTechnicianView() {
                   ) : (
                     <div className="py-12 text-center">
                       <ImageIcon className="w-10 h-10 mx-auto text-muted-foreground/20 mb-3" />
-                      <p className="text-sm text-muted-foreground">Sin evidencia aún</p>
-                      <p className="text-xs text-muted-foreground/60 mt-1">Usa el botón de cámara para agregar fotos</p>
+                      <p className="text-sm text-muted-foreground">{(t as any).production.quickOrders.evidence}</p>
+                      <p className="text-xs text-muted-foreground/60 mt-1">{(t as any).production.quickOrders.evidenceDesc}</p>
                     </div>
                   )}
 
@@ -518,7 +518,7 @@ export default function MobileTechnicianView() {
             className="w-full h-14 rounded-2xl text-base font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_4px_20px_rgba(16,185,129,0.3)] active:scale-[0.97] transition-transform"
           >
             {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Play className="w-5 h-5 mr-2" />}
-            {saving ? (t as any).technician.actions.saving : (t as any).technician.actions.start}
+            {saving ? (t as any).production.quickOrders.technician.actions.saving : (t as any).production.quickOrders.technician.actions.start}
           </Button>
         ) : selectedOrder.status !== "Finalizada" ? (
           <Button
@@ -527,7 +527,7 @@ export default function MobileTechnicianView() {
             className="w-full h-14 rounded-2xl text-base font-bold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-[0_4px_20px_rgba(251,146,60,0.35)] active:scale-[0.97] transition-transform"
           >
             {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <CheckCircle2 className="w-5 h-5 mr-2" />}
-            {saving ? (t as any).technician.actions.saving : (t as any).technician.actions.finish}
+            {saving ? (t as any).production.quickOrders.technician.actions.saving : (t as any).production.quickOrders.technician.actions.finish}
           </Button>
         ) : null}
       </div>
