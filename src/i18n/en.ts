@@ -676,7 +676,7 @@ export const en = {
     },
     faq: {
       badge: "landing.faq.badge",
-      items: "landing.faq.items",
+      items: [{ q: "How long does setup take?", a: "Most teams are up and running in less than 24 hours." }, { q: "Do you offer custom integrations?", a: "Yes, our Elite plan includes custom API access and dedicated support." }],
       subtitle: "landing.faq.subtitle",
       title: "landing.faq.title",
     },
@@ -699,12 +699,12 @@ export const en = {
     },
     footer: {
       company: "landing.footer.company",
-      companyLinks: "landing.footer.companyLinks",
+      companyLinks: ["About Us", "Contact", "Careers", "Blog"],
       copyright: "landing.footer.copyright",
       legal: "landing.footer.legal",
-      legalLinks: "landing.footer.legalLinks",
+      legalLinks: ["Privacy Policy", "Terms of Service", "Cookie Policy", "GDPR"],
       product: "landing.footer.product",
-      productLinks: "landing.footer.productLinks",
+      productLinks: ["Features", "Pricing", "API Documentation", "Security"],
       tagline: "landing.footer.tagline",
     },
     hero: {
@@ -782,18 +782,18 @@ export const en = {
       choose: "landing.pricing.choose",
       chosenBy: "landing.pricing.chosenBy",
       elite: {
-        features: "landing.pricing.elite.features",
+        features: ["Everything in Pro", "White-label Portal", "AI Operations Briefing", "Priority Support"],
       },
       monthly: "landing.pricing.monthly",
       mostPopular: "landing.pricing.mostPopular",
       perMonth: "landing.pricing.perMonth",
       pro: {
-        features: "landing.pricing.pro.features",
+        features: ["Everything in Start", "Advanced Mockups", "Installation Mapping", "Unlimited Users"],
       },
       processing: "landing.pricing.processing",
       save20: "landing.pricing.save20",
       start: {
-        features: "landing.pricing.start.features",
+        features: ["Lead Management", "Basic Proposals", "Production Tracking", "Up to 5 Users"],
       },
       subtitle: "landing.pricing.subtitle",
       titleLine1: "landing.pricing.titleLine1",

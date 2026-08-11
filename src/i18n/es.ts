@@ -676,7 +676,7 @@ export const es = {
     },
     faq: {
       badge: "landing.faq.badge",
-      items: "landing.faq.items",
+      items: [{ q: "¿Cuánto tiempo toma la configuración?", a: "La mayoría de los equipos están listos en menos de 24 horas." }, { q: "¿Ofrecen integraciones personalizadas?", a: "Sí, nuestro plan Elite incluye acceso a API personalizado y soporte dedicado." }],
       subtitle: "landing.faq.subtitle",
       title: "landing.faq.title",
     },
@@ -699,12 +699,12 @@ export const es = {
     },
     footer: {
       company: "landing.footer.company",
-      companyLinks: "landing.footer.companyLinks",
+      companyLinks: ["Sobre Nosotros", "Contacto", "Carreras", "Blog"],
       copyright: "landing.footer.copyright",
       legal: "landing.footer.legal",
-      legalLinks: "landing.footer.legalLinks",
+      legalLinks: ["Privacidad", "Términos", "Cookies", "RGPD"],
       product: "landing.footer.product",
-      productLinks: "landing.footer.productLinks",
+      productLinks: ["Funciones", "Precios", "Documentación API", "Seguridad"],
       tagline: "landing.footer.tagline",
     },
     hero: {
@@ -782,18 +782,18 @@ export const es = {
       choose: "landing.pricing.choose",
       chosenBy: "landing.pricing.chosenBy",
       elite: {
-        features: "landing.pricing.elite.features",
+        features: ["Todo en Pro", "Portal Marca Blanca", "Briefing de Operaciones IA", "Soporte Prioritario"],
       },
       monthly: "landing.pricing.monthly",
       mostPopular: "landing.pricing.mostPopular",
       perMonth: "landing.pricing.perMonth",
       pro: {
-        features: "landing.pricing.pro.features",
+        features: ["Todo en Start", "Mockups Avanzados", "Mapa de Instalaciones", "Usuarios Ilimitados"],
       },
       processing: "landing.pricing.processing",
       save20: "landing.pricing.save20",
       start: {
-        features: "landing.pricing.start.features",
+        features: ["Gestión de Leads", "Propuestas Básicas", "Seguimiento de Producción", "Hasta 5 Usuarios"],
       },
       subtitle: "landing.pricing.subtitle",
       titleLine1: "landing.pricing.titleLine1",
