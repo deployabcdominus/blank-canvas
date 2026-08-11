@@ -117,7 +117,7 @@ export const GeoHeatmap = ({ installations }: GeoHeatmapProps) => {
         <div style="font-family:Inter,system-ui,sans-serif;">
           <p style="font-size:14px;font-weight:600;color:#fff;margin:0 0 2px;">${inst.client}</p>
           ${inst.project ? `<p style="font-size:12px;color:#a1a1aa;margin:0 0 8px;">${inst.project}</p>` : ""}
-          <span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;${statusBadge(inst.status)}">${statusLabel(inst.status, tc.installStatus)}</span>
+          <span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;${statusBadge(inst.status)}">${statusLabel(inst.status, tc.installStatus as any)}</span>
           ${inst.address ? `<p style="font-size:11px;color:#71717a;margin:8px 0 0;line-height:1.4;">${inst.address}</p>` : ""}
           <button onclick="window.__signflow_nav_installation && window.__signflow_nav_installation()" style="width:100%;margin-top:10px;padding:6px 0;font-size:12px;color:#f97316;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:8px;cursor:pointer;font-family:inherit;">
             ${tc.viewProject}
