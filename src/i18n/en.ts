@@ -395,6 +395,13 @@ export const en = {
     total: "Total",
     amount: "Amount",
     value: "Value",
+    width: "Width",
+    height: "Height",
+    depth: "Depth",
+    measurements: "Measurements",
+    select: "Select",
+    selected: "Selected",
+    view: "View",
   },
 
   /* ── Navigation / Sidebar ── */

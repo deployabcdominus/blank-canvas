@@ -397,6 +397,13 @@ export const es: TranslationKeys = {
     total: "Total",
     amount: "Monto",
     value: "Valor",
+    width: "Ancho",
+    height: "Alto",
+    depth: "Prof.",
+    measurements: "Medidas",
+    select: "Seleccionar",
+    selected: "Seleccionados",
+    view: "Ver",
   },
 
   /* ── Navigation / Sidebar ── */
