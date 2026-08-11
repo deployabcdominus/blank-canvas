@@ -262,7 +262,7 @@ export function SignFlowDashboardView({
           <span>{(t.dashboard as any)?.setupTip || "Configura tu dominio personalizado para profesionalizar tu marca."}</span>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate('/settings?tab=domain')} className="text-primary hover:text-primary">
-          Configurar
+          {(t.dashboard as any)?.setupCta || "Configurar"}
         </Button>
       </motion.div>
     </div>
