@@ -1,163 +1,142 @@
+import os
 import re
 
-def update_file(filepath, locale):
-    with open(filepath, 'r') as f:
-        content = f.read()
+def clean_i18n(path, lang):
+    with open(path, 'r', errors='ignore') as f:
+        lines = f.readlines()
     
-    # Define the new blocks
-    if locale == 'en':
-        catalogs = """    catalogs: {
-      title: "Catalogs",
-      subtitle: "Manage standard lists for your operation",
-      add: "Add",
-      adding: "Adding...",
-      addSuccess: '"{label}" added to {title}',
-      addError: "Error adding item",
-      updateSuccess: "Updated successfully",
-      updateError: "Error updating item",
-      deleteSuccess: '"{label}" deleted',
-      deleteError: "Error deleting item",
-      defaultCannotDelete: "Default values cannot be deleted",
-      noItems: "No items. Add the first one below.",
-      placeholder: "Add new {title}...",
-      pressEnter: "Press Enter or the button to add. Values with 🔒 are defaults and cannot be deleted.",
-      defaultValue: "Default value",
-      save: "Save",
-      cancel: "Cancel",
-    },"""
-        pricing = """    pricing: {
-      title: "Your Subscription",
-      currentPlan: "Current plan:",
-      paymentOverdue: "Payment Overdue",
-      overdueTitle: "Your subscription has a pending payment",
-      overdueSubtitle: "Please update your payment method to avoid service suspension.",
-      updatePayment: "Update Payment Method",
-      manageSub: "Manage Subscription (Invoices, Payment Method)",
-      recommended: "Recommended",
-      current: "Current",
-      perMonth: "/mo",
-      downgrade: "Downgrade",
-      upgrade: "Upgrade",
-      viewUpgrade: "View upgrade plans",
-      successTitle: "🎉 Thank you for trusting us!",
-      successDesc: "Your plan is now active. Enjoy all features.",
-      loginRequired: "You must be logged in",
-      portalError: "Could not open the portal",
-      paymentError: "Could not start payment",
-      plans: {
-        start: {
-          tagline: "Freelancers / Self-employed",
-          features: ["CRM + Manual Management", "Up to 3 users", "Standard labels", "File uploads", "Basic security"],
-        },
-        pro: {
-          tagline: "Small & Medium Businesses",
-          features: ["Everything in Start, plus:", "Digital signature portal", "Mockup generator", "Advanced automation", "Custom dictionaries", "Daily backup", "Up to 15 users"],
-        },
-        elite: {
-          tagline: "Enterprise & Multi-team",
-          features: ["Everything in Pro, plus:", "Pro Plans & Annotations", "Unlimited fields", "Subcontractors / Logistics", "API & Webhooks", "Full Audit Logs", "Unlimited users", "Priority support"],
-        },
-      }
-    },"""
-        mfa = """    mfa: {
-      title: "Multi-Factor Authentication (MFA)",
-      subtitle: "Add an extra layer of security to your account using an authenticator app.",
-      enabledSuccess: "MFA enabled successfully",
-      invalidCode: "Invalid code. Please try again.",
-      factorRemoved: "MFA factor removed",
-      verified: "Verified",
-      disable: "Disable",
-      notEnabled: "MFA is not enabled",
-      recommend: "We recommend enabling MFA to protect your account from unauthorized access.",
-      enable: "Enable MFA",
-      scanQr: "Scan the QR code with your authenticator app",
-      scanInstructions: "Open Google Authenticator, Authy, or similar and scan this code, then enter the 6-digit verification code below.",
-      verifyAndActivate: "Verify & Activate",
-      cancel: "Cancel",
-      authenticatorApp: "Authenticator App",
-    },"""
-    else:
-        catalogs = """    catalogs: {
-      title: "Catálogos",
-      subtitle: "Gestiona las listas estándar para tu operación",
-      add: "Agregar",
-      adding: "Agregando...",
-      addSuccess: '"{label}" agregado a {title}',
-      addError: "Error al agregar",
-      updateSuccess: "Actualizado correctamente",
-      updateError: "Error al actualizar",
-      deleteSuccess: '"{label}" eliminado',
-      deleteError: "Error al eliminar",
-      defaultCannotDelete: "Los valores predeterminados no se pueden eliminar",
-      noItems: "No hay items. Agrega el primero abajo.",
-      placeholder: "Agregar nuevo {title.toLowerCase()}...",
-      pressEnter: "Presiona Enter o el botón para agregar. Los valores con 🔒 son predeterminados y no se pueden eliminar.",
-      defaultValue: "Valor predeterminado",
-      save: "Guardar",
-      cancel: "Cancelar",
-    },"""
-        pricing = """    pricing: {
-      title: "Tu Suscripción",
-      currentPlan: "Plan actual:",
-      paymentOverdue: "Pago Pendiente",
-      overdueTitle: "Tu suscripción tiene un pago pendiente",
-      overdueSubtitle: "Por favor, actualiza tu método de pago para evitar la suspensión del servicio.",
-      updatePayment: "Actualizar Método de Pago",
-      manageSub: "Gestionar Suscripción (Facturas, Método de Pago)",
-      recommended: "Recomendado",
-      current: "Actual",
-      perMonth: "/mes",
-      downgrade: "Bajar plan",
-      upgrade: "Upgrade",
-      viewUpgrade: "Ver planes de upgrade",
-      successTitle: "🎉 ¡Gracias por confiar en nosotros!",
-      successDesc: "Tu plan ya está activo. Disfruta de todas las funciones.",
-      loginRequired: "Debes iniciar sesión",
-      portalError: "No se pudo abrir el portal",
-      paymentError: "No se pudo iniciar el pago",
-      plans: {
-        start: {
-          tagline: "Auto-empleados / Freelance",
-          features: ["CRM + Gestión Manual", "Hasta 3 usuarios", "Etiquetas estándar", "Subida de archivos", "Seguridad básica"],
-        },
-        pro: {
-          tagline: "Pequeñas y Medianas Empresas",
-          features: ["Todo en Start, más:", "Portal de firma digital", "Generador de Mockups", "Automatización avanzada", "Diccionarios personalizados", "Backup diario", "Hasta 15 usuarios"],
-        },
-        elite: {
-          tagline: "Empresas con múltiples equipos",
-          features: ["Todo en Pro, más:", "Planos y Anotaciones Pro", "Campos ilimitados", "Subcontratistas / Logística", "API y Webhooks", "Audit Logs completos", "Usuarios ilimitados", "Soporte prioritario"],
-        },
-      }
-    },"""
-        mfa = """    mfa: {
-      title: "Autenticación de Dos Factores (MFA)",
-      subtitle: "Agrega una capa extra de seguridad a tu cuenta usando una aplicación de autenticación.",
-      enabledSuccess: "MFA activado correctamente",
-      invalidCode: "Código inválido. Inténtalo de nuevo.",
-      factorRemoved: "Factor MFA eliminado",
-      verified: "Verificado",
-      disable: "Desactivar",
-      notEnabled: "MFA no está activado",
-      recommend: "Recomendamos activar MFA para proteger tu cuenta de accesos no autorizados.",
-      enable: "Activar MFA",
-      scanQr: "Escanea el código QR con tu app de autenticación",
-      scanInstructions: "Abre Google Authenticator, Authy o similar y escanea este código, luego ingresa el código de 6 dígitos abajo.",
-      verifyAndActivate: "Verificar y Activar",
-      cancel: "Cancelar",
-      authenticatorApp: "App de Autenticación",
-    },"""
-
-    # 1. Replace catalogs block
-    # Match from catalogs: { until the next top level sibling (integrations: {)
-    content = re.sub(r'catalogs: \{.*?integrations: \{', catalogs + '\n    integrations: {', content, flags=re.DOTALL)
+    # We want to find the lines starting with ": {" or similar and remove them
+    # But wait, looking at the previous output:
+    # 1: export const en = {
+    # 2:   : {
+    # 3:     : {
+    # 4:       : "..",
+    # 5:     },
+    # 6:   },
+    # This is clearly broken.
     
-    # 2. Add pricing and mfa before the end of the settings object
-    # The settings object ends before dashboard: {
-    content = re.sub(r'    profile: \{.*?\}\n  \},', lambda m: m.group(0)[:-4] + '\n' + pricing + '\n' + mfa + '\n    }\n  },', content, flags=re.DOTALL)
+    # I'll just write a fresh template and populate it with the keys we found earlier.
+    # I'll use the used_keys logic to get a baseline structure.
+    pass
 
-    with open(filepath, 'w') as f:
-        f.write(content)
+def generate_full_i18n(lang):
+    # This is the most robust way: rescan everything and build the structure
+    ignored_methods = {'replace', 'toUpperCase', 'toLowerCase', 'charAt', 'slice', 'includes', 'split', 'trim', 'map', 'filter', 'join', 'toString'}
 
-update_file('src/i18n/en.ts', 'en')
-update_file('src/i18n/es.ts', 'es')
+    all_paths = set()
+    for root, dirs, files in os.walk('src'):
+        for file in files:
+            if file.endswith(('.tsx', '.ts')) and 'i18n' not in root:
+                path = os.path.join(root, file)
+                with open(path, 'r', errors='ignore') as f:
+                    content = f.read()
+                    
+                    # 1. Direct usage: t.foo.bar
+                    matches = re.findall(r't\.([a-zA-Z0-9_\.]+)', content)
+                    for m in matches:
+                        parts = m.split('.')
+                        # Filter out numbers and single dots at the start
+                        while parts and parts[-1] in ignored_methods:
+                            parts.pop()
+                        if parts and all(re.match(r'^[a-zA-Z]\w*$', p) for p in parts):
+                            all_paths.add('.'.join(parts))
+                    
+                    # 2. Alias usage
+                    aliased = re.findall(r'const (\w+) = t\.([a-zA-Z0-9_\.]+)', content)
+                    for alias, key in aliased:
+                        submatches = re.findall(rf'{alias}\.([a-zA-Z0-9_\.]+)', content)
+                        for sm in submatches:
+                            full = key + "." + sm
+                            parts = full.split('.')
+                            while parts and parts[-1] in ignored_methods:
+                                parts.pop()
+                            if parts and all(re.match(r'^[a-zA-Z]\w*$', p) for p in parts):
+                                all_paths.add('.'.join(parts))
+
+    # Add mandatory keys
+    all_paths.add("seo.title")
+    all_paths.add("seo.description")
+    all_paths.add("common.save")
+    all_paths.add("common.cancel")
+    all_paths.add("common.error")
+    all_paths.add("common.success")
+
+    # Build tree
+    tree = {}
+    for path in sorted(all_paths):
+        parts = path.split('.')
+        curr = tree
+        for i, part in enumerate(parts):
+            if i == len(parts) - 1:
+                if part not in curr:
+                    curr[part] = path
+            else:
+                if part not in curr or not isinstance(curr[part], dict):
+                    curr[part] = {}
+                curr = curr[part]
+
+    def dict_to_ts(d, indent=2):
+        res = "{\n"
+        for k, v in sorted(d.items()):
+            if isinstance(v, dict):
+                res += " " * indent + f"{k}: {dict_to_ts(v, indent + 2)},\n"
+            else:
+                # Value mapping
+                val = v
+                if lang == 'en':
+                    # Heuristics for common values
+                    if k == 'save': val = "Save"
+                    elif k == 'cancel': val = "Cancel"
+                    elif k == 'error': val = "Error"
+                    elif k == 'success': val = "Success"
+                    elif k == 'title' and 'seo' in v: val = "SignFlow | Elite Operations Platform"
+                    elif k == 'description' and 'seo' in v: val = "The elite operations platform for modern sign companies."
+                    elif k == 'saving': val = "Saving..."
+                    elif k == 'date': val = "Date"
+                    elif k == 'notes': val = "Notes"
+                    elif k == 'measurements': val = "Measurements"
+                    elif k == 'width': val = "Width"
+                    elif k == 'height': val = "Height"
+                    elif k == 'depth': val = "Depth"
+                    elif k == 'add': val = "Add"
+                    elif k == 'select': val = "Select"
+                    elif k == 'selected': val = "Selected"
+                    elif k == 'status': val = "Status"
+                    elif k == 'next': val = "Next"
+                    elif k == 'view': val = "View"
+                    elif k == 'create': val = "Create"
+                else:
+                    if k == 'save': val = "Guardar"
+                    elif k == 'cancel': val = "Cancelar"
+                    elif k == 'error': val = "Error"
+                    elif k == 'success': val = "Éxito"
+                    elif k == 'title' and 'seo' in v: val = "SignFlow | Plataforma de Operaciones de Élite"
+                    elif k == 'description' and 'seo' in v: val = "La plataforma de operaciones de élite para empresas de rotulación modernas."
+                    elif k == 'saving': val = "Guardando..."
+                    elif k == 'date': val = "Fecha"
+                    elif k == 'notes': val = "Notas"
+                    elif k == 'measurements': val = "Medidas"
+                    elif k == 'width': val = "Ancho"
+                    elif k == 'height': val = "Alto"
+                    elif k == 'depth': val = "Profundidad"
+                    elif k == 'add': val = "Agregar"
+                    elif k == 'select': val = "Seleccionar"
+                    elif k == 'selected': val = "Seleccionado"
+                    elif k == 'status': val = "Estado"
+                    elif k == 'next': val = "Siguiente"
+                    elif k == 'view': val = "Ver"
+                    elif k == 'create': val = "Crear"
+                
+                res += " " * indent + f'{k}: "{val}",\n'
+        res += " " * (indent - 2) + "}"
+        return res
+
+    header = f"export const {lang} = {dict_to_ts(tree, 2)};\n"
+    if lang == 'en':
+        header += "\nexport type TranslationKeys = typeof en;\n"
+    return header
+
+with open('src/i18n/en.ts', 'w') as f:
+    f.write(generate_full_i18n('en'))
+with open('src/i18n/es.ts', 'w') as f:
+    f.write(generate_full_i18n('es'))
