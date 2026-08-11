@@ -383,13 +383,13 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
               <Package className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-base font-semibold">Nueva Orden de Producción</DialogTitle>
-              <p className="text-xs text-muted-foreground">Modo rápido de taller</p>
+              <DialogTitle className="text-base font-semibold">{t.workOrders.quickOrders.newTitle}</DialogTitle>
+              <p className="text-xs text-muted-foreground">{t.workOrders.quickOrders.workshopMode}</p>
             </div>
           </div>
           {selectedMaterials.length > 0 && (
             <Badge className="bg-primary/15 text-primary border border-primary/20 text-xs">
-              {selectedMaterials.length} materiales
+              {selectedMaterials.length} {t.workOrders.quickOrders.materials.toLowerCase()}
             </Badge>
           )}
         </div>
@@ -400,15 +400,15 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
             {/* ═══ ZONE 1: Essential Data ═══ */}
             <section className="space-y-3">
-              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Datos esenciales</h3>
+              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t.workOrders.quickOrders.essentials}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Client */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Cliente *</Label>
+                  <Label className="text-xs">{t.workOrders.quickOrders.clientLabel}</Label>
                   {sentProposals.length > 0 ? (
                     <Select value={selectedClientId} onValueChange={(v) => { setSelectedClientId(v); setCustomClient(''); }}>
                       <SelectTrigger className="bg-muted/30 border-border/20 h-9 text-sm">
-                        <SelectValue placeholder="Seleccionar cliente" />
+                        <SelectValue placeholder={t.workOrders.quickOrders.selectClient} />
                       </SelectTrigger>
                       <SelectContent>
                         {sentProposals.map(p => (
@@ -420,25 +420,25 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                       </SelectContent>
                     </Select>
                   ) : (
-                    <Input value={customClient} onChange={e => setCustomClient(e.target.value)} placeholder="Nombre del cliente" className="bg-muted/30 border-border/20 h-9 text-sm" />
+                    <Input value={customClient} onChange={e => setCustomClient(e.target.value)} placeholder={t.workOrders.quickOrders.clientPlaceholder} className="bg-muted/30 border-border/20 h-9 text-sm" />
                   )}
                   {sentProposals.length > 0 && (
-                    <Input value={customClient} onChange={e => { setCustomClient(e.target.value); setSelectedClientId(''); }} placeholder="O escribir nombre directo" className="bg-muted/20 border-border/10 h-8 text-xs" />
+                    <Input value={customClient} onChange={e => { setCustomClient(e.target.value); setSelectedClientId(''); }} placeholder={t.workOrders.quickOrders.orWriteDirect} className="bg-muted/20 border-border/10 h-8 text-xs" />
                   )}
                 </div>
 
                 {/* Project */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Proyecto *</Label>
-                  <Input value={projectName} onChange={e => setProjectName(e.target.value)} placeholder="Ej: Monument Sign ABC Corp" className="bg-muted/30 border-border/20 h-9 text-sm" />
+                  <Label className="text-xs">{t.workOrders.quickOrders.projectLabel}</Label>
+                  <Input value={projectName} onChange={e => setProjectName(e.target.value)} placeholder={t.workOrders.quickOrders.projectPlaceholder} className="bg-muted/30 border-border/20 h-9 text-sm" />
                 </div>
 
                 {/* Service */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Tipo de servicio</Label>
+                  <Label className="text-xs">{t.workOrders.quickOrders.serviceLabel}</Label>
                   <Select value={serviceType} onValueChange={setServiceType}>
                     <SelectTrigger className="bg-muted/30 border-border/20 h-9 text-sm">
-                      <SelectValue placeholder="Seleccionar" />
+                      <SelectValue placeholder={t.common.select} />
                     </SelectTrigger>
                     <SelectContent>
                       {resolvedServices.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -448,7 +448,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
                 {/* Target date */}
                 <DateField
-                  label="Fecha objetivo"
+                  label={t.workOrders.quickOrders.targetDateLabel}
                   value={targetDate}
                   onChange={setTargetDate}
                   minDate={new Date()}
@@ -458,7 +458,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
               {/* Priority toggle */}
               <div className="flex items-center gap-2">
-                <Label className="text-xs">Prioridad:</Label>
+                <Label className="text-xs">{t.workOrders.quickOrders.priorityLabel}</Label>
                 <button
                   onClick={() => setPriority(p => p === 'Normal' ? 'Urgente' : 'Normal')}
                   className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
@@ -475,11 +475,11 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
             {/* ═══ ZONE 2: Materials ═══ */}
             <section className="space-y-3">
-              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Materiales</h3>
+              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t.workOrders.quickOrders.materials}</h3>
 
               {/* Frequent materials - quick add grid */}
               <div>
-                <p className="text-xs text-muted-foreground mb-2">⚡ Materiales frecuentes — clic para agregar</p>
+                <p className="text-xs text-muted-foreground mb-2">{t.workOrders.quickOrders.frequentMaterials}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {frequentMaterials.map(mat => {
                     const sel = isSelected(mat.id);
@@ -512,7 +512,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                   className="text-xs text-primary hover:underline flex items-center gap-1"
                 >
                   {showAllMaterials ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  {showAllMaterials ? 'Ocultar catálogo completo' : 'Buscar otros materiales'}
+                  {showAllMaterials ? t.workOrders.quickOrders.hideCatalog : t.workOrders.quickOrders.searchOthers}
                 </button>
 
                 <AnimatePresence>
@@ -528,7 +528,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                         <Input
                           value={materialSearch}
                           onChange={e => setMaterialSearch(e.target.value)}
-                          placeholder="Buscar material..."
+                          placeholder={t.workOrders.quickOrders.searchPlaceholder}
                           className="pl-8 bg-muted/30 border-border/20 h-8 text-xs"
                         />
                       </div>
@@ -541,7 +541,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                             !activeCategoryFilter ? 'bg-primary/15 text-primary border-primary/20' : 'bg-muted/20 text-muted-foreground border-border/15 hover:bg-muted/40'
                           }`}
                         >
-                          Todos
+                          {t.workOrders.quickOrders.all}
                         </button>
                         {CATEGORIES.map(cat => (
                           <button
@@ -582,11 +582,11 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
                   value={customMaterialName}
                   onChange={e => setCustomMaterialName(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addCustomMaterial()}
-                  placeholder="Material personalizado..."
+                  placeholder={t.workOrders.quickOrders.addCustom}
                   className="bg-muted/20 border-border/15 h-8 text-xs flex-1"
                 />
                 <Button size="sm" variant="outline" onClick={addCustomMaterial} className="h-8 px-3 text-xs" disabled={!customMaterialName.trim()}>
-                  <Plus className="w-3 h-3 mr-1" /> Agregar
+                  <Plus className="w-3 h-3 mr-1" /> {t.common.add}
                 </Button>
               </div>
 
@@ -594,7 +594,7 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
               {selectedMaterials.length > 0 && (
                 <div className="space-y-1.5 p-3 rounded-xl bg-muted/10 border border-border/15">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">
-                    Seleccionados ({selectedMaterials.length})
+                    {t.common.selected} ({selectedMaterials.length})
                   </p>
                   {selectedMaterials.map(mat => (
                     <motion.div
@@ -632,33 +632,33 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
 
             {/* ═══ ZONE 3: Technical Details ═══ */}
             <section className="space-y-3">
-              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Detalles técnicos</h3>
+              <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t.workOrders.quickOrders.technicalDetails}</h3>
 
               {/* Dimensions */}
               <div>
-                <Label className="text-xs mb-1.5 block">Medidas (pulgadas)</Label>
+                <Label className="text-xs mb-1.5 block">{t.workOrders.quickOrders.measurements} (in)</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  <Input value={width} onChange={e => setWidth(e.target.value)} placeholder="Ancho" className="bg-muted/30 border-border/20 h-8 text-xs" />
-                  <Input value={height} onChange={e => setHeight(e.target.value)} placeholder="Alto" className="bg-muted/30 border-border/20 h-8 text-xs" />
-                  <Input value={depth} onChange={e => setDepth(e.target.value)} placeholder="Prof." className="bg-muted/30 border-border/20 h-8 text-xs" />
+                  <Input value={width} onChange={e => setWidth(e.target.value)} placeholder={t.common.width} className="bg-muted/30 border-border/20 h-8 text-xs" />
+                  <Input value={height} onChange={e => setHeight(e.target.value)} placeholder={t.common.height} className="bg-muted/30 border-border/20 h-8 text-xs" />
+                  <Input value={depth} onChange={e => setDepth(e.target.value)} placeholder={t.common.depth} className="bg-muted/30 border-border/20 h-8 text-xs" />
                 </div>
               </div>
 
               {/* Notes */}
               <div className="space-y-1.5">
-                <Label className="text-xs">Notas de producción</Label>
-                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Instrucciones, observaciones..." className="bg-muted/30 border-border/20 min-h-[60px] resize-none text-xs" />
+                <Label className="text-xs">{t.workOrders.quickOrders.productionNotes}</Label>
+                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder={t.common.notes + "..."} className="bg-muted/30 border-border/20 min-h-[60px] resize-none text-xs" />
               </div>
 
               {/* Folder path */}
               <div className="space-y-1.5">
-                <Label className="text-xs">Carpeta de red</Label>
+                <Label className="text-xs">{t.settings.general.customDomainLabel}</Label>
                 <Input value={folderPath} onChange={e => setFolderPath(e.target.value)} placeholder="\\dropbox\The Sign Space\Projects\..." className="bg-muted/20 border-border/15 h-8 text-xs font-mono" />
               </div>
 
               {/* Checklist */}
               <div>
-                <Label className="text-xs mb-2 block">Checklist rápido</Label>
+                <Label className="text-xs mb-2 block">{t.workOrders.quickOrders.quickChecklist}</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {checklist.map(item => (
                     <button
@@ -687,13 +687,13 @@ export const NewProductionOrderModal: React.FC<NewProductionOrderModalProps> = (
         {/* ── FOOTER ── */}
         <div className="shrink-0 px-6 py-3 border-t border-border/20 bg-background/60 backdrop-blur-xl flex flex-col-reverse sm:flex-row sm:items-center gap-2">
           <Button variant="ghost" size="sm" onClick={() => { resetForm(); onClose(); }} className="text-xs sm:mr-auto">
-            Cancelar
+            {t.common.cancel}
           </Button>
           <Button variant="outline" size="sm" onClick={() => createOrder(true)} className="text-xs gap-1.5">
-            <Printer className="w-3.5 h-3.5" /> Crear y Ver
+            <Printer className="w-3.5 h-3.5" /> {t.common.create} & {t.common.view}
           </Button>
           <Button size="sm" onClick={() => createOrder(false)} className="text-xs gap-1.5 bg-primary">
-            <Plus className="w-3.5 h-3.5" /> Crear Orden
+            <Plus className="w-3.5 h-3.5" /> {t.common.create} {t.workOrders.quickOrders.title}
           </Button>
         </div>
       </DialogContent>
