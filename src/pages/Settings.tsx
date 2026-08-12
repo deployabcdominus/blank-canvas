@@ -381,7 +381,7 @@ export default function Settings() {
                             {company?.logo_url ? (
                               <img 
                                 src={company.logo_url} 
-                                alt="Logo" 
+                                alt={company?.name ? `${company.name} logo` : "Company logo"} 
                                 className="w-full h-full object-contain p-2"
                               />
                             ) : (
