@@ -46,11 +46,11 @@ const POIPage = () => {
       return;
     }
     try {
-      const { data, error } = await supabase.rpc("get_poi_order_by_token", { p_token: token });
-      if (error || !data || data.length === 0) {
+      const { data, error } = await supabase.rpc("get_poi_order_by_token", { p_token: token }) as any;
+      if (error || !data || (Array.isArray(data) && data.length === 0)) {
         setAccessError("invalid");
       } else {
-        const row = data[0];
+        const row = Array.isArray(data) ? data[0] : data;
         // get_poi_order_by_token only returns valid tokens
         setTokenData(row as TokenData);
       }
