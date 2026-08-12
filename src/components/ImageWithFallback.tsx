@@ -32,7 +32,7 @@ export const ImageWithFallback = ({
       ) : (
         <img
           src={src}
-          alt={alt}
+          alt={alt || ""}
           className={cn(
             "transition-all duration-500",
             isLoading ? "opacity-0 scale-105" : "opacity-100 scale-100",
