@@ -2623,6 +2623,16 @@ export type Database = {
       get_my_company_id: { Args: never; Returns: string }
       get_my_company_id_safe: { Args: never; Returns: string }
       get_platform_health: { Args: never; Returns: Json }
+      get_poi_order_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          client: string
+          company_id: string
+          order_id: string
+          project_name: string
+          wo_number: string
+        }[]
+      }
       get_proposal_by_approval_token: {
         Args: { _token: string }
         Returns: {
