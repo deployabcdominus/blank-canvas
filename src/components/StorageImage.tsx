@@ -20,5 +20,5 @@ export function StorageImage({ bucket, path, fallback, ...props }: StorageImageP
 
   if (!url && fallback) return <>{fallback}</>;
 
-  return <img src={url || ""} {...props} />;
+  return <img src={url || ""} alt={props.alt || ""} {...props} />;
 }
