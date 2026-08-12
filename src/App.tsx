@@ -14,6 +14,7 @@ import { OnboardingGate } from "@/components/OnboardingGate";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 import { lazy, Suspense } from "react";
 import { NavigationProgressBar } from "@/components/NavigationProgressBar";
+import { PageTransition } from "@/components/transitions/PageTransition";
 
 const Index = lazy(() => import("./pages/Index"));
 const PostPaymentSetup = lazy(() => import("./pages/PostPaymentSetup"));
@@ -83,50 +84,50 @@ const AppContent = () => {
       <Suspense fallback={<PageLoader />}>
         <Routes location={location} key={location.pathname}>
           {/* Landing & Public Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
-          <Route path="/success" element={<Success />} />
-          <Route path="/setup" element={<PostPaymentSetup />} />
-          <Route path="/access" element={<Access />} />
-          <Route path="/invite" element={<Invite />} />
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/onboarding" element={<OnboardingGate><Onboarding /></OnboardingGate>} />
+          <Route path="/" element={<PageTransition type="fade"><Index /></PageTransition>} />
+          <Route path="/checkout" element={<PublicRoute><PageTransition type="slide-up"><Checkout /></PageTransition></PublicRoute>} />
+          <Route path="/success" element={<PageTransition type="zoom"><Success /></PageTransition>} />
+          <Route path="/setup" element={<PageTransition type="fade"><PostPaymentSetup /></PageTransition>} />
+          <Route path="/access" element={<PageTransition type="fade"><Access /></PageTransition>} />
+          <Route path="/invite" element={<PageTransition type="fade"><Invite /></PageTransition>} />
+          <Route path="/login" element={<PublicRoute><PageTransition type="slide-left"><Login /></PageTransition></PublicRoute>} />
+          <Route path="/register" element={<PageTransition type="slide-right"><Register /></PageTransition>} />
+          <Route path="/reset-password" element={<PageTransition type="fade"><ResetPassword /></PageTransition>} />
+          <Route path="/onboarding" element={<OnboardingGate><PageTransition type="parallax"><Onboarding /></PageTransition></OnboardingGate>} />
           
-          <Route path="/p/:proposalId" element={<ProposalApproval />} />
-          <Route path="/poi/:orderId" element={<POIPage />} />
-          <Route path="/print/:orderId" element={<PrintPage />} />
+          <Route path="/p/:proposalId" element={<PageTransition type="fade"><ProposalApproval /></PageTransition>} />
+          <Route path="/poi/:orderId" element={<PageTransition type="fade"><POIPage /></PageTransition>} />
+          <Route path="/print/:orderId" element={<PageTransition type="fade"><PrintPage /></PageTransition>} />
 
-          <Route path="/superadmin" element={<ProtectedRoute><SuperadminDashboard /></ProtectedRoute>} />
-          <Route path="/superadmin/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          <Route path="/superadmin" element={<ProtectedRoute><PageTransition type="fade"><SuperadminDashboard /></PageTransition></ProtectedRoute>} />
+          <Route path="/superadmin/settings" element={<ProtectedRoute><PageTransition type="fade"><Settings /></PageTransition></ProtectedRoute>} />
 
           <Route element={<ProtectedRoute><TenantLayout /></ProtectedRoute>}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/clients/:id" element={<ClientDetail />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/leads" element={<Leads />} />
-            <Route path="/leads/recycle-bin" element={<LeadsRecycleBin />} />
-            <Route path="/proposals" element={<Proposals />} />
-            <Route path="/work-orders" element={<WorkOrders />} />
-            <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
-            <Route path="/payments" element={<Payments />} />
-            <Route path="/installation" element={<Installation />} />
-            <Route path="/map-hub" element={<MapHub />} />
-            <Route path="/installer-companies" element={<InstallerCompanies />} />
-            <Route path="/team-management" element={<TenantTeamManagement />} />
-            <Route path="/production" element={<Production />} />
-            <Route path="/taller" element={<div className="min-h-screen bg-background p-4"><OperatorStation /></div>} />
-            <Route path="/tecnico" element={<MobileTechnicianView />} />
-            <Route path="/audit-log" element={<AuditLog />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/pilot" element={<PilotDashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/dashboard" element={<PageTransition type="parallax"><Dashboard /></PageTransition>} />
+            <Route path="/clients" element={<PageTransition type="fade"><Clients /></PageTransition>} />
+            <Route path="/clients/:id" element={<PageTransition type="fade"><ClientDetail /></PageTransition>} />
+            <Route path="/projects" element={<PageTransition type="fade"><Projects /></PageTransition>} />
+            <Route path="/leads" element={<PageTransition type="slide-left"><Leads /></PageTransition>} />
+            <Route path="/leads/recycle-bin" element={<PageTransition type="fade"><LeadsRecycleBin /></PageTransition>} />
+            <Route path="/proposals" element={<PageTransition type="slide-left"><Proposals /></PageTransition>} />
+            <Route path="/work-orders" element={<PageTransition type="fade"><WorkOrders /></PageTransition>} />
+            <Route path="/work-orders/:id" element={<PageTransition type="fade"><WorkOrderDetail /></PageTransition>} />
+            <Route path="/payments" element={<PageTransition type="fade"><Payments /></PageTransition>} />
+            <Route path="/installation" element={<PageTransition type="fade"><Installation /></PageTransition>} />
+            <Route path="/map-hub" element={<PageTransition type="fade"><MapHub /></PageTransition>} />
+            <Route path="/installer-companies" element={<PageTransition type="fade"><InstallerCompanies /></PageTransition>} />
+            <Route path="/team-management" element={<PageTransition type="fade"><TenantTeamManagement /></PageTransition>} />
+            <Route path="/production" element={<PageTransition type="fade"><Production /></PageTransition>} />
+            <Route path="/taller" element={<PageTransition type="fade"><div className="min-h-screen bg-background p-4"><OperatorStation /></div></PageTransition>} />
+            <Route path="/tecnico" element={<PageTransition type="fade"><MobileTechnicianView /></PageTransition>} />
+            <Route path="/audit-log" element={<PageTransition type="fade"><AuditLog /></PageTransition>} />
+            <Route path="/settings" element={<PageTransition type="fade"><Settings /></PageTransition>} />
+            <Route path="/reports" element={<PageTransition type="fade"><Reports /></PageTransition>} />
+            <Route path="/pilot" element={<PageTransition type="fade"><PilotDashboard /></PageTransition>} />
+            <Route path="/inventory" element={<PageTransition type="fade"><Inventory /></PageTransition>} />
           </Route>
 
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<PageTransition type="fade"><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>
     </AnimatePresence>
