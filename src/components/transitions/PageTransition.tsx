@@ -1,6 +1,6 @@
 
 import React, { ReactNode } from "react";
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion, Easing } from "framer-motion";
 
 export type TransitionType = 
   | "fade" 
@@ -17,7 +17,7 @@ interface PageTransitionProps {
   children: ReactNode;
   type?: TransitionType;
   duration?: number;
-  easing?: number[] | string;
+  easing?: Easing | Easing[];
   className?: string;
 }
 
