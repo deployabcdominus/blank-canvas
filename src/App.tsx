@@ -54,6 +54,7 @@ const PrintPage = lazy(() => import("./pages/PrintPage"));
 
 const PilotDashboard = lazy(() => import("./pages/PilotDashboard"));
 const Inventory = lazy(() => import("./pages/Inventory"));
+const TransitionShowcase = lazy(() => import("./components/transitions/examples/TransitionShowcase").then(m => ({ default: m.TransitionShowcase })));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -125,6 +126,7 @@ const AppContent = () => {
             <Route path="/reports" element={<PageTransition type="fade"><Reports /></PageTransition>} />
             <Route path="/pilot" element={<PageTransition type="fade"><PilotDashboard /></PageTransition>} />
             <Route path="/inventory" element={<PageTransition type="fade"><Inventory /></PageTransition>} />
+            <Route path="/transition-test" element={<TransitionShowcase />} />
           </Route>
 
           <Route path="*" element={<PageTransition type="fade"><NotFound /></PageTransition>} />
