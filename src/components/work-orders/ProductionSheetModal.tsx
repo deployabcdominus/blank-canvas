@@ -1181,7 +1181,7 @@ export function ProductionSheetModal({ order, isOpen, onClose, onRefreshOrder }:
                     className="relative rounded-lg overflow-hidden aspect-square group"
                     style={{ background: "rgba(255,255,255,0.03)" }}
                   >
-                    <StorageImage bucket="poi-photos" path={photo.public_url} alt="" className="w-full h-full object-cover" />
+                    <StorageImage bucket="poi-photos" path={photo.public_url} alt="Installation photo" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <ExternalLink className="w-4 h-4 text-white" />
                     </div>

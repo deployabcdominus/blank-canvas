@@ -27,4 +27,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://signflowapp.lovable.app/sitemap.xml
+Sitemap: https://www.signflowapp.com/sitemap.xml
