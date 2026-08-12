@@ -50,28 +50,23 @@ export const RegisterPaymentModal = ({ isOpen, onClose, proposal, companyId }: R
       toast.error(m.amountError);
       return;
     }
-    if (!companyId) {
-      toast.error(m.companyError);
-      return;
-    }
+
     setSubmitting(true);
     try {
       await addPayment({
-        companyId,
-        proposalId: proposal.id,
+        proposal_id: proposal.id,
+        company_id: companyId!,
         amount: parsed,
-        currency: 'USD',
-        method,
-        status: 'received',
-        paidAt: new Date(paidAt).toISOString(),
-        note: note || null,
-        createdBy: null,
+        method: method,
+        paid_at: paidAt,
+        note: note,
+        status: 'Completed'
       });
-      toast.success(m.successToast);
-      setAmount(""); setNote(""); setMethod("transfer");
       onClose();
-    } catch (e: any) {
-      toast.error(e.message || m.errorToast);
+      setAmount("");
+      setNote("");
+    } catch (err) {
+      // Handled by mutation
     } finally {
       setSubmitting(false);
     }
@@ -79,65 +74,78 @@ export const RegisterPaymentModal = ({ isOpen, onClose, proposal, companyId }: R
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-[480px] p-0 bg-background/90 backdrop-blur-2xl border border-border/30">
-        <DialogHeader className="px-6 py-5 border-b border-border/20">
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent className="sm:max-w-[460px] p-0 overflow-hidden bg-zinc-950 border-white/[0.1] shadow-2xl">
+        <DialogHeader className="px-6 pt-6 pb-4">
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold">
             <DollarSign className="w-5 h-5 text-primary" />
             {m.title}
           </DialogTitle>
-        </DialogHeader>
-
-        <div className="px-6 py-5 space-y-5">
           {!isApproved && (
-            <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-              <AlertCircle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
-              <p className="text-sm text-destructive">
+            <div className="mt-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+              <p className="text-[12px] text-amber-200/80 leading-relaxed">
                 {m.notApprovedWarning}
               </p>
             </div>
           )}
+        </DialogHeader>
 
+        <div className="px-6 py-2 space-y-5">
           {/* Summary */}
           <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="p-3 rounded-lg bg-muted/30 border border-border/20">
-              <p className="text-[11px] text-muted-foreground mb-1">{m.totalApproved}</p>
+            <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{m.totalApproved}</p>
               <p className="text-sm font-bold">${totalApproved.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/30 border border-border/20">
-              <p className="text-[11px] text-muted-foreground mb-1">{m.paid}</p>
+            <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{m.paid}</p>
               <p className="text-sm font-bold text-green-400">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/30 border border-border/20">
-              <p className="text-[11px] text-muted-foreground mb-1">{m.balance}</p>
+            <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{m.balance}</p>
               <p className="text-sm font-bold text-amber-400">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
             </div>
           </div>
 
-          {/* Amount */}
-          <div className="space-y-1.5">
-            <Label>{m.amountLabel}</Label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              value={amount}
-              onChange={e => setAmount(e.target.value)}
-              disabled={!isApproved}
-              className="bg-muted/30"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            {/* Amount */}
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-zinc-400">{m.amountLabel}</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={amount}
+                onChange={e => setAmount(e.target.value)}
+                disabled={!isApproved}
+                className="bg-white/[0.03] border-white/[0.08] focus:border-primary/50 transition-colors h-11"
+              />
+            </div>
+
+            {/* Date */}
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-zinc-400">{m.dateLabel}</Label>
+              <Input
+                type="date"
+                value={paidAt}
+                onChange={e => setPaidAt(e.target.value)}
+                disabled={!isApproved}
+                className="bg-white/[0.03] border-white/[0.08] focus:border-primary/50 transition-colors h-11"
+              />
+            </div>
           </div>
 
           {/* Method */}
-          <div className="space-y-1.5">
-            <Label>{m.methodLabel}</Label>
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold text-zinc-400">{m.methodLabel}</Label>
             <Select value={method} onValueChange={v => setMethod(v)} disabled={!isApproved}>
-              <SelectTrigger className="bg-muted/30">
+              <SelectTrigger className="bg-white/[0.03] border-white/[0.08] focus:border-primary/50 transition-colors h-11">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-zinc-900 border-white/[0.1]">
                 {METHOD_KEYS.map(key => (
-                  <SelectItem key={key} value={key}>
+                  <SelectItem key={key} value={key} className="focus:bg-primary/10 focus:text-white">
                     {m.methods[key as keyof typeof m.methods]?.toString()}
                   </SelectItem>
                 ))}
@@ -145,36 +153,39 @@ export const RegisterPaymentModal = ({ isOpen, onClose, proposal, companyId }: R
             </Select>
           </div>
 
-          {/* Date */}
-          <div className="space-y-1.5">
-            <Label>{m.dateLabel}</Label>
-            <Input
-              type="date"
-              value={paidAt}
-              onChange={e => setPaidAt(e.target.value)}
-              disabled={!isApproved}
-              className="bg-muted/30"
-            />
-          </div>
-
           {/* Note */}
-          <div className="space-y-1.5">
-            <Label>{m.noteLabel}</Label>
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold text-zinc-400">{m.noteLabel}</Label>
             <Textarea
               placeholder={m.notePlaceholder}
               value={note}
               onChange={e => setNote(e.target.value)}
               disabled={!isApproved}
-              className="bg-muted/30 resize-none"
+              className="bg-white/[0.03] border-white/[0.08] focus:border-primary/50 transition-colors resize-none"
               rows={2}
             />
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-border/20 flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>{m.cancel}</Button>
-          <Button onClick={handleSubmit} disabled={!isApproved || submitting}>
-            {submitting ? m.saving : m.save}
+        <div className="px-6 py-6 mt-2 flex justify-end gap-3 bg-white/[0.02]">
+          <Button 
+            variant="ghost" 
+            onClick={onClose}
+            className="text-zinc-400 hover:text-white hover:bg-white/[0.05]"
+          >
+            {m.cancel}
+          </Button>
+          <Button 
+            onClick={handleSubmit} 
+            disabled={!isApproved || submitting}
+            className="bg-primary hover:bg-primary/90 text-white px-8 font-bold shadow-lg shadow-primary/20"
+          >
+            {submitting ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/20 border-t-white animate-spin rounded-full" />
+                {m.saving}
+              </div>
+            ) : m.save}
           </Button>
         </div>
       </DialogContent>
