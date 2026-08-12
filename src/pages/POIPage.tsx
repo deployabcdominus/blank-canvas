@@ -46,18 +46,13 @@ const POIPage = () => {
       return;
     }
     try {
-      const { data, error } = await supabase.rpc("validate_poi_token", { p_token: token });
-      if (error || !data || data.length === 0) {
+      const { data, error } = await supabase.rpc("get_poi_order_by_token", { p_token: token }) as any;
+      if (error || !data || (Array.isArray(data) && data.length === 0)) {
         setAccessError("invalid");
       } else {
-        const row = data[0];
-        if (!row.token_valid && row.token_expired) {
-          setAccessError("expired");
-        } else if (!row.token_valid) {
-          setAccessError("invalid");
-        } else {
-          setTokenData(row as TokenData);
-        }
+        const row = Array.isArray(data) ? data[0] : data;
+        // get_poi_order_by_token only returns valid tokens
+        setTokenData(row as TokenData);
       }
     } catch {
       setAccessError("invalid");
@@ -86,6 +81,7 @@ const POIPage = () => {
 
         if (uploadErr) throw uploadErr;
 
+        // We'll keep getPublicUrl for now as we haven't switched poi-photos to private yet
         const { data: urlData } = supabase.storage.from("poi-photos").getPublicUrl(path);
         const publicUrl = urlData.publicUrl;
 

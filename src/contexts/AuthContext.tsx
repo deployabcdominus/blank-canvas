@@ -96,6 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.warn('Auth: Invalid session detected, signing out', error.message);
             await supabase.auth.signOut();
             localStorage.clear();
+            sessionStorage.clear();
             currentUserIdRef.current = null;
             setSession(null);
             setUser(null);
