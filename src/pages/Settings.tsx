@@ -623,7 +623,7 @@ export default function Settings() {
                         <div className="relative group">
                           <img
                             src={company.logo_url}
-                            alt={company.name}
+                            alt={company?.name ? `${company.name} logo` : "Company logo"}
                             className="h-16 max-w-[200px] object-contain rounded-lg border border-border p-2 bg-muted/30"
                           />
                           <button
