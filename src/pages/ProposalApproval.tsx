@@ -467,7 +467,7 @@ function Shell({ children, company }: { children: React.ReactNode; company?: Com
             className="p-3 rounded-2xl bg-white/5 border border-white/10"
           >
             {company?.logo_url ? (
-              <img src={company.logo_url} alt={company.name} className="h-10 object-contain" />
+              <img src={company.logo_url} alt={company?.name ? `${company.name} logo` : "Company logo"} className="h-10 object-contain" />
             ) : (
               <h1 className="text-lg font-black tracking-tighter uppercase text-primary">
                 {company?.name || "Sign Flow"}

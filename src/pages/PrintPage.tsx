@@ -133,7 +133,7 @@ export default function PrintPage() {
             {company?.logo_url ? (
               <img
                 src={company.logo_url}
-                alt={company.name}
+                alt={company?.name ? `${company.name} logo` : "Company logo"}
                 style={{ maxHeight: 36, maxWidth: 140, objectFit: "contain", marginBottom: 4 }}
                 crossOrigin="anonymous"
               />

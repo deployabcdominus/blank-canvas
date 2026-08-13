@@ -10,7 +10,8 @@
 - [x] Updated `public/sitemap.xml` entries to use the canonical domain (previously partially done, now verified).
 - [x] Fixed `src/components/work-orders/ProductionSheetModal.tsx` missing alt text for installation photos.
 - [x] Hardened `src/components/StorageImage.tsx` and `src/components/ImageWithFallback.tsx` to ensure `alt` attributes are never omitted.
-- [x] Improved accessibility in `src/pages/Settings.tsx` by using dynamic company names in alt text.
+- [x] Improved accessibility in `src/pages/Settings.tsx`, `src/pages/PrintPage.tsx`, and `src/pages/ProposalApproval.tsx` by using safe dynamic company names in alt text.
+- [x] Verified remaining `alt` attributes in `src/components/work-orders/ProductionSheetModal.tsx` and `src/components/work-orders/QCSignaturePad.tsx`.
 
 ## Verified
 - Indexing rules in `robots.txt`.
